@@ -54,7 +54,7 @@ CONVENTIONS.md How to write and organise notes so the base keeps growing cleanly
 
 ## State of the base
 
-First research run completed 2026-09-20: 112 content notes across ten sections, about 27,000 lines,
+First research run completed 2026-09-20: 102 content notes across ten sections, about 27,000 lines,
 936 distinct sources, a 304-entry glossary, 57 open questions grouped into seven themes, and seven
 candidate projects. Every note carries inline citations and a sources section; claims that could not
 be checked against a primary source are marked `[unverified]`. Run logs are in `notes/research-log/`.
