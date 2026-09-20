@@ -131,12 +131,16 @@ needs them must use `pyoxigraph`, Jena or RDF4J instead. This matters directly f
 |---|---|---|---|---|---|---|---|
 | **HyperGraphRAG** | Python | RAG over an LLM-extracted knowledge hypergraph (NeurIPS 2025) | n-ary hyperedge = one natural-language fact linking ≥2 extracted entities | MIT | 451 | last commit 2026-05-12 | [LHRLAB/HyperGraphRAG](https://github.com/LHRLAB/HyperGraphRAG) |
 | **Hyper-RAG** | Python | RAG with low-order (pairwise) *and* high-order hyperedges, backed by Hypergraph-DB, with a web UI (Nature Communications 2026) | mixed pairwise + hyperedge store | Apache-2.0 | 322 | last commit 2026-06-27 | [iMoonLab/Hyper-RAG](https://github.com/iMoonLab/Hyper-RAG) |
+| **Hyper-Extract** | Python | CLI + library that turns unstructured text into graphs, hypergraphs or spatio-temporal structures with an LLM | n-ary hyperedges produced by LLM extraction | GitHub metadata "Other" (`NOASSERTION`) | 3,978 | created 2026-01-07; last commit 2026-09-20 — the fastest-growing hypergraph repository found in this survey | [yifanfeng97/Hyper-Extract](https://github.com/yifanfeng97/Hyper-Extract) |
 | **LightRAG** | Python | *contrast case*: graph RAG with **binary** entity–relation edges | binary edges + vector index | MIT | 39,768 | PyPI `lightrag-hku` **1.5.7**, 2026-09-02; last commit 2026-09-20 | [HKUDS/LightRAG](https://github.com/HKUDS/LightRAG) |
 | **nano-graphrag** | Python | *contrast case*: minimal graph RAG, binary edges; the code ancestor several hypergraph-RAG repos fork | binary edges | MIT | 3,990 | PyPI **0.0.8.2**, 2024-10-19; last commit 2026-01-27 | [gusye1234/nano-graphrag](https://github.com/gusye1234/nano-graphrag) |
 
-The star gap is the single most striking fact in this table: the binary-edge GraphRAG
-implementations have roughly **50–90× more stars** than the hypergraph ones. Whatever the
-representational argument, adoption today is overwhelmingly binary. See
+Two things stand out. First, the binary-edge GraphRAG implementations still have an order of
+magnitude more stars than the hypergraph research repositories (LightRAG 39,768 vs
+HyperGraphRAG 451). Second, **Hyper-Extract**, created on 2026-01-07 by the author of DHG and
+Hyper-RAG, reached 3,978 stars in roughly eight months — nearly as many as nano-graphrag and
+almost nine times HyperGraphRAG. The hypergraph idea appears to travel much further when it is
+packaged as a one-command extraction tool than when it is packaged as a research pipeline. See
 [../07-applications/retrieval-augmented-generation.md](../07-applications/retrieval-augmented-generation.md).
 
 ---
