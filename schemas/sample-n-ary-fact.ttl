@@ -1,0 +1,67 @@
+# sample-n-ary-fact.ttl
+# One n-ary fact ("metformin treats type-2 diabetes at 500 mg bid in adults, according to
+# a 2024 guideline") written three ways in RDF 1.2 Turtle. Parsed successfully with
+# pyoxigraph 0.5.11 (RDF 1.2 triple-term support) on 2026-09-19.
+#
+# Syntax reference: W3C RDF 1.2 Turtle (Working Draft, 14 Sept 2026)
+#   https://www.w3.org/TR/rdf12-turtle/
+# Model reference:  W3C RDF 1.2 Concepts (Candidate Recommendation Snapshot, 7 April 2026)
+#   https://www.w3.org/TR/rdf12-concepts/
+#
+# NOTE on the older 2021 RDF-star Community Group syntax: it used << s p o >> as a *quoted
+# triple* that could appear in subject or object position. RDF 1.2 keeps << >> only as
+# shorthand for a *reified triple* (a reifier plus an rdf:reifies triple term), and allows the
+# triple term <<( s p o )>> only in object position. Tools built for the 2021 syntax
+# (Blazegraph RDR, Stardog edge properties, Jena's archived RDF-star CG mode) will not read the
+# `~` reifier or `<<( )>>` forms below.
+
+VERSION "1.2"
+
+PREFIX :      <http://example.org/khg/>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+# ---------------------------------------------------------------------------
+# Way 1 - RDF 1.2 annotation syntax.
+# Asserts the binary core triple AND attaches the extra arguments (dosage, population)
+# plus provenance to a named reifier :f1. The reifier is the identifier of the n-ary fact.
+# ---------------------------------------------------------------------------
+:metformin :treats :T2DM ~ :f1 {|
+    :dosage        :dose-500mg-bid ;
+    :population    :adults ;
+    :confidence    0.95 ;
+    prov:wasDerivedFrom :guideline-2024 ;
+    dct:date       "2024-01-01"^^xsd:date
+|} .
+
+# ---------------------------------------------------------------------------
+# Way 2 - explicit reifier + triple term, WITHOUT asserting the core triple.
+# Use this for claims you want to record but not endorse (a disputed or hypothetical fact).
+# ---------------------------------------------------------------------------
+:claim-7 rdf:reifies <<( :metformin :treats :T1DM )>> ;
+         :assertedBy :forum-post-123 ;
+         :status     :disputed .
+
+# ---------------------------------------------------------------------------
+# Way 3 - classic n-ary relation as a resource (W3C n-ary relations note, 2006 pattern 1),
+# no reification at all. Every argument is a role property of the fact node.
+# This is also the shape of a Wikidata statement node (p:/ps:/pq: pattern).
+# ---------------------------------------------------------------------------
+:fact-1 a :TreatmentFact ;
+    :treatment   :metformin ;
+    :condition   :T2DM ;
+    :dosage      :dose-500mg-bid ;
+    :population  :adults ;
+    :confidence  0.95 ;
+    prov:wasDerivedFrom :guideline-2024 .
+
+# Entities
+:metformin        a :Drug ;        :label "metformin" .
+:T2DM             a :Disease ;     :label "type 2 diabetes mellitus" .
+:T1DM             a :Disease ;     :label "type 1 diabetes mellitus" .
+:dose-500mg-bid   a :Dosage ;      :label "500 mg twice daily" .
+:adults           a :Population ;  :label "adults" .
+:guideline-2024   a :Document ;    :label "Standards of Care 2024" ; dct:publisher :ADA .
+:ADA              a :Organisation ; :label "American Diabetes Association" .
