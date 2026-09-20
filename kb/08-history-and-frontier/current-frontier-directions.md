@@ -57,8 +57,9 @@ shared pretraining corpus exist for hypergraphs comparable to the graph side.
 supplies grounded, inspectable n-ary facts and a structure to plan over. Together they beat either
 alone.
 
-**Who.** Haoran Luo and collaborators (HyperGraphRAG, now at NTU); Xiangjun Zai, Xingyu Tan and
-colleagues at UNSW/CSIRO Data61 (PRoH, DocTrace); Jinyoung Park and colleagues (HyperGraphPro);
+**Who.** Haoran Luo and collaborators (HyperGraphRAG; Luo now a research fellow at NTU); Xiangjun
+Zai, Xingyu Tan and co-authors (PRoH, DocTrace; affiliations `[unverified]`); Jinyoung Park and
+co-authors (HyperGraphPro);
 Ben Goertzel and the OpenCog Hyperon effort from the AGI side (metagraph + MeTTa rewriting).
 
 **Key papers.**
@@ -83,8 +84,9 @@ retriever is almost never reported.
 **Claim.** Facts have validity intervals, and hyperedges appear, change arity and disappear; models
 should represent that rather than snapshotting.
 
-**Who.** Dingqi Yang's group (University of Macau; formerly Fribourg) — VITA, THOR; Zifeng Ding and
-co-authors on hyper-relational temporal KGs; the higher-order network science community on temporal
+**Who.** Dingqi Yang and collaborators (formerly eXascale Infolab, University of Fribourg; now
+University of Macau `[unverified]`) — VITA, THOR; the authors of "Temporal Fact Reasoning over
+Hyper-Relational Knowledge Graphs"; and the higher-order network science community on temporal
 hypergraphs as dynamical objects.
 
 **Key papers.**
@@ -158,7 +160,8 @@ arity at all.
 **Claim.** Hyperedges can be a *native* storage and indexing primitive with transactional
 guarantees, not an emulation on top of a triple or property-graph store.
 
-**Who.** Maciej Besta, Torsten Hoefler and the ETH Zürich SPCL group (higher-order graph databases);
+**Who.** Maciej Besta, Torsten Hoefler and co-authors at ETH Zürich `[unverified]` (higher-order
+graph databases);
 TypeDB (Haikal Pribadi's company, Rust rewrite since 3.0); HypergraphDB (Borislav Iordanov, the
 2010 ancestor).
 
@@ -189,9 +192,10 @@ higher-order homophily, group contagion, simplicial closure) apply to *knowledge
 only to social and biological ones.
 
 **Who.** Federico Battiston (Central European University) and the Hypergraphx group; Nicholas Landry
-(University of Virginia), Iacopo Iacopini (Northeastern University London), Maxime Lucas (Namur),
-Alice Patania (University of Vermont), Leo Torres and the XGI team; Phil Chodrow (Middlebury);
-PNNL's hypernetwork-science group; Tina Eliassi-Rad and Kijung Shin on hypergraph mining.
+(University of Virginia), Iacopo Iacopini (Northeastern University London), Alice Patania
+(University of Vermont), Maxime Lucas, Leo Torres and the XGI team; Phil Chodrow (Middlebury
+College); PNNL's hypernetwork-science group; Tina Eliassi-Rad and Kijung Shin on hypergraph mining.
+Affiliations and caveats: [research-groups-and-people.md](research-groups-and-people.md).
 
 **Key papers.**
 - Lee, Bu, Eliassi-Rad, Shin, "A Survey on Hypergraph Mining: Patterns, Tools, and Generators,"
@@ -216,7 +220,7 @@ member.
 
 **Who.** Mustafa Hajij (University of San Francisco) and the pyt-team/TopoX consortium; Theodore
 Papamarkou, Tolga Birdal, Michael Bronstein, Gunnar Carlsson, Yue Gao and 17 co-authors on the
-position paper; Michael Schaub (RWTH Aachen).
+position paper; Michael T. Schaub.
 
 **Key papers.**
 - Hajij, Papillon, Frantzen et al., "TopoX," [arXiv:2402.02441](https://arxiv.org/abs/2402.02441)
@@ -236,9 +240,9 @@ is an open and rather sceptical question.
 **Claim.** There are provable limits on what hypergraph neural networks can distinguish, and those
 limits have a clean combinatorial index.
 
-**Who.** Xingyue Huang, Miguel Romero Orth, Pablo Barceló, Bronstein, Ceylan (relational
-Weisfeiler–Leman); Fengqing Jiang, Radha Poovendran and colleagues at the University of Washington
-(WidthWall).
+**Who.** Xingyue Huang, Miguel Romero Orth, Pablo Barceló, Michael Bronstein, İsmail İlkan Ceylan
+(relational Weisfeiler–Leman); Fengqing Jiang, Radha Poovendran and co-authors (WidthWall;
+affiliations `[unverified]`).
 
 **Key papers.**
 - Huang, Romero Orth, Barceló, Bronstein, Ceylan, "Link Prediction with Relational Hypergraphs,"
@@ -290,7 +294,7 @@ from generation error. This is the highest-leverage unglamorous work in the fiel
 and text at once.
 
 **Who.** Yanbin Wei, James Kwok and co-authors (HyperGVL); Jiashi Lin, Junjun He and co-authors
-(EvoGraph-R1); Gao's Tsinghua group (multi-modal hyperedge groups since HGNN⁺).
+(EvoGraph-R1); Yue Gao's Tsinghua group (multi-modal hyperedge groups since HGNN⁺).
 
 **Key papers.**
 - Wei et al., "HyperGVL," [arXiv:2604.15648](https://arxiv.org/abs/2604.15648) (17 Apr 2026): 84k QA

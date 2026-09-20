@@ -92,12 +92,12 @@ whole table) rather than one is the detail most ad-hoc table-to-hypergraph code 
 
 A row-hyperedge is not yet knowledge: the cells are strings, the columns are unnamed, and the relation
 between them is implicit. Supplying the missing parts is the **semantic table interpretation** task, run
-as the SemTab challenge since 2019 with three annotation subtasks
-([SemTab challenge](https://www.cs.ox.ac.uk/isg/challenges/sem-tab/2020/), checked 2026-09-20):
+as the SemTab challenge, whose three annotation subtasks are defined as
+([SemTab 2020 challenge page](https://www.cs.ox.ac.uk/isg/challenges/sem-tab/2020/), checked 2026-09-20):
 
-- **CEA** (cell–entity annotation): link each cell to a KG entity → gives node identity;
-- **CTA** (column–type annotation): assign a semantic type to each column → gives argument types;
-- **CPA** (column–property annotation): identify the property relating two columns → gives relation names.
+- **CEA** — "Matching a cell to a KG entity" → gives node identity;
+- **CTA** — "Assigning a semantic type (e.g., a KG class) to a column" → gives argument types;
+- **CPA** — "Assigning a KG property to the relationship between two columns" → gives relation names.
 
 CEA + CTA + CPA over a row is, structurally, exactly the schema of an n-ary fact: canonical entities, typed
 positions, a named relation. A table plus its SemTab annotations *is* a knowledge hypergraph; a table alone
@@ -212,7 +212,7 @@ available source.
 - Benson, A. R., Abebe, R., Schaub, M. T., Jadbabaie, A., Kleinberg, J. "Simplicial closure and higher-order link prediction." PNAS 115(48), 2018 / arXiv 1802.06916. https://arxiv.org/abs/1802.06916
 - Benson, A. R. "Data" (hypergraph datasets: coauth-DBLP, tags-*, threads-*, NDC-*, DAWN, congress-bills, email-*, contact-*), checked 2026-09-20. https://www.cs.cornell.edu/~arb/data/
 - Chen, P., Sarkar, S., Lausen, L., Srinivasan, B., Zha, S., Huang, R., Karypis, G. "HYTREL: Hypergraph-enhanced Tabular Data Representation Learning." NeurIPS 2023 / arXiv 2307.08623. https://arxiv.org/abs/2307.08623
-- Jiménez-Ruiz, E., Hassanzadeh, O., Efthymiou, V., Chen, J., Srinivas, K. "SemTab: Semantic Web Challenge on Tabular Data to Knowledge Graph Matching" (challenge site, CEA/CTA/CPA task definitions), checked 2026-09-20. https://www.cs.ox.ac.uk/isg/challenges/sem-tab/2020/
+- Srinivas, K., Jiménez-Ruiz, E., Hassanzadeh, O., Chen, J., Efthymiou, V., Cutrona, V. (organisers). "SemTab 2020: Semantic Web Challenge on Tabular Data to Knowledge Graph Matching" (CEA/CTA/CPA task definitions), collocated with ISWC 2020, checked 2026-09-20. https://www.cs.ox.ac.uk/isg/challenges/sem-tab/2020/
 - Beeri, C., Fagin, R., Maier, D., Yannakakis, M. "On the Desirability of Acyclic Database Schemes." Journal of the ACM 30(3), 1983. https://dl.acm.org/doi/10.1145/2402.322389
 - Fagin, R. "Degrees of acyclicity for hypergraphs and relational database schemes." Journal of the ACM 30(3), 1983. https://dl.acm.org/doi/10.1145/2402.322390
 - Fey, M., Hu, W., Huang, K., Lenssen, J. E., et al. "Relational Deep Learning: Graph Representation Learning on Relational Databases." arXiv 2312.04615, 2023. https://arxiv.org/abs/2312.04615
