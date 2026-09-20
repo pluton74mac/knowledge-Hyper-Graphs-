@@ -155,3 +155,46 @@ establish:
 
 The script and its verbatim output are reproduced in
 `kb/09-ecosystem/getting-started-toolchain.md`.
+
+## Added in gap-filling pass (2026-09-20)
+
+Sources for [`courses-tutorials-and-workshops.md`](../../kb/09-ecosystem/courses-tutorials-and-workshops.md).
+Every page below was fetched on **2026-09-20**. These entries confirm, and in several places replace,
+the `[unverified]` list in [`books-surveys-and-courses.md`](../../kb/09-ecosystem/books-surveys-and-courses.md) §8.
+
+### University courses
+
+- Chen, C. "Teaching." University of North Carolina at Chapel Hill. Lists DATA 890-003 *Special Topic in Data Science: Graphs and Hypergraphs* (Fall 2024), DATA 890-003 *Machine Learning with Graphs* (Fall 2025) and DATA 110 *Introduction to Data Science* (Spring/Fall 2025). Checked 2026-09-20. https://tarheels.live/canc/teaching/
+- Shin, K. Personal page, KAIST. Lists AI607 *Graph Mining and Social Network Analysis* (Fall, 2019–2026), AI506 *Data Mining and Search* (Spring, 2020–2026), EE210, EE209(B), and the tutorial record below. Checked 2026-09-20. https://kijungs.github.io/
+- `[unverified]` No syllabus page for a hypergraph course at Tsinghua (Yue Gao) was reachable in this run.
+
+### Conference tutorials
+
+- Kim, S., Antelmi, A., Lee, S. Y., Polato, M., Gao, Y., Shin, K. "Hypergraph Neural Networks: An In-Depth and Step-By-Step Guide." Tutorial presented at KDD 2024, ICDM 2024, AAAI 2025 and CIKM 2025; six slide decks downloadable. Checked 2026-09-20. https://sites.google.com/view/hnn-tutorial
+- "A Tutorial on Hypergraph Neural Networks: An In-Depth and Step-By-Step Guide." CIKM 2025, pp. 6829–6832. https://doi.org/10.1145/3746252.3761449
+- Kim, S., Lee, S. Y., Gao, Y., Antelmi, A., Polato, M., Shin, K. "A Survey on Hypergraph Neural Networks: An In-Depth and Step-By-Step Guide." KDD 2024; arXiv 2404.01039, 1 April 2024 (rev. 25 July 2024); arXiv comment "To appear in KDD 2024 (survey paper)". https://arxiv.org/abs/2404.01039 ; https://dl.acm.org/doi/abs/10.1145/3637528.3671457
+- Lee, G., Yoo, J., Shin, K. "Mining of Real-world Hypergraphs: Patterns, Tools, and Generators." Tutorial presented at CIKM 2022, ICDM 2022, WWW 2023 and KDD 2023; four-part slide decks, a 3-hour video and a 20-minute teaser, 22 referenced papers with code links. Checked 2026-09-20. https://sites.google.com/view/hypergraph-tutorial ; CIKM 2022 deck http://dmlab.kaist.ac.kr/~kijungs/papers/tutorialCIKM2022.pdf
+- `[unverified]` No tutorial on n-ary or hyper-relational knowledge graphs was located at ISWC, ESWC, WWW, IJCAI or KDD on 2026-09-20.
+
+### The topological deep learning challenge series
+
+- Papillon, M., Hajij, M. et al. "ICML 2023 Topological Deep Learning Challenge: Design and Results." PMLR 221:3–8; arXiv 2309.15188. Hosted by the ICML 2023 Workshop on Topology and Geometry in Machine Learning (TAG-ML); 28 qualifying submissions; contributions to TopoNetX and TopoModelX. https://proceedings.mlr.press/v221/papillon23a.html ; https://arxiv.org/abs/2309.15188
+- Bernárdez, G., Telyatnikov, L., Montagna, M. et al. (73 authors). "ICML Topological Deep Learning Challenge 2024: Beyond the Graph Domain." Proceedings of the GRaM Workshop at ICML 2024; arXiv 2409.05211, 8 September 2024. 52 qualifying submissions; lifting data into hypergraphs, simplicial, cell and combinatorial complexes. https://arxiv.org/abs/2409.05211
+
+### Seminars and community events
+
+- Schloss Dagstuhl. Seminar 26411, "Large Language Models Meet Knowledge Graphs," 4–9 October 2026. Organisers: Angela Bonifati (Lyon), Jan-Christoph Kalo (Amsterdam), Jeff Z. Pan (Edinburgh), Simon Razniewski (TU Dresden), Luke Zettlemoyer (Washington). Checked 2026-09-20. https://www.dagstuhl.de/26411
+- Schloss Dagstuhl. Seminar 21352, "Higher-Order Graph Models: From Theoretical Foundations to Machine Learning," 29 August – 1 September 2021. https://www.dagstuhl.de/seminars/seminar-calendar/seminar-details/21352
+- Schloss Dagstuhl. Seminar 25291, "(Actual) Neurosymbolic AI: Combining Deep Learning and Knowledge Graphs." Checked 2026-09-20. https://www.dagstuhl.de/seminars/seminar-calendar/seminar-details/25291
+- Schloss Dagstuhl. Seminar 22372, "Knowledge Graphs and Their Role in the Knowledge Engineering of the 21st Century." Checked 2026-09-20. https://www.dagstuhl.de/22372
+- NetSci 2025. Focus sessions page and the "Higher order networks 1 / 2" parallel sessions (chairs Giovanni Petri and Alec Kirkley). Checked 2026-09-20. https://netsci2025.github.io/focus_sessions/
+- Chodrow, P. et al. "A Higher Order Hackathon — A Blue Start at NetSci 2026," 31 May 2026, Northeastern University; uses XGI on a Bluesky starter-pack dataset. Checked 2026-09-20. https://www.philchodrow.prof/higher-order-hackathon/
+
+### Library tutorials and long-form material
+
+- HIF-standard repository, `tutorials/` directory: `EG.ipynb`, `HAT.ipynb`, `HIF-demo.ipynb`, `HIF-SimpleHypergraphs-demo.ipynb`, `hgx.ipynb`, `hnx.ipynb`, `tnx.ipynb`, `xgi.ipynb` and a `data/` folder; 36 stars, MIT. Checked 2026-09-20. https://github.com/HIF-org/HIF-standard/tree/main/tutorials
+- HyperNetX repository: 716 stars, 3-clause BSD; `tutorials/` with six Colab-runnable basic notebooks (HNX Basics, Visualization Methods, LesMis Case Study, LesMis Visualizations — Book Tour, HNX attributed hypergraph, Hypergraph Arithmetic). Checked 2026-09-20. https://github.com/pnnl/HyperNetX ; https://hypernetx.readthedocs.io/
+- XGI documentation, "XGI in 1 minute 🚀" tutorial; documented version 0.10.2, released 15 May 2026. The tutorials *index* page `…/api/tutorials.html` returned HTTP 404 on 2026-09-20; the individual tutorial pages resolve. https://xgi.readthedocs.io/en/stable/api/tutorials/getting_started_1.html
+- Bianconi, G. *Higher-Order Networks.* Cambridge Elements in the Structure and Dynamics of Complex Networks, Cambridge University Press; online 23 November 2021, print 23 December 2021. Not previously recorded in this section's book list. https://doi.org/10.1017/9781108770996
+- Schaub, M. T. "HIntNets — Higher-order interactions and Laplacian dynamics in complex networks: structure, dynamics and control." Project page, RWTH Aachen; talk index 2017–2020 including NetSci 2018, Complex Networks 2018 and ICCS 2018; MSCA-IF-GF project ID 702410. Checked 2026-09-20. https://michaelschaub.github.io/HIntNets/
+- `[unverified]` YouTube playlists and individual lectures on hypergraphs and higher-order networks (including recorded lectures by Ginestra Bianconi) are indexed by search engines, but direct fetches of `youtube.com` watch and playlist URLs on 2026-09-20 returned only site chrome, so no YouTube URL is recorded here as verified. The one exception is the tutorial video linked from the KAIST hypergraph-mining tutorial page, which that page itself vouches for.

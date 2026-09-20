@@ -201,3 +201,71 @@ against the Crossref API on 2026-09-20.
 - Schloss Dagstuhl. Seminar 21352, "Higher-Order Graph Models: From Theoretical Foundations to Machine Learning," 29 August – 1 September 2021. Organisers: T. Eliassi-Rad, V. Latora, M. Rosvall, I. Scholtes. https://www.dagstuhl.de/seminars/seminar-calendar/seminar-details/21352
 - Schloss Dagstuhl. Seminar calendar. https://www.dagstuhl.de/en/seminars/seminar-calendar ; Call for proposals, deadline 15 April 2026. https://www.dagstuhl.de/en/institute/news/2026/cfp-0626
 - NeurIPS 2025, "New Perspectives in Graph Machine Learning" workshop (HYPER poster). https://neurips.cc/virtual/2025/127653
+
+## Added in gap-filling pass (2026-09-20)
+
+Sources for [`reading-the-frontier-2026-q3.md`](../../kb/08-history-and-frontier/reading-the-frontier-2026-q3.md).
+All arXiv records were retrieved from the arXiv Atom API on **2026-09-20**; dates are v1 submission
+dates. Every entry below is an unrefereed preprint unless a venue is stated, and stated venues are
+the authors' own claims.
+
+### The queries themselves
+
+- arXiv Atom API, `submittedDate:[202606010000 TO 202609202359]` — `all:hypergraph` 379 hits; `all:"n-ary"` 23; `all:"higher-order networks"` 14; `abs:"higher-order network"` 13; `all:"knowledge hypergraph"` 1; `abs:"hyper-relational"` **0**; `all:"hypergraph RAG"` 0. 404 unique records; 139 knowledge-relevant candidates after keyword filtering. Whole-history control: `abs:"hyper-relational"` returns 43. https://export.arxiv.org/api/query
+
+### LLM + knowledge hypergraph, hypergraph RAG, ontology induction
+
+- Chan, Y.-K., Lien, W.-S., Yao, D.-T., Ruan, B.-K., Lin, K.-Y., Shuai, H.-H., Chiang, M.-F. "HyperPatch: Sequential Knowledge Editing Under n-ary Structural Drift." arXiv 2606.03179, 2 June 2026. https://arxiv.org/abs/2606.03179
+- Liu, J., Chen, L., Yang, Z., He, C., Ju, M., Han, B., Liu, R., Zhou, X. "HyperSU: Corpus-Driven Semantic-Unit Hypergraph for Retrieval-Augmented Generation." arXiv 2606.28351, 3 June 2026. https://arxiv.org/abs/2606.28351
+- Zhang, M., Ma, Y. "HKVM-RAG: Key-Value-Separated Hypergraph Evidence Organization for Multi-Hop RAG." arXiv 2606.07218, 5 June 2026. https://arxiv.org/abs/2606.07218
+- An, H.-Y., Zhang, Y.-J., Liang, C.-W. et al. "HyCE-RAG: Hypergraph Chain-of-Evidence Retrieval-Augmented Generation for Explainable Multi-hop Question Answering." arXiv 2607.22597, 12 June 2026. https://arxiv.org/abs/2607.22597
+- Zhang, Y.-J., Liang, C.-W., Zhang, T.-Y., Ding, J., Wu, Y.-L., Li, A.-B., Su, W.-C., Saifullah, An, H.-Y., Wang, M.-J.-S. "HyperWorld: Hypergraph-Structured State Serialization Improves Learned Textual World Models." arXiv 2609.00002, 12 June 2026. https://arxiv.org/abs/2609.00002
+- Wu, Y., Li, J., Liang, X., Chen, Y., Liang, Y., Mo, L., Li, G. "SAG: SQL-Retrieval Augmented Generation with Query-Time Dynamic Hyperedges." arXiv 2606.15971, 14 June 2026; duplicate arXiv entry 2608.12129, 12 August 2026. https://arxiv.org/abs/2606.15971 ; https://arxiv.org/abs/2608.12129
+- Liao, Y., Tu, S., Xiao, Y., Li, Y., Shi, G. "Implicit Semantic-Aware Communication Based on Hypergraph Reasoning." arXiv 2606.20162, 18 June 2026. https://arxiv.org/abs/2606.20162
+- Khrouf, H., Fillastre, P., Correia, S. "Optimizing Hypergraph-Based RAG: Toward Better Fact Extraction and Chunk Retrieval." arXiv 2607.20506, 2 July 2026. https://arxiv.org/abs/2607.20506
+- Wei, Y., Chen, Y., Gan, R., Liu, Z., Fu, X., Kang, C., Lu, N., Liu, R., Zhang, Y., Kwok, J. "VizRAG: Enhancing Retrieval-Augmented Generation with Hypergraph Visualization." arXiv 2607.19830, 22 July 2026. https://arxiv.org/abs/2607.19830
+- Godavarti, M. "Labeled Incidence Structures for Native Transformer Modeling of Text, Knowledge Graphs, and Hypergraphs." arXiv 2609.20278, 29 July 2026. https://arxiv.org/abs/2609.20278
+- Zhu, R., Lai, H., Jiang, B., Zhang, J., Li, Z., Kilbasovych, O., Hong, J. "HPFA: Hypergraph-Based Paired Failure Attribution for LLM Reasoning." arXiv 2608.02026, 3 August 2026. https://arxiv.org/abs/2608.02026
+- Cheng, X., Wang, J., He, C., Dong, R., Guan, Q. "ProPRL: Property-Aware Prerequisite Relation Learning in Educational Knowledge Graphs." arXiv 2608.03006, 4 August 2026. https://arxiv.org/abs/2608.03006
+- Chen, S., Xu, Y., Han, X., Xue, R., Wu, D., Gao, Y., Yan, C., Gao, Y. "Hypergraph-based Multimodal Retrieval-Augmented Generation with Incremental Refinement" (Hyper-M2RAG). arXiv 2608.16628, 17 August 2026. https://arxiv.org/abs/2608.16628
+- Mridul, M. A., Talukder, A., Seneviratne, O. "GrOIL: Graph-Grounded Domain Ontology Induction with Constrained LLM Mediation." arXiv 2608.22135, 22 August 2026. https://arxiv.org/abs/2608.22135
+- Ling, J., Wang, Y., Tang, C., Tan, H., Yang, Y., Guan, Y., Jiang, J. "H2Table: Hierarchical Hypergraph-Enhanced Large Language Models for Complex Table Reasoning." arXiv 2609.01216, 1 September 2026. https://arxiv.org/abs/2609.01216
+- Nguyen Phu, A., Nguyen Quang, D., Luu, H. A., Ngo Van, L., Le, T., Nguyen, T. H. "HyperProve: Answer-Guided Hypergraph Expansion for Multi-Hop Question Answering." arXiv 2609.13768, 12 September 2026. https://arxiv.org/abs/2609.13768
+- Chen, J., Shao, Q., Chang, Y., Zhou, M., Chen, D., Yu, W. "STHMoE: Hypergraph-Enhanced Heterogeneous Dependency Coordination for LLM-Based Urban Traffic Data Forecasting." arXiv 2609.15172, 14 September 2026. https://arxiv.org/abs/2609.15172
+
+### Agent memory, tool use and planning
+
+- Wang, Z. "TOKI: A Bitemporal Operator Algebra for Contradiction Resolution in LLM-Agent Persistent Memory." arXiv 2606.06240, 4 June 2026. https://arxiv.org/abs/2606.06240
+- Zai, X., Tan, X., Chen, C., Wang, X., Zhang, W. "Trace Only What You Need: Structure-Aware On-Demand Hypergraph Memory for Long-Document Question Answering" (DocTrace). arXiv 2606.10921, 9 June 2026. https://arxiv.org/abs/2606.10921
+- Hong, X., Dong, P., Yu, X., Jiang, B. "Tools Are Not Islands: Set-Level Tool Retrieval for LLM Agents via Query-Conditioned Hyperedge Prediction" (HYSET). arXiv 2607.25718, 28 July 2026. https://arxiv.org/abs/2607.25718
+- Zhai, Z., Tan, X., Zou, G., Wang, X., Zhang, W. "HyperAgent: Planning and Acting over Tool-Schema Hypergraphs for Tool-Use LLM Agents." arXiv 2608.02650, 31 July 2026. https://arxiv.org/abs/2608.02650
+- Wang, J., Liu, Y., Zhang, T., Jin, J., Sun, Z. "HyperAgent4POI: Dynamic Semantic Message Passing on Multi-Agent Hypergraphs for Missing-Modality Recommendation." arXiv 2608.01846, 3 August 2026. https://arxiv.org/abs/2608.01846
+- Xu, R., Yang, T., Huang, W.-C. "HyperSkill: Self-Evolving LLM Agents via Hypergraph-Structured Skill Memory." arXiv 2608.16114, 17 August 2026. https://arxiv.org/abs/2608.16114
+- Feng, Y., Zhang, R., Luo, H., Lin, Z., Yang, C., Luu, A. T. "Diachronic Hypergraphs for Orchestrated Multi-Agent Multimodal Memory Curation" (MAGE). arXiv 2608.29678, 30 August 2026. https://arxiv.org/abs/2608.29678
+- Cui, Z., Cao, J., Wen, Z., Yuan, B., Feng, J., Chen, S. "EdgeMem: LLM-Free Agent Memory Construction and Retrieval via Evidence-Preserving Multi-Anchor Hypergraph." arXiv 2609.05553, 3 September 2026. https://arxiv.org/abs/2609.05553
+
+### Temporal, dynamic and event-log hypergraphs
+
+- Reddy, T. S., Saketh, V. N. S., Punjabi, Y., Chandran, M. "HoT-SSM: Higher-order Temporal Knowledge Graph Reasoning with State Space Models for Health Care." arXiv 2606.05994, 4 June 2026. https://arxiv.org/abs/2606.05994
+- Wang, J., Chen, K., Han, Z., Hou, C., Cao, B., Fan, J., Zhang, J. "EHHN: An Event-driven Heterogeneous Hypergraph Network for Object-Centric Next Activity Prediction." arXiv 2607.01785, 2 July 2026. https://arxiv.org/abs/2607.01785
+- Liu, W., Pang, S., Wang, C., Shen, T., He, J., Cui, Z., Wu, X., Luu, A. T., Luo, H. "TIEM: Temporal Integration of Hypergraph Evidence and Skill Memory for Event-Driven Financial Forecasting." arXiv 2608.13024, 13 August 2026. https://arxiv.org/abs/2608.13024
+
+### Higher-order network science
+
+- Smith, J. P., Hacker, C., Lazovskis, J., Unger, F., Smith, K. M., Egas Santander, D. "Higher-order rich clubs and configuration models on general directed hypergraphs." arXiv 2609.01624, 3 August 2026. https://arxiv.org/abs/2609.01624
+- Vasilyeva, E., Tupikina, L., Musatov, D., Raigorodskii, A. M., del Genio, C. I., Boccaletti, S. "Topological measures in weighted hypergraphs." arXiv 2607.20962, 23 July 2026. https://arxiv.org/abs/2607.20962
+- Nortier, B. L., van der Kolk, J., Jankowski, R., Dobson, S., Serrano, M. Á., Battiston, F., Boguñá, M. "Latent geometry organizes higher-order interactions." arXiv 2609.07906, 7 September 2026. https://arxiv.org/abs/2609.07906
+- Jang, H., Min, B., Bianconi, G. "$(k,n)$-core percolation on hypergraphs with anchor nodes." arXiv 2608.25560, 26 August 2026. https://arxiv.org/abs/2608.25560
+- LaRuez, J., Rooney, B. "Preferential Attachment as a Simpliciality-Enforcing Mechanism in Hypergraphs." arXiv 2608.09788, 10 August 2026. https://arxiv.org/abs/2608.09788
+- Rao, W., Huang, J. "Simplicial closure fragments the explosive cooperation transitions in higher-order public goods games." arXiv 2608.17968, 18 August 2026. https://arxiv.org/abs/2608.17968
+- Nakajima, K., Sasaki, Y., Aida, M. "Declining Modularity of Intellectual Bases During the Emergence of Research Areas." arXiv 2608.16602, 17 August 2026. https://arxiv.org/abs/2608.16602
+- Han, Z., Liu, L., Wang, X., Hao, Y., Zheng, H., Tang, S. "Immunization on Temporal Higher-Order Networks." arXiv 2607.10171, 11 July 2026. https://arxiv.org/abs/2607.10171
+
+### Learning, benchmarks, datasets and systems
+
+- Cho, J., Kang, D. Y. S., Ko, Y. "Heterophily-Aware Adaptive Knowledge Distillation for Hypergraph Neural Networks" (HADES). arXiv 2606.08978, 8 June 2026. https://arxiv.org/abs/2606.08978
+- Serna-Aguilera, M., Jindal, V., Goggin, F. L., Li, J., Goswami, A., Bucksch, A., Liu, S., Luu, K. "GRAFT: Biological Graph and Hypergraph Benchmarks for Linked Gene Expression and Phenotypic Trait Prediction in Arabidopsis thaliana." arXiv 2606.27413, 25 June 2026. https://arxiv.org/abs/2606.27413
+- Liang, R., Feng, Z., Ren, H. "HySpecPro: Scalable Hypergraph Partitioning via Spectral Projection Optimization." arXiv 2607.00055, 30 June 2026. https://arxiv.org/abs/2607.00055
+- Frantzen, F., Schaub, M. T. "A repository for discovery and reuse of higher-order network datasets" (AHORN). arXiv 2608.03491, 4 August 2026. https://arxiv.org/abs/2608.03491
+- Kang, D. Y. S., Kim, J., Jeon, J., Kim, S.-W. "TAHB: A Comprehensive Benchmark for Text-Attributed Hypergraph Learning." arXiv 2608.15055, 15 August 2026. https://arxiv.org/abs/2608.15055
+- Konda, K. "Hypergraph Embedding Indexing for Efficient Dense Vector Retrieval." arXiv 2608.22980, 24 August 2026. https://arxiv.org/abs/2608.22980

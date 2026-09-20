@@ -156,3 +156,49 @@ URLs were resolved through the GitHub API on 2026-09-20.
 - Chen, X., Chen, M., Shi, W., Sun, Y., Zaniolo, C. "Embedding Uncertain Knowledge Graphs." *AAAI 2019*. https://doi.org/10.1609/aaai.v33i01.33013363
 - Tabacof, P., Costabello, L. "Probability Calibration for Knowledge Graph Embedding Models." ICLR 2020; arXiv:1912.10000. https://arxiv.org/abs/1912.10000
 - Ying, R., Bourgeois, D., You, J., Zitnik, M., Leskovec, J. "GNNExplainer: Generating Explanations for Graph Neural Networks." NeurIPS 2019; arXiv:1903.03894. https://arxiv.org/abs/1903.03894
+
+## Added in gap-filling pass (2026-09-20)
+
+Sources for [`reproducibility-of-n-ary-link-prediction.md`](../../kb/05-query-embeddings-reasoning/reproducibility-of-n-ary-link-prediction.md).
+GitHub figures were read from repository pages and Atom commit feeds fetched on 2026-09-20 (the
+GitHub REST API was not reachable from this session).
+
+### Replication and re-evaluation studies (triples)
+
+- Ruffinelli, D., Broscheit, S., Gemulla, R. "You CAN Teach an Old Dog New Tricks! On Training Knowledge Graph Embeddings." ICLR 2020. https://dblp.org/rec/conf/iclr/RuffinelliBG20.html
+- Ali, M., Berrendorf, M., Hoyt, C. T., Vermue, L., Galkin, M., Sharifzadeh, S., Fischer, A., Tresp, V., Lehmann, J. "Bringing Light Into the Dark: A Large-Scale Evaluation of Knowledge Graph Embedding Models Under a Unified Framework." IEEE TPAMI, 2021/2022; 21 models, four datasets, 24,804 GPU hours. https://doi.org/10.1109/TPAMI.2021.3124805 ; benchmarking code https://github.com/pykeen/benchmarking
+- Ali, M. et al. "PyKEEN 1.0: A Python Library for Training and Evaluating Knowledge Graph Embeddings." arXiv 2007.14175. https://arxiv.org/abs/2007.14175
+
+### The nearest n-ary equivalent
+
+- Wang, Y., Di, S., Wang, Z., Li, H., Teng, F., Xin, H., Chen, L. "Understanding the Embedding Models on Hyper-relational Knowledge Graph." CIKM 2025 / arXiv 2508.03280, 5 August 2025. Three decompositions of HKGs to KG format; "some KGE models achieve performance comparable to that of HKGE models"; proposes FormerGNN. https://arxiv.org/abs/2508.03280
+
+### Framework support (checked 2026-09-20)
+
+- PyKEEN model reference documentation — all models documented as scoring a triple (h, r, t); no qualifier or n-ary model listed. https://pykeen.readthedocs.io/en/stable/reference/models.html
+- LibKGE (uma-pi1/kge) — 835 stars, MIT, 1,325 commits, not archived; README describes triple-based KGE only. https://github.com/uma-pi1/kge
+
+### Code audit of the section-05 model table (all checked 2026-09-20)
+
+- gsp2014/NaLP — exists; 14 stars, 5 forks, 22 commits, no licence stated. https://github.com/gsp2014/NaLP
+- eXascaleInfolab/HINGE_code — exists; 38 stars, 12 forks, 11 commits, no licence stated; last commit 2020-07-15. https://github.com/eXascaleInfolab/HINGE_code
+- ServiceNow/HypE — exists; 33 stars, 11 forks, 33 commits, GPL-3.0; last commit 2022-07-15. https://github.com/ServiceNow/HypE
+- baharefatemi/HypE — exists; 24 stars, 12 forks, 31 commits, GPL-3.0. https://github.com/baharefatemi/HypE
+- liuyuaa/GETD — exists; 11 stars, 2 forks, **1 commit**, MIT; last commit 2020-01-17. https://github.com/liuyuaa/GETD
+- migalkin/StarE — exists; 90 stars, 16 forks, 26 commits, MIT; last commit 2023-12-01. https://github.com/migalkin/StarE
+- PaddlePaddle/Research, `KG/ACL2021_GRAN` — exists; Apache-2.0; ships code and a `download_data.sh` for JF17K, WikiPeople and the -3/-4 subsets. https://github.com/PaddlePaddle/Research/tree/master/KG/ACL2021_GRAN
+- DimitrisAlivas/StarQE — exists; 33 stars, 4 forks, 10 commits, MIT. https://github.com/DimitrisAlivas/StarQE
+- LHRLAB/HAHE — exists; 28 stars, 31 commits, MIT; last commit 2025-08-18. https://github.com/LHRLAB/HAHE
+- xiongbo010/ShrinkE — exists; 6 stars, 0 forks, 17 commits, no licence stated; last commit 2024-07-05. https://github.com/xiongbo010/ShrinkE
+- bdi-lab/HyNT — exists; 36 stars, 20 forks, 39 commits, **CC BY-NC-SA 4.0**; last commit 2025-05-27. https://github.com/bdi-lab/HyNT
+- LHRLAB/Text2NKG — exists; 37 stars, 5 forks, 91 commits, MIT. https://github.com/LHRLAB/Text2NKG
+- zhiweihu1103/HKGC-HyperMono — exists; 0 stars, 0 forks, 21 commits, no licence stated. https://github.com/zhiweihu1103/HKGC-HyperMono
+- HxyScotthuang/HYPER — exists; 21 stars, 2 forks, 6 commits, MIT; last commit 2026-03-25; README states ICLR 2026 and notes HCNet inference support. https://github.com/HxyScotthuang/HYPER
+- `[unverified]` No public implementation located on 2026-09-20 for m-TransH, RAE, NeuInfer, S2S, THOR or FormerGNN.
+
+### Supporting
+
+- Wei, J., Guan, S., Li, D., Jin, X., Guo, J., Cheng, X. "A Survey of Link Prediction in N-ary Knowledge Graphs." EMNLP 2025 / arXiv 2506.08970. Table 2 figures are copied from Di et al. 2021 and Luo et al. 2023, not re-run. https://arxiv.org/abs/2506.08970
+- Lu, X., Tupikina, L., Alam, M. "Two-Dimensional Taxonomy for n-Ary Knowledge Representation Learning Methods." IEEE TKDE 2026 / arXiv 2506.05626. https://arxiv.org/abs/2506.05626
+- Gebru, T., Morgenstern, J., Vecchione, B., Wortman Vaughan, J., Wallach, H., Daumé III, H., Crawford, K. "Datasheets for Datasets." CACM 64(12), December 2021 / arXiv 1803.09010. https://doi.org/10.1145/3458723
+- Yu, W., Lu, Y., Yang, D. "THOR: Inductive Link Prediction over Hyper-Relational Knowledge Graphs." arXiv 2602.05424, 5 February 2026. https://arxiv.org/abs/2602.05424

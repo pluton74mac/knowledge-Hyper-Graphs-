@@ -97,3 +97,42 @@ extraction can drop ligatures and split hyphenated words across lines, so a coun
 match in the extracted text", not a proof of absence. The documents searched were the arXiv PDFs of
 Battiston et al. 2020, Torres et al. 2021, Aksoy et al. 2020, Fatemi et al. 2020, Galkin et al. 2020,
 Wei et al. 2025, Luo et al. 2025, Feng et al. 2025 and Xiang et al. 2026.
+
+## Added in gap-filling pass (2026-09-20)
+
+Sources for [`privacy-licensing-and-governance.md`](../../kb/10-comparative-and-critique/privacy-licensing-and-governance.md).
+Licence and policy pages were fetched on **2026-09-20**; repository licence metadata was read from
+repository pages on the same date.
+
+### Upstream licences and terms
+
+- Wikidata. "Wikidata:Licensing." "All structured data in the main, property and lexeme namespaces is made available under the Creative Commons CC0 License"; text in other namespaces is CC BY-SA 4.0. Checked 2026-09-20. https://www.wikidata.org/wiki/Wikidata:Licensing
+- Google. "Freebase API Terms and Conditions" (Freebase API, deprecated): content categories are "compatible with the Creative Commons Attribution Only (CC-BY) license"; and "Data Dumps": dumps "are distributed under the Creative Commons Attribution (aka CC-BY)". Checked 2026-09-20. https://developers.google.com/freebase/terms ; https://developers.google.com/freebase
+- Creative Commons. "Data and CC licenses" (wiki page on databases, sui generis database rights and CC licences). Checked 2026-09-20. https://wiki.creativecommons.org/wiki/Data_and_CC_licenses
+- Linguistic Data Consortium. "ACE 2005 Multilingual Training Corpus", LDC2006T06; licence "LDC User Agreement for Non-Members", fee-based, available to Subscription & Standard Members and Non-Members. Checked 2026-09-20. https://catalog.ldc.upenn.edu/LDC2006T06
+- Chia, Y. K., Bing, L., Aljunied, S. M., Si, L., Poria, S. "A Dataset for Hyper-Relational Extraction and a Cube-Filling Approach." EMNLP 2022. Licence reasoning quoted from the paper: "Wikidata facts are under the public domain while Wikipedia texts are licensed under the Creative Commons Attribution-ShareAlike 3.0 Unported License. Hence, we are free to adapt the texts to construct our dataset, which will also be released under the same license." https://aclanthology.org/2022.emnlp-main.688/
+
+### Privacy and data-subject rights
+
+- Wikidata. "Wikidata:Living people." Sourcing requirement, privacy limits on non-notable individuals, revision deletion and oversight, burden of proof on the adding editor, 115-year scope. Checked 2026-09-20. https://www.wikidata.org/wiki/Wikidata:Living_people
+- Xiao, Y., Ye, R., Liu, B., Ma, X., Hui, B. "Efficient Knowledge Graph Unlearning with Zeroth-order Information." arXiv 2508.14013, 19 August 2025. Triple-based; no hypergraph or n-ary equivalent located. https://arxiv.org/abs/2508.14013
+- European Data Protection Board. "Effective implementation of data subjects' rights" (support-pool-of-experts paper on rectification and erasure where AI systems process personal data), 2025. https://www.edpb.europa.eu/system/files/2025-01/d2-ai-effective-implementation-of-data-subjects-rights_en.pdf
+- Wang, Z. "TOKI: A Bitemporal Operator Algebra for Contradiction Resolution in LLM-Agent Persistent Memory." arXiv 2606.06240, 4 June 2026. Cited for its audit-row treatment of superseded facts, which is the opposite of erasure and makes the tension explicit. https://arxiv.org/abs/2606.06240
+
+### Governance frameworks
+
+- Gebru, T., Morgenstern, J., Vecchione, B., Wortman Vaughan, J., Wallach, H., Daumé III, H., Crawford, K. "Datasheets for Datasets." Communications of the ACM 64(12), December 2021; arXiv 1803.09010, 23 March 2018. https://doi.org/10.1145/3458723 ; https://arxiv.org/abs/1803.09010
+- Bender, E. M., Friedman, B. "Data Statements for Natural Language Processing: Toward Mitigating System Bias and Enabling Better Science." Transactions of the Association for Computational Linguistics 6:587–604, 2018. https://aclanthology.org/Q18-1041/
+- Frantzen, F., Schaub, M. T. "A repository for discovery and reuse of higher-order network datasets" (AHORN). arXiv 2608.03491, 4 August 2026. Each entry links "a converted dataset to its source, metadata, citation guidance, conversion code, and version history", with revision-specific downloads and format validation. https://arxiv.org/abs/2608.03491
+- Coll, M., Joslyn, C. A., Landry, N. W., Lotito, Q. F., Myers, A., Pickard, J., Praggastis, B., Szufel, P. "HIF: The hypergraph interchange format for higher-order networks." Network Science 13:e21, 2025. https://doi.org/10.1017/nws.2025.10018
+
+### Repository licence metadata (checked 2026-09-20)
+
+- ServiceNow/HypE — GPL-3.0; ships FB-AUTO and M-FB15K. https://github.com/ServiceNow/HypE
+- baharefatemi/HypE — GPL-3.0. https://github.com/baharefatemi/HypE
+- bdi-lab/HyNT — **CC BY-NC-SA 4.0** (non-commercial). https://github.com/bdi-lab/HyNT
+- migalkin/StarE — MIT. https://github.com/migalkin/StarE
+- liuyuaa/GETD — MIT. https://github.com/liuyuaa/GETD
+- eXascaleInfolab/HINGE_code — no licence stated. https://github.com/eXascaleInfolab/HINGE_code
+- xiongbo010/ShrinkE — no licence stated. https://github.com/xiongbo010/ShrinkE
+- PaddlePaddle/Research, `KG/ACL2021_GRAN` — Apache-2.0 (code); ships download scripts for JF17K and WikiPeople. https://github.com/PaddlePaddle/Research/tree/master/KG/ACL2021_GRAN

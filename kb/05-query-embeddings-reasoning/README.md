@@ -40,6 +40,7 @@ is about what you can then *do* with it. Ten notes, in three groups.
 |---|---|
 | [llm-and-khg-interaction.md](llm-and-khg-interaction.md) | Text-to-SPARQL / TypeQL, hypergraph RAG (HyperGraphRAG, Hyper-RAG, PRoH, HyperRAG), hypergraph memory, "Hypergraph as Language", and why LLMs still do not do n-ary link prediction |
 | [explainability-and-uncertainty.md](explainability-and-uncertainty.md) | HyperMLN, NYLON, calibration, uncertain knowledge bases, and the gaps |
+| [reproducibility-of-n-ary-link-prediction.md](reproducibility-of-n-ary-link-prediction.md) | Whether a Ruffinelli/Ali-style replication study exists for n-ary link prediction (it does not); Wang et al. CIKM 2025 as the near-miss; PyKEEN and LibKGE have no n-ary support; a dated code audit of every model in the section table; a five-step replication plan |
 
 Bibliography for this section: [`sources/by-topic/05-query-embeddings-reasoning.md`](../../sources/by-topic/05-query-embeddings-reasoning.md).
 

@@ -144,3 +144,47 @@ the date they were checked. Compiled 2026-09-20; entries from the first research
 - Wikidata. "Help:Property constraints portal", checked 2026-09-19 and 2026-09-20. https://www.wikidata.org/wiki/Help:Property_constraints_portal
 - Wikidata. "Wikidata:Schemas", checked 2026-09-20. https://www.wikidata.org/wiki/Wikidata:Schemas
 - Wikidata. "Wikidata:Statistics", checked 2026-09-20. https://www.wikidata.org/wiki/Wikidata:Statistics
+
+## Added in gap-filling pass (2026-09-20)
+
+Sources for [`multimodal-and-multilingual-construction.md`](../../kb/03-construction/multimodal-and-multilingual-construction.md)
+and [`human-in-the-loop-annotation-and-cost.md`](../../kb/03-construction/human-in-the-loop-annotation-and-cost.md).
+arXiv dates are v1 submission dates; repository and wiki pages give the date checked.
+
+### Multimodal knowledge hypergraphs and multimodal RAG
+
+- Chen, S., Xu, Y., Han, X., Xue, R., Wu, D., Gao, Y., Yan, C., Gao, Y. "Hypergraph-based Multimodal Retrieval-Augmented Generation with Incremental Refinement" (Hyper-M2RAG). arXiv 2608.16628, 17 August 2026. https://arxiv.org/abs/2608.16628
+- Wei, Y., Chen, Y., Gan, R., Liu, Z., Fu, X., Kang, C., Lu, N., Liu, R., Zhang, Y., Kwok, J. "VizRAG: Enhancing Retrieval-Augmented Generation with Hypergraph Visualization." arXiv 2607.19830, 22 July 2026. https://arxiv.org/abs/2607.19830
+- Wei, Y., Kang, C., Li, S., Che, H., Chen, Y. et al. "HyperGVL: Benchmarking and Improving Large Vision-Language Models in Hypergraph Understanding and Reasoning." arXiv 2604.15648, 17 April 2026. Comments: "Under Review; Opensource after accepted". https://arxiv.org/abs/2604.15648
+- Lin, J., Jiang, C., Lin, X., Zhang, R., Zhu, X., Liu, J. et al. "EvoGraph-R1: Self-Evolving Multimodal Knowledge Hypergraphs for Agentic Retrieval." arXiv 2607.12764, 14 July 2026. https://arxiv.org/abs/2607.12764
+- Ling, J., Wang, Y., Tang, C., Tan, H., Yang, Y., Guan, Y., Jiang, J. "H2Table: Hierarchical Hypergraph-Enhanced Large Language Models for Complex Table Reasoning." arXiv 2609.01216, 1 September 2026. https://arxiv.org/abs/2609.01216
+- Wang, X., Zhang, J., Yu, X., Lei, L., Zhang, D. C. "HyperClaim: Fine-Grained Cross-Modal Hypergraph Reasoning for Video Misinformation Detection." arXiv 2607.28375, 30 July 2026. https://arxiv.org/abs/2607.28375
+- Feng, Y., Zhang, R., Luo, H., Lin, Z., Yang, C., Luu, A. T. "Diachronic Hypergraphs for Orchestrated Multi-Agent Multimodal Memory Curation" (MAGE). arXiv 2608.29678, 30 August 2026. https://arxiv.org/abs/2608.29678
+- Raj, M., Kumar, S., Chattopadhayay, S., Adak, C., Dutta, A. "Modality Agreement- and Conflict-Aware Prototype Hypergraph Learning for Multimodal Intent Understanding." arXiv 2608.04054, 4 August 2026. https://arxiv.org/abs/2608.04054
+- Nag, A., Mehrish, A., Vascon, S. "Hypergraph-Regularized Gramian Volumes for Multimodal Retrieval." arXiv 2609.15320, 14 September 2026. https://arxiv.org/abs/2609.15320
+- Nguyen, T.-T., Nguyen, P., Cothren, J., Yilmaz, A., Luu, K. "HyperGLM: HyperGraph for Video Scene Graph Generation and Anticipation." arXiv 2411.18042, 27 November 2024; CVPR 2025. https://arxiv.org/abs/2411.18042
+
+### Multimodal and multilingual event extraction
+
+- Li, M., Zareian, A., Zeng, Q., Whitehead, S., Lu, D., Ji, H., Chang, S.-F. "Cross-media Structured Common Space for Multimedia Event Extraction" (M2E2, WASE). ACL 2020, pp. 2557–2568. https://aclanthology.org/2020.acl-main.230/ ; project page and annotation guideline V0.1, checked 2026-09-20: http://blender.cs.illinois.edu/software/m2e2/ ; http://blender.cs.illinois.edu/software/m2e2/ACL2020_M2E2_annotation.pdf
+- Seeberger, P., Freisinger, S., Bocklet, T., Riedhammer, K. "Evaluation Pitfalls and Challenges in Multimedia Event Extraction." arXiv 2606.26775, 25 June 2026; accepted to ACL 2026. https://arxiv.org/abs/2606.26775
+- Pouran Ben Veyseh, A., Ebrahimi, J., Dernoncourt, F., Nguyen, T. H. "MEE: A Novel Multilingual Event Extraction Dataset." EMNLP 2022 / arXiv 2211.05955. Full text read for Tables 2 and 3 (per-language statistics and agreement scores). https://arxiv.org/abs/2211.05955
+- Pouran Ben Veyseh, A., Nguyen, M. V., Dernoncourt, F., Nguyen, T. H. "MINION: a Large-Scale and Diverse Dataset for Multilingual Event Detection." NAACL 2022 / arXiv 2211.05958. Full text read for Tables 1–2. https://aclanthology.org/2022.naacl-main.166/ ; https://arxiv.org/abs/2211.05958
+- Yela-Bello, J. P., Oglethorpe, E., Rekabsaz, N. "MultiHumES: Multilingual Humanitarian Dataset for Extractive Summarization." EACL 2021, pp. 1713–1717. Included to record that it is *not* an n-ary extraction resource. https://aclanthology.org/2021.eacl-main.146/
+- `[unverified]` "XL-Event": no dataset of this name could be located from any primary source on 2026-09-20; searches returned XL-Sum (summarisation) and generic cross-lingual event-argument transfer papers.
+
+### Annotation protocols, agreement and active learning
+
+- Chia, Y. K., Bing, L., Aljunied, S. M., Si, L., Poria, S. "A Dataset for Hyper-Relational Extraction and a Cube-Filling Approach" (HyperRED, CubeRE). EMNLP 2022, pp. 10114–10133 / arXiv 2211.10018. Full text read for §3 (annotation, Cohen's κ = 0.56, 6,780 sentences), Table 2 (dataset sizes), Appendix A (annotation guide) and the Ethics section (licensing and annotator compensation). https://aclanthology.org/2022.emnlp-main.688/ ; code https://github.com/declare-lab/HyperRED
+- Huang, R., Feng, Y., Xue, R., Ying, S., Yong, J.-H., Shi, C., Du, S., Gao, Y. "Hyper-KGGen: A Skill-Driven Knowledge Extractor for High-Quality Knowledge Hypergraph Generation" (introduces HyperDocRED). arXiv 2602.19543, 23 February 2026. `[unverified]` annotation protocol; abstract only. https://arxiv.org/abs/2602.19543
+- Shen, S., Li, Z., Qi, G. "Active Learning for Event Extraction with Memory-based Loss Prediction Model." arXiv 2112.03073, 26 November 2021. https://arxiv.org/abs/2112.03073
+- Kholghi, M., De Vine, L., Sitbon, L., Zuccon, G., Nguyen, A. "The Benefits of Word Embeddings Features for Active Learning in Clinical Information Extraction." arXiv 1607.02810. https://arxiv.org/abs/1607.02810
+- "A study of deep active learning methods to reduce labelling efforts in biomedical relation extraction." PLOS ONE 18(12): e0292356, 2023. `[unverified]` author list not confirmed from the publisher page in this run. https://doi.org/10.1371/journal.pone.0292356
+- "Data-efficient Active Learning for Structured Prediction with Partial Annotation and Self-Training." arXiv 2305.12634. `[unverified]` author list not confirmed. https://arxiv.org/abs/2305.12634
+
+### Cost and curation economics
+
+- Lenat, D., Marcus, G. "Getting from Generative AI to Trustworthy AI: What LLMs might learn from Cyc." arXiv 2308.04445, 31 July 2023. Full text read for the "four decades, 2000 person-years" and "tens of millions of hand-authored assertions" statements. https://arxiv.org/abs/2308.04445
+- Linguistic Data Consortium. "ACE 2005 Multilingual Training Corpus", LDC2006T06, released 15 February 2006; licence "LDC User Agreement for Non-Members"; checked 2026-09-20. https://catalog.ldc.upenn.edu/LDC2006T06
+- Luo, H., E, H., Yang, Y., Yao, T., Guo, Y., Tang, Z. et al. "Text2NKG: Fine-Grained N-ary Relation Extraction for N-ary relational Knowledge Graph Construction." NeurIPS 2024 / arXiv 2310.05185. https://arxiv.org/abs/2310.05185
+- arXiv Atom API sweep of `all:hypergraph`, `all:"n-ary"`, `all:"higher-order networks"` and `abs:"higher-order network"` restricted to `submittedDate:[202606010000 TO 202609202359]`, run 2026-09-20; 404 unique records. https://export.arxiv.org/api/query

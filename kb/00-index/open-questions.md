@@ -50,6 +50,8 @@ interchange format, not the learning libraries, not the walk theory, not the vis
 
 ### Theme 3 — The evidence base is weak
 
+The gap-filling pass confirmed that no replication study of n-ary link prediction exists, that neither of the two standard KG-embedding frameworks supports qualifiers or n-ary facts, and that six published models have no public implementation. It added **[05.6]** (de-leaked JF17K against a tuned classical baseline) and **[03.6]** (agreement as a function of arity). See [reproducibility of n-ary link prediction](../05-query-embeddings-reasoning/reproducibility-of-n-ary-link-prediction.md).
+
 - **[08.4]** Is there an n-ary completion benchmark not descended from the 2015 Freebase dump, and what happens to the 2016 to 2025 gains when one exists? JF17K leaks 44.5% of test main triples into training and has no validation split; WikiPeople is under 3% hyper-relational after literal filtering. See [benchmarks derived from Freebase and Wikidata](../02-knowledge-representation/benchmarks-derived-from-freebase-and-wikidata.md), [dataset quality and leakage](../09-ecosystem/dataset-quality-and-leakage-issues.md).
 - **[09.3]** Does any replication study of n-ary link prediction exist, the analogue of the triple-based reproducibility literature? None was found. See [benchmarks and evaluation protocols](../05-query-embeddings-reasoning/benchmarks-and-evaluation-protocols.md).
 - **[07.2]** Would a hypergraph-RAG system survive GraphRAG-Bench? The benchmark is public and contains zero occurrences of "hypergraph". See [critical reading of hypergraph-RAG claims](../10-comparative-and-critique/critical-reading-of-hypergraph-rag-claims.md).
@@ -63,6 +65,8 @@ interchange format, not the learning libraries, not the walk theory, not the vis
 **What would settle it:** a clean, leak-free, arity-stratified, versioned n-ary benchmark with a documented licence, and a replication of two or three published models on it. Candidate project P3.
 
 ### Theme 4 — What is a fact's identity when its arity changes?
+
+The gap-filling pass added a governance angle: **[10.6]** erasure semantics for an n-ary fact and **[10.7]** whether a whole hyperedge is more re-identifying than its reification. Both turn on the same unanswered question of what the unit of a fact is. See [privacy, licensing and governance](../10-comparative-and-critique/privacy-licensing-and-governance.md).
 
 - **[03.1] [04.3] [03.4]** When `r(a,b)` and `r(a,b,t)` are extracted from different documents, is the second a refinement, a distinct fact, or a contradiction? If an arity-4 fact becomes arity-5, is it the same fact? What is the delta unit for a versioned hypergraph? No system, format or benchmark has an opinion, and the answer determines incremental construction, archive formats and provenance. See [incremental and streaming construction](../03-construction/incremental-and-streaming-construction.md), [versioning, provenance and scale](../04-storage-and-formats/versioning-provenance-and-scale.md).
 - **[02.1]** Is there a partial-completeness or local-closed-world assumption for n-ary facts? AMIE's assumption is stated for binary relations and its n-ary generalisation is ambiguous. See [open world, closed world and uncertainty](../02-knowledge-representation/open-world-vs-closed-world-and-uncertainty.md).
@@ -118,6 +122,7 @@ interchange format, not the learning libraries, not the walk theory, not the vis
 3. [03.3] Role-signature induction at LLM scale.
 4. [03.4] The delta unit for a versioned hypergraph.
 5. [03.5] A shape language for hypergraph incidence.
+6. [03.6] Does inter-annotator agreement fall with arity? Re-analysing the MEE raw annotations by argument count would answer it without new annotation. Raised 2026-09-20 by [human-in-the-loop annotation and cost](../03-construction/human-in-the-loop-annotation-and-cost.md).
 
 ### 04 Storage and formats
 1. [04.1] HIF versioning on the first breaking change.
@@ -132,6 +137,8 @@ interchange format, not the learning libraries, not the walk theory, not the vis
 3. [05.3] Post-hoc hyperpath extraction from query-embedding models.
 4. [05.4] Calibration as a function of arity.
 5. [05.5] Hypertree-decomposition planning over an incidence index.
+6. [05.6] Does any hyper-relational model beat a well-tuned classical KG embedding on de-leaked JF17K, on native rather than decomposed data? Raised 2026-09-20 by [reproducibility of n-ary link prediction](../05-query-embeddings-reasoning/reproducibility-of-n-ary-link-prediction.md).
+7. [05.7] Are hypergraph neural networks structurally a poor fit for knowledge hypergraphs? HADES (2026) finds they degrade on heterophilic nodes joined by semantically diverse hyperedges, which is what a typed n-ary fact looks like. Raised 2026-09-20 by [reading the frontier, 2026 Q3](../08-history-and-frontier/reading-the-frontier-2026-q3.md).
 
 ### 06 Visualization
 1. [06.1] Incidence vs region encodings on the same hypergraph, measured.
@@ -167,6 +174,8 @@ interchange format, not the learning libraries, not the walk theory, not the vis
 3. [10.3] Hypergraph vs bipartite null models.
 4. [10.4] HIF with roles, types and provenance without becoming RDF.
 5. [10.5] Is the relation-instance pattern really the bottleneck?
+6. [10.6] What are the correct erasure semantics for an n-ary fact? Removing one participant under a right-to-erasure request leaves three bad options: delete the fact, delete the incidence, or tombstone. No published system implements any. Raised 2026-09-20 by [privacy, licensing and governance](../10-comparative-and-critique/privacy-licensing-and-governance.md).
+7. [10.7] Is a hyperedge measurably more re-identifying than its reification? An attribute-inference or k-anonymity attack on the same facts in both encodings has never been run. Raised 2026-09-20 by the same note.
 
 ## Part C — Candidate first projects
 

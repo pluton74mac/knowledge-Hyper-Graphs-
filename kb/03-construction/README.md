@@ -35,6 +35,8 @@ mathematics.
 | [curation-crowdsourcing-and-quality](curation-crowdsourcing-and-quality.md) | Human curation regimes (Wikidata, Cyc, biocuration), Wikidata property constraints as n-ary validation, quality frameworks, and a proposed metric suite for hyperedges. |
 | [evaluation-of-constructed-khgs](evaluation-of-constructed-khgs.md) | Strict and soft n-ary F1, the benchmark datasets, coverage and downstream QA, LLM-as-judge and its biases, stability. |
 | [hypergraph-construction-from-data](hypergraph-construction-from-data.md) | Co-occurrence, co-authorship, baskets, tables, relational databases, event logs and feature-kNN — and a five-question test for when such a hypergraph is "knowledge". |
+| [multimodal-and-multilingual-construction](multimodal-and-multilingual-construction.md) | Building KHGs from images, video, tables and non-English text: the 2026 multimodal hypergraph-RAG systems, scene hypergraphs, multimedia event extraction, ACE/MEE/MINION as the only multilingual resources — and what does not exist. |
+| [human-in-the-loop-annotation-and-cost](human-in-the-loop-annotation-and-cost.md) | The annotation instruments for n-ary facts (HyperRED's rubric, ACE, MEE/MINION, Wikidata qualifiers), inter-annotator agreement and the missing arity study, active learning, and what curation costs from Cyc to $0.0063 per 1k tokens. |
 
 ## Reading paths
 
