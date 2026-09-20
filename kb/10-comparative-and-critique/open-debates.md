@@ -138,7 +138,8 @@ open-ended questions graded entirely by LLM judges. Neither of the two 2025 syst
 (verified by text search on both PDFs, 2026-09-20: zero mutual mentions). And the largest neutral
 benchmark, GraphRAG-Bench / "When to use Graphs in RAG"
 ([Xiang et al., ICLR 2026](https://arxiv.org/abs/2506.05690)), contains **zero occurrences of the
-word "hypergraph"** — it evaluates eight graph-RAG systems and no hypergraph system at all.
+word "hypergraph"** — it evaluates seven graph-RAG systems against vector RAG, and no hypergraph
+system at all.
 Details: [critical-reading-of-hypergraph-rag-claims.md](critical-reading-of-hypergraph-rag-claims.md).
 
 **A complication that cuts both ways.** Both GraphRAG-Bench and HyperGraphRAG's own table find that

@@ -189,9 +189,10 @@ suites, one direction of comparison (downwards, to binary-graph baselines).
 accepted at ICLR 2026) is the largest neutral benchmark in this area. It is not a hypergraph paper,
 which is exactly why it matters.
 
-**It does not evaluate any hypergraph method.** The eight systems in its main table are MS-GraphRAG,
-HippoRAG, HippoRAG2, LightRAG, Fast-GraphRAG, RAPTOR and Lazy-GraphRAG, against basic RAG with and
-without reranking (Table 3). So the hypergraph claims remain untested by the field's most careful
+**It does not evaluate any hypergraph method.** The seven graph-RAG systems in its main table are
+MS-GraphRAG, HippoRAG, HippoRAG2, LightRAG, Fast-GraphRAG, RAPTOR and Lazy-GraphRAG, compared against
+basic RAG with and without reranking (Table 3); further systems (KGP, StructRAG, KET-RAG) appear in
+the appendix `[unverified — appendix not read]`. So the hypergraph claims remain untested by the field's most careful
 external evaluation.
 
 Its findings nevertheless bear directly on them.
