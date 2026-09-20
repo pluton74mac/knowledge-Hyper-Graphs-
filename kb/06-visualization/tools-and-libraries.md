@@ -36,7 +36,7 @@ Encoding abbreviations follow [visual-encodings-catalogue.md](visual-encodings-c
 | **[HyperGodot](https://doi.org/10.1016/j.softx.2025.102315)** | `[unverified]` (name suggests the Godot engine) | `[unverified]` | described as interactive | `[unverified]` | `[unverified]` | SoftwareX 31:102315, 2025 |
 | **[HGPolyVis](https://github.com/peterdanieloliver/HGPolyVis)** | C++/desktop (Windows) | poly (primal–dual polygon metaphor) with structure-aware simplification | desktop application | "thousands of hyperedges" ([Oliver, Zhang & Zhang, 2024](https://doi.org/10.1109/TVCG.2023.3326599)) | Apache-2.0 | `[unverified]` release date |
 | **[PAOHVis](https://gitlab.inria.fr/aviz/paohvis)** | Dart compiled to JavaScript, HTML Canvas (~5,000 lines) | PAOH | reordering, packing, filtering, time-flow comparison, role symbols | "hundreds of vertices … and thousands of hyperedges" ([Valdivia et al., 2021](https://doi.org/10.1109/TVCG.2019.2933196)) | `[unverified]` | demo <https://aviz.fr/paohvis/paoh.html>; project page checked 2026-09-20 |
-| **[MetroSets](https://metrosets.ac.at)** | web (JavaScript) | metro | highlight, filter sets | ≤ ~10 sets, ~100 elements ([Wallinger et al., 2021](https://doi.org/10.1109/TVCG.2021.3074615)) | `[unverified]` | [Jacobsen et al., 2021](https://doi.org/10.1109/TVCG.2020.3030475); URL `[unverified]` |
+| **MetroSets** | web (JavaScript) | metro | highlight, filter sets | ≤ ~10 sets, ~100 elements ([Wallinger et al., 2021](https://doi.org/10.1109/TVCG.2021.3074615)) | `[unverified]` | published as an online tool by [Jacobsen, Wallinger, Kobourov & Nöllenburg, 2021](https://doi.org/10.1109/TVCG.2020.3030475); `[unverified]` — the tool URL could not be reached on 2026-09-20 |
 
 ---
 
