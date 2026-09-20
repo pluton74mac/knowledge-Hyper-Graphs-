@@ -81,3 +81,7 @@ Reading the matrix:
   standard caveats.
 - **Looking for an unclaimed research vector:** the blanks and the ○ cells above, plus the "what it does
   not show" lines in [case-studies](case-studies.md).
+- **Pushing back on a hypergraph claim:** section 10, especially
+  [critical-reading-of-hypergraph-rag-claims](../10-comparative-and-critique/critical-reading-of-hypergraph-rag-claims.md),
+  [limitations-and-failure-modes](../10-comparative-and-critique/limitations-and-failure-modes.md) and
+  [hypergraph-vs-bipartite-graph-debate](../10-comparative-and-critique/hypergraph-vs-bipartite-graph-debate.md).

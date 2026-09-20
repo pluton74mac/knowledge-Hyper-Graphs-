@@ -82,6 +82,9 @@ The typical reported margin — a few percent relative on Recall@20 or NDCG@20 �
 where benchmark and tuning choices dominate, a well-documented hazard in recommender evaluation.
 Only KHGRec's KG-derived channel bears on the knowledge question, and it is a single line of work.
 
+The underlying architectures are covered in
+[hypergraph-neural-networks](../05-query-embeddings-reasoning/hypergraph-neural-networks.md).
+
 **Transferable ideas for knowledge hypergraphs.** (i) The dual-channel pattern — keep a pairwise view
 and a higher-order view and contrast them — is directly applicable to a KHG that also has binary facts.
 (ii) Sparsity sensitivity suggests KHG methods should be evaluated on long-tail entities, not averages.

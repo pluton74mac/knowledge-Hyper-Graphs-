@@ -109,6 +109,7 @@ leader in enterprise semantic modelling ships a binary link primitive.
 
 ## 5. Kobrix HypergraphDB
 
+See also [metagraphs-atomspace-and-hypergraphdb](../02-knowledge-representation/metagraphs-atomspace-and-hypergraphdb.md).
 HyperGraphDB is the long-standing open-source attempt at a general hypergraph store: "a general purpose,
 extensible, portable, distributed, embeddable, open-source data storage mechanism", written in Java and
 distributed under Apache-2.0 ([hypergraphdb/hypergraphdb](https://github.com/hypergraphdb/hypergraphdb)),
@@ -146,6 +147,12 @@ relation — but this research run found no vendor statement making it.
 
 Related: [finance-legal-and-compliance](finance-legal-and-compliance.md) for the domains where vendors
 pitch this hardest, and [ai-agents-memory-and-planning](ai-agents-memory-and-planning.md) for AtomSpace.
+For the storage engineering behind these products see
+[hypergraph-databases](../04-storage-and-formats/hypergraph-databases.md),
+[rdf-star-and-semantic-web-serialisations](../04-storage-and-formats/rdf-star-and-semantic-web-serialisations.md)
+and [property-graph-emulation-patterns](../04-storage-and-formats/property-graph-emulation-patterns.md);
+for the vendor-neutral comparison see
+[property-graph-vs-typedb-vs-rdf-star](../10-comparative-and-critique/property-graph-vs-typedb-vs-rdf-star.md).
 
 ## Sources
 

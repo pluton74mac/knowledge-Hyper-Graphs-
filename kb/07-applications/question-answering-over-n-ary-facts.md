@@ -85,6 +85,8 @@ temporal QA is n-ary QA whether or not it says so.
   TwiRGCN ([Sharma et al., 2022](https://arxiv.org/abs/2210.06281)) and time-aware fusion networks
   ([Xiao et al., 2023](https://arxiv.org/abs/2302.12529)) target it.
 
+The terminology tangle here is unpicked in
+[hyper-relational-vs-n-ary-vs-hypergraph](../02-knowledge-representation/hyper-relational-vs-n-ary-vs-hypergraph.md).
 The connection to hypergraphs is usually implicit: these systems keep the qualifier attached to the
 statement rather than reifying it, which is exactly the hyper-relational move, but they rarely use the
 word "hypergraph". This is a naming gap rather than a technical one — see
@@ -107,7 +109,11 @@ precision / 0.1072 recall, which bounds how good downstream QA over such a hyper
 ## 5. Where this connects
 
 - Retrieval-based QA over hypergraph indexes is in [retrieval-augmented-generation](retrieval-augmented-generation.md).
-- The embedding and reasoning machinery (StarE, NQE, hypergraph GNNs) belongs to section 05 of this KB.
+- The embedding and reasoning machinery sits in
+  [knowledge-hypergraph-embedding-models](../05-query-embeddings-reasoning/knowledge-hypergraph-embedding-models.md)
+  and [hypergraph-neural-networks](../05-query-embeddings-reasoning/hypergraph-neural-networks.md);
+  query languages in [query-languages-for-hypergraphs](../05-query-embeddings-reasoning/query-languages-for-hypergraphs.md);
+  evaluation protocols in [benchmarks-and-evaluation-protocols](../05-query-embeddings-reasoning/benchmarks-and-evaluation-protocols.md).
 - Benchmarks derived from Wikidata and Freebase are the shared substrate:
   [wikidata-and-freebase-data-models](../02-knowledge-representation/wikidata-and-freebase-data-models.md).
 

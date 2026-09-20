@@ -87,6 +87,8 @@ key-value store of **Values** attached to each Atom — so it is "a database-of-
 key-value database; the atoms are related to one-another as a graph". Atoms are indexed for search;
 Values hold fast-changing data and are not.
 
+AtomSpace and HypergraphDB are covered as data models in
+[metagraphs-atomspace-and-hypergraphdb](../02-knowledge-representation/metagraphs-atomspace-and-hypergraphdb.md).
 Two things are worth extracting for this KB. First, the project deliberately moved from *hypergraph* to
 *metagraph* language, because a Link whose members are themselves Links is nesting, not just arity —
 the distinction discussed in

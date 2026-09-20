@@ -96,9 +96,9 @@ So, precisely:
 Three consequences worth stating:
 
 1. **Rules and facts can live in one structure.** A knowledge hypergraph of facts (D1/D3) plus a
-   B-graph of rules (D2) is one hypergraph with two edge types. TypeDB's rules, SPARQL CONSTRUCT and
-   SHACL 1.2 Rules ([SHACL 1.2 Rules](https://www.w3.org/TR/shacl12-rules/)) all sit at this
-   boundary.
+   B-graph of rules (D2) is one hypergraph with two edge types. SPARQL CONSTRUCT queries, SHACL
+   shapes and TypeDB rules all sit at this boundary; SHACL 1.2 Core is a W3C Working Draft of
+   18 September 2026 ([SHACL 1.2 Core](https://www.w3.org/TR/shacl12-core/)).
 2. **Inference is a path problem.** Once rules are B-arcs, "why is P derivable?" is answered by a
    hyperpath, which is also a *proof object* and therefore a natural provenance record. Shortest
    B-hyperpath algorithms give minimum-cost derivations.
@@ -207,7 +207,7 @@ portable encoding, but HIF has no place for a *role* name on the incidence excep
 - Rospocher, M., van Erp, M., Vossen, P., et al. *Building event-centric knowledge graphs from news.* Journal of Web Semantics 37–38:132–151, 2016. https://doi.org/10.1016/j.websem.2015.12.004
 - Carroll, J. J., Bizer, C., Hayes, P., Stickler, P. *Named Graphs, Provenance and Trust.* WWW 2005. https://dl.acm.org/doi/10.1145/1060745.1060835
 - W3C. *RDF 1.2 Concepts and Abstract Data Model.* Candidate Recommendation Snapshot, 7 April 2026. https://www.w3.org/TR/rdf12-concepts/
-- W3C. *SHACL 1.2 Rules.* W3C Working Draft, 2026. https://www.w3.org/TR/shacl12-rules/
+- W3C. *SHACL 1.2 Core.* W3C Working Draft, 18 September 2026. https://www.w3.org/TR/shacl12-core/
 - Groth, P., Gibson, A., Velterop, J. *The anatomy of a nanopublication.* Information Services & Use 30(1-2):51–56, 2010. https://dl.acm.org/doi/10.5555/1883685.1883690
 - Iordanov, B. *HyperGraphDB: A Generalized Graph Database.* WAIM 2010 workshops. https://hypergraphdb.org/docs/hypergraphdb.pdf
 - Joslyn, C., Nowak, K. *Ubergraphs: A Definition of a Recursive Hypergraph Structure.* arXiv:1704.05547, 2017. https://arxiv.org/abs/1704.05547

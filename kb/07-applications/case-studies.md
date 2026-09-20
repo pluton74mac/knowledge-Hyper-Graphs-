@@ -173,7 +173,10 @@ right model and nobody writes a position paper about it.
 3. **Only two studies isolate n-ary-ness itself**: the triple-decomposition ablation in WikiPeopleQA
    (case 2) and the binary-reduction ablation in HyperRAG (−2.3 MRR,
    [Lien et al., 2026](https://arxiv.org/abs/2602.14470)). Everything else compares whole systems.
-4. **Nobody reports a negative result about hypergraphs.** In a literature this size that is itself a
+4. **The bipartite-encoding objection applies throughout** — every result above could in principle be
+   reproduced on the incidence bipartite graph; see
+   [hypergraph-vs-bipartite-graph-debate](../10-comparative-and-critique/hypergraph-vs-bipartite-graph-debate.md).
+5. **Nobody reports a negative result about hypergraphs.** In a literature this size that is itself a
    signal about publication practice.
 
 ## Sources

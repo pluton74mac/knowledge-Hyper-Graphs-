@@ -222,6 +222,10 @@ What it does not support:
   that is a chunking/indexing win, not a knowledge-representation win — and it would be reproduced by
   any "keep the whole fact together" baseline, which none of these papers runs.
 
+A sharper, dedicated critique of this literature lives in
+[critical-reading-of-hypergraph-rag-claims](../10-comparative-and-critique/critical-reading-of-hypergraph-rag-claims.md);
+evaluation protocol issues are in
+[benchmarks-and-evaluation-protocols](../05-query-embeddings-reasoning/benchmarks-and-evaluation-protocols.md).
 See [case-studies](case-studies.md) for the numbers gathered in one place and
 [ai-agents-memory-and-planning](ai-agents-memory-and-planning.md) for the memory-side descendants.
 
