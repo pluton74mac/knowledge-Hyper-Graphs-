@@ -43,7 +43,7 @@ Vazquez (then ServiceNow Research / Element AI).
 ### Mikhail (Michael) Galkin
 
 Author of StarE (EMNLP 2020), WD50K, the inductive-hyper-relational ISWC 2021 best paper, ULTRA
-(ICLR 2024) and HYPER (2025). **Research Scientist at Google**, working on graph ML, knowledge
+(ICLR 2024) and HYPER (arXiv, Jun 2025; NeurIPS 2025 workshop presentation, repository states ICLR 2026). **Research Scientist at Google**, working on graph ML, knowledge
 graphs and graph foundation models; speaker at the ICML 2026 "Graph Foundation Models" workshop
 ([personal site](https://migalkin.github.io/);
 [Google at ICML 2026](https://research.google/conferences-and-events/google-at-icml-2026/)).
@@ -320,7 +320,7 @@ distant from the mainstream KHG literature and cites it barely at all.
 - iMoon-Lab. DeepHypergraph. https://github.com/iMoonLab/DeepHypergraph ; HGNN. https://github.com/iMoonLab/HGNN
 - Gao, Y., Ji, S., Han, X., Dai, Q. "Hypergraph Computation." *Engineering* 40:188–201, 2024. https://doi.org/10.1016/j.eng.2024.04.017
 - Gao, Y. et al. "Hypergraph Foundation Model." *IEEE TPAMI* 48:4063–4080, 2026. https://doi.org/10.1109/TPAMI.2025.3647504
-- Feng, Y. et al. "Hyper-RAG." *Nature Communications* 17:5778, 2026. https://doi.org/10.1038/s41467-026-71411-1
+- Feng, Y. et al. "Hyper-RAG." *Nature Communications* 17(1):5778, 27 Apr 2026. https://doi.org/10.1038/s41467-026-71411-1
 - Lee, G., Bu, F., Eliassi-Rad, T., Shin, K. "A Survey on Hypergraph Mining." *ACM CSUR* 57, 2025. https://doi.org/10.1145/3719002
 - Kim, S., Lee, G., Gao, Y., Antelmi, A., Polato, M., Shin, K. "A Survey on Hypergraph Neural Networks." KDD 2024. https://doi.org/10.1145/3637528.3671457
 - Schloss Dagstuhl. Seminar 21352, "Higher-Order Graph Models." https://www.dagstuhl.de/seminars/seminar-calendar/seminar-details/21352

@@ -201,7 +201,7 @@ model. Check `upsert_*`.
 - HyperGraphRAG repository: `hypergraphrag/operate.py` (`_handle_single_hyperrelation_extraction`, `_merge_hyperedges_then_upsert`, `_merge_edges_then_upsert`) and `hypergraphrag/storage.py` (`NetworkXStorage`), checked 2026-09-20. https://github.com/LHRLAB/HyperGraphRAG
 - Luo, H., E, H., Chen, G., Zheng, Y., Wu, X., Guo, Y., Lin, Q., Feng, Y., Kuang, Z., Song, M., Zhu, Y. and Luu, A. T. (2025). *HyperGraphRAG: Retrieval-Augmented Generation via Hypergraph-Structured Knowledge Representation*. NeurIPS 2025, pp. 152206–152234. https://proceedings.neurips.cc/paper_files/paper/2025/hash/df55ee6e59f8ac4a625219e11fe9ddba-Abstract-Conference.html
 - Hyper-RAG repository: `hyperrag/operate.py`, `hyperrag/storage.py` (`HypergraphStorage`), checked 2026-09-20. https://github.com/iMoonLab/Hyper-RAG
-- Feng, Y. et al. (2026). *Hyper-RAG: combating LLM hallucinations using hypergraph-driven retrieval-augmented generation*. Nature Communications 17. https://doi.org/10.1038/s41467-026-71411-1
+- Feng, Y. et al. (2026). *Hyper-RAG: combating LLM hallucinations using hypergraph-driven retrieval-augmented generation*. Nature Communications 17(1):5778, 27 April 2026. https://doi.org/10.1038/s41467-026-71411-1
 - LightRAG repository and `docs/LightRAG-API-Server.md`, "Storage Types Supported" and the `PGTableGraphStorage` vs `PGGraphStorage` measurements from PR #3103, checked 2026-09-20. https://github.com/HKUDS/LightRAG
 - Noy, N. and Rector, A. (eds). *Defining N-ary Relations on the Semantic Web*, W3C Working Group Note, 12 April 2006. https://www.w3.org/TR/swbp-n-aryRelations/
 - Neo4j. *Cypher Manual* (checked 2026-09-20). https://neo4j.com/docs/cypher-manual/current/

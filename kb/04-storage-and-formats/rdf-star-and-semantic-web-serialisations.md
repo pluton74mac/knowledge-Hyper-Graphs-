@@ -21,9 +21,16 @@ Everything below was checked on 2026-09-20.
 | Document | Status | Date |
 |---|---|---|
 | RDF 1.2 Concepts and Abstract Syntax | W3C Candidate Recommendation Snapshot | 7 April 2026 |
+| RDF 1.2 Semantics | W3C Candidate Recommendation Snapshot | 7 April 2026 |
 | RDF 1.2 Turtle | W3C Working Draft | 14 September 2026 |
 | RDF 1.2 N-Triples | W3C Working Draft | 23 July 2026 |
 | SPARQL 1.2 Query Language | W3C Working Draft | 13 September 2026 |
+
+Only the two *data-model* documents (Concepts, Semantics) are at Candidate Recommendation Snapshot;
+**all** syntaxes and the whole SPARQL 1.2 suite are still Working Drafts as of September 2026. The
+RDF & SPARQL Working Group (URL short name still `rdf-star`) is **chartered until 30 April 2027**.
+Full publication table in
+[../09-ecosystem/standards-bodies-and-specifications.md](../09-ecosystem/standards-bodies-and-specifications.md).
 
 RDF 1.2 Concepts states the core addition plainly: RDF 1.2 provides "the ability to use an RDF
 triple as a triple term, in the object position of another triple"
@@ -212,6 +219,8 @@ dialects.
 ## Sources
 
 - W3C. *RDF 1.2 Concepts and Abstract Syntax*, Candidate Recommendation Snapshot, 7 April 2026. https://www.w3.org/TR/rdf12-concepts/
+- W3C. *RDF 1.2 Semantics*, Candidate Recommendation Snapshot, 7 April 2026. https://www.w3.org/TR/rdf12-semantics/
+- W3C RDF & SPARQL Working Group, group page (charter end 30 April 2027), checked 2026-09-20. https://www.w3.org/groups/wg/rdf-star/
 - W3C. *RDF 1.2 Turtle*, Working Draft, 14 September 2026. https://www.w3.org/TR/rdf12-turtle/
 - W3C. *RDF 1.2 N-Triples*, Working Draft, 23 July 2026. https://www.w3.org/TR/rdf12-n-triples/
 - W3C. *SPARQL 1.2 Query Language*, Working Draft, 13 September 2026. https://www.w3.org/TR/sparql12-query/

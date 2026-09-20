@@ -35,7 +35,7 @@ this note is about the evaluation.
 | System | Venue / date | Claim |
 |---|---|---|
 | **HyperGraphRAG** ([Luo et al., 2025](https://arxiv.org/abs/2503.21322)) | NeurIPS 2025; arXiv Mar 2025 | Over StandardRAG: "+7.45 (F1), +7.62 (R-S), and +3.69 (G-E)" averaged over five domains |
-| **Hyper-RAG** ([Feng et al., 2025](https://arxiv.org/abs/2504.08758)) | arXiv, submitted 30 Mar 2025 | "improves accuracy by an average of 12.3% over direct LLM use and outperforms Graph RAG and Light RAG by 6.3% and 6.0%"; "a 35.5% performance improvement over Light RAG using a selection-based assessment" |
+| **Hyper-RAG** ([Feng et al., 2025](https://arxiv.org/abs/2504.08758)) | arXiv, submitted 30 Mar 2025; published as *Nature Communications* 17(1):5778, 27 Apr 2026 ([DOI](https://doi.org/10.1038/s41467-026-71411-1)) | "improves accuracy by an average of 12.3% over direct LLM use and outperforms Graph RAG and Light RAG by 6.3% and 6.0%"; "a 35.5% performance improvement over Light RAG using a selection-based assessment" |
 | **HyperRAG** (WWW 2026) | ACM Web Conference 2026, [DOI 10.1145/3774904.3792710](https://dl.acm.org/doi/10.1145/3774904.3792710) | "Reasoning N-ary Facts over Hypergraphs for Retrieval Augmented Generation" — metadata only; the ACM page returned HTTP 403 and was not read `[unverified]` |
 | **PRoH** ([Zai et al., 2025](https://arxiv.org/abs/2510.12434)) | WWW 2026; arXiv Oct 2025, rev. Feb 2026 | "surpassing the prior SOTA model HyperGraphRAG by an average of 19.73% in F1 and 8.41% in Generation Evaluation (G-E) score" |
 
@@ -289,7 +289,7 @@ for the pipelines themselves.
 
 ## Sources
 
-- Feng, Y., Hu, H., Hou, X., Liu, S., Ying, S., Du, S., Hu, H., Gao, Y. "Hyper-RAG: Combating LLM Hallucinations using Hypergraph-Driven Retrieval-Augmented Generation." arXiv:2504.08758, submitted 30 March 2025. https://arxiv.org/abs/2504.08758 ; code https://github.com/iMoonLab/Hyper-RAG
+- Feng, Y., Hu, H., Hou, X., Liu, S., Ying, S., Du, S., Hu, H., Gao, Y. "Hyper-RAG: Combating LLM Hallucinations using Hypergraph-Driven Retrieval-Augmented Generation." arXiv:2504.08758, submitted 30 March 2025; *Nature Communications* 17(1):5778, 27 Apr 2026. https://arxiv.org/abs/2504.08758 ; https://doi.org/10.1038/s41467-026-71411-1 ; code https://github.com/iMoonLab/Hyper-RAG
 - Han, H., Ma, L., Wang, Y., Shomer, H., Lei, Y., Qi, Z., Guo, K., Hua, Z., Long, B., Liu, H., Aggarwal, C. C., Tang, J. "RAG vs. GraphRAG: A Systematic Evaluation and Key Insights." arXiv:2502.11371, 17 Feb 2025, rev. 4 Mar 2026. https://arxiv.org/abs/2502.11371
 - Luo, H., et al. "HyperGraphRAG: Retrieval-Augmented Generation via Hypergraph-Structured Knowledge Representation." NeurIPS 2025; arXiv:2503.21322. https://arxiv.org/abs/2503.21322 ; code https://github.com/LHRLAB/HyperGraphRAG
 - "PRoH: Dynamic Planning and Reasoning over Knowledge Hypergraphs for Retrieval-Augmented Generation." Zai, X., Tan, X., Wang, X., Liu, Q., Xu, X., Zhang, W. arXiv:2510.12434, 14 Oct 2025, rev. 18 Feb 2026; ACM Web Conference 2026, DOI 10.1145/3774904.3792611. https://arxiv.org/abs/2510.12434

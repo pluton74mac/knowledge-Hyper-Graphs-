@@ -13,10 +13,12 @@ HIF is the only cross-library file format for higher-order networks that has bot
 schema and more than one independent implementation. For this knowledge base it is the default
 *interchange* format; it is not, on its own, a knowledge representation (section 6 explains why).
 
-All statements checked 2026-09-20 against the repository at
-[github.com/pszufe/HIF-standard](https://github.com/pszufe/HIF-standard) (mirrored at
-[github.com/HIF-org/HIF-standard](https://github.com/HIF-org/HIF-standard); the two READMEs were
-byte-identical when compared on 2026-09-20).
+All statements checked 2026-09-20 against the HIF repository. The current home is
+[github.com/HIF-org/HIF-standard](https://github.com/HIF-org/HIF-standard); the earlier home
+[github.com/pszufe/HIF-standard](https://github.com/pszufe/HIF-standard) is still live and its
+README was byte-identical when the two were compared on 2026-09-20. Several tools still fetch the
+schema from the `pszufe` paths — see section 4 and
+[../09-ecosystem/standards-bodies-and-specifications.md](../09-ecosystem/standards-bodies-and-specifications.md) §4.
 
 ## 1. What it is and where it came from
 
@@ -188,6 +190,14 @@ rewrites float `NaN` attribute values to `null` because JSON has no NaN.
 Hypergraph-DB is the interesting case for this KB: it is a *database* (see
 [hypergraph-databases.md](hypergraph-databases.md)) that treats HIF as an import/export format
 rather than its storage format, which is the pattern to copy.
+
+**A HIF round-trip is not lossless across libraries.** Loading this KB's own
+[`schemas/sample.hif.json`](../../schemas/sample.hif.json) into the three Python libraries on
+2026-09-20: only **XGI 0.10.2** honours `"direction"` (it returns a `DiHypergraph`); HyperNetX 2.4.3
+returns an undirected `Hypergraph` and drops direction; Hypergraphx 1.8.0 reads into an undirected
+`Hypergraph` and re-indexes node ids to integers, keeping the original HIF ids only in per-node
+metadata. Verification details in
+[../09-ecosystem/software-libraries.md](../09-ecosystem/software-libraries.md) §1.
 
 ## 8. HIF in the wild
 

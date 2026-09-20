@@ -41,6 +41,20 @@ proportions in the benchmarks are much lower
 JF17K's 45.9% is the outlier, and JF17K is also the dataset with the leakage problem (§5). On the two
 Wikidata-derived sets, roughly **seven facts in eight are plain triples**.
 
+**Three different WikiPeople numbers circulate; they measure different things.** Say which one you
+mean: **11.6%** is the share of *n-ary facts* in the survey's preprocessing of WikiPeople as
+released ([Wei et al., 2025](https://arxiv.org/abs/2506.08970), Table 1); **2.6%** is the share of
+*hyper-relational facts* in the literal-filtered release that HINGE and StarE actually evaluate on
+(7,389 of 287,918 train and 971 of 37,586 test,
+[Rosso et al., 2020](https://exascale.info/assets/pdf/rosso2020www.pdf), Table 1); and **"less than
+3% of the remaining statements contain any qualifier pairs"** is Galkin et al.'s prose statement of
+that same post-literal-filtering quantity ([Galkin et al., 2020](https://arxiv.org/abs/2009.10847)).
+The 2.6% and the "<3%" agree; the 11.6% is a *different dataset file*. WD50K's **13.6%** is the
+share of statements carrying at least one qualifier pair (32,167 of 236,507, Galkin et al., Table 1
+— the same figure their prose rounds to "about 14%"). Full reconciliation in
+[../02-knowledge-representation/benchmarks-derived-from-freebase-and-wikidata.md](../02-knowledge-representation/benchmarks-derived-from-freebase-and-wikidata.md)
+and [../09-ecosystem/dataset-quality-and-leakage-issues.md](../09-ecosystem/dataset-quality-and-leakage-issues.md).
+
 Consequences:
 
 - The n-ary machinery earns its cost on 12–14% of the data. If your motivation is "the whole KB

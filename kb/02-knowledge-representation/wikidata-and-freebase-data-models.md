@@ -4,7 +4,7 @@ type: concept
 status: draft
 tags: [wikidata, freebase, cvt, qualifiers, statements, hyper-relational, wikibase, rdf]
 created: 2026-09-19
-updated: 2026-09-19
+updated: 2026-09-20
 ---
 
 # Wikidata and Freebase data models
@@ -46,9 +46,14 @@ the predicates, unfavourable for embedding" ([Wen et al., 2016](https://www.ijca
 ## 2. Wikidata (2012–)
 
 **Timeline and size.** Wikidata launched on 29 October 2012 ([Wikipedia, Wikidata](https://en.wikipedia.org/wiki/Wikidata)).
-On 31 August 2025 it reported 123,378,383 items
-([Wikidata:Statistics](https://www.wikidata.org/wiki/Wikidata:Statistics)); Wikipedia cites about
-1.65 billion statements in early 2025 ([Wikipedia, Wikidata](https://en.wikipedia.org/wiki/Wikidata)).
+Checked 2026-09-20, the project's own statistics page reports **123,419,629 items**,
+**2,547,303,553 edits since launch** and **43,497 active users**
+([Wikidata:Statistics](https://www.wikidata.org/wiki/Wikidata:Statistics)); the same page was read a
+few hours earlier for [../03-construction/curation-crowdsourcing-and-quality.md](../03-construction/curation-crowdsourcing-and-quality.md),
+which records 123,419,051 items — the counter is live, so quote it with the timestamp. An earlier
+draft of this note gave 123,378,383 items "on 31 August 2025"; that date could not be re-verified
+and has been replaced. Wikipedia cites about 1.65 billion statements in early 2025
+([Wikipedia, Wikidata](https://en.wikipedia.org/wiki/Wikidata)).
 In December 2014 Google announced it would discontinue Freebase in favour of Wikidata
 ([Wikipedia, Wikidata](https://en.wikipedia.org/wiki/Wikidata)).
 
@@ -128,10 +133,18 @@ and a Freebase-style encoding of Wikidata would inflate it to "110 million facts
 
 ## 4. How much of these KBs is genuinely n-ary?
 
-- Freebase: "more than 1/3 of the entities participate in non-binary relations"
-  ([Wen et al., 2016](https://www.ijcai.org/Proceedings/16/Papers/188.pdf)); re-cited as "more than
-  30% of its entities" by [Rosso et al., 2020](https://exascale.info/assets/pdf/rosso2020www.pdf).
-- Wikidata, sampled: in WD50K "about 14% of statements have at least one qualifier pair"
+- Freebase, **measured over entities, not facts**: "more than 1/3 of the entities participate in
+  non-binary relations" ([Wen et al., 2016](https://www.ijcai.org/Proceedings/16/Papers/188.pdf));
+  re-cited as "more than 30% of its entities" by
+  [Rosso et al., 2020](https://exascale.info/assets/pdf/rosso2020www.pdf), and restated as "in the
+  original FREEBASE more than 1/3rd of the entities participate in non-binary relations ... 61% of
+  the relations in the original Freebase are non-binary" by
+  [Fatemi et al., 2020](https://arxiv.org/abs/1906.00137). An entity that takes part in one n-ary
+  fact among hundreds of binary ones still counts, so this number does **not** bound the share of
+  n-ary *facts*; see [../10-comparative-and-critique/limitations-and-failure-modes.md](../10-comparative-and-critique/limitations-and-failure-modes.md) §1.
+- Wikidata, sampled, **measured over statements**: in WD50K 32,167 of 236,507 statements
+  (**13.6%**, Galkin et al., Table 1 — "about 14% of statements have at least one qualifier pair"
+  in their prose)
   ([Galkin et al., 2020](https://arxiv.org/abs/2009.10847)); in WikiPeople, after removing literals,
   "less than 3% of the remaining statements contain any qualifier pairs. Out of those, about 80%
   possess only one qualifier" ([Galkin et al., 2020](https://arxiv.org/abs/2009.10847)), and HINGE
@@ -155,8 +168,9 @@ WikiPeople was not filtered to favour n-ary facts ([Rosso et al., 2020](https://
 - Pellissier Tanon, T., Vrandečić, D., Schaffert, S., Steiner, T., Pintscher, L. *From Freebase to Wikidata: The Great Migration.* WWW 2016. https://dl.acm.org/doi/10.1145/2872427.2874809
 - Noy, N., Rector, A. (eds). *Defining N-ary Relations on the Semantic Web.* W3C Working Group Note, 2006. https://www.w3.org/TR/swbp-n-aryRelations/
 - Wen, J., Li, J., Mao, Y., Chen, S., Zhang, R. *On the Representation and Embedding of Knowledge Bases Beyond Binary Relations.* IJCAI 2016. https://www.ijcai.org/Proceedings/16/Papers/188.pdf
+- Fatemi, B., Taslakian, P., Vazquez, D., Poole, D. *Knowledge Hypergraphs: Prediction Beyond Binary Relations.* IJCAI 2020; arXiv:1906.00137. https://arxiv.org/abs/1906.00137
 - Wikipedia. *Wikidata.* https://en.wikipedia.org/wiki/Wikidata
-- Wikidata. *Wikidata:Statistics*, figures dated 31 August 2025. https://www.wikidata.org/wiki/Wikidata:Statistics
+- Wikidata. *Wikidata:Statistics*, live counter, read 2026-09-20 (123,419,629 items; 2,547,303,553 edits; 43,497 active users). https://www.wikidata.org/wiki/Wikidata:Statistics
 - Wikidata. *Wikidata:Data model.* https://www.wikidata.org/wiki/Wikidata:Data_model
 - MediaWiki. *Wikibase/DataModel*, checked 2026-09-19. https://www.mediawiki.org/wiki/Wikibase/DataModel
 - Wikidata. *Help:Statements*, last modified 5 June 2025. https://www.wikidata.org/wiki/Help:Statements

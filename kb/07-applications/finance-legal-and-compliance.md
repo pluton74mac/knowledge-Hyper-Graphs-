@@ -122,5 +122,5 @@ is one of the more actionable exploration vectors in this section.
 - *Hypergraph-based contrastive learning for enhanced fraud detection.* PMC, 2025. https://pmc.ncbi.nlm.nih.gov/articles/PMC12690648/
 - Hemsley, C. *Graph databases, complex data, and the case for a structured hypergraph.* TypeDB blog, 5 March 2026. https://typedb.com/blog/the-case-for-a-structured-hypergraph
 - Luo, H. et al. *HyperGraphRAG.* NeurIPS 2025; arXiv:2503.21322. https://arxiv.org/abs/2503.21322
-- Feng, Y. et al. *Hyper-RAG.* arXiv:2504.08758, 2025. https://arxiv.org/abs/2504.08758
+- Feng, Y. et al. *Hyper-RAG.* arXiv:2504.08758, 30 Mar 2025; *Nature Communications* 17(1):5778, 27 Apr 2026. https://arxiv.org/abs/2504.08758 ; https://doi.org/10.1038/s41467-026-71411-1
 - Sharma, K., Kumar, P., Li, Y. *OG-RAG: Ontology-Grounded Retrieval-Augmented Generation For Large Language Models.* arXiv:2412.15235, Dec 2024. https://arxiv.org/abs/2412.15235

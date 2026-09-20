@@ -132,8 +132,8 @@ Recorded as an open question.
 
 | Knowledge base | Scale | Source |
 |---|---|---|
-| Wikidata | 123,411,810 items (figure dated 31 August 2025 on the statistics page, checked 2026-09-20) | [Wikidata:Statistics](https://www.wikidata.org/wiki/Wikidata:Statistics) |
-| Wikidata | ~1.65 billion statements, early 2025 | [Wikipedia, Wikidata](https://en.wikipedia.org/wiki/Wikidata) |
+| Wikidata | ~123.4 million items (live counter read 2026-09-20: 123,419,629 items, 2,547,303,553 edits, 43,497 active users; a dated snapshot table on the same page read 123,411,810, whose stated date could not be confirmed `[unverified]`) | [Wikidata:Statistics](https://www.wikidata.org/wiki/Wikidata:Statistics) |
+| Wikidata | ~1.65 billion statements, early 2025 (secondary source) | [Wikipedia, Wikidata](https://en.wikipedia.org/wiki/Wikidata) |
 | Freebase (at shutdown, 2016) | ~44 million topics, ~2.4 billion facts | [Wikipedia, Freebase](https://en.wikipedia.org/wiki/Freebase_(database)) |
 | Freebase (at launch-era description) | >125 million tuples, 4,000 types, 7,000 properties | [Bollacker et al., SIGMOD 2008](https://dl.acm.org/doi/10.1145/1376616.1376746) |
 | Hypergraph-DB stress test | 1,000,000 vertices + 200,000 hyperedges in 6.60 s total (add + query, in-process Python) | [Hypergraph-DB README](https://github.com/iMoonLab/Hypergraph-DB) |

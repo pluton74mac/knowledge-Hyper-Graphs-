@@ -4,7 +4,7 @@ type: timeline
 status: draft
 tags: [hypergraph, history, timeline, knowledge-graph, n-ary, standards, rag]
 created: 2026-09-19
-updated: 2026-09-19
+updated: 2026-09-20
 ---
 
 # Timeline of hypergraphs as knowledge structures
@@ -19,7 +19,7 @@ Conventions: "arXiv" dates are v1 submission dates; conference years are the yea
 |---|---|---|---|
 | 1956 | Richard H. Richens (Cambridge Language Research Unit) implements the first computer semantic nets as an interlingua for machine translation | Earliest machine-readable "concept + typed link" structure; the ancestor of KGs | [Wikipedia, Semantic network](https://en.wikipedia.org/wiki/Semantic_network) (secondary) |
 | 1968 | M. Ross Quillian, "Semantic Memory", in Minsky (ed.) *Semantic Information Processing*, MIT Press, pp. 227–270 | Canonical semantic-network model (nodes, property links, superordinate links, spreading activation); relations are binary edges | [Quillian, 1968 (summary page)](https://www.jimdavies.org/summaries/quillian1968.html); [PhilPapers record](https://philpapers.org/rec/QUISN) |
-| 1969–1970 | Claude Berge, *Graphes et hypergraphes*, Dunod (Paris) | Names and systematises **hypergraphs** (edges as arbitrary vertex subsets); the mathematical object KHGs instantiate | [Wikipedia, Claude Berge](https://en.wikipedia.org/wiki/Claude_Berge); [Open Library record of the 1973 translation](https://openlibrary.org/books/OL14545454M/Graphs_and_hypergraphs) |
+| 1970 | Claude Berge, *Graphes et hypergraphes*, Dunod (Paris); the idea itself dates from "around 1960" by Berge's own account | Names and systematises **hypergraphs** (edges as arbitrary vertex subsets); the mathematical object KHGs instantiate | [Wikipedia, Claude Berge](https://en.wikipedia.org/wiki/Claude_Berge); [Open Library record of the 1973 translation](https://openlibrary.org/books/OL14545454M/Graphs_and_hypergraphs) |
 | 1972–1973 | Edgar W. Schneider coins the term "knowledge graph" | First use of the phrase later popularised by Google | [Wikipedia, Knowledge graph (History)](https://en.wikipedia.org/wiki/Knowledge_graph) (secondary) |
 | 1973 | English edition *Graphs and Hypergraphs*, North-Holland Mathematical Library vol. 6 | Makes Berge's theory the standard English reference | [Internet Archive record](https://archive.org/details/graphshypergraph0000berg); [Stanford catalog](https://searchworks.stanford.edu/view/1348928) |
 | 1974 | Marvin Minsky, "A Framework for Representing Knowledge", MIT AI Memo 306 | Frames: slot-filler structures, i.e. an entity with several typed participants; a proto n-ary record | [MIT DSpace](https://dspace.mit.edu/entities/publication/0eca0164-cb5f-42de-8c86-43f54b23306d) |
@@ -27,7 +27,7 @@ Conventions: "arXiv" dates are v1 submission dates; conference years are the yea
 | 1983 (July) | Beeri, Fagin, Maier, Yannakakis, "On the Desirability of Acyclic Database Schemes", *JACM* 30(3):479–513; Fagin, "Degrees of Acyclicity for Hypergraphs and Relational Database Schemes", *JACM* 30(3):514–550 | A relational schema is a hypergraph; α/β/γ-acyclicity govern query tractability, the first large-scale "knowledge as hypergraph" application | [Crossref, Beeri et al.](https://doi.org/10.1145/2402.322389); [ACM DL, Fagin](https://dl.acm.org/doi/10.1145/2402.322390) |
 | 1984 (July) | Cyc project starts at MCC under Douglas Lenat; spun out as Cycorp at the end of 1994 | Largest hand-built common-sense KB; uses higher-arity predicates in CycL, showing n-ary facts are needed in practice | [Wikipedia, Cyc](https://en.wikipedia.org/wiki/Cyc); [cyc.com leadership page](https://cyc.com/leadership-team/) |
 | 1984 (Oct) | Sowa, *Conceptual Structures: Information Processing in Mind and Machine*, Addison-Wesley | Book-length CG theory; Peirce-style logic on graphs with n-ary relations | [Open Library](https://openlibrary.org/books/OL3500479M/Conceptual_structures); [ACM Guide](https://dl.acm.org/doi/abs/10.5555/4569) |
-| 1987 | Berge, *Hypergraphes: combinatoires des ensembles finis*, Gauthier-Villars (English translation *Hypergraphs: Combinatorics of Finite Sets*, North-Holland, 1989 `[unverified]` year of English edition) | Consolidated hypergraph combinatorics | [Wikipedia, Claude Berge](https://en.wikipedia.org/wiki/Claude_Berge) |
+| 1987 | Berge, *Hypergraphes: combinatoire des ensembles finis*, Gauthier-Villars (English translation *Hypergraphs: Combinatorics of Finite Sets*, North-Holland Mathematical Library 45, **1989**) | Consolidated hypergraph combinatorics | [Wikipedia, Claude Berge](https://en.wikipedia.org/wiki/Claude_Berge); 1989 imprint and "Translation of: Hypergraphes" verified from the [Internet Archive catalogue record](https://archive.org/details/hypergraphscombi0000berg) — see [origins-hypergraph-theory.md](origins-hypergraph-theory.md) §1.2 |
 
 ## 1993–2011: directed hypergraphs, VLSI, Semantic Web, first hypergraph databases
 
@@ -103,10 +103,10 @@ Conventions: "arXiv" dates are v1 submission dates; conference years are the yea
 | 2025 (Apr 23) | Tsang, Wang, Song, "Transformers for Complex Query Answering over Knowledge Hypergraphs" | Logical CQA moves to KHGs | [arXiv 2504.16537](https://arxiv.org/abs/2504.16537) |
 | 2025 (May 17) | Un, Lu, Yang, Yang, VITA, temporal hyper-relational KGs | Time-validity types on n-ary facts | [arXiv 2505.11803](https://arxiv.org/abs/2505.11803) |
 | 2025 (Jun 6) | Xiang et al., GraphRAG-Bench, "When to use Graphs in RAG" (ICLR 2026) | Shows GraphRAG often loses to vanilla RAG; sets evaluation expectations | [arXiv 2506.05690](https://arxiv.org/abs/2506.05690); [GitHub](https://github.com/GraphRAG-Bench/GraphRAG-Benchmark) |
-| 2025 (Jun) | Wei, Guan et al., "A Survey of Link Prediction in N-ary Knowledge Graphs"; Huang, Galkin, Bronstein, Ceylan, HYPER foundation model for inductive KHG link prediction | Field-level synthesis; transfer across arities | [arXiv 2506.08970](https://arxiv.org/abs/2506.08970); [arXiv 2506.12362](https://arxiv.org/abs/2506.12362) |
+| 2025 (Jun) | Wei, Guan et al., "A Survey of Link Prediction in N-ary Knowledge Graphs"; Huang, Galkin, Bronstein, Ceylan, HYPER foundation model for inductive KHG link prediction (NeurIPS 2025 workshop presentation; repository states ICLR 2026 — venue unsettled) | Field-level synthesis; transfer across arities | [arXiv 2506.08970](https://arxiv.org/abs/2506.08970); [arXiv 2506.12362](https://arxiv.org/abs/2506.12362) |
 | 2025 (Jul 15) | HIF, "The hypergraph interchange format for higher-order networks" (arXiv; *Network Science* 13:e21, online 11 Dec 2025) | JSON interchange standard agreed by HyperNetX, XGI, Hypergraphx, SimpleHypergraphs.jl maintainers | [arXiv 2507.11520](https://arxiv.org/abs/2507.11520); [Cambridge Core](https://doi.org/10.1017/nws.2025.10018) |
 | 2025 (Aug 5) | Wang et al., "Understanding the Embedding Models on Hyper-relational Knowledge Graph", CIKM 2025 | Shows plain KGE on decomposed HKGs matches specialised HKGE models: benchmark and method critique | [arXiv 2508.03280](https://arxiv.org/abs/2508.03280) |
-| 2025 (Oct 14) | Zai et al., PRoH (WWW 2026) | Planning-and-reasoning agent over KHGs; +19.7% F1 over HyperGraphRAG | [arXiv 2510.12434](https://arxiv.org/abs/2510.12434) |
+| 2025 (Oct 14) | Zai et al., PRoH (WWW 2026) | Planning-and-reasoning agent over KHGs; +19.73% F1 over HyperGraphRAG | [arXiv 2510.12434](https://arxiv.org/abs/2510.12434) |
 | 2026 (Feb 5) | Yu, Lu, Yang, THOR, fully inductive link prediction over HKGs | Inductive HKG completion across 12 datasets | [arXiv 2602.05424](https://arxiv.org/abs/2602.05424) |
 | 2026 (Feb 16–23) | HyperRAG (n-ary reasoning retrieval); Hyper-KGGen with HyperDocRED benchmark | Retrieval that reasons over hyperedges; document-level KHG extraction benchmark | [arXiv 2602.14470](https://arxiv.org/abs/2602.14470); [arXiv 2602.19543](https://arxiv.org/abs/2602.19543) |
 | 2026 (Apr 7) | RDF 1.2 Concepts and RDF 1.2 Semantics published as W3C Candidate Recommendation Snapshots (triple terms, reifiers, `rdf:reifies`); syntaxes and SPARQL 1.2 still Working Drafts as of Sept 2026 | The RDF answer to qualifiers becomes near-final | [RDF 1.2 Concepts](https://www.w3.org/TR/rdf12-concepts/); [WG publications](https://www.w3.org/groups/wg/rdf-star/publications/) |
@@ -187,12 +187,12 @@ All sources in this file are listed, with full bibliographic detail, in [sources
 - Liu, Y. et al. "Generalizing Hyperedge Expansion for Hyper-relational Knowledge Graph Modeling." arXiv 2024. https://arxiv.org/abs/2411.06191
 - Gao, Y., Feng, Y. et al. "Hypergraph Foundation Model." arXiv 2025. https://arxiv.org/abs/2503.01203
 - Luo, H. et al. "HyperGraphRAG." NeurIPS 2025. https://arxiv.org/abs/2503.21322
-- Feng, Y. et al. "Hyper-RAG." arXiv 2025; *Nature Communications* 17, 2026. https://arxiv.org/abs/2504.08758 ; https://api.crossref.org/works/10.1038/s41467-026-71411-1
+- Feng, Y. et al. "Hyper-RAG." arXiv:2504.08758, 30 Mar 2025; *Nature Communications* 17(1):5778, 27 Apr 2026. https://arxiv.org/abs/2504.08758 ; https://api.crossref.org/works/10.1038/s41467-026-71411-1
 - Tsang, H. T., Wang, Z., Song, Y. "Transformers for Complex Query Answering over Knowledge Hypergraphs." arXiv 2025. https://arxiv.org/abs/2504.16537
 - Un, C., Lu, Y., Yang, T., Yang, D. "VITA." arXiv 2025. https://arxiv.org/abs/2505.11803
 - Xiang, Z. et al. "When to use Graphs in RAG." ICLR 2026. https://arxiv.org/abs/2506.05690
 - Wei, J., Guan, S. et al. "A Survey of Link Prediction in N-ary Knowledge Graphs." arXiv 2025. https://arxiv.org/abs/2506.08970
-- Huang, X., Galkin, M., Bronstein, M. M., Ceylan, İ. İ. "HYPER." arXiv 2025. https://arxiv.org/abs/2506.12362
+- Huang, X., Galkin, M., Bronstein, M. M., Ceylan, İ. İ. "HYPER: A Foundation Model for Inductive Link Prediction with Knowledge Hypergraphs." arXiv:2506.12362, 14 Jun 2025; presented at the NeurIPS 2025 "New Perspectives in Graph Machine Learning" workshop, while the authors' repository states ICLR 2026 — cite as a preprint until one is confirmed. https://arxiv.org/abs/2506.12362 ; https://neurips.cc/virtual/2025/127653 ; https://github.com/HxyScotthuang/HYPER
 - Coll, M. et al. "HIF: The hypergraph interchange format for higher-order networks." *Network Science* 13, 2025. https://doi.org/10.1017/nws.2025.10018 ; https://arxiv.org/abs/2507.11520
 - Wang, Y. et al. "Understanding the Embedding Models on Hyper-relational Knowledge Graph." CIKM 2025. https://arxiv.org/abs/2508.03280
 - Zai, X. et al. "PRoH." WWW 2026. https://arxiv.org/abs/2510.12434

@@ -4,7 +4,7 @@ type: survey
 status: draft
 tags: [hypergraph, n-ary, llm, rag, extraction, prompts, HyperGraphRAG, Hyper-RAG, GraphRAG, LightRAG]
 created: 2026-09-19
-updated: 2026-09-19
+updated: 2026-09-20
 ---
 
 # LLM-based knowledge hypergraph construction
@@ -212,7 +212,7 @@ available in isolation but have not been combined in a published hypergraph RAG 
 - HKUDS. LightRAG repository README, checked 2026-09-19. https://github.com/HKUDS/LightRAG
 - Luo, H., E, H., Chen, G., Zheng, Y., et al. "HyperGraphRAG: Retrieval-Augmented Generation via Hypergraph-Structured Knowledge Representation." NeurIPS 2025 / arXiv 2503.21322. https://arxiv.org/abs/2503.21322
 - LHRLAB. HyperGraphRAG repository (`hypergraphrag/prompt.py`, `operate.py`, `hypergraphrag.py`), checked 2026-09-19. https://github.com/LHRLAB/HyperGraphRAG
-- Feng, Y., Hu, H., Hou, X., Liu, S., Ying, S., Du, S., Hu, H., Gao, Y. "Hyper-RAG: Combating LLM Hallucinations using Hypergraph-Driven Retrieval-Augmented Generation." arXiv 2504.08758, 2025. https://arxiv.org/abs/2504.08758
+- Feng, Y., Hu, H., Hou, X., Liu, S., Ying, S., Du, S., Hu, H., Gao, Y. "Hyper-RAG: Combating LLM Hallucinations using Hypergraph-Driven Retrieval-Augmented Generation." arXiv:2504.08758, 30 Mar 2025; *Nature Communications* 17(1):5778, 27 Apr 2026. https://arxiv.org/abs/2504.08758 ; https://doi.org/10.1038/s41467-026-71411-1
 - iMoonLab. Hyper-RAG repository (`hyperrag/prompt.py`, `operate.py`, `reproduce/Step_1.py`), checked 2026-09-19. https://github.com/iMoonLab/Hyper-RAG
 - iMoonLab. Hypergraph-DB repository, checked 2026-09-19. https://github.com/iMoonLab/Hypergraph-DB
 - Lien, et al. "HyperRAG: Reasoning N-ary Facts over Hypergraphs for Retrieval Augmented Generation." arXiv 2602.14470, 2026. https://arxiv.org/html/2602.14470v1

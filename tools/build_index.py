@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,6 +21,20 @@ def fm(text: str) -> dict[str, str]:
             k, _, v = line.partition(":")
             data[k.strip()] = v.strip()
     return data
+
+
+LINK_RE = re.compile(r"\[([^\]]*)\]\(([^)\s]+)\)")
+
+
+def flatten_links(s: str) -> str:
+    """Reduce inline Markdown links to their link text.
+
+    Summaries are copied out of a note and pasted into kb/00-index/, where a
+    relative target such as `(notation-cheatsheet.md)` no longer resolves.
+    Keeping the label and dropping the target keeps the index readable and
+    keeps `tools/validate_kb.py` honest about broken links.
+    """
+    return LINK_RE.sub(lambda m: m.group(1) or m.group(2), s)
 
 
 def first_paragraph(text: str) -> str:
@@ -72,12 +87,20 @@ def main() -> None:
             text = n.read_text(encoding="utf-8", errors="replace")
             meta = fm(text)
             total += 1
-            summary = first_paragraph(text).replace("|", "\\|")
+            summary = flatten_links(first_paragraph(text)).replace("|", "\\|")
             lines.append(
                 f"| [{meta.get('title', n.stem)}](../{section.name}/{n.name}) | {meta.get('type', '')} | {meta.get('status', '')} | {summary} |"
             )
         lines.append("")
     lines.append(f"_{total} notes indexed on {today}._")
+    lines.append("")
+    lines.append("## Sources")
+    lines.append("")
+    lines.append(
+        "Generated from the YAML front matter and opening paragraph of every note under `kb/`. "
+        "Each note listed above carries its own `## Sources` section; there are no separate "
+        "citations for this index."
+    )
     OUT.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"wrote {OUT.relative_to(ROOT)} ({total} notes)")
 

@@ -280,7 +280,7 @@ clearest available gap for a project in this KB.
 - Battiston, F., et al. "Networks beyond pairwise interactions: structure and dynamics." *Physics Reports* 874:1–92, 2020. https://arxiv.org/abs/2006.01764
 - Boley, H. "Directed recursive labelnode hypergraphs: A new representation-language." *Artificial Intelligence* 9(1):49–85, 1977. https://www.sciencedirect.com/science/article/abs/pii/0004370277900145
 - Fatemi, B., Taslakian, P., Vazquez, D., Poole, D. "Knowledge Hypergraphs: Prediction Beyond Binary Relations." IJCAI 2020; arXiv:1906.00137. https://arxiv.org/abs/1906.00137
-- Feng, Y., et al. "Hyper-RAG: Combating LLM Hallucinations using Hypergraph-Driven Retrieval-Augmented Generation." arXiv:2504.08758, 2025. https://arxiv.org/abs/2504.08758
+- Feng, Y., et al. "Hyper-RAG: Combating LLM Hallucinations using Hypergraph-Driven Retrieval-Augmented Generation." arXiv:2504.08758, 30 Mar 2025; *Nature Communications* 17(1):5778, 27 Apr 2026. https://arxiv.org/abs/2504.08758 ; https://doi.org/10.1038/s41467-026-71411-1
 - Galkin, M., Trivedi, P., Maheshwari, G., Usbeck, R., Lehmann, J. "Message Passing for Hyper-Relational Knowledge Graphs." EMNLP 2020. https://arxiv.org/abs/2009.10847
 - Hayes, J., Gutierrez, C. "Bipartite Graphs as Intermediate Model for RDF." ISWC 2004. https://users.dcc.uchile.cl/~cgutierr/papers/bipartite.pdf
 - Hu, Z., Gutiérrez-Basulto, V., Xiang, Z., Li, R., Pan, J. Z. "HyperMono: A Monotonicity-aware Approach to Hyper-Relational Knowledge Representation." arXiv:2404.09848, 15 April 2024. https://arxiv.org/abs/2404.09848

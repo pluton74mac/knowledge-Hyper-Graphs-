@@ -203,7 +203,7 @@ precedence information is available and is usually thrown away.
 - Microsoft. GraphRAG documentation, "CLI" (the `update` command and `standard-update` / `fast-update` methods), checked 2026-09-20. https://microsoft.github.io/graphrag/cli/
 - Microsoft. GraphRAG documentation, "Indexing Methods", checked 2026-09-20. https://microsoft.github.io/graphrag/index/methods/
 - LHRLAB. HyperGraphRAG repository (`hypergraphrag/hypergraphrag.py`, `hypergraphrag/operate.py`), checked 2026-09-20. https://github.com/LHRLAB/HyperGraphRAG
-- Luo, H., E, H., Chen, G., Zheng, Y., et al. "HyperGraphRAG: Retrieval-Augmented Generation via Hypergraph-Structured Knowledge Representation." arXiv 2503.21322, 2025 (v3, 21 October 2025). https://arxiv.org/abs/2503.21322
+- Luo, H., E, H., Chen, G., Zheng, Y., et al. "HyperGraphRAG: Retrieval-Augmented Generation via Hypergraph-Structured Knowledge Representation." NeurIPS 2025; arXiv:2503.21322 (v3, 21 October 2025). https://arxiv.org/abs/2503.21322
 - Chen, S., Xu, Y., Han, X., Xue, R., Wu, D., Gao, Y., Yan, C., Gao, Y. "Hypergraph-based Multimodal Retrieval-Augmented Generation with Incremental Refinement." ACM MM 2026 / arXiv 2608.16628. https://arxiv.org/abs/2608.16628
 - Bao, W., Wang, Y., Gao, R., Leng, F., Bao, Y., Yu, G. "DIAL-KG: Schema-Free Incremental Knowledge Graph Construction via Dynamic Schema Induction and Evolution-Intent Assessment." arXiv 2603.20059, 2026. https://arxiv.org/abs/2603.20059
 - Lairgi, Y., Moncla, L., Cazabet, R., Benabdeslem, K., Cléau, P. "iText2KG: Incremental Knowledge Graphs Construction Using Large Language Models." WISE 2024 / arXiv 2409.03284. https://arxiv.org/abs/2409.03284

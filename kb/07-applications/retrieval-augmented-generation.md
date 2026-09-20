@@ -233,8 +233,7 @@ See [case-studies](case-studies.md) for the numbers gathered in one place and
 
 - Luo, H., E, H., Chen, G., Zheng, Y., Wu, X., Guo, Y., Lin, Q., Feng, Y., Kuang, Z., Song, M., Zhu, Y., Luu, A. T. *HyperGraphRAG: Retrieval-Augmented Generation via Hypergraph-Structured Knowledge Representation.* NeurIPS 2025; arXiv:2503.21322 (v1 27 Mar 2025, v3 21 Oct 2025). https://arxiv.org/abs/2503.21322
 - LHRLAB. *HyperGraphRAG* (official code), GitHub, checked 2026-09-20. https://github.com/LHRLAB/HyperGraphRAG
-- Feng, Y., Hu, H., Hou, X., Liu, S., Ying, S., Du, S., Hu, H., Gao, Y. *Hyper-RAG: Combating LLM Hallucinations using Hypergraph-Driven Retrieval-Augmented Generation.* arXiv:2504.08758, 2025. https://arxiv.org/abs/2504.08758
-- Feng, Y. et al. *Hyper-RAG: combating LLM hallucinations using hypergraph-driven retrieval-augmented generation.* Nature Communications, 2026. https://www.nature.com/articles/s41467-026-71411-1
+- Feng, Y., Hu, H., Hou, X., Liu, S., Ying, S., Du, S., Hu, H., Gao, Y. *Hyper-RAG: Combating LLM Hallucinations using Hypergraph-Driven Retrieval-Augmented Generation.* arXiv:2504.08758, 30 Mar 2025; *Nature Communications* 17(1):5778, 27 Apr 2026. https://arxiv.org/abs/2504.08758 ; https://doi.org/10.1038/s41467-026-71411-1
 - iMoonLab. *Hyper-RAG* (official code), GitHub, checked 2026-09-20. https://github.com/iMoonLab/Hyper-RAG
 - Lien, W.-S., Chan, Y.-K., Hsiao, H.-L., Ruan, B.-K., Chiang, M.-F., Chen, C.-A., Yeh, Y.-R., Shuai, H.-H. *HyperRAG: Reasoning N-ary Facts over Hypergraphs for Retrieval Augmented Generation.* WWW 2026; arXiv:2602.14470, 16 Feb 2026. https://arxiv.org/abs/2602.14470
 - Lien, W.-S. et al. *HyperRAG.* Proceedings of the ACM Web Conference 2026. https://dl.acm.org/doi/10.1145/3774904.3792710

@@ -149,5 +149,4 @@ clinical correctness.
 - Chandak, P., Huang, K., Zitnik, M. *Building a knowledge graph to enable precision medicine.* Scientific Data, 2023. https://www.nature.com/articles/s41597-023-01960-3
 - PrimeKG code repository, GitHub, checked 2026-09-20. https://github.com/mims-harvard/PrimeKG
 - Luo, H. et al. *HyperGraphRAG.* NeurIPS 2025; arXiv:2503.21322. https://arxiv.org/abs/2503.21322
-- Feng, Y. et al. *Hyper-RAG.* arXiv:2504.08758, 2025. https://arxiv.org/abs/2504.08758
-- Feng, Y. et al. *Hyper-RAG.* Nature Communications, 2026. https://www.nature.com/articles/s41467-026-71411-1
+- Feng, Y. et al. *Hyper-RAG.* arXiv:2504.08758, 30 Mar 2025; *Nature Communications* 17(1):5778, 27 Apr 2026. https://arxiv.org/abs/2504.08758 ; https://doi.org/10.1038/s41467-026-71411-1

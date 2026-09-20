@@ -66,9 +66,14 @@ Bibliography for this section: [`sources/by-topic/05-query-embeddings-reasoning.
 2. **Hypertree width is the shared parameter** between tractable conjunctive-query evaluation
    (Gottlob, Leone and Scarcello) and hypergraph-neural-network expressivity (the 2026 Width Wall
    hierarchy). Both query planning and learning are bounded by the same structural quantity.
-3. **Reification is measurably lossy.** r-SimplE scores JF17K MRR 0.102 against HypE's 0.494, and
-   KG foundation models applied to reified hypergraphs are consistently behind hypergraph-native
-   ones — "increasing the number of training graphs does not close the gap".
+3. **Reification is information-preserving but learning-hostile.** Fatemi et al. state that under
+   reification "the binary relations created are equivalent to the original representation and
+   reification does not lose information during conversion"; what fails is *learning*, because the
+   auxiliary entity introduced per fact has no embedding at test time. The measured cost is large —
+   r-SimplE scores JF17K MRR 0.102 against HypE's 0.494 — and KG foundation models applied to
+   reified hypergraphs stay behind hypergraph-native ones ("increasing the number of training graphs
+   does not close the gap"). *Star-to-clique*, not reification, is the lossy conversion. See
+   [../10-comparative-and-critique/limitations-and-failure-modes.md](../10-comparative-and-critique/limitations-and-failure-modes.md) §2.
 4. **The three n-ary formalisations make scores incomparable.** Hyperedge-formalisation papers
    predict every position; hyper-relational papers predict the object. Same dataset name, different
    task.
@@ -92,7 +97,7 @@ Bibliography for this section: [`sources/by-topic/05-query-embeddings-reasoning.
 ## Where this section is thin
 
 - No hands-on measurements: everything here is read from papers, nothing re-run.
-- Storage and indexing are out of scope here and belong to section 04, which is empty as of writing.
+- Storage and indexing are out of scope here and belong to section [04](../04-storage-and-formats/).
 - Coverage of Chinese-language and industrial systems is likely incomplete.
 - Several 2026 preprints are cited (Width Wall, THOR, HyperRAG, Hypergraph as Language); they are
   marked as preprints and their results are not independently replicated.

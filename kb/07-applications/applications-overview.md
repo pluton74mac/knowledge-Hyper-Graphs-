@@ -4,7 +4,7 @@ type: survey
 status: draft
 tags: [hypergraph, n-ary, applications, taxonomy, RAG, question-answering, recommendation, biomedicine]
 created: 2026-09-19
-updated: 2026-09-19
+updated: 2026-09-20
 ---
 
 # Applications of knowledge hypergraphs — taxonomy and matrix
@@ -31,8 +31,9 @@ reason reported gains are hard to compare — see [retrieval-augmented-generatio
 ## 2. Application types
 
 1. **Knowledge completion / link prediction over n-ary facts** — predicting a missing participant or
-   qualifier. The hyper-relational benchmark WD50K contains 236,507 Wikidata statements, about 14 % of
-   which carry at least one qualifier pair, and qualifier-aware models gained up to 25 MRR points over
+   qualifier. The hyper-relational benchmark WD50K contains 236,507 Wikidata statements, 32,167 of
+   which (**13.6 %**, the figure Galkin et al. round to "about 14%" in prose) carry at least one
+   qualifier pair, and qualifier-aware models gained up to 25 MRR points over
    triple-only baselines on JF17K [Galkin et al., 2020](https://arxiv.org/abs/2009.10847). Covered in
    section 05; applied uses appear in [question-answering-over-n-ary-facts](question-answering-over-n-ary-facts.md).
 2. **Question answering** — answering questions whose answer requires more than two entities or a
@@ -72,12 +73,18 @@ Each cell names the note where the evidence lives.
 | Scholarly / science of science | ◐ higher-order link prediction | | ○ | | ● co-authorship, concept hypergraphs | | ◐ ORKG (reified) | |
 | E-commerce / media | | | ○ | ● HyperRec, DHCN, HCCF, KHGRec | | | | |
 | Finance | | | ○ TIEM | | ◐ credit hypergraphs | ○ | ◐ TypeDB deals | ● HyperDet, HIMVH, HCLNet |
-| Legal / compliance | | | ◐ HyperGraphRAG (legal), OG-RAG | | | | ◐ GrOIL (insurance contracts) | |
+| Legal / compliance | | | ◐ HyperGraphRAG (legal), OG-RAG | | | | ◐ GrOIL (life-insurance contracts) | |
 | Cybersecurity / IT | | | | | | ○ privilege hypergraphs | ◐ HAG (CTI) | ◐ hypergraph IDS |
 | Social / communication | ● simplicial closure | | | | ● rumour propagation, motifs | | | |
 | Software engineering | | | ◐ HyperGraphRAG (CS domain) | | | ◐ tool-schema hypergraphs | ○ co-change hypergraphs | |
 | AI agents / memory | | ● HyperMem, EdgeMem | ● HGMem, DocTrace | | | ● HyperSkill, HyperAgent, DaSH | ◐ AtomSpace | |
 | Enterprise operations | | | | | | ◐ HEAR (n-ary rules) | ● TypeDB, RelationalAI (relational) | |
+
+Note on one cell: **GrOIL** was flagged unverified in an earlier run and is now verified — it is a
+seven-stage pipeline that induces an OWL TBox and ABox from *life-insurance contract* documents,
+encoding each document as a "Unified Discourse-Hypergraph (UDH)" before the ontology-induction
+stages ([Mridul, Talukder and Seneviratne, 2026](https://arxiv.org/abs/2608.22135)). It is ontology induction over a
+document hypergraph, not an n-ary fact store.
 
 ## 4. Where the n-ary representation demonstrably pays off
 
@@ -101,7 +108,7 @@ Evidence that the hyperedge, not just "more structure", is responsible for the g
   do not establish the value of n-ary *knowledge*.
 - RAG evaluations often rely on LLM-as-judge and on datasets constructed by the same authors; cross-paper
   comparisons are rare (PRoH's reported +19.73 % F1 over HyperGraphRAG is one of the few
-  [Zai et al., 2026](https://arxiv.org/abs/2510.12434)).
+  [Zai et al., 2025](https://arxiv.org/abs/2510.12434)).
 - Industrial adoption of true n-ary storage remains concentrated in a few vendors; the dominant graph
   databases connect exactly two nodes per relationship (see [industry-adoption-and-products](industry-adoption-and-products.md)).
 
@@ -110,7 +117,7 @@ Evidence that the hyperedge, not just "more structure", is responsible for the g
 - Galkin, M., Trivedi, P., Maheshwari, G., Usbeck, R., Lehmann, J. "Message Passing for Hyper-Relational Knowledge Graphs." EMNLP 2020. https://arxiv.org/abs/2009.10847
 - Zhang, Y., Li, P., Liang, H., Jatowt, A., Yang, Z. "Fact-Tree Reasoning for N-ary Question Answering over Knowledge Graphs." Findings of ACL 2022. https://arxiv.org/abs/2108.08297
 - Luo, H. et al. "HyperGraphRAG: Retrieval-Augmented Generation via Hypergraph-Structured Knowledge Representation." NeurIPS 2025. https://arxiv.org/abs/2503.21322
-- Feng, Y. et al. "Hyper-RAG: Combating LLM Hallucinations using Hypergraph-Driven Retrieval-Augmented Generation." arXiv 2025; Nature Communications 17:5778, 2026. https://arxiv.org/abs/2504.08758
+- Feng, Y. et al. "Hyper-RAG: Combating LLM Hallucinations using Hypergraph-Driven Retrieval-Augmented Generation." arXiv:2504.08758, 30 Mar 2025; *Nature Communications* 17(1):5778, 27 Apr 2026. https://arxiv.org/abs/2504.08758 ; https://doi.org/10.1038/s41467-026-71411-1
 - Wang, J., Ding, K., Hong, L., Liu, H., Caverlee, J. "Next-item Recommendation with Sequential Hypergraphs." SIGIR 2020. https://doi.org/10.1145/3397271.3401133
 - Xia, L., Huang, C., Xu, Y., Zhao, J., Yin, D., Huang, J. X. "Hypergraph Contrastive Collaborative Filtering." SIGIR 2022. https://arxiv.org/abs/2204.12200
 - Klamt, S., Haus, U.-U., Theis, F. "Hypergraphs and Cellular Networks." PLoS Computational Biology 5(5):e1000385, 2009. https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1000385
@@ -124,4 +131,5 @@ Evidence that the hyperedge, not just "more structure", is responsible for the g
 - Cui, R., Zhang, N., Zhu, K., Zhang, Q. "Hippocampus-Inspired Multi-View Hypergraph Learning for Web Finance Fraud." arXiv 2026. https://arxiv.org/abs/2601.11073
 - Franzese, N., Groce, A., Murali, T. M., Ritz, A. "Hypergraph-based connectivity measures for signaling pathway topologies." PLoS Computational Biology, 2019. https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1007384
 - Wang, Z., Shi, Y., Liu, X., Chen, C., Wen, J., Wang, R. "HODDI: A Dataset of High-Order Drug-Drug Interactions for Computational Pharmacovigilance." arXiv 2025. https://arxiv.org/abs/2502.06274
-- Zai, X., Tan, X., Wang, X., Liu, Q., Xu, X., Zhang, W. "PRoH: Dynamic Planning and Reasoning over Knowledge Hypergraphs for Retrieval-Augmented Generation." WWW 2026. https://arxiv.org/abs/2510.12434
+- Zai, X., Tan, X., Wang, X., Liu, Q., Xu, X., Zhang, W. "PRoH: Dynamic Planning and Reasoning over Knowledge Hypergraphs for Retrieval-Augmented Generation." arXiv:2510.12434, 14 Oct 2025; WWW 2026. https://arxiv.org/abs/2510.12434
+- Mridul, M. A., Talukder, A., Seneviratne, O. "GrOIL: Graph-Grounded Domain Ontology Induction with Constrained LLM Mediation." arXiv:2608.22135, 22 Aug 2026 (abstract page fetched 2026-09-20). https://arxiv.org/abs/2608.22135

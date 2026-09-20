@@ -4,7 +4,7 @@ type: howto
 status: draft
 tags: [hypergraph, n-ary, wikidata, qualifiers, freebase, cvt, reification, star-to-clique, datasets, WD50K, JF17K, WikiPeople, FB-AUTO]
 created: 2026-09-19
-updated: 2026-09-19
+updated: 2026-09-20
 ---
 
 # From knowledge graphs to hypergraphs
@@ -83,9 +83,15 @@ with at least 30 mentions, and splitting 80/10/10. Each line is "a set of ('role
 ids') and the arity information in form of ('N': arity)"; ids ending in `_h`/`_t` are the dataset's own
 subject/object roles, other ids are Wikidata property ids
 ([WikiPeople repository](https://github.com/gsp2014/WikiPeople); [Guan et al., 2019](https://dl.acm.org/doi/10.1145/3308558.3313414)).
-Training: 305,725 facts (270,179 binary, 35,546 n-ary); n-ary facts are "less than 12%" of the data.
-Galkin et al. add that "less than 3% of the remaining statements contain any qualifier pairs. Out of those,
-about 80% possess only one qualifier", so results are dominated by triples.
+Training: 305,725 facts (270,179 binary, 35,546 n-ary), i.e. **11.6% n-ary facts** over the whole release
+(44,315 of 382,229) — the same figure the 2025 survey reports
+([Wei et al., 2025](https://arxiv.org/abs/2506.08970)). That is the share of *n-ary facts in the release as
+published*. After literals are removed — the version HINGE and StarE evaluate on — a different quantity
+applies: Galkin et al. report that "less than 3% of the remaining statements contain any qualifier pairs. Out
+of those, about 80% possess only one qualifier", and Rosso et al.'s Table 1 puts the same quantity at **2.6%**
+hyper-relational facts. So results on the filtered WikiPeople are dominated by plain triples. The three
+numbers are reconciled in
+[../09-ecosystem/dataset-quality-and-leakage-issues.md](../09-ecosystem/dataset-quality-and-leakage-issues.md) §3.
 
 ### FB-AUTO and M-FB15K (Freebase, 2019/2020)
 
@@ -109,7 +115,7 @@ Format: `s, r, o, qr_1, qv_1, qr_2, qv_2 ...`. Statistics:
 | Dataset | Statements | With qualifiers | Entities | Relations | Train / Valid / Test |
 |---|---|---|---|---|---|
 | WD50K | 236,507 | 13.6% | 47,156 | 532 | 166,435 / 23,913 / 46,159 |
-| WD50K(33) | 102,107 | 31.2% | 38,124 | 475 | 73,406 / 10,668 / 18,133 |
+| WD50K(33) | 102,107 | 31.2% | 38,124 | 475 | 73,406 / 10,568 / 18,133 |
 | WD50K(66) | 49,167 | 64.5% | 27,347 | 494 | 35,968 / 5,154 / 8,045 |
 | WD50K(100) | 31,314 | 100% | 18,792 | 279 | 22,738 / 3,279 / 5,297 |
 

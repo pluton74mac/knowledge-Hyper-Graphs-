@@ -18,10 +18,10 @@ each one actually offers, and where the gaps are.
 
 | Track | Body | Current state (2026-09-20) | Does it express an n-ary fact natively? |
 |---|---|---|---|
-| RDF 1.2 / SPARQL 1.2 | W3C RDF & SPARQL WG | Concepts + Semantics at **Candidate Recommendation**, 7 Apr 2026; syntaxes and SPARQL 1.2 Query still Working Drafts | **No.** Triple terms annotate a *triple*; n-ary still needs the 2006 reification patterns |
+| RDF 1.2 / SPARQL 1.2 | W3C RDF & SPARQL WG | Concepts + Semantics at **Candidate Recommendation Snapshot**, 7 Apr 2026; all syntaxes and SPARQL 1.2 still Working Drafts as of Sep 2026; WG chartered to 2027-04-30 | **No.** Triple terms annotate a *triple*; n-ary still needs the 2006 reification patterns |
 | GQL | ISO/IEC JTC1 SC32 | **ISO/IEC 39075:2024**, published 12 Apr 2024; second edition under way (AWI) | **No.** Property graphs explicitly exclude n-ary relationships |
 | SQL/PGQ | ISO/IEC JTC1 SC32 | **ISO/IEC 9075-16:2023**, part of SQL:2023 | **No** for the graph view; **yes** for the underlying tables |
-| HIF | community (hypergraph library maintainers) | v1 schema; paper in *Network Science* 13:e21, 2025 | **Yes** for structure; **no** for relation semantics |
+| HIF | community (hypergraph library maintainers) | schema **v0.0** (the only `CHANGELOG.md` entry; the schema itself carries `"version": "latest"`, so files cannot declare a version); paper in *Network Science* 13:e21, 2025 | **Yes** for structure; **no** for relation semantics |
 | PG-Schema | LDBC / academic | SIGMOD 2023 proposal, input to a future GQL edition | Schema language, not a data model change |
 
 ## 1. RDF 1.2 and SPARQL 1.2 — annotation, not arity

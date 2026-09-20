@@ -184,8 +184,7 @@ right model and nobody writes a position paper about it.
 - Franzese, N., Groce, A., Murali, T. M., Ritz, A. *Hypergraph-based connectivity measures for signaling pathway topologies.* PLoS Computational Biology 15(10):e1007384, 2019. https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1007384
 - Zhang, Y., Li, P., Liang, H., Jatowt, A., Yang, Z. *Fact-Tree Reasoning for N-ary Question Answering over Knowledge Graphs.* Findings of ACL 2022; arXiv:2108.08297. https://arxiv.org/abs/2108.08297
 - Luo, H. et al. *HyperGraphRAG: Retrieval-Augmented Generation via Hypergraph-Structured Knowledge Representation.* NeurIPS 2025; arXiv:2503.21322. https://arxiv.org/abs/2503.21322
-- Feng, Y. et al. *Hyper-RAG: Combating LLM Hallucinations using Hypergraph-Driven Retrieval-Augmented Generation.* arXiv:2504.08758, 2025. https://arxiv.org/abs/2504.08758
-- Feng, Y. et al. *Hyper-RAG.* Nature Communications, 2026. https://www.nature.com/articles/s41467-026-71411-1
+- Feng, Y. et al. *Hyper-RAG: Combating LLM Hallucinations using Hypergraph-Driven Retrieval-Augmented Generation.* arXiv:2504.08758, 30 Mar 2025; *Nature Communications* 17(1):5778, 27 Apr 2026. https://arxiv.org/abs/2504.08758 ; https://doi.org/10.1038/s41467-026-71411-1
 - Xiang, Z., Wu, C., Zhang, Q., Chen, S., Hong, Z., Huang, X., Su, J. *When to use Graphs in RAG: A Comprehensive Analysis for Graph Retrieval-Augmented Generation.* ICLR 2026; arXiv:2506.05690. https://arxiv.org/abs/2506.05690
 - Wang, Z., Shi, Y., Liu, X., Chen, C., Wen, J., Wang, R. *HODDI: A Dataset of High-Order Drug-Drug Interactions for Computational Pharmacovigilance.* arXiv:2502.06274, 2025. https://arxiv.org/abs/2502.06274
 - Cui, R., Zhang, N., Zhu, K., Zhang, Q. *Hippocampus-Inspired Multi-View Hypergraph Learning for Web Finance Fraud.* arXiv:2601.11073, 2026. https://arxiv.org/abs/2601.11073

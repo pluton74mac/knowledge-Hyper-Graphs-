@@ -36,7 +36,9 @@ the n-ary structure, the provenance and the ranking are all first-class and all 
 
 Scale, checked 2026-09-20: the project's own statistics page reports "Wikidata currently contains
 123,419,051 items", "2,547,260,794 edits have been made since the project launch", and "There are currently
-43,497 active users" ([Wikidata:Statistics](https://www.wikidata.org/wiki/Wikidata:Statistics)). A large
+43,497 active users" ([Wikidata:Statistics](https://www.wikidata.org/wiki/Wikidata:Statistics); the
+page carries a live counter, so a re-read the same day gave 123,419,629 items and 2,547,303,553
+edits — always quote it with the timestamp). A large
 share of those edits are bot edits; bots are how large imports and systematic clean-ups happen, and they
 are also a documented source of systematic error.
 

@@ -304,6 +304,6 @@ data is committed to this repository.
 - Leskovec, J., Krevl, A. *SNAP Datasets: Stanford Large Network Dataset Collection.* <https://snap.stanford.edu/data/>, checked 2026-09-20.
 - KONECT, <http://konect.cc/>, checked 2026-09-20 (HTTP 503).
 - Luo, H., E, H., Chen, G. et al. (2025). *HyperGraphRAG.* arXiv:2503.21322v3. <https://arxiv.org/html/2503.21322v3>; evaluation instructions at <https://github.com/LHRLAB/HyperGraphRAG/blob/main/evaluation/README.md>, checked 2026-09-20.
-- Feng, Y., Hu, H., Ying, S. et al. (2026). *Hyper-RAG.* Nature Communications 17, 5778. <https://doi.org/10.1038/s41467-026-71411-1>; repository <https://github.com/iMoonLab/Hyper-RAG>, checked 2026-09-20.
+- Feng, Y., Hu, H., Ying, S. et al. (2026). *Hyper-RAG.* Nature Communications 17(1):5778, 27 April 2026. <https://doi.org/10.1038/s41467-026-71411-1>; repository <https://github.com/iMoonLab/Hyper-RAG>, checked 2026-09-20.
 - YAGO 4.5 download page, <https://yago-knowledge.org/downloads/yago-4-5>, checked 2026-09-20.
 - ConceptNet, <https://conceptnet.io/>, checked 2026-09-20.

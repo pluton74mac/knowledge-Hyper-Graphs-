@@ -194,7 +194,7 @@ only to social and biological ones.
 **Who.** Federico Battiston (Central European University) and the Hypergraphx group; Nicholas Landry
 (University of Virginia), Iacopo Iacopini (Northeastern University London), Alice Patania
 (University of Vermont), Maxime Lucas, Leo Torres and the XGI team; Phil Chodrow (Middlebury
-College); PNNL's hypernetwork-science group; Tina Eliassi-Rad and Kijung Shin on hypergraph mining.
+College — a separate node in the same community, **not** an XGI author or core developer); PNNL's hypernetwork-science group; Tina Eliassi-Rad and Kijung Shin on hypergraph mining.
 Affiliations and caveats: [research-groups-and-people.md](research-groups-and-people.md).
 
 **Key papers.**

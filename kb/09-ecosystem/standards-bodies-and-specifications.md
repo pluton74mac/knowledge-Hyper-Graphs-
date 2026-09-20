@@ -34,8 +34,8 @@ Publication status from the group's own publications page
 
 | Specification | Maturity | Latest version |
 |---|---|---|
-| RDF 1.2 Concepts and Abstract Data Model | **Candidate Recommendation** | 2026-04-07 |
-| RDF 1.2 Semantics | **Candidate Recommendation** | 2026-04-07 |
+| RDF 1.2 Concepts and Abstract Data Model | **Candidate Recommendation Snapshot** | 2026-04-07 |
+| RDF 1.2 Semantics | **Candidate Recommendation Snapshot** | 2026-04-07 |
 | RDF 1.2 TriG | Working Draft | 2026-09-15 |
 | RDF 1.2 Turtle | Working Draft | 2026-09-14 |
 | RDF 1.2 XML Syntax | Working Draft | 2026-09-14 |
@@ -201,7 +201,7 @@ paper's abstract and metadata, 2026-09-20).
 | Need | Standard that covers it | Standard that does not |
 |---|---|---|
 | serialise a hypergraph between tools | **HIF** (v0.0, JSON Schema) | RDF, GQL, SQL/PGQ |
-| say something *about* a fact | **RDF 1.2** triple terms (CR, 2026-04-07) | GQL, SQL/PGQ |
+| say something *about* a fact | **RDF 1.2** triple terms (CR Snapshot, 2026-04-07) | GQL, SQL/PGQ |
 | n-ary fact with named roles as a primitive | **none** — TypeQL is a vendor language, not a standard | RDF 1.2, GQL, SQL/PGQ, openCypher, PG-Schema |
 | schema / type system over n-ary facts | **none** | HIF (no types at all), PG-Schema (binary only) |
 | a benchmark with n-ary workloads | **none** | GDC/LDBC suite |

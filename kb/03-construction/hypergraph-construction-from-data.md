@@ -219,4 +219,4 @@ available source.
 - Berti, A., Koren, I., Adams, J. N., Park, G., et al. "OCEL (Object-Centric Event Log) 2.0 Specification." arXiv 2403.01975, 2024. https://arxiv.org/abs/2403.01975
 - Gao, Y., Zhang, Z., Lin, H., Zhao, X., Du, S., Zou, C. "Hypergraph Learning: Methods and Practices." IEEE Transactions on Pattern Analysis and Machine Intelligence, 2022. https://doi.org/10.1109/TPAMI.2020.3039374
 - iMoonLab. DHG (DeepHypergraph) API documentation, `Hypergraph` constructors, version 0.9.7, checked 2026-09-20. https://deephypergraph.readthedocs.io/en/latest/api/dhg.html
-- Luo, H., E, H., Chen, G., Zheng, Y., et al. "HyperGraphRAG: Retrieval-Augmented Generation via Hypergraph-Structured Knowledge Representation." arXiv 2503.21322, 2025. https://arxiv.org/abs/2503.21322
+- Luo, H., E, H., Chen, G., Zheng, Y., et al. "HyperGraphRAG: Retrieval-Augmented Generation via Hypergraph-Structured Knowledge Representation." NeurIPS 2025; arXiv:2503.21322. https://arxiv.org/abs/2503.21322

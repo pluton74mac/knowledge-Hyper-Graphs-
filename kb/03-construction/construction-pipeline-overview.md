@@ -4,7 +4,7 @@ type: survey
 status: draft
 tags: [hypergraph, n-ary, construction, pipeline, extraction, provenance, entity-resolution]
 created: 2026-09-19
-updated: 2026-09-19
+updated: 2026-09-20
 ---
 
 # Knowledge hypergraph construction pipeline — end-to-end overview
@@ -195,7 +195,7 @@ and 8.
 - Peng, N., Poon, H., Quirk, C., Toutanova, K., Yih, W. "Cross-Sentence N-ary Relation Extraction with Graph LSTMs." TACL 5, 2017. https://arxiv.org/abs/1708.03743
 - Luo, H., E, H., Chen, G., Zheng, Y., et al. "HyperGraphRAG: Retrieval-Augmented Generation via Hypergraph-Structured Knowledge Representation." NeurIPS 2025 / arXiv 2503.21322. https://arxiv.org/abs/2503.21322
 - LHRLAB. HyperGraphRAG repository (files `hypergraphrag/hypergraphrag.py`, `operate.py`, `prompt.py`), checked 2026-09-19. https://github.com/LHRLAB/HyperGraphRAG
-- Feng, Y., Hu, H., Hou, X., Liu, S., et al. "Hyper-RAG: Combating LLM Hallucinations using Hypergraph-Driven Retrieval-Augmented Generation." arXiv 2504.08758, 2025. https://arxiv.org/abs/2504.08758
+- Feng, Y., Hu, H., Hou, X., Liu, S., et al. "Hyper-RAG: Combating LLM Hallucinations using Hypergraph-Driven Retrieval-Augmented Generation." arXiv:2504.08758, 30 Mar 2025; *Nature Communications* 17(1):5778, 27 Apr 2026. https://arxiv.org/abs/2504.08758 ; https://doi.org/10.1038/s41467-026-71411-1
 - iMoonLab. Hypergraph-DB repository, checked 2026-09-19. https://github.com/iMoonLab/Hypergraph-DB
 - Edge, D., Trinh, H., Cheng, N., Bradley, J., et al. "From Local to Global: A Graph RAG Approach to Query-Focused Summarization." arXiv 2404.16130, 2024 (rev. 2025). https://arxiv.org/abs/2404.16130
 - Microsoft. GraphRAG documentation, "Indexing Dataflow", checked 2026-09-19. https://microsoft.github.io/graphrag/index/default_dataflow/

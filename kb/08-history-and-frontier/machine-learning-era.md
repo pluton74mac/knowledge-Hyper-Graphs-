@@ -91,9 +91,14 @@ Two papers in the same year fix the shape of the mainstream formalisation:
   KGs suffer from fundamental flaws and thus develop a new Wikidata-based dataset — **WD50K**."
 
 The StarE critique is the field's first public benchmark crisis. It is commonly summarised as "test
-leakage and degenerate arity distributions in JF17K and WikiPeople"; the *specific* flaws are
-discussed in the paper rather than the abstract, so attribute the detailed leakage claims to the
-full text, not to the abstract `[unverified]` in this run.
+leakage and degenerate arity distributions in JF17K and WikiPeople"; the *specific* flaws are stated
+in the body of the paper (§5) rather than in the abstract, so cite the full text, not the abstract.
+The body gives the two decisive figures: "about 44.5% of the test statements share the same main
+(s, r, o) triple as the train statements" in JF17K, and "less than 3% of the remaining statements
+contain any qualifier pairs" in literal-filtered WikiPeople — both verified against the full text in
+[../09-ecosystem/dataset-quality-and-leakage-issues.md](../09-ecosystem/dataset-quality-and-leakage-issues.md).
+Note the standing misattribution: the 44.5% result is **Galkin et al.'s (StarE, EMNLP 2020)**, not
+Rosso et al.'s (HINGE, WWW 2020).
 
 ### 2.4 HypE / HSimplE (2019–2020) — the name
 

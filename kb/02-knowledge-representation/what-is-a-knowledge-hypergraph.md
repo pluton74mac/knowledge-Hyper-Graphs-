@@ -4,7 +4,7 @@ type: concept
 status: draft
 tags: [hypergraph, knowledge-hypergraph, n-ary, hyper-relational, definition, terminology]
 created: 2026-09-19
-updated: 2026-09-19
+updated: 2026-09-20
 ---
 
 # What is a knowledge hypergraph?
@@ -223,7 +223,7 @@ nesting. The schema is worked out in
 - Hu, Z., Gutiérrez-Basulto, V., Xiang, Z., Li, R., Pan, J. Z. *HyperMono: A Monotonicity-aware Approach to Hyper-Relational Knowledge Representation.* arXiv, 2024. https://arxiv.org/abs/2404.09848
 - Wang, Y., Di, S., Wang, Z., Li, H., Teng, F., Xin, H., Chen, L. *Understanding the Embedding Models on Hyper-relational Knowledge Graph.* CIKM 2025. https://arxiv.org/abs/2508.03280
 - Luo, H., E, H., Chen, G., Zheng, Y., Wu, X., Guo, Y., Lin, Q., Feng, Y., Kuang, Z., Song, M., Zhu, Y., Luu, A. T. *HyperGraphRAG: Retrieval-Augmented Generation via Hypergraph-Structured Knowledge Representation.* NeurIPS 2025. https://arxiv.org/abs/2503.21322
-- Feng, Y., Hu, H., Hou, X., Liu, S., Ying, S., Du, S., Hu, H., Gao, Y. *Hyper-RAG: Combating LLM Hallucinations using Hypergraph-Driven Retrieval-Augmented Generation.* arXiv, 2025. https://arxiv.org/abs/2504.08758
+- Feng, Y., Hu, H., Hou, X., Liu, S., Ying, S., Du, S., Hu, H., Gao, Y. *Hyper-RAG: Combating LLM Hallucinations using Hypergraph-Driven Retrieval-Augmented Generation.* arXiv:2504.08758, 30 Mar 2025; *Nature Communications* 17(1):5778, 27 Apr 2026. https://arxiv.org/abs/2504.08758 ; https://doi.org/10.1038/s41467-026-71411-1
 - OpenCog Foundation. *AtomSpace README.* GitHub, checked 2026-09-19. https://github.com/opencog/atomspace
 - Vepštas, L. *Graphs, Metagraphs, RAM, CPU.* OpenCog technical text, versions 2020–2023. https://github.com/opencog/atomspace/blob/master/opencog/sheaf/docs/ram-cpu.pdf
 - Iordanov, B. *HyperGraphDB: A Generalized Graph Database.* WAIM 2010 workshops, Springer LNCS. https://hypergraphdb.org/docs/hypergraphdb.pdf
