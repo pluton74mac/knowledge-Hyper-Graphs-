@@ -123,7 +123,7 @@ The interesting asymmetry for this knowledge base:
 So SQL/PGQ is a standardised *flattening*: it projects an n-ary store into a binary query surface.
 Practically this is the most deployable route to "hypergraph-ish" querying today — keep facts as
 rows, expose a graph view for traversal — and it is why a plain relational database remains a
-credible competitor to any KHG store. See `kb/04-storage-and-formats/` when populated.
+credible competitor to any KHG store. See [../04-storage-and-formats/relational-and-eav-storage.md](../04-storage-and-formats/relational-and-eav-storage.md).
 
 ## 4. HIF — the one standard that is natively higher-order
 
@@ -155,7 +155,8 @@ Properties, from the paper and the reference repository
 type with a signature, no schema language, no entity identity/IRI discipline, no query language, no
 semantics for inference, and no provenance model. It will faithfully move a knowledge hypergraph's
 *shape* between tools; the meaning has to travel in metadata conventions you invent yourself. A
-sample file is in `schemas/sample.hif.json`.
+sample file is in `schemas/sample.hif.json`; the format is treated in detail in
+[../04-storage-and-formats/hif-hypergraph-interchange-format.md](../04-storage-and-formats/hif-hypergraph-interchange-format.md).
 
 ## 5. PG-Schema — schemas for the binary world
 
@@ -202,7 +203,8 @@ frontier direction in [current-frontier-directions.md](current-frontier-directio
   relational tables, export HIF for anything graph-analytic, and do not try to make a triple store
   the system of record.
 - If you need **roles with a type system**: TypeDB is the closest production system; see
-  [research-groups-and-people.md](research-groups-and-people.md) and `kb/04-storage-and-formats/`.
+  [research-groups-and-people.md](research-groups-and-people.md) and
+  [../04-storage-and-formats/hypergraph-databases.md](../04-storage-and-formats/hypergraph-databases.md).
 - Do not assume any two tools that say "hypergraph" can exchange data. Check HIF support first.
 
 ## Sources

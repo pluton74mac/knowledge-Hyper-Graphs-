@@ -300,8 +300,9 @@ distant from the mainstream KHG literature and cites it barely at all.
 - **Cross-community co-authorship is the signal to watch.** The ICML 2024 position paper, the HIF
   author list and the HYPER author list are the three documents where communities that used to
   ignore each other appear together.
-- Groups, libraries and datasets in more operational detail belong in `kb/09-ecosystem/`; venues are
-  in [venues-and-community-events.md](venues-and-community-events.md).
+- Groups, libraries and datasets in more operational detail are in
+  [../09-ecosystem/software-libraries.md](../09-ecosystem/software-libraries.md); venues are in
+  [venues-and-community-events.md](venues-and-community-events.md).
 
 ## Sources
 

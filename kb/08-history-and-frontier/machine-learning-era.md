@@ -127,7 +127,8 @@ Taken together these say something uncomfortable: much of the measured advantage
 hyper-relational models may be an artefact of how the comparison was set up. Any claim of the form
 "hypergraph representation improves link prediction by X%" made before 2025 should be re-read with
 these two papers in hand. This is developed further in
-[current-frontier-directions.md](current-frontier-directions.md) (§"benchmark crisis").
+[current-frontier-directions.md](current-frontier-directions.md) (§10) and in
+[../09-ecosystem/dataset-quality-and-leakage-issues.md](../09-ecosystem/dataset-quality-and-leakage-issues.md).
 
 ## 3. 2018–2019: hypergraph neural networks
 

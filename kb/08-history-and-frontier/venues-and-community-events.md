@@ -191,7 +191,8 @@ and learning-theory strands** (*Network Science*, *Journal of Complex Networks*,
 - To **follow standards**: the W3C RDF & SPARQL Working Group publications page and the ISO/IEC
   JTC1 SC32 catalogue entries — see [standards-convergence.md](standards-convergence.md).
 - To **track software**: the library repositories listed in
-  [research-groups-and-people.md](research-groups-and-people.md) and `kb/09-ecosystem/`.
+  [research-groups-and-people.md](research-groups-and-people.md) and
+  [../09-ecosystem/software-libraries.md](../09-ecosystem/software-libraries.md).
 
 ## Sources
 

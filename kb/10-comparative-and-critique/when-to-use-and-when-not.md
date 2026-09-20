@@ -258,7 +258,7 @@ infrastructure supports, and keep the two decisions separate.
 - Fatemi, B., Taslakian, P., Vazquez, D., Poole, D. "Knowledge Hypergraphs: Prediction Beyond Binary Relations." IJCAI 2020; arXiv:1906.00137. https://arxiv.org/abs/1906.00137
 - Galkin, M., Trivedi, P., Maheshwari, G., Usbeck, R., Lehmann, J. "Message Passing for Hyper-Relational Knowledge Graphs." EMNLP 2020. https://arxiv.org/abs/2009.10847
 - Hemsley, C. "Graph databases, complex data, and the case for a structured hypergraph." TypeDB blog, 5 March 2026. https://typedb.com/blog/the-case-for-a-structured-hypergraph (checked 2026-09-20)
-- Hu, M., et al. "HyperMono: A Monotonicity-aware Approach to Hyper-Relational Knowledge Representation." arXiv:2404.09848, 2024. https://arxiv.org/abs/2404.09848
+- Hu, Z., Gutiérrez-Basulto, V., Xiang, Z., Li, R., Pan, J. Z. "HyperMono: A Monotonicity-aware Approach to Hyper-Relational Knowledge Representation." arXiv:2404.09848, 15 April 2024. https://arxiv.org/abs/2404.09848
 - kuzudb/kuzu repository (archived 10 October 2025). https://github.com/kuzudb/kuzu (checked 2026-09-20)
 - Luo, H., et al. "HyperGraphRAG: Retrieval-Augmented Generation via Hypergraph-Structured Knowledge Representation." NeurIPS 2025; arXiv:2503.21322. https://arxiv.org/abs/2503.21322
 - Noy, N., Rector, A. (eds.). "Defining N-ary Relations on the Semantic Web." W3C Working Group Note, 12 April 2006. https://www.w3.org/TR/swbp-n-aryRelations/

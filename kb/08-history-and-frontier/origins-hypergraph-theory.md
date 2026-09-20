@@ -28,8 +28,9 @@ tuple of a relation is a hyperedge.
 
 ### 1.1 The idea
 
-Claude Berge (1926–2002), of the CNRS and the Centre d'analyse et de mathématique sociales in Paris,
-is the person who named and systematised the hypergraph. He dates the idea himself, in the preface
+Claude Berge (1926–2002), a French mathematician who worked in Paris
+([Wikipedia, Claude Berge](https://en.wikipedia.org/wiki/Claude_Berge)), is the person who named and
+systematised the hypergraph. He dates the idea himself, in the preface
 to the 1989 English edition:
 
 > "The idea of looking at a family of sets from this standpoint took shape around 1960. In regarding

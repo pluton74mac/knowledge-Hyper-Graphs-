@@ -282,7 +282,7 @@ clearest available gap for a project in this KB.
 - Feng, Y., et al. "Hyper-RAG: Combating LLM Hallucinations using Hypergraph-Driven Retrieval-Augmented Generation." arXiv:2504.08758, 2025. https://arxiv.org/abs/2504.08758
 - Galkin, M., Trivedi, P., Maheshwari, G., Usbeck, R., Lehmann, J. "Message Passing for Hyper-Relational Knowledge Graphs." EMNLP 2020. https://arxiv.org/abs/2009.10847
 - Hayes, J., Gutierrez, C. "Bipartite Graphs as Intermediate Model for RDF." ISWC 2004. https://users.dcc.uchile.cl/~cgutierr/papers/bipartite.pdf
-- Hu, Z., et al. "HyperMono: A Monotonicity-aware Approach to Hyper-Relational Knowledge Representation." arXiv:2404.09848, 2024. https://arxiv.org/abs/2404.09848
+- Hu, Z., Gutiérrez-Basulto, V., Xiang, Z., Li, R., Pan, J. Z. "HyperMono: A Monotonicity-aware Approach to Hyper-Relational Knowledge Representation." arXiv:2404.09848, 15 April 2024. https://arxiv.org/abs/2404.09848
 - Kok, S., Domingos, P. "Learning Markov Logic Network Structure via Hypergraph Lifting." ICML 2009. https://icml.cc/Conferences/2009/papers/576.pdf
 - Luo, H., et al. "HyperGraphRAG." NeurIPS 2025; arXiv:2503.21322. https://arxiv.org/abs/2503.21322
 - Needham, M. "Neo4j: Modelling hyper edges in a property graph." 22 October 2013. https://www.markhneedham.com/blog/2013/10/22/neo4j-modelling-hyper-edges-in-a-property-graph/

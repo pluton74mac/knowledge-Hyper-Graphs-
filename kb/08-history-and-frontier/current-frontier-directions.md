@@ -282,7 +282,8 @@ Yue Gao (HyperDocRED, on the construction side).
   document-level knowledge-hypergraph construction benchmark.
 
 **Open problems.** Almost everything. A leakage audit of JF17K/WikiPeople/WD50K/FB-AUTO with modern
-tooling. A benchmark not derived from the 2015 Freebase dump. Reporting conventions that force a
+tooling (current state:
+[../09-ecosystem/dataset-quality-and-leakage-issues.md](../09-ecosystem/dataset-quality-and-leakage-issues.md)). A benchmark not derived from the 2015 Freebase dump. Reporting conventions that force a
 vanilla-retriever baseline and a compute budget. Separating construction error from retrieval error
 from generation error. This is the highest-leverage unglamorous work in the field.
 
