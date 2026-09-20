@@ -4,7 +4,7 @@ type: concept
 status: reviewed
 tags: [hypergraph, definitions, directed-hypergraph, k-uniform, multi-hypergraph, ordered-hypergraph, recursive-hypergraph, temporal-hypergraph, attributed-hypergraph]
 created: 2026-09-19
-updated: 2026-09-19
+updated: 2026-09-20
 ---
 
 # Hypergraph definitions and variants
@@ -277,6 +277,17 @@ this composite; each layer has its own primary source, which is why this note ex
 | nesting | ubergraph / k-recursive | Joslyn & Nowak 2017; Yadati 2020; Iordanov 2010 |
 | attributes | node/edge/incidence key–values | XGI; HIF (Coll et al. 2025) |
 | time | `{(S_i, t_i)}` | Benson et al. 2018 |
+
+## Related notes in this section
+
+- [notation-cheatsheet.md](notation-cheatsheet.md) — symbols, conventions, and the clash index.
+- [incidence-and-matrix-representations.md](incidence-and-matrix-representations.md) — how these variants are encoded as matrices, tensors and graph expansions.
+- [hypergraphs-vs-bipartite-vs-simplicial.md](hypergraphs-vs-bipartite-vs-simplicial.md) — the neighbouring structures and what distinguishes them.
+- [hypergraph-theory-results.md](hypergraph-theory-results.md) — duality, transversals, Helly, acyclicity, widths, colouring, cuts.
+- [random-walks-spectral-and-expansion.md](random-walks-spectral-and-expansion.md) — the spectral theory of these objects.
+- [n-ary-relations-and-relational-algebra.md](n-ary-relations-and-relational-algebra.md) — the database reading of ordered and role-labelled hyperedges.
+- [higher-order-interactions.md](higher-order-interactions.md) — the complex-systems literature that uses them.
+- Section index: [README.md](README.md).
 
 ## Sources
 
