@@ -9,18 +9,17 @@ folder, created from `_template/`, and links back to the `kb/` notes it depends 
 
 ## Candidate vectors (to be confirmed with the repository owner)
 
-These are directions the first research run suggested. None is started. Promote one by copying
-`_template/` to a new folder and adding a row above.
+These are the projects the first research run suggested. None is started. The full reasoning, the
+questions each one answers, and the themes it moves are in
+[`kb/00-index/open-questions.md`](../kb/00-index/open-questions.md), Part C. Promote one by copying
+`_template/` to a new folder and adding a row to the table above.
 
-1. **Format bake-off** — represent the same small KHG in HIF, RDF-star, TypeQL, and a property-graph
-   emulation; measure round-trip fidelity and query ergonomics. Depends on `kb/04-storage-and-formats/`.
-2. **Text-to-KHG pipeline** — reproduce an LLM-based n-ary extraction pipeline on a small corpus and
-   evaluate hyperedge precision. Depends on `kb/03-construction/`.
-3. **Hypergraph RAG replication** — replicate a hypergraph-RAG result against a GraphRAG and naive-RAG
-   baseline on one domain. Depends on `kb/07-applications/`, `kb/10-comparative-and-critique/`.
-4. **Visual encoding study** — render one KHG in bipartite, PAOH, and Euler-style encodings and
-   compare readability. Depends on `kb/06-visualization/`.
-5. **Link prediction baseline** — run one n-ary embedding model on JF17K or WD50K to get a feel for the
-   benchmark protocol. Depends on `kb/05-query-embeddings-reasoning/`, `kb/09-ecosystem/`.
-6. **KHG as agent memory** — prototype a hypergraph memory for a small agent and compare with a flat
-   vector store. Depends on `kb/07-applications/ai-agents-memory-and-planning.md`.
+| Id | Project | One-line goal | Starting notes |
+|---|---|---|---|
+| P1 | Format and store bake-off | Hold one small KHG as incidence table, reified RDF 1.2, bipartite property graph, TypeDB and HIF; same queries; log round-trip fidelity and latency | `kb/04-storage-and-formats/format-recommendations.md`, `schemas/` |
+| P2 | Role-aware HIF | A `roles` convention on incidence attributes, a validator, and role-preserving loaders for XGI and HyperNetX | `kb/04-storage-and-formats/hif-hypergraph-interchange-format.md`, `kb/09-ecosystem/software-libraries.md` |
+| P3 | Clean n-ary benchmark and replication | Rebuild a leak-free, arity-stratified split from a recent Wikidata dump; replicate two models; report calibration by arity | `kb/02-knowledge-representation/benchmarks-derived-from-freebase-and-wikidata.md`, `kb/05-query-embeddings-reasoning/benchmarks-and-evaluation-protocols.md` |
+| P4 | Arity ablation of hypergraph RAG | Run one hypergraph-RAG system with hyperedges intact, split pairwise, and as whole-sentence chunks; add GraphRAG-Bench | `kb/07-applications/retrieval-augmented-generation.md`, `kb/10-comparative-and-critique/critical-reading-of-hypergraph-rag-claims.md` |
+| P5 | Reader study | Incidence vs Euler drawing of the same KHG, with and without role labels | `kb/06-visualization/knowledge-hypergraph-specific-visualization.md`, `kb/06-visualization/perception-and-evaluation-studies.md` |
+| P6 | Schema width survey | Acyclicity class and hypertree width of Wikidata qualifier schemas and one biomedical schema | `kb/01-foundations/hypergraph-theory-results.md`, `kb/01-foundations/n-ary-relations-and-relational-algebra.md` |
+| P7 | Agent memory prototype | Hypergraph memory for a small agent vs a flat vector store, with explicit fact-identity and arity-merging rules | `kb/07-applications/ai-agents-memory-and-planning.md`, `kb/03-construction/incremental-and-streaming-construction.md` |
