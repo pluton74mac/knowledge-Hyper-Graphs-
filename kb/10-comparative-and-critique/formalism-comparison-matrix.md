@@ -133,6 +133,10 @@ code or a single implementation · **–** essentially none.
 | **F14 metagraph (Atomese)** | ★ Atomese pattern matcher | ★ AtomSpace, HypergraphDB | ★ | ★ | – |
 | **F15 higher-order network** | – | ★★ XGI, HyperNetX, HypergraphX, SimpleHypergraphs.jl, HAT | ★★ hypergraph NNs | ★★ PAOH, incidence matrices, Euler-style | ★ HIF, "a standard for higher-order network data to facilitate seamless data exchange between higher-order network libraries" ([HIF-standard repo](https://github.com/pszufe/HIF-standard), published in *Network Science*, 2025) |
 
+Query languages are covered in detail in
+[../05-query-embeddings-reasoning/query-languages-for-hypergraphs.md](../05-query-embeddings-reasoning/query-languages-for-hypergraphs.md),
+and the libraries in [../09-ecosystem/software-libraries.md](../09-ecosystem/software-libraries.md).
+
 **The single most important row is "query language maturity".** Of the fifteen, exactly four have a
 standardised query language (RDF/SPARQL, LPG/GQL, RDB/SQL, and — derivatively — bipartite graphs,
 which inherit graph query languages because they *are* graphs). No standard query language exists

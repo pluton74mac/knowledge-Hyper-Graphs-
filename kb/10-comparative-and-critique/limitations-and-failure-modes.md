@@ -301,7 +301,9 @@ in XGI cannot be published as linked data without a bespoke converter that inven
 
 **Mitigation.** Store role-based n-ary facts in a schema you control (JSON-LD with a relation-instance
 pattern round-trips to RDF), and generate HIF as a lossy *export* for network analysis rather than
-using it as the source of truth. See `kb/04-storage-and-formats/` when it exists.
+using it as the source of truth. See
+[../04-storage-and-formats/hif-hypergraph-interchange-format.md](../04-storage-and-formats/hif-hypergraph-interchange-format.md)
+and [../04-storage-and-formats/property-graph-emulation-patterns.md](../04-storage-and-formats/property-graph-emulation-patterns.md).
 
 ---
 
