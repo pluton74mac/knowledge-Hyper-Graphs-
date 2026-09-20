@@ -129,6 +129,9 @@ over role-labelled hypergraphs was found for this note. `[unverified — appears
 
 ## 5. Hyperpaths in directed hypergraphs
 
+*Directed in sense D2, tail set → head set; for the three incompatible senses of "directed
+hypergraph" see [directed and typed hyperedges](../02-knowledge-representation/directed-and-typed-hyperedges-for-knowledge.md) §1.*
+
 Covered in [logical-reasoning-and-rules-over-n-ary-facts.md](logical-reasoning-and-rules-over-n-ary-facts.md)
 §1, because in the directed case a hyperpath *is* a proof. The structures:
 

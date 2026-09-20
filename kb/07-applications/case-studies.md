@@ -45,7 +45,14 @@ Wikidata-derived WikiPeople.
 accuracy; fact-tree reasoning that keeps facts intact scored **54.4 %**
 ([Zhang et al., 2022](https://arxiv.org/abs/2108.08297)).
 
-**What it shows.** The single largest measured penalty for reification-by-decomposition in this KB.
+**What it shows.** The single largest measured penalty in this KB for the *learning and QA task
+that follows* reification-by-decomposition — not a penalty on the representation. The sense of
+"reification" at stake is reification-by-decomposition (replace the n-ary fact by a dummy entity plus
+binary edges, then learn or answer over those edges), not the information-preserving
+statement-as-object sense (RDF reification, RDF 1.2 reifiers, TypeDB relation instances); the
+decomposition itself preserves the fact, and it is the QA system trained on the decomposed form that
+loses the ~30 points. See
+[../10-comparative-and-critique/limitations-and-failure-modes.md](../10-comparative-and-critique/limitations-and-failure-modes.md) §2.
 
 **What it does not show.** A controlled comparison — the intact-fact system also uses a different
 reasoning architecture, and the questions are template-generated.

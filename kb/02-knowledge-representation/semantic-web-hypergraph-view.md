@@ -77,6 +77,15 @@ of the hyperedge, not a label on it — the opposite of the labelled-hyperedge c
 [Kok and Domingos, 2009](https://icml.cc/Conferences/2009/papers/576.pdf). Mixing the two
 conventions is the single most common source of confusion in this area.
 
+> **Arity convention in this KB.** Everywhere else in this KB, the arity of a fact is the number of
+> **entity participants** in it and the relation is a **label** on the hyperedge, not a member of it.
+> Under this KB's convention an RDF triple is therefore a **binary labelled hyperedge** — two
+> participants, subject and object, labelled by the predicate — while under Hayes and Gutierrez's
+> Proposition 1 the same triple is a **ternary unlabelled hyperedge**, with subject, predicate and
+> object all as members and no label. Neither is wrong; they count different things, and only this
+> note uses the Hayes–Gutierrez count. The convention is recorded in
+> [../01-foundations/notation-cheatsheet.md](../01-foundations/notation-cheatsheet.md) §5.
+
 ## 3. The bipartite incidence graph, and why it is the right intermediate model
 
 The paper's actual proposal is to go one step further, to the incidence graph:

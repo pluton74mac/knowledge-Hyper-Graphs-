@@ -331,6 +331,12 @@ therefore **`[unverified]` here**. HYPER's and THOR's inductive numbers are give
 
 1. **Do not decompose.** Every paper that measures it finds reification collapses: r-SimplE at
    JF17K MRR 0.102 against HypE's 0.494 ([Fatemi et al. 2020](https://arxiv.org/abs/1906.00137)).
+   The sense meant here is *reification-by-decomposition* — replacing the n-ary fact by a dummy entity
+   plus binary edges and then learning embeddings over them — not the information-preserving
+   statement-as-object sense (RDF reification, RDF 1.2 reifiers, TypeDB relation instances); what
+   collapses is the learning, because the auxiliary entities appear in too few facts, not the
+   representation, which is equivalent to the original. See
+   [../10-comparative-and-critique/limitations-and-failure-modes.md](../10-comparative-and-critique/limitations-and-failure-modes.md) §2.
 2. **Roles carry information that position alone does not** (RAM, GRAN), and **qualifiers restrict
    rather than define** (NeuInfer, ShrinkE, HyperMono).
 3. **Architecture converged on attention.** Across the survey's comparison "neural network-based

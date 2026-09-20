@@ -86,6 +86,9 @@ the general (non-uniform) case is the norm. Many tensor-based methods therefore 
 
 ## 3. Directed hypergraphs (Gallo, Longo, Pallottino, Nguyen 1993)
 
+*Directed in sense D2, tail set → head set; for the three incompatible senses of "directed
+hypergraph" see [directed and typed hyperedges](../02-knowledge-representation/directed-and-typed-hyperedges-for-knowledge.md) §1.*
+
 The standard definition of a directed hypergraph comes from Gallo, Longo, Pallottino and Nguyen,
 who used them to model problems in operations research and computer science: connectivity, paths,
 cuts, min–max duality for a subclass, algorithms for visiting a hypergraph and finding optimal

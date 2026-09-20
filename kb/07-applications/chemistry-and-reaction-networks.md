@@ -19,8 +19,10 @@ what a mature hypergraph application looks like when the n-ary structure is not 
 
 A chemical reaction network is a **directed multi-hypergraph**: vertices are molecules, hyperedges are
 reactions, and each hyperedge carries stoichiometric coefficients on its tail and head
-([Andersen, Flamm, Merkle, Stadler, 2017](https://arxiv.org/abs/1712.02594)). "Multi-" matters because
-the same reactant may appear with coefficient > 1, so tails and heads are multisets, not sets. This is
+([Andersen, Flamm, Merkle, Stadler, 2017](https://arxiv.org/abs/1712.02594)). *Directed in sense D2,
+tail set → head set; for the three incompatible senses of "directed hypergraph" see
+[directed and typed hyperedges](../02-knowledge-representation/directed-and-typed-hyperedges-for-knowledge.md) §1.*
+"Multi-" matters because the same reactant may appear with coefficient > 1, so tails and heads are multisets, not sets. This is
 the same structure that [Klamt, Haus and Theis, 2009](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1000385)
 use for metabolism — see [biomedical-and-life-sciences](biomedical-and-life-sciences.md) — and it
 specialises the general directed hypergraph of

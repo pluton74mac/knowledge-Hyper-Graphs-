@@ -103,6 +103,11 @@ All four rows follow [Benson, 2019](https://arxiv.org/abs/1807.09644).
 `(id, r, {(ρ, v)})` — an identity, a relation name, and a set of role–entity pairs. This is a
 synthesis, not a citation; see [hypergraph-definitions.md](hypergraph-definitions.md), Section 10.
 
+**Arity convention.** Arity counts the **entity participants** of a fact, and the relation is a label
+on the hyperedge rather than a member of it — so an RDF triple is a *binary labelled* hyperedge here,
+whereas under the 3-uniform encoding of Hayes and Gutierrez it is a *ternary unlabelled* one; see
+[../02-knowledge-representation/semantic-web-hypergraph-view.md](../02-knowledge-representation/semantic-web-hypergraph-view.md) §2.
+
 ## 6. Cuts, expansion, spectra
 
 | Symbol | Meaning | Source |

@@ -51,8 +51,11 @@ IJCAI 2020). Its definition:
 Properties of this definition: hyperedges are **labeled** (by r), **ordered** (position i carries the
 role), of **fixed arity per relation**, and the paper states that "knowledge hypergraphs are directed
 and labeled" as opposed to the undirected hypergraphs of most hypergraph learning work
-([Fatemi et al., 2020](https://arxiv.org/abs/1906.00137)). Truth is closed-world at the level of the
-"world" τ, with the KHG an incomplete observed subset; see
+([Fatemi et al., 2020](https://arxiv.org/abs/1906.00137)). *"Directed" here is sense D1, ordered
+arguments: the order of the tuple is the direction, and a KHG in this sense has no tail and head sets
+— that is sense D2 (Gallo et al. 1993), a different structure; see
+[directed-and-typed-hyperedges-for-knowledge.md](directed-and-typed-hyperedges-for-knowledge.md) §1.*
+Truth is closed-world at the level of the "world" τ, with the KHG an incomplete observed subset; see
 [open-world-vs-closed-world-and-uncertainty.md](open-world-vs-closed-world-and-uncertainty.md).
 
 The same structure, without the word "hypergraph", appears four years earlier in
@@ -210,6 +213,13 @@ nesting. The schema is worked out in
   hyper-relational models, while cautioning that decomposition "alter[s] the original HKG topology
   and fail[s] to fully preserve HKG information" ([Wang et al., 2025](https://arxiv.org/abs/2508.03280)).
   This is an active research question, not settled.
+- **Which sense of "reification" is meant?** Keep the two apart: statement-as-object reification (RDF
+  reification, RDF 1.2 reifiers, TypeDB relation instances) is information-preserving, whereas
+  *reification-by-decomposition* — replacing an n-ary fact by a dummy entity plus binary edges and then
+  learning embeddings over them — is the sense in which the measured collapses (r-SimplE, the
+  WikiPeopleQA decomposition ablation) occur, and those are failures of a learning method, not of the
+  representation; see
+  [../10-comparative-and-critique/limitations-and-failure-modes.md](../10-comparative-and-critique/limitations-and-failure-modes.md) §2.
 
 ## Sources
 
