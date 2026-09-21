@@ -136,3 +136,10 @@ repository pages on the same date.
 - eXascaleInfolab/HINGE_code — no licence stated. https://github.com/eXascaleInfolab/HINGE_code
 - xiongbo010/ShrinkE — no licence stated. https://github.com/xiongbo010/ShrinkE
 - PaddlePaddle/Research, `KG/ACL2021_GRAN` — Apache-2.0 (code); ships download scripts for JF17K and WikiPeople. https://github.com/PaddlePaddle/Research/tree/master/KG/ACL2021_GRAN
+
+## Added in run 02 (2026-09-21) — hierarchical and planned hypergraph retrieval
+
+- Yang, H., Huang, L., Chen, M., Cai, J. *H²RAG: A Hierarchical Knowledge and Hypergraph Reasoning Framework for Retrieval-Augmented Generation.* PAKDD 2026, LNCS vol. 16600, pp. 238–250, Springer Singapore, first online 9 June 2026. https://doi.org/10.1007/978-981-92-1468-6_14 — claims 20.33 % Exact Match, 14.61 % F1 and 11.53 % Generalized Score over HyperGraphRAG and HiRAG on UltraDomain (Agriculture, CS, Legal, Mix); full text paywalled, so whether these are points or relative gains is unverified (checked 2026-09-21).
+- Luo, H. et al. *Graph-R1: Towards Agentic GraphRAG Framework via End-to-end Reinforcement Learning.* ICML 2026; arXiv:2507.21892. https://arxiv.org/abs/2507.21892 — average F1 57.82 vs HyperGraphRAG 29.40 (Qwen2.5-7B, six open-domain datasets); same author group as HyperGraphRAG.
+- Huang, H. et al. *Retrieval-Augmented Generation with Hierarchical Knowledge* (HiRAG). EMNLP 2025 Findings; arXiv:2503.10150. https://arxiv.org/abs/2503.10150 — main results are GPT-4o pairwise win rates, not EM/F1; indexing the 625,948-token UltraDomain Mix corpus consumed 21,898,765 tokens / 17,208 s.
+- Zai, X. et al. *PRoH.* arXiv:2510.12434 v2, full text read 2026-09-21 — per-domain F1 table, the 200-question-per-domain 3–6 hop split, and the PRoH-L-only token table underlying §8.

@@ -4,7 +4,7 @@ type: comparison
 status: draft
 tags: [rag, hypergraph-rag, HyperGraphRAG, Hyper-RAG, HyperRAG, PRoH, GraphRAG, LightRAG, evaluation, reproducibility, benchmark, scepticism]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # A critical reading of hypergraph-RAG claims
@@ -263,6 +263,53 @@ entirely on self-reported benchmarks.
 
 ---
 
+## 8. Second-pass additions (2026-09-21)
+
+Four things found on a second reading of the primary sources, all bearing on §1's "ladder".
+
+**8.1 PRoH's headline is percentage points, not per cent.** The v2 full text gives the per-domain F1
+behind "19.73%": Medicine 35.35 → 52.94, Agriculture 33.89 → 56.67, CS 31.30 → 54.15, Legal
+43.81 → 58.81, Mix 48.71 → 69.16 ([Zai et al., 2025/2026](https://arxiv.org/abs/2510.12434), Table 1).
+The mean difference is 19.73 **F1 points**; read as a relative gain it would be ~56 %. The same
+applies to "+8.41% in G-E". This KB's earlier phrasing has been corrected in
+[../07-applications/retrieval-augmented-generation.md](../07-applications/retrieval-augmented-generation.md) §5.
+
+**8.2 PRoH's strongest number comes from a split the paper itself adds, and the split is easier.**
+The "+44.87% in F1 in the CS domain" is measured on **200 generated questions per domain sampled
+3–6 hops away**, introduced in the same paper. On that split HyperGraphRAG scores 52.40 in
+Agriculture and 64.55 in Mix, against 33.89 and 48.71 on the main 1–3 hop split — i.e. *both* systems
+do better on the nominally harder questions, so hop distance in the extracted hypergraph is not
+tracking difficulty. No human verification of the long-range split is described `[unverified]`.
+Checklist item 1 (§7) applies with extra force when the benchmark extension and the claim ship
+together.
+
+**8.3 Efficiency is reported for a configuration the headline does not use.** PRoH's Table 4 compares
+tokens per question for **PRoH-L** — an embedding-only-EWO variant that drops the LLM entity scorer —
+against HyperGraphRAG (−34.82 % in CS, −30.07 % Agriculture, but **+30.54 % in Legal**). The token
+cost of **full PRoH**, which produces every accuracy number quoted above, is not reported against
+HyperGraphRAG; only a module-wise breakdown (Figure 6) and no latency or LLM-call count. This is
+still the best cost accounting in the subfield, which is the problem: checklist item 6 has not been
+met by anyone. Nobody has plotted accuracy against a token budget, so every "X beats Y" compares two
+points on two unknown curves.
+
+**8.4 The reference baseline has been superseded by its own authors, and papers keep beating the old
+one.** **Graph-R1** ([Luo et al., 2025/2026](https://arxiv.org/abs/2507.21892), ICML 2026) is by the
+HyperGraphRAG team: same style of extracted knowledge hypergraph, but an RL-trained
+think–query–retrieve agent (GRPO, format + token-F1 reward). It reports average F1 **57.82** against
+HyperGraphRAG's **29.40** on six open-domain datasets with Qwen2.5-7B. Two consequences. First, this
+is the field's first substantial *internal* falsification: the gain came from the retrieval policy,
+not the representation, which is precisely the confound §2.3 flagged. Second, a 2026 paper whose
+contribution is stated as "beats HyperGraphRAG" — including H²RAG at PAKDD 2026
+([Yang, Huang, Chen and Cai, 2026](https://doi.org/10.1007/978-981-92-1468-6_14)), which reports
+20.33 % EM / 14.61 % F1 / 11.53 % Generalized Score over HyperGraphRAG and HiRAG but does not compare
+against PRoH or Graph-R1 — is beating a baseline its own community retired. Add to the checklist:
+**9. Which version of the ladder is the baseline?**
+
+A fuller treatment of the planned and hierarchical systems, with their cost tables, is in
+[../07-applications/hierarchical-and-planned-hypergraph-retrieval.md](../07-applications/hierarchical-and-planned-hypergraph-retrieval.md).
+
+---
+
 ## 7. A checklist for reading the next hypergraph-RAG paper
 
 1. **Who wrote the questions?** If the authors generated them from the indexed corpus, the benchmark
@@ -296,3 +343,6 @@ for the pipelines themselves.
 - "HyperRAG: Reasoning N-ary Facts over Hypergraphs for Retrieval Augmented Generation." *Proceedings of the ACM Web Conference 2026*. DOI 10.1145/3774904.3792710. https://dl.acm.org/doi/10.1145/3774904.3792710 (metadata only; page returned HTTP 403)
 - Xiang, Z., Wu, C., Zhang, Q., Chen, S., Hong, Z., Huang, X., Su, J. "When to use Graphs in RAG: A Comprehensive Analysis for Graph Retrieval-Augmented Generation." ICLR 2026; arXiv:2506.05690, June 2025. https://arxiv.org/abs/2506.05690 ; benchmark https://github.com/GraphRAG-Bench/GraphRAG-Benchmark
 - "You Don't Need Pre-built Graphs for RAG" (LogicRAG), AAAI 2026. arXiv:2508.06105. https://arxiv.org/abs/2508.06105
+- Yang, H., Huang, L., Chen, M., Cai, J. "H²RAG: A Hierarchical Knowledge and Hypergraph Reasoning Framework for Retrieval-Augmented Generation." PAKDD 2026, Lecture Notes in Computer Science vol. 16600, pp. 238–250, Springer Singapore, first online 9 June 2026. https://doi.org/10.1007/978-981-92-1468-6_14 (abstract and publisher metadata only; full text paywalled, checked 2026-09-21)
+- Luo, H., E, H., Chen, G., Lin, Q., Guo, Y., Xu, F., Kuang, Z., Song, M., Wu, X., Zhu, Y., Luu, A. T. "Graph-R1: Towards Agentic GraphRAG Framework via End-to-end Reinforcement Learning." ICML 2026; arXiv:2507.21892, 29 Jul 2025 (rev. 2 Jun 2026); code https://github.com/LHRLAB/Graph-R1. https://arxiv.org/abs/2507.21892
+- Huang, H., Huang, Y., Yang, J., Pan, Z., Chen, Y., Ma, K., Chen, H., Cheng, J. "Retrieval-Augmented Generation with Hierarchical Knowledge" (HiRAG). EMNLP 2025 Findings; arXiv:2503.10150. https://arxiv.org/abs/2503.10150
