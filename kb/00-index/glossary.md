@@ -4,7 +4,7 @@ type: glossary
 status: reviewed
 tags: [glossary, index]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # Glossary
@@ -125,6 +125,11 @@ See: [Schema induction and ontology alignment](../03-construction/schema-inducti
 
 ---
 
+**Aware-less** — the third category of Lu, Tupikina and Alam's semantic-awareness axis: models encoding
+neither entity position nor semantic role, treating a fact's entities as an unordered collection
+(e.g. m-DistMult, GETD, S2S).
+See: [Geometry and algebraic interfaces](../05-query-embeddings-reasoning/geometry-and-algebraic-interfaces.md).
+
 ## B
 
 **B-arc** (backward arc) — a directed hyperedge with a single head: many tails, one head. It *is* a
@@ -213,6 +218,11 @@ See: [Incidence, matrices, tensors and graph expansions](../01-foundations/incid
 weight learning; wrong for most knowledge bases. Contrast [OWA](#o) and [PCA](#p).
 See: [Open world, closed world and uncertainty](../02-knowledge-representation/open-world-vs-closed-world-and-uncertainty.md).
 
+**Coarse-to-fine hyperedge extraction** — extracting a binary skeleton first, then qualified binary
+relations (time, place, conditions), then general n-ary event hyperedges, rather than emitting all
+arities in one prompt; Hyper-KGGen's construction ladder.
+See: [Skill-driven extraction and the scenario gap](../03-construction/skill-driven-extraction-and-the-scenario-gap.md).
+
 **Cog-RAG** — a 2026 hypergraph-RAG system with a dual hypergraph: a *theme* hypergraph over chunks
 plus an *entity* hypergraph, aligned by a top-down retrieval pass.
 See: [Retrieval-augmented generation](../07-applications/retrieval-augmented-generation.md).
@@ -230,6 +240,10 @@ See: [Ontologies and schemas for n-ary knowledge](../02-knowledge-representation
 **Conceptual graph** — Sowa's bipartite notation of concept nodes and n-adic conceptual-relation
 nodes with numbered arcs. Structurally the incidence graph of a labelled hypergraph, drawn in 1976.
 See: [The knowledge-representation lineage](../08-history-and-frontier/knowledge-representation-lineage.md).
+
+**Conditional message passing** — message passing whose node initialisation and messages depend on the
+query, so representations are query-relative rather than absolute; the NBFNet → HCNet → HYPER family.
+See: [HYPER anatomy](../05-query-embeddings-reasoning/hyper-foundation-model-anatomy.md).
 
 **Conformality** — the dual of the Helly property: a hypergraph is k-conformal iff its dual is
 k-Helly.
@@ -322,6 +336,11 @@ See: [Classical hypergraph theory results](../01-foundations/hypergraph-theory-r
 
 ## E
 
+**EdgeMem** — a 2026 LLM-free agent memory that preserves original conversation turns in a multi-anchor
+hypergraph indexed by content, calendar-month and episodic cues; reports LoCoMo under a strict judge
+and LongMemEval-S retrieval metrics, neither comparable to HyperMem's LLM-as-a-judge score.
+See: [Temporal hyperedges and editable agent memory](../07-applications/temporal-hyperedges-and-editable-agent-memory.md).
+
 **ED-HNN** — a 2023 hypergraph neural network derived from hypergraph *diffusion* rather than from
 GNNs; provably approximates any continuous equivariant hypergraph diffusion operator, implemented as
 message passing over the star expansion.
@@ -341,6 +360,12 @@ See: [Random walks, spectral theory and expansion](../01-foundations/random-walk
 their vertices; contrast the [subset standard](#s). The bipartite/extra-node encoding is its
 practical form.
 See: [Hypergraph drawing algorithms](../06-visualization/hypergraph-drawing-algorithms.md).
+
+**Enc_PI (positional-interaction encoder)** — HYPER's `MLP([p_a ‖ p_b])` over sinusoidal position
+encodings, mapping a position pair to a vector; required to be injective and extrapolating so a model
+can act on arities it never saw. Theorem C.2 shows such an encoder exists in the hypothesis class, not
+that the trained one is injective.
+See: [HYPER anatomy](../05-query-embeddings-reasoning/hyper-foundation-model-anatomy.md).
 
 **Entity linking** — mapping a mention to an identifier in a reference knowledge base (Wikidata,
 UMLS). Skipped by every current LLM-based KHG pipeline, which merge entities on exact upper-cased
@@ -367,6 +392,12 @@ See: [Hyper-relational vs n-ary vs hypergraph](../02-knowledge-representation/hy
 curatorial and automatic categories. The model a KHG mixing human and LLM facts should copy: an
 evidence *type* per hyperedge, not a single confidence number.
 See: [Curation, crowdsourcing and quality control](../03-construction/curation-crowdsourcing-and-quality.md).
+
+**EWO (Entity-Weighted Overlap)** — PRoH's query-conditioned score for the next hyperedge to traverse:
+the aggregate (mean combined with maximum) of LLM-assigned relevance weights over the entities shared
+by the current and candidate hyperedges, with entities below an embedding-similarity threshold scored
+zero.
+See: [Hierarchical and planned hypergraph retrieval](../07-applications/hierarchical-and-planned-hypergraph-retrieval.md).
 
 **Expander, hypergraph** — two largely separate programmes share the phrase: combinatorial/spectral
 r-uniform hypergraph expanders, and topological high-dimensional expanders (HDX) defined on
@@ -428,6 +459,11 @@ See: [Ontologies and schemas for n-ary knowledge](../02-knowledge-representation
 
 ## G
 
+**GAHE** — a 2025 geometry-aware hyper-relational model embedding qualifier slots in Euclidean,
+hyperbolic and spherical subspaces with position-dependent sub-relations; bibliographic details known
+only from the two-axis taxonomy's reference list `[unverified]`.
+See: [Geometry and algebraic interfaces](../05-query-embeddings-reasoning/geometry-and-algebraic-interfaces.md).
+
 **G-E** (Generation Evaluation) — HyperGraphRAG's LLM-judged metric: an average over seven
 dimensions (correctness, relevance, factuality, comprehensiveness, knowledgeability, logical
 coherence, diversity), itself averaged with the question's F1.
@@ -448,6 +484,11 @@ them") to compensate for single-pass under-recall, allowing larger chunks withou
 Copied by HyperGraphRAG and Hyper-RAG.
 See: [LLM-based knowledge hypergraph construction](../03-construction/llm-based-khg-construction.md).
 
+**Global Skill Library** — Hyper-KGGen's external memory of free-text `{trigger, action}` extraction
+rules (at most 50 words each), distilled from the gold relations that K resampled extraction runs
+recover only sometimes, and injected into the prompt at inference.
+See: [Skill-driven extraction and the scenario gap](../03-construction/skill-driven-extraction-and-the-scenario-gap.md).
+
 **GQL** (ISO/IEC 39075:2024) — the first new ISO database language since SQL, published 12 April
 2024. It standardises the **property graph**, whose edges connect exactly two nodes, and explicitly
 does not include n-ary relationships. The newest graph standard re-affirmed the binary edge.
@@ -463,6 +504,11 @@ element carrying `<endpoint>`s with `in`/`out`/`undir` direction. It is also the
 part of the format: NetworkX's reader raises on hyperedges. "GraphML supports hyperedges" is true of
 the standard and false of the tool chain.
 See: [File formats overview](../04-storage-and-formats/file-formats-overview.md).
+
+**Graph-R1** — an ICML 2026 system from the HyperGraphRAG authors: a knowledge-hypergraph environment
+with a GRPO-trained think–query–retrieve agent; average F1 57.82 against HyperGraphRAG's 29.40 on six
+open-domain datasets, evidence that the gain came from the search rather than the representation.
+See: [Hierarchical and planned hypergraph retrieval](../07-applications/hierarchical-and-planned-hypergraph-retrieval.md).
 
 **GraphRAG** — Microsoft's 2024 graph-based retrieval-augmented generation system: LLM extraction of
 entities and binary relations per chunk, community detection, community summaries, global answers.
@@ -482,7 +528,21 @@ See: [Classical hypergraph theory results](../01-foundations/hypergraph-theory-r
 
 ---
 
+**Gyro-polygon** — PolygonE's encoding of an n-ary fact as a polygon in a gyrovector (hyperbolic)
+space whose vertices are the entities, scored by the vertex-to-gyrocentroid geodesic.
+See: [Geometry and algebraic interfaces](../05-query-embeddings-reasoning/geometry-and-algebraic-interfaces.md).
+
 ## H
+
+**H²GNN** — a 2024 hyperbolic hypergraph neural network for knowledge hypergraphs: "hyper-star"
+message passing (position-typed star expansion) with two-stage aggregation in Lorentz space; arXiv
+preprint only, and its reported FB-AUTO and JF17K numbers sit below ReAlE's.
+See: [Geometry and algebraic interfaces](../05-query-embeddings-reasoning/geometry-and-algebraic-interfaces.md).
+
+**H²RAG** — a PAKDD 2026 hypergraph RAG system that adds bounded-recursion community detection and a
+hierarchical summary layer above the hyperedges, retrieved by a dual-layer scorer, claiming gains over
+HyperGraphRAG and HiRAG on UltraDomain; no preprint or code found as of 2026-09-21.
+See: [Hierarchical and planned hypergraph retrieval](../07-applications/hierarchical-and-planned-hypergraph-retrieval.md).
 
 **HAHE** — a 2023 hyper-relational model with two attention modules, a *global* one over the
 hypergraph structure and a *local* one over a fact's element sequence. Best method across JF17K,
@@ -544,6 +604,11 @@ interactions. The paper that popularised "hyper-relational data (a.k.a. multi-fo
 relational data)".
 See: [Knowledge hypergraph embedding models](../05-query-embeddings-reasoning/knowledge-hypergraph-embedding-models.md).
 
+**HiRAG** — an EMNLP 2025 Findings hierarchical *graph* RAG that builds layers of LLM-written "summary
+entities" by GMM clustering (HiIndex) and retrieves local, global (community) and bridge knowledge
+(HiRetrieval); the hierarchy baseline the hypergraph papers benchmark against.
+See: [Hierarchical and planned hypergraph retrieval](../07-applications/hierarchical-and-planned-hypergraph-retrieval.md).
+
 **Hits@k** — the fraction of ranking queries whose correct answer appears in the top k. Read Hits@1
 when you care whether the model is *right*; the gap to MRR is informative.
 See: [Benchmarks and evaluation protocols](../05-query-embeddings-reasoning/benchmarks-and-evaluation-protocols.md).
@@ -566,6 +631,11 @@ See: [Biomedicine and the life sciences](../07-applications/biomedical-and-life-
 **HSimplE** — the 2020 companion of HypE: shifts an entity's embedding by its position in the tuple
 and combines it with a relation embedding.
 See: [Knowledge hypergraph embedding models](../05-query-embeddings-reasoning/knowledge-hypergraph-embedding-models.md).
+
+**HTKGH** — Hyper-Relational Temporal Knowledge Generalized Hypergraph: a 2026 generalisation of
+hyper-relational temporal knowledge graphs supporting more than two primary entities per temporal
+fact, with the `htkgh-polecat` forecasting dataset.
+See: [Temporal hyperedges and editable agent memory](../07-applications/temporal-hyperedges-and-editable-agent-memory.md).
 
 **HyConvE** — a 2023 knowledge-hypergraph model using 3D convolution with role-aware and
 position-aware filters to capture intra-fact interactions.
@@ -595,6 +665,9 @@ See: [Inductive and few-shot settings](../05-query-embeddings-reasoning/inductiv
 **Hyper-Extract** — a 2026 CLI and library turning unstructured text into graphs, hypergraphs or
 spatio-temporal structures with an LLM. Notable for adoption: ~4,000 GitHub stars in eight months,
 nine times HyperGraphRAG's, suggesting the bottleneck is packaging rather than expressiveness.
+Apache-2.0; nine typed output structures, ten engines, 40 bilingual domain templates; the only KHG
+tool with per-document provenance and rollback, and still not consistent on insert (checked
+2026-09-21). See: [Skill-driven extraction and the scenario gap](../03-construction/skill-driven-extraction-and-the-scenario-gap.md).
 See: [Software libraries](../09-ecosystem/software-libraries.md).
 
 **Hyper-FM** — a 2025 hypergraph foundation model with hierarchical vertex-knowledge embedding and
@@ -604,7 +677,7 @@ See: [The current research frontier](../08-history-and-frontier/current-frontier
 
 **Hyper-KGGen** — a 2026 coarse-to-fine LLM extractor with a distilled "global skill library"; its
 durable contribution is **HyperDocRED**, the first annotated document-level knowledge-hypergraph
-construction benchmark.
+construction benchmark. Published at KDD 2026 (DOI 10.1145/3770855.3818198).
 See: [Evaluating constructed knowledge hypergraphs](../03-construction/evaluation-of-constructed-khgs.md).
 
 **Hyper-M2RAG** — a 2026 multimodal extension of Hyper-RAG whose contribution is *anchor-driven
@@ -638,6 +711,7 @@ See: [Hypergraph definitions and variants](../01-foundations/hypergraph-definiti
 **HyperDocRED** — the first document-level knowledge-hypergraph extraction benchmark, built by
 manually restructuring Re-DocRED into n-ary relations: 50 training and 100 test documents. Small
 enough to rank systems and not to train them, and currently a single point of failure for the field.
+Announced as released, but not distributed as of 2026-09-21; the repository ships code only.
 See: [Evaluating constructed knowledge hypergraphs](../03-construction/evaluation-of-constructed-khgs.md).
 
 **Hyperedge** — a member of `E` in a hypergraph: any non-empty subset of the vertices. In this KB a
@@ -760,6 +834,11 @@ See: [Software engineering and code knowledge](../07-applications/software-engin
 (subtask steps, reusable skills) and one hyperedge per trajectory, retrieved dual-path.
 See: [AI agents — memory and planning](../07-applications/ai-agents-memory-and-planning.md).
 
+**Hyper-star message passing** — H²GNN's scheme that instantiates each n-ary fact as a hyperedge node
+linked to its entities by position-typed relations, forming a two-level tree; described as a lossless
+expansion but not proved to be one.
+See: [Geometry and algebraic interfaces](../05-query-embeddings-reasoning/geometry-and-algebraic-interfaces.md).
+
 **HyperStorylines** — a temporal encoding in which entities are lines through time and each
 hyperedge is a rectangle intersecting its participants; supports aggregation and nesting of entity
 types, and beat PAOHVis for identifying and characterising relationships in the only head-to-head
@@ -807,6 +886,12 @@ Co-authorship, baskets and contact records are interaction hypergraphs; a five-q
 separates them from knowledge hypergraphs.
 See: [Hypergraph construction from structured data](../03-construction/hypergraph-construction-from-data.md).
 
+**Interpolation vs extrapolation (temporal KGs)** — interpolation completes missing elements at
+timestamps inside the observed range; extrapolation predicts facts at future timestamps. Agent
+memory's "who owns it now" is extrapolation-shaped; VITA and HypeTKG are interpolation-only, NE-Net,
+MT-Path and HTKGH are extrapolation.
+See: [Temporal and dynamic KHGs](../05-query-embeddings-reasoning/temporal-and-dynamic-khgs.md).
+
 **iText2KG** — an incremental LLM KG constructor that keeps a global entity set and matches new
 local entities by cosine similarity above a validated threshold, reporting a false-discovery rate.
 See: [Entity resolution and canonicalisation](../03-construction/entity-resolution-and-canonicalisation.md).
@@ -849,6 +934,17 @@ See: [Classical hypergraph theory results](../01-foundations/hypergraph-theory-r
 spanning tree to the convex hull" — literally the dial between the edge and subset drawing
 standards. Beat Bubble Sets on accuracy and time.
 See: [Set visualisation and hypergraph visualisation](../06-visualization/set-visualization-connection.md).
+
+**Key role set** — the subset of a relation's roles whose binding may be held by at most one valid
+fact at any instant; the n-ary analogue of a binary edge's implicit (subject, relation) functional
+dependency, and the precondition for detecting supersession. No existing n-ary schema language
+declares one.
+See: [Temporal hyperedges and editable agent memory](../07-applications/temporal-hyperedges-and-editable-agent-memory.md).
+
+**KG-ICL** — a 2024 prompt-based knowledge-graph foundation model for in-context reasoning (Cui, Sun,
+Hu, NeurIPS 2024); run zero-shot on reified hypergraphs in HYPER's appendix it averages MRR 0.14
+against HYPER's 0.24.
+See: [HYPER anatomy](../05-query-embeddings-reasoning/hyper-foundation-model-anatomy.md).
 
 **KGTK** — the Knowledge Graph Toolkit: Wikidata-scale ETL over a TSV edge format with an explicit
 `id` per edge, so edges can be the subject of other edges — the qualifier mechanism in tabular form.
@@ -944,6 +1040,11 @@ See: [Open world, closed world and uncertainty](../02-knowledge-representation/o
 
 ## M
 
+**MAGE** — a 2026 "diachronic hypergraph" database used as a multi-agent memory engine over agents,
+messages, tools, errors, procedures, documents, decisions and evidence; whether its lifecycle
+management is bitemporal is `[unverified]`.
+See: [Temporal hyperedges and editable agent memory](../07-applications/temporal-hyperedges-and-editable-agent-memory.md).
+
 **Matching (hypergraph)** — a family of pairwise disjoint hyperedges. Maximum matching is set
 packing, NP-hard from arity 3 (3-dimensional matching is one of Karp's original problems): one of
 the two textbook polynomial graph problems that break at arity ≥ 3.
@@ -1007,6 +1108,10 @@ See: [Higher-order interactions](../01-foundations/higher-order-interactions.md)
 the ranking. Critically, MRR here averages over **prediction tasks**, not facts, so a dataset's
 arity distribution silently reweights its own metric.
 See: [Benchmarks and evaluation protocols](../05-query-embeddings-reasoning/benchmarks-and-evaluation-protocols.md).
+
+**MT-Path** — a 2025 mixture-policy reinforcement-learning model for multi-hop extrapolation over
+n-tuple temporal knowledge graphs; current best on NWIKI and NICE.
+See: [Temporal and dynamic KHGs](../05-query-embeddings-reasoning/temporal-and-dynamic-khgs.md).
 
 **m-TransH** — the 2016 model that started the line: generalises TransH to n-ary facts by projecting
 each entity onto a relation-specific hyperplane according to its role. Also introduced JF17K.
@@ -1182,6 +1287,16 @@ and PG-Keys-based constraints, aimed at a future GQL DDL. Shows the property-gra
 investing in *schema* while leaving *arity* alone.
 See: [Ontologies and schemas for n-ary knowledge](../02-knowledge-representation/ontologies-and-schemas-for-n-ary-knowledge.md).
 
+**Plan context graph** — PRoH's sketch of the entities and hyperedges within a few hops of the topic
+entities and target hyperedges, shown to the LLM so its reasoning plan can only propose steps the
+index can serve.
+See: [Hierarchical and planned hypergraph retrieval](../07-applications/hierarchical-and-planned-hypergraph-retrieval.md).
+
+**Planner–store interface gap** — the observation that LLM planners emit natural language while
+retrieval layers answer with similarity, so the relational algebra an n-ary store actually supports is
+never exposed as planner-callable operations.
+See: [Geometry and algebraic interfaces](../05-query-embeddings-reasoning/geometry-and-algebraic-interfaces.md).
+
 **Polygon metaphor** — a subset-standard encoding drawing each hyperedge as a polygon whose corners
 are its vertices, with a joint primal–dual layout; scaled to thousands of hyperedges by
 structure-aware simplification. Implemented in HGPolyVis.
@@ -1192,11 +1307,20 @@ entity in two positions, symmetric roles, optional roles and schema drift when a
 inserted.
 See: [Limitations and failure modes](../10-comparative-and-critique/limitations-and-failure-modes.md).
 
+**Positional interaction** — an ordered pair `(a, b)` recording that one entity occupies slot `a` of one
+fact and slot `b` of another; HYPER's generalisation of a knowledge graph's four fundamental
+relations.
+See: [HYPER anatomy](../05-query-embeddings-reasoning/hyper-foundation-model-anatomy.md).
+
 **PRoH** — a 2026 WWW system that replaces static retrieval planning over a knowledge hypergraph
 with a context-aware planner, question decomposition into a dynamically evolving DAG of
 subquestions, and entity-weighted-overlap path retrieval. Reports the largest margin over
 HyperGraphRAG (+19.73% F1) — measured on HyperGraphRAG's own evaluation design.
 See: [Retrieval-augmented generation](../07-applications/retrieval-augmented-generation.md).
+
+**PRoH-L** — PRoH's lightweight variant with a fully embedding-based EWO and only path hyperedges as
+generation context; the only configuration for which token costs are reported.
+See: [Hierarchical and planned hypergraph retrieval](../07-applications/hierarchical-and-planned-hypergraph-retrieval.md).
 
 **PROV-O** — the W3C provenance ontology (Entity, Activity, Agent, plus relations). Its **qualified
 terms** — `prov:qualifiedDerivation` and friends — are reified hyperedges by another name, i.e. the
@@ -1297,9 +1421,11 @@ reifiers — a breaking change for data. The two most widely deployed commercial
 implement the older dialect, so "RDF-star support" names two incompatible things.
 See: [RDF-star, RDF 1.2 and the semantic-web serialisations](../04-storage-and-formats/rdf-star-and-semantic-web-serialisations.md).
 
-**ReAlE** — the 2021 follow-up to HypE: embeddings that provably represent the primitive operations
-of relational algebra (renaming, projection, union, selection, join), tying the embedding line back
-to database theory.
+**ReAlE** — the 2021 follow-up to HypE (JMLR 24(105):1–34, 2023): embeddings that provably represent
+five primitive operations of relational algebra (renaming, projection, union, selection, set
+difference; not Cartesian product, hence not join), tying the embedding line back to database theory.
+Only renaming is an equality of scores; the others are bounds.
+See also: [Geometry and algebraic interfaces](../05-query-embeddings-reasoning/geometry-and-algebraic-interfaces.md).
 See: [The machine-learning era](../08-history-and-frontier/machine-learning-era.md).
 
 **Re-DocRED** — a re-annotation of 4,053 DocRED documents fixing pervasive false negatives; models
@@ -1320,6 +1446,11 @@ is a triple term. It "may denote a variety of things related to the triple term'
 as a statement or belief that the proposition holds", and one reifier may reify several
 propositions. Structurally a Wikidata statement node.
 See: [RDF-star, RDF 1.2 and the semantic-web serialisations](../04-storage-and-formats/rdf-star-and-semantic-web-serialisations.md).
+
+**Relation graph** — a graph whose nodes are relation types and whose typed edges record how those
+relations' argument slots intersect; introduced by InGram, used by ULTRA, generalised to arity by
+HYPER, where it has O(|R|²k²) potential edges.
+See: [HYPER anatomy](../05-query-embeddings-reasoning/hyper-foundation-model-anatomy.md).
 
 **Relation-instance pattern** — Pattern 1 of the 2006 W3C n-ary note: create a class for the
 relation and one property per participant. The oldest, most portable and least lossy way to put an
@@ -1361,11 +1492,20 @@ See: [Limitations and failure modes](../10-comparative-and-critique/limitations-
 
 ---
 
+**rspmm** — relational sparse-matrix multiplication, the NBFNet-derived aggregation kernel reused by
+ULTRA and KG-ICL and rewritten in Triton for arbitrary arity in HYPER.
+See: [HYPER anatomy](../05-query-embeddings-reasoning/hyper-foundation-model-anatomy.md).
+
 ## S
 
 **S2S** — a 2021 tensor-decomposition model that partitions embeddings so parameters can be shared
 across facts of different arity, fixing GETD's sparsity problem.
 See: [Knowledge hypergraph embedding models](../05-query-embeddings-reasoning/knowledge-hypergraph-embedding-models.md).
+
+**Scenario gap** — the claim that a generic extraction prompt underperforms a hand-tuned domain prompt
+because the model lacks explicit scenario skills rather than capability; the motivating problem of
+Hyper-KGGen.
+See: [Skill-driven extraction and the scenario gap](../03-construction/skill-driven-extraction-and-the-scenario-gap.md).
 
 **Schema hypergraph** — vertices are attributes, hyperedges are relation schemas. The object of
 Fagin's acyclicity results and the first large-scale reading of a knowledge base as a hypergraph.
@@ -1387,6 +1527,11 @@ See: [Scientific knowledge and scholarly graphs](../07-applications/scientific-k
 elements are roles, and an annotated instance is an n-ary fact — with the caveat that frames are
 lexical rather than schematic.
 See: [Ontologies and schemas for n-ary knowledge](../02-knowledge-representation/ontologies-and-schemas-for-n-ary-knowledge.md).
+
+**Semantic operators** — Patel et al.'s declarative relational-algebra-shaped operators (`sem_filter`,
+`sem_join`, `sem_agg`, `sem_topk`) over tables with natural-language predicates, implemented in LOTUS;
+the closest existing analogue to an algebraic interface for an LLM planner.
+See: [Geometry and algebraic interfaces](../05-query-embeddings-reasoning/geometry-and-algebraic-interfaces.md).
 
 **Semantic role labelling (SRL)** — assigning predicate–argument roles (PropBank's numbered Arg0,
 Arg1…; FrameNet's named FEs) to a sentence. An SRL-labelled sentence is already a set of n-ary
@@ -1482,6 +1627,11 @@ the resulting hyperedge sets. An under-used metric: a pipeline whose output chan
 cannot support incremental merging, whatever its F1.
 See: [Evaluating constructed knowledge hypergraphs](../03-construction/evaluation-of-constructed-khgs.md).
 
+**Stability-based relative reward** — Hyper-KGGen's partition of gold relations into stable, unstable
+and missed by how many of K parallel extraction rollouts recover them, distilling skills only from the
+latter two; it requires gold annotations, so it is a supervised signal.
+See: [Skill-driven extraction and the scenario gap](../03-construction/skill-driven-extraction-and-the-scenario-gap.md).
+
 **Star expansion** — see [Levi graph](#l). Weighted `w(e)/δ(e)` in the spectral literature.
 See: [Incidence, matrices, tensors and graph expansions](../01-foundations/incidence-and-matrix-representations.md).
 
@@ -1506,6 +1656,11 @@ See: [Hyper-relational vs n-ary vs hypergraph](../02-knowledge-representation/hy
 records, and a rank. A hyperedge whose members are the subject, the main value and every qualifier
 value, labelled by the main property and keyed by qualifier properties.
 See: [Wikidata and Freebase data models](../02-knowledge-representation/wikidata-and-freebase-data-models.md).
+
+**StepGRPO** — HyperGraphPro's variant of GRPO in which each retrieval step's advantage is modulated by
+a dense progress reward (reduction in uncertainty about the gold answer) plus a graph-structure
+reward, instead of a single outcome reward.
+See: [Hierarchical and planned hypergraph retrieval](../07-applications/hierarchical-and-planned-hypergraph-retrieval.md).
 
 **Subset standard** — Mäkinen's drawing convention in which vertices are points and each hyperedge
 is a closed curve enveloping them. Dominates the academic drawing literature and has near-zero
@@ -1537,6 +1692,11 @@ See: [Hypergraph algorithms for knowledge work](../05-query-embeddings-reasoning
 
 **Temporal hypergraph** — a sequence of timestamped hyperedges, `{(S_i, t_i)}`. For a KHG, keep two
 clocks apart: **valid time** (when the fact holds in the world, part of its content) and
+**Time triplet (VITA)** — `(c, t₁, t₂)` with `c ∈ {Since, Until, Period, Invariant}`, the only
+interval-valued time representation found in the hyper-relational literature (2025); evaluated only
+in the interpolation setting.
+See: [Temporal and dynamic KHGs](../05-query-embeddings-reasoning/temporal-and-dynamic-khgs.md).
+
 **transaction time** (when the system recorded it, metadata). Conflating them makes temporal queries
 wrong.
 See: [Hypergraph definitions and variants](../01-foundations/hypergraph-definitions.md).

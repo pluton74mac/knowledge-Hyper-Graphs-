@@ -4,7 +4,7 @@ type: survey
 status: draft
 tags: [inductive, few-shot, zero-shot, unseen-entities, unseen-relations, qblp, hart, metanir, metarh, hancl, hyper, thor, foundation-model, wd20k]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # Inductive and few-shot link prediction on knowledge hypergraphs
@@ -14,7 +14,9 @@ the knowledge base changes — which, for a knowledge base, is constantly. This 
 escapes: **inductive over entities**, **inductive over relations**, and **few-shot**.
 
 Companion to [knowledge-hypergraph-embedding-models.md](knowledge-hypergraph-embedding-models.md)
-and [benchmarks-and-evaluation-protocols.md](benchmarks-and-evaluation-protocols.md).
+and [benchmarks-and-evaluation-protocols.md](benchmarks-and-evaluation-protocols.md). For HYPER's
+internals — relation graph, `Enc_PI`, the theorems, cost, pretraining corpora and public artefacts —
+see [hyper-foundation-model-anatomy.md](hyper-foundation-model-anatomy.md).
 
 ---
 
@@ -87,8 +89,10 @@ models were barely inductive at all. Second, MetaNIR's WD-Ext numbers are not co
 WD20K column — different dataset, different construction — and the survey does not claim they are.
 
 And from HYPER's own node-inductive table
-([Huang, Galkin, Bronstein and Ceylan, arXiv:2506.12362, 2025](https://arxiv.org/abs/2506.12362),
-Table 2; MRR), where the baselines are hypergraph models rather than hyper-relational ones:
+([Huang, Galkin, Bronstein and Ceylan, ICLR 2026 / arXiv:2506.12362
+v3](https://arxiv.org/abs/2506.12362), Table 3; MRR), where the baselines are hypergraph models
+rather than hyper-relational ones. **The ULTRA rows below are v3's; the v1 preprint reported very
+different ones** — see [hyper-foundation-model-anatomy.md](hyper-foundation-model-anatomy.md) §8:
 
 | Method | JF-IND | WP-IND | MFB-IND |
 |---|---|---|---|
@@ -98,9 +102,12 @@ Table 2; MRR), where the baselines are hypergraph models rather than hyper-relat
 | RD-MPNN | 0.402 | 0.304 | 0.122 |
 | HCNet | 0.435 | 0.414 | 0.368 |
 | Hyper (end2end) | 0.422 | 0.435 | 0.427 |
-| ULTRA† (50KG), zero-shot | 0.346 | 0.286 | 0.149 |
+| ULTRA‡ (3KG), zero-shot | 0.321 | 0.305 | 0.277 |
+| ULTRA‡ (50KG), zero-shot | 0.007 | 0.029 | 0.026 |
+| ULTRA‡ (3KG + 2HG), zero-shot | 0.410 | 0.341 | 0.294 |
 | Hyper (4HG), zero-shot | 0.403 | 0.375 | **0.497** |
 | Hyper (3KG + 2HG), zero-shot | **0.459** | 0.415 | 0.404 |
+| ULTRA‡ (3KG + 2HG), fine-tuned | 0.421 | 0.349 | 0.303 |
 | Hyper (3KG + 2HG), fine-tuned | 0.463 | **0.446** | 0.455 |
 
 The remarkable row is **zero-shot Hyper (4HG) beating every end-to-end model on MFB-IND (0.497 vs.
@@ -119,14 +126,17 @@ over concatenated sinusoidal position encodings. The naive alternative — one e
 pair (a, b) — "does not generalize to unseen arities". Benchmarks: JF/MFB/WP/WD × {25, 50, 75, 100}%
 unseen relations, following InGram ([Huang et al. 2025](https://arxiv.org/abs/2506.12362) §4.1, §5.2).
 
-Selected MRR from their Table 1 (100% unseen relations — the hardest column):
+Selected MRR from v3 Table 2 (100% unseen relations — the hardest column; again, the ULTRA rows
+differ substantially from v1's):
 
 | Method | JF-100 | MFB-100 | WP-100 | WD-100 |
 |---|---|---|---|---|
 | G-MPNN (end-to-end) | 0.002 | 0.003 | 0.000 | 0.001 |
 | HCNet (end-to-end) | 0.028 | 0.082 | 0.003 | 0.007 |
 | Hyper (end-to-end) | 0.198 | 0.222 | 0.202 | 0.205 |
-| ULTRA† (50KG), zero-shot | 0.111 | 0.262 | 0.065 | 0.150 |
+| ULTRA‡ (3KG), zero-shot | 0.144 | 0.277 | 0.078 | 0.161 |
+| ULTRA‡ (50KG), zero-shot | 0.001 | 0.190 | 0.004 | 0.001 |
+| ULTRA‡ (3KG + 2HG), zero-shot | 0.168 | 0.283 | 0.090 | 0.137 |
 | Hyper (3KG + 2HG), zero-shot | 0.173 | 0.299 | 0.222 | 0.182 |
 | Hyper (3KG + 2HG), fine-tuned | 0.176 | 0.275 | 0.210 | 0.210 |
 
@@ -135,11 +145,16 @@ Three findings the authors draw out, each verifiable from the table:
 1. **Node-inductive models collapse on unseen relations.** HCNet goes from 0.435 on JF-IND to 0.028
    on JF-100; G-MPNN is at noise level throughout.
 2. **Reification does not rescue KG foundation models.** ULTRA applied to reified hypergraphs is
-   consistently behind, and "ULTRA† (50KG), trained on 50 knowledge graphs, performs only marginally
-   better than the version trained on just 3", because "reified hypergraphs form atypical
-   structures, e.g., tripartite graphs with auxiliary edge nodes, which is not commonly seen in
-   pretraining corpora". This is the strongest published evidence that **reification is not just
-   lossy but transfer-hostile.**
+   consistently behind, because "reified hypergraphs form atypical structures, e.g., tripartite
+   graphs with auxiliary edge nodes, which is not commonly seen in pretraining corpora". v3 adds
+   that "auxiliary edge nodes increase hop distances, inverse relations are modeled ineffectively,
+   and the resulting structures deviate from standard KG pre-training distributions". This is the
+   strongest published evidence that **reification is not just lossy but transfer-hostile** —
+   including when ULTRA is pretrained on HYPER's own 3KG+2HG mixture, which v3 adds as a baseline
+   and HYPER still beats. *Correction:* v1 said ULTRA (50KG) "performs only marginally better than
+   the version trained on just 3"; **v3 says it "performs much worse"**. The qualitative claim
+   reversed between preprint versions, so treat the size of the gap as active research
+   ([hyper-foundation-model-anatomy.md](hyper-foundation-model-anatomy.md) §8).
 3. **Pretraining mixture must match arity.** Hyper (4HG) "performs strongly on JF and MFB, both of
    which contain a large proportion of higher-arity relations, [but] struggles on WP, which
    primarily consists of binary edges", while WP benefits from binary-graph pretraining; the mixed
@@ -214,7 +229,7 @@ distribution of tasks that a real, single knowledge base may not provide.
 - Wei, J., Guan, S., Li, D., Jin, X., Guo, J., Cheng, X. *A Survey of Link Prediction in N-ary Knowledge Graphs*. arXiv:2506.08970, 2025; EMNLP 2025. <https://arxiv.org/abs/2506.08970>
 - Ali, M., Berrendorf, M., Galkin, M., Thost, V., Ma, T., Tresp, V., Lehmann, J. "Improving Inductive Link Prediction Using Hyper-relational Facts". *ISWC 2021*; arXiv:2107.04894. <https://doi.org/10.1007/978-3-030-88361-4_5>
 - Yin, G., Zhang, H., Yang, Y., Luo, Y. *Inductive Link Prediction on N-ary Relational Facts via Semantic Hypergraph Reasoning*. KDD 2025; arXiv:2503.20676. <https://arxiv.org/abs/2503.20676>
-- Huang, X., Galkin, M., Bronstein, M. M., Ceylan, İ. İ. *HYPER: A Foundation Model for Inductive Link Prediction with Knowledge Hypergraphs*. arXiv:2506.12362, 14 Jun 2025. Venue: presented at the NeurIPS 2025 "New Perspectives in Graph Machine Learning" workshop (https://neurips.cc/virtual/2025/127653); the authors' repository states ICLR 2026 (https://github.com/HxyScotthuang/HYPER). Cite it as an arXiv preprint until one of the two is confirmed. <https://arxiv.org/abs/2506.12362>
+- Huang, X., Galkin, M., Bronstein, M. M., Ceylan, İ. İ. *HYPER: A Foundation Model for Inductive Link Prediction with Knowledge Hypergraphs*. **ICLR 2026** (confirmed 2026-09-21: the OpenReview PDF carries the line "Published as a conference paper at ICLR 2026", <https://openreview.net/pdf?id=YLTQbMoAaX>, and the authors' repository BibTeX gives ICLR 2026); also presented earlier at the NeurIPS 2025 "New Perspectives in Graph Machine Learning" workshop (<https://neurips.cc/virtual/2025/127653>). arXiv:2506.12362, v1 14 Jun 2025, v3 8 May 2026 — **cite v3**, whose baseline numbers differ from v1's. <https://arxiv.org/abs/2506.12362>
 - Yu, W., Lu, Y., Yang, D. *THOR: Inductive Link Prediction over Hyper-Relational Knowledge Graphs*. arXiv:2602.05424, 2026. <https://arxiv.org/abs/2602.05424>
 - Wei, J., Guan, S., Jin, X., Guo, J., Cheng, X. *Few-shot Link Prediction on N-ary Facts*. COLING 2024; arXiv:2305.06104. <https://arxiv.org/abs/2305.06104>
 - Huang, X., Romero Orth, M., Barceló, P., Bronstein, M. M., Ceylan, İ. İ. *Link Prediction with Relational Hypergraphs* (HCNet). TMLR 2025; arXiv:2402.04062. <https://arxiv.org/abs/2402.04062>

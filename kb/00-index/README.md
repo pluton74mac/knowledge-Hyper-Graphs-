@@ -4,7 +4,7 @@ type: index
 status: reviewed
 tags: [index, navigation]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # 00 — Index

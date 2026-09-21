@@ -4,7 +4,7 @@ type: survey
 status: draft
 tags: [history, hypergraph-learning, embeddings, hgnn, higher-order-networks, topological-deep-learning, benchmarks]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # The machine-learning era, 2006–2023
@@ -112,7 +112,7 @@ expressiveness results, and releases the FB-AUTO / JF17K-derived splits.
 The follow-up, "Knowledge Hypergraph Embedding Meets Relational Algebra" (ReAlE)
 ([arXiv:2102.09557](https://arxiv.org/abs/2102.09557), 18 Feb 2021), is the theoretically most
 interesting of the family: it constructs embeddings that provably represent the primitive operations
-of relational algebra (renaming, projection, set union, selection, join), tying the embedding line
+of relational algebra (renaming, projection, set union, selection, set difference — not join, which is the one Codd primitive it does not claim; see [geometry and algebraic interfaces](../05-query-embeddings-reasoning/geometry-and-algebraic-interfaces.md)), tying the embedding line
 back to Fagin's database line.
 
 ### 2.5 Expansions and the sceptical turn (2024–2025)

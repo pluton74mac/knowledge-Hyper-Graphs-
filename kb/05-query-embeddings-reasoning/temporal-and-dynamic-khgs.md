@@ -2,9 +2,9 @@
 title: Temporal and dynamic knowledge hypergraphs
 type: survey
 status: draft
-tags: [temporal, dynamic, time, ne-net, hypetkg, hynt, numeric-literals, dhgnn, cat-walk, hyper-cores, forecasting, interpolation, extrapolation]
+tags: [temporal, dynamic, time, ne-net, hypetkg, hynt, vita, mt-path, htkgh, numeric-literals, dhgnn, cat-walk, hyper-cores, forecasting, interpolation, extrapolation, valid-time]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # Temporal and dynamic knowledge hypergraphs
@@ -73,6 +73,38 @@ birthplace) are strong evidence when forecasting facts that do. It contributes *
 Wikidata11k and YAGO1830 datasets"
 ([Wei et al. 2025](https://arxiv.org/abs/2506.08970) §G.1.1).
 
+### VITA (2025) — the interval representation, pointed at interpolation
+
+VITA replaces the timestamp with a **time triplet** `(c, t₁, t₂)` "consisting of three elements: 1) a
+time-related conjunction c specifying one of four types of temporal validity
+c ∈ {Since, Until, Period, Invariant}, followed by two time values t₁ and t₂"
+([Un, Lu, Yang and Yang, arXiv:2505.11803, 17 May 2025](https://arxiv.org/abs/2505.11803)). That is
+the closest thing in the n-ary literature to a validity *interval* on a fact, including the infinite
+bounds that open-ended facts need — `(Since, t₁, +∞)`, `(Until, −∞, t₂)`, `(Invariant, −∞, +∞)`. It is
+evaluated on Wiki (from Wikidata11k), YAGO (from YAGO1830), Wikipeople and ICEWS14, for entity,
+relation, time-value and numeric-literal prediction, with gains reported up to 75.3% on time
+prediction. But "This paper focuses on the interpolation setting": it fills holes in history and
+never answers as-of-now.
+
+### MT-Path (2025) — current best on the n-ary extrapolation benchmarks
+
+MT-Path does RL multi-hop reasoning over N-TKGs with a mixture policy of three sub-policies plus an
+element-aware GCN ([Hou, Su, Jin, Li, Bai, Guo and Cheng, arXiv:2505.12788, 19 May
+2025](https://arxiv.org/abs/2505.12788)). On the same benchmarks as NE-Net it reports **MRR 80.69 /
+Hits@1 78.98 on NWIKI** against NE-Net's 72.03 / 66.87, and **49.91 / 40.16 on NICE** against
+48.98 / 38.36. The NE-Net figures match the 0.720 / 0.668 in §3 below, which cross-checks both
+papers. Time is still a discrete timestamp attached to each n-tuple.
+
+### HTKGH (2026) — n-ary forecasting, as a benchmark rather than a model
+
+Ahrabian, Boxer and Pujara generalise hyper-relational TKGs to **Hyper-Relational Temporal Knowledge
+Generalized Hypergraphs**, because "one of the critical limitations of HTKGs is a lack of support for
+more than two primary entities in temporal facts, which commonly occur in real-world events". They
+derive the formalisation, show backward compatibility, release the **htkgh-polecat** dataset from the
+POLECAT global event database, and benchmark LLMs on forecasting over it
+([arXiv:2601.00430, 1 Jan 2026, v2 17 Mar 2026](https://arxiv.org/abs/2601.00430)). It is the first
+n-ary *forecasting* resource found, and still timestamp-based: no validity interval, no invalidation.
+
 ## 3. Datasets and results
 
 Benchmarks, from [Wei et al. 2025](https://arxiv.org/abs/2506.08970), Table 6:
@@ -110,6 +142,15 @@ role-value pairs and temporal evolution can significantly enhance predictive cap
 Caveat: the Wiki-hy column has HypE at 0.624 and HypeTKG at 0.693 — a much smaller margin, consistent
 with Wiki-hy being only 9.5% n-ary.
 
+**Correction (2026-09-21): the two columns are different tasks.** NE-Net is *extrapolation* —
+"reasoning tasks at future timestamps can be realized via task-specific decoders"
+([Hou et al., Findings of EMNLP 2023](https://aclanthology.org/2023.findings-emnlp.77/)) — while
+HypeTKG is explicitly *interpolation only*: "In our work, we only focus on the interpolated LP on
+HTKGs and leave extrapolation for future work"
+([Ding et al., arXiv:2307.10219](https://arxiv.org/abs/2307.10219)). The table above should be read
+as two tables. HypeTKG also states the discretisation this note complains about in §5 in so many
+words: "We decompose time periods into a series of timestamps."
+
 ## 4. The other literature: dynamic hypergraph learning
 
 Separately from knowledge bases, a body of work studies hypergraphs whose structure changes.
@@ -145,12 +186,31 @@ from new facts while retaining previously acquired knowledge"
 ([Wei et al. 2025](https://arxiv.org/abs/2506.08970) §6.2). To which this note adds:
 
 - **Intervals, not timestamps.** All four benchmarks discretise time into points. Validity intervals
-  — the natural representation for "was CEO from 2011 to 2019" — are absent.
+  — the natural representation for "was CEO from 2011 to 2019" — are absent. *Partly answered:* VITA's
+  time triplet (§2) is such a representation, but no benchmark is built on it and it is only
+  evaluated under interpolation.
 - **Two time dimensions.** Valid time and transaction time (when the KB learned the fact) are
-  distinct and both matter for provenance; nothing here models both.
+  distinct and both matter for provenance; nothing here models both. *Confirmed 2026-09-21:* an arXiv
+  abstract search for `"valid time" AND "hyperedge"` returns zero results, as does one for the exact
+  phrase `"temporal knowledge hypergraph"` (control query `"knowledge hypergraph"` returns normally).
+  Bitemporal modelling in 2026 is entirely a binary-edge affair — Zep/Graphiti, TOKI, Quipu — and is
+  surveyed in
+  [../07-applications/temporal-hyperedges-and-editable-agent-memory.md](../07-applications/temporal-hyperedges-and-editable-agent-memory.md).
+- **No retraction or supersession.** Beyond intervals: no n-ary model or schema declares a **key role
+  set** — the subset of roles whose binding may hold for at most one valid fact at a time — so
+  "this fact replaces that one" is not even definable over a hyperedge. This, rather than time
+  representation, looks like the binding constraint on using a KHG as agent memory. See the
+  companion note's §1 and §7.
 - **No temporal CQA.** Complex query answering over hyper-relational graphs
   ([logical-reasoning-and-rules-over-n-ary-facts.md](logical-reasoning-and-rules-over-n-ary-facts.md) §5)
   has no temporal variant that was found for this note. `[unverified — apparent gap]`
+- **No continuous-time n-ary model.** The binary line runs Know-Evolve (temporal point process, 2017)
+  → TANGO (neural ODE, EMNLP 2021). No n-ary or hyper-relational analogue was found on 2026-09-21.
+
+**Downstream consumers.** The agent-memory systems that use hypergraph memory — HyperMem, HyperSkill,
+EvoGraph-R1, EdgeMem, MAGE — all use time as a retrieval cue and none as a truth condition on the
+hyperedge. Their benchmarks, and what a temporal KHG would have to provide them, are in
+[../07-applications/temporal-hyperedges-and-editable-agent-memory.md](../07-applications/temporal-hyperedges-and-editable-agent-memory.md).
 
 ## Open questions raised here
 
@@ -162,6 +222,11 @@ from new facts while retaining previously acquired knowledge"
   link prediction?
 - What would a benchmark with validity *intervals* rather than timestamps look like, and would
   current models degrade on it?
+- Does VITA's time triplet, re-evaluated under an extrapolation split rather than an interpolation
+  one, beat timestamp-per-n-tuple models such as MT-Path — or does the interval representation only
+  help interpolation?
+- Can a key role set (which roles must be functionally unique at a time) be induced from an extracted
+  KHG rather than declared, so that supersession becomes detectable?
 
 ## Sources
 
@@ -175,3 +240,9 @@ from new facts while retaining previously acquired knowledge"
 - Mancastroppa, M., Cencetti, G., Barrat, A. *Emerging Activity Temporal Hypergraph: a model for generating realistic time-varying hypergraphs*. *Physical Review E* 112, 054305, 2025; arXiv:2507.01124. <https://arxiv.org/abs/2507.01124>
 - Liu, H., Jiao, P., Gao, M., Chen, C., Jin, D. *Heterogeneous Temporal Hypergraph Neural Network*. IJCAI 2025; arXiv:2506.17312. <https://arxiv.org/abs/2506.17312>
 - Liu, Y., Ma, J., Li, P. *Neural Predicting Higher-order Patterns in Temporal Networks*. arXiv:2106.06039, 2021. <https://arxiv.org/abs/2106.06039>
+- Un, C., Lu, Y., Yang, T., Yang, D. *VITA: Versatile Time Representation Learning for Temporal Hyper-Relational Knowledge Graphs*. arXiv:2505.11803, 17 May 2025. <https://arxiv.org/abs/2505.11803>
+- Hou, Z., Su, M., Jin, X., Li, Z., Bai, L., Guo, J., Cheng, X. *Mixture Policy based Multi-Hop Reasoning over N-tuple Temporal Knowledge Graphs* (MT-Path). arXiv:2505.12788, 19 May 2025. <https://arxiv.org/abs/2505.12788>
+- Ahrabian, K., Boxer, E., Pujara, J. *Toward Better Temporal Structures for Geopolitical Events Forecasting* (HTKGH, htkgh-polecat). arXiv:2601.00430, 1 Jan 2026. <https://arxiv.org/abs/2601.00430>
+- Wang, J., Wang, B., Qiu, M., Pan, S., Xiong, B., Liu, H., Luo, L., Liu, T., Hu, Y., Yin, B., Gao, W. *A Survey on Temporal Knowledge Graph Completion: Taxonomy, Progress, and Prospects*. arXiv:2308.02457, 2023. <https://arxiv.org/abs/2308.02457>
+- Trivedi, R., Dai, H., Wang, Y., Song, L. *Know-Evolve: Deep Temporal Reasoning for Dynamic Knowledge Graphs*. arXiv:1705.05742, 2017. <https://arxiv.org/abs/1705.05742>
+- Han, Z., Ding, Z., Ma, Y., Gu, Y., Tresp, V. "Learning Neural Ordinary Equations for Forecasting Future Links on Temporal Knowledge Graphs" (TANGO). *EMNLP 2021*, pp. 8352–8364. <https://aclanthology.org/2021.emnlp-main.658/>

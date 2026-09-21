@@ -269,3 +269,14 @@ the authors' own claims.
 - Frantzen, F., Schaub, M. T. "A repository for discovery and reuse of higher-order network datasets" (AHORN). arXiv 2608.03491, 4 August 2026. https://arxiv.org/abs/2608.03491
 - Kang, D. Y. S., Kim, J., Jeon, J., Kim, S.-W. "TAHB: A Comprehensive Benchmark for Text-Attributed Hypergraph Learning." arXiv 2608.15055, 15 August 2026. https://arxiv.org/abs/2608.15055
 - Konda, K. "Hypergraph Embedding Indexing for Efficient Dense Vector Retrieval." arXiv 2608.22980, 24 August 2026. https://arxiv.org/abs/2608.22980
+
+## Added in run 02 (2026-09-21) — the composed stack
+
+Sources newly cited from section 08 by `composed-stack-and-research-bets.md`; all others it cites are already listed above or in the by-topic files of sections 03, 05 and 07.
+
+- Fatemi, B., Taslakian, P., Vazquez, D., Poole, D. "Knowledge Hypergraph Embedding Meets Relational Algebra" (ReAlE). arXiv:2102.09557, 2021. https://arxiv.org/abs/2102.09557
+- Zai, X., Tan, X., Wang, X., Liu, Q., Xu, X., Zhang, W. "PRoH: Dynamic Planning and Reasoning over Knowledge Hypergraphs for Retrieval-Augmented Generation." WWW 2026; arXiv:2510.12434. https://arxiv.org/abs/2510.12434
+- Yue, J., Hu, C., Sheng, J., Zhou, Z., Zhang, W., Liu, T., Guo, L., Deng, Y. "HyperMem: Hypergraph Memory for Long-Term Conversations." arXiv:2604.08256, 2026. https://arxiv.org/abs/2604.08256
+- Xu, R., Yang, T., Huang, W.-C. "HyperSkill: Self-Evolving LLM Agents via Hypergraph-Structured Skill Memory." arXiv:2608.16114, 2026. https://arxiv.org/abs/2608.16114
+- Rasmussen, P., Paliychuk, P., Beauvais, T., Ryan, J., Chalef, D. "Zep: A Temporal Knowledge Graph Architecture for Agent Memory." arXiv:2501.13956, 2025. https://arxiv.org/abs/2501.13956
+- Galkin, M., Trivedi, P., Maheshwari, G., Usbeck, R., Lehmann, J. "Message Passing for Hyper-Relational Knowledge Graphs" (StarE). EMNLP 2020. https://aclanthology.org/2020.emnlp-main.596/

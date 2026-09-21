@@ -4,7 +4,7 @@ type: survey
 status: draft
 tags: [frontier, research-directions, foundation-models, neurosymbolic, temporal, inductive, standards, databases, topological-deep-learning, expressivity, benchmarks, multimodal, agents, evaluation, causality]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # The current research frontier
@@ -118,9 +118,10 @@ Ali, Berrendorf, Galkin et al. on qualifiers helping inductive prediction (ISWC 
 - Huang, Galkin, Bronstein, Ceylan, "HYPER: A Foundation Model for Inductive Link Prediction with
   Knowledge Hypergraphs," [arXiv:2506.12362](https://arxiv.org/abs/2506.12362) (14 Jun 2025).
   Encodes each entity *with its position in the hyperedge*, which is what lets knowledge transfer
-  between relations of different arity; 16 new inductive datasets. Workshop presentation at NeurIPS
-  2025 ([page](https://neurips.cc/virtual/2025/127653)); the authors' repository states ICLR 2026
-  ([GitHub](https://github.com/HxyScotthuang/HYPER)).
+  between relations of different arity; 16 new inductive datasets. ICLR 2026 (confirmed 2026-09-21),
+  after a NeurIPS 2025 workshop presentation ([page](https://neurips.cc/virtual/2025/127653)). Taken
+  apart in [HYPER anatomy](../05-query-embeddings-reasoning/hyper-foundation-model-anatomy.md): note
+  that the v3 revision changed the reified-ULTRA baselines by up to a factor of 50.
 - Yu, Lu, Yang, "THOR: Inductive Link Prediction over Hyper-Relational Knowledge Graphs,"
   [arXiv:2602.05424](https://arxiv.org/abs/2602.05424) (5 Feb 2026): relation and entity foundation
   graphs, parallel encoders, transformer decoder, masked training; 12 datasets; reports 20.4% over
@@ -433,7 +434,7 @@ New questions raised by this survey should be added to `kb/00-index/open-questio
 ## Sources
 
 - Gao, Y., Feng, Y., Liu, S., Han, X., Du, S., Wu, Z., Hu, H. "Hypergraph Foundation Model." arXiv:2503.01203; *IEEE TPAMI* 48:4063–4080, Apr 2026. https://doi.org/10.1109/TPAMI.2025.3647504
-- Huang, X., Galkin, M., Bronstein, M. M., Ceylan, İ. İ. "HYPER: A Foundation Model for Inductive Link Prediction with Knowledge Hypergraphs." arXiv:2506.12362, 14 Jun 2025. https://arxiv.org/abs/2506.12362 ; https://github.com/HxyScotthuang/HYPER ; https://neurips.cc/virtual/2025/127653
+- Huang, X., Galkin, M., Bronstein, M. M., Ceylan, İ. İ. "HYPER: A Foundation Model for Inductive Link Prediction with Knowledge Hypergraphs." arXiv:2506.12362, 14 Jun 2025; ICLR 2026. https://arxiv.org/abs/2506.12362 ; https://openreview.net/pdf?id=YLTQbMoAaX ; https://github.com/HxyScotthuang/HYPER
 - Galkin, M. et al. "Towards Foundation Models for Knowledge Graph Reasoning" (ULTRA). arXiv:2310.04562; ICLR 2024. https://arxiv.org/abs/2310.04562
 - Luo, H. et al. "HyperGraphRAG." arXiv:2503.21322; NeurIPS 2025. https://arxiv.org/abs/2503.21322
 - Zai, X., Tan, X., Wang, X., Liu, Q., Xu, X., Zhang, W. "PRoH." arXiv:2510.12434; WWW 2026. https://arxiv.org/abs/2510.12434

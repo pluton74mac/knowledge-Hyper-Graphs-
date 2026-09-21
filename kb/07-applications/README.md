@@ -4,7 +4,7 @@ type: index
 status: draft
 tags: [hypergraph, applications, index, matrix]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # 07 — Applications
@@ -29,6 +29,8 @@ taxonomy of what a hyperedge *means* in each setting, then read by domain or by 
 | [social-collaborative-and-communication](social-collaborative-and-communication.md) | Group interactions, higher-order link prediction, rumour propagation and misinformation |
 | [software-engineering-and-code-knowledge](software-engineering-and-code-knowledge.md) | HyperRes dependency resolution, build graphs, code KGs (and why they are binary) |
 | [ai-agents-memory-and-planning](ai-agents-memory-and-planning.md) | AND/OR and HTN planning, tool-schema hypergraphs, HyperMem/HyperSkill/DocTrace, AtomSpace |
+| [hierarchical-and-planned-hypergraph-retrieval](hierarchical-and-planned-hypergraph-retrieval.md) | Three generations of hypergraph retrieval: flat k-NN, planned traversal (PRoH's EWO, plan context graph, sub-question DAG) and learned policies (Graph-R1, HyperGraphPro), then hierarchy and community summaries (HiRAG, H²RAG at PAKDD 2026, HHS-RAG, EEG-MedRAG); cost and token-budget reporting, and why the ladder's baseline is out of date. Added in run 02. |
+| [temporal-hyperedges-and-editable-agent-memory](temporal-hyperedges-and-editable-agent-memory.md) | Valid time on the hyperedge: what it would formally require, the bitemporal binary precedent (Graphiti/Zep, TOKI, Quipu), the n-ary state of the art split into interpolation (HypeTKG, VITA) and extrapolation (NE-Net, MT-Path, HTKGH), the supersession gap, the agent-memory consumers (HyperMem, HyperSkill, EvoGraph-R1, EdgeMem, MAGE) with verified benchmarks and judge protocols, LoCoMo vs LongMemEval, and a six-point data-model sketch. Added in run 02. |
 | [industry-adoption-and-products](industry-adoption-and-products.md) | TypeDB, Wikidata, RDF 1.2/RDF-star, Stardog, Palantir, HypergraphDB, RelationalAI; maturity grades |
 | [case-studies](case-studies.md) | Eight mini case studies with the concrete numbers, and what each number does not show |
 

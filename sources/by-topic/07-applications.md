@@ -162,3 +162,32 @@ confirmed in that run; the note that cites them says which part is unconfirmed.
 - Kobrix Software. *HypergraphDB* project site. http://hypergraphdb.org/
 - RelationalAI. Company site. https://relational.ai/
 - Wikidata. *Wikidata:Statistics*, figures dated 31 August 2025. https://www.wikidata.org/wiki/Wikidata:Statistics
+
+## Added in run 02 (2026-09-21) — hierarchical and planned hypergraph retrieval
+
+- Yang, H., Huang, L., Chen, M., Cai, J. *H²RAG: A Hierarchical Knowledge and Hypergraph Reasoning Framework for Retrieval-Augmented Generation.* In *Advances in Knowledge Discovery and Data Mining*, PAKDD 2026 (Hong Kong, 9–12 June 2026), Lecture Notes in Computer Science vol. 16600, pp. 238–250. Springer Singapore, first online 9 June 2026. https://doi.org/10.1007/978-981-92-1468-6_14 — abstract and Crossref metadata read 2026-09-21; full text paywalled; no arXiv preprint or code repository found.
+- Huang, H., Huang, Y., Yang, J., Pan, Z., Chen, Y., Ma, K., Chen, H., Cheng, J. *Retrieval-Augmented Generation with Hierarchical Knowledge* (HiRAG). EMNLP 2025 Findings; arXiv:2503.10150, v1 13 Mar 2025, v3 26 Sep 2025. https://arxiv.org/abs/2503.10150 ; code https://github.com/hhy-huang/HiRAG
+- Luo, H., E, H., Chen, G., Lin, Q., Guo, Y., Xu, F., Kuang, Z., Song, M., Wu, X., Zhu, Y., Luu, A. T. *Graph-R1: Towards Agentic GraphRAG Framework via End-to-end Reinforcement Learning.* ICML 2026; arXiv:2507.21892, v1 29 Jul 2025, v2 2 Jun 2026. https://arxiv.org/abs/2507.21892 ; code https://github.com/LHRLAB/Graph-R1
+- Park, J., Lee, S., Khan, O. Z., Kim, H. J., Kim, J.-K. *HyperGraphPro: Progress-Aware Reinforcement Learning for Structure-Guided Hypergraph RAG.* arXiv:2601.17755, v2 12 Apr 2026. https://arxiv.org/abs/2601.17755 — v1 (25 Jan 2026) was titled *ProGraph-R1: Progress-aware Reinforcement Learning for Graph Retrieval Augmented Generation*; same authors, retitled at revision.
+- Zhang, T., Wu, J., Kang, Y. *HHS-RAG: Hierarchical hypergraph retrieval-augmented generation with hyperbolic contrastive learning and subgraph-level decision.* *Journal of Intelligent Information Systems*, published online 29 July 2026. https://doi.org/10.1007/s10844-026-01077-0 — abstract only; full text paywalled (checked 2026-09-21).
+- Wang, S., Fang, Y., Zhou, Y., Liu, X., Ma, Y. *ArchRAG: Attributed Community-based Hierarchical Retrieval-Augmented Generation.* AAAI 2026, 40(19):15868–15876; arXiv:2502.09891, v1 14 Feb 2025, v4 11 May 2026. https://arxiv.org/abs/2502.09891
+- Wang, Y., Luo, H., Meng, L., Jia, Z., Zhou, X., Wen, Q. *EEG-MedRAG: Enhancing EEG-based Clinical Decision-Making via Hierarchical Hypergraph Retrieval-Augmented Generation.* arXiv:2508.13735, v1 19 Aug 2025, v2 11 Oct 2025. https://arxiv.org/abs/2508.13735
+- Song, Y., Tao, X., Yang, Z., Luo, Y., Tang, J. *EHRAG: Bridging Semantic Gaps in Lightweight GraphRAG via Hybrid Hypergraph Construction and Retrieval.* ACL 2026 Findings; arXiv:2604.17458, v1 19 Apr 2026. https://arxiv.org/abs/2604.17458
+- Yang, Y., Wang, H., Peng, Y., Kim, J., Bi, L. *HyperWalker: Dynamic Hypergraph-Based Deep Diagnosis for Multi-Hop Clinical Modeling across EHR and X-Ray in Medical VLMs.* arXiv:2601.13919, 20 Jan 2026. https://arxiv.org/abs/2601.13919
+- Zai, X., Tan, X., Wang, X., Liu, Q., Xu, X., Zhang, W. *PRoH.* arXiv:2510.12434 v2 (18 Feb 2026) full text read 2026-09-21 for the EWO formula, the plan context graph, the sub-question DAG state search, Tables 1–4 and Figure 6. https://arxiv.org/abs/2510.12434 ; repository announced at https://github.com/zaixjun/PRoH (HTTP 403 through this session's proxy, contents unverified).
+
+## Added in run 02 (2026-09-21) — time on the hyperedge, and hypergraphs as editable agent memory
+
+- Rasmussen, P., Paliychuk, P., Beauvais, T., Ryan, J., Chalef, D. "Zep: A Temporal Knowledge Graph Architecture for Agent Memory." arXiv:2501.13956, 20 January 2025. https://arxiv.org/abs/2501.13956
+- Wang, Z. "TOKI: A Bitemporal Operator Algebra for Contradiction Resolution in LLM-Agent Persistent Memory." arXiv:2606.06240, 4 June 2026. https://arxiv.org/abs/2606.06240
+- Niksarli, A., Baheti, G. "A Graph-Native Bitemporal Memory Store for Conversational AI Agents." arXiv:2607.26520, 29 July 2026. https://arxiv.org/abs/2607.26520
+- Brown, S. "Quipu: A Governed Bitemporal Knowledge Graph Store." arXiv:2608.16813, 17 August 2026. https://arxiv.org/abs/2608.16813
+- Yang, C., Zhou, C., Xiao, Y., Dong, S., Zhuang, L., Zhang, Y., Wang, Z., Hong, Z., Yuan, Z., Xiang, Z., Chen, S., Zhou, H., Zhang, Q., Liu, N., Su, J., Wang, X., Chang, Y., Huang, X. "Graph-based Agent Memory: Taxonomy, Techniques, and Applications." arXiv:2602.05665, 5 February 2026. https://arxiv.org/abs/2602.05665
+- DEEP-PolyU. "Awesome-GraphMemory" resource list accompanying arXiv:2602.05665. GitHub, checked 2026-09-21. https://github.com/DEEP-PolyU/Awesome-GraphMemory
+- Nguyen, D. D. A., Qiu, Z., Chen, S., Liew, A. W.-C. "Graph-Based Personalized Memory for LLM Agents: Representation, Evolution, Retrieval, and Evaluation." arXiv:2609.08599, 8 September 2026. https://arxiv.org/abs/2609.08599
+- Cui, Z., Cao, J., Wen, Z., Yuan, B., Feng, J., Chen, S. "EdgeMem: LLM-Free Agent Memory Construction and Retrieval via Evidence-Preserving Multi-Anchor Hypergraph." arXiv:2609.05553, 3 September 2026. https://arxiv.org/abs/2609.05553
+- Feng, Y., Zhang, R., Luo, H., Lin, Z., Yang, C., Luu, A. T. "Diachronic Hypergraphs for Orchestrated Multi-Agent Multimodal Memory Curation" (MAGE). arXiv:2608.29678, 30 August 2026. https://arxiv.org/abs/2608.29678
+- Lin, J., Jiang, C., Lin, X., Zhang, R., Zhu, X., Liu, J., Tang, C., Du, Y., Gao, S., Ning, J., Liu, L., Huang, Z., Li, T., Ye, J., He, J. "EvoGraph-R1: Self-Evolving Multimodal Knowledge Hypergraphs for Agentic Retrieval." CVPR 2026; arXiv:2607.12764, 14 July 2026. https://arxiv.org/abs/2607.12764
+- Maharana, A., Lee, D.-H., Tulyakov, S., Bansal, M., Barbieri, F., Fang, Y. "Evaluating Very Long-Term Conversational Memory of LLM Agents" (LoCoMo). arXiv:2402.17753, 27 February 2024. https://arxiv.org/abs/2402.17753
+- Wu, D., Wang, H., Yu, W., Zhang, Y., Chang, K.-W., Yu, D. "LongMemEval: Benchmarking Chat Assistants on Long-Term Interactive Memory." ICLR 2025; arXiv:2410.10813, 14 October 2024. https://arxiv.org/abs/2410.10813
+- Ahrabian, K., Boxer, E., Pujara, J. "Toward Better Temporal Structures for Geopolitical Events Forecasting" (HTKGH, htkgh-polecat). arXiv:2601.00430, 1 January 2026. https://arxiv.org/abs/2601.00430

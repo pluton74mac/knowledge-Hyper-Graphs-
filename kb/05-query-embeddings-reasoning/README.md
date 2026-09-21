@@ -4,7 +4,7 @@ type: index
 status: draft
 tags: [index, query, embedding, reasoning, learning, section-readme]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # 05 — Query, embeddings, reasoning
@@ -33,6 +33,8 @@ is about what you can then *do* with it. Ten notes, in three groups.
 | [hypergraph-neural-networks.md](hypergraph-neural-networks.md) | HGNN, HyperGCN, HNHN, UniGNN, AllSet, ED-HNN, hypergraph transformers; clique vs. star expansion; the Width Wall expressivity hierarchy; DHG, HyperNetX, TopoX |
 | [inductive-and-few-shot-settings.md](inductive-and-few-shot-settings.md) | Node-inductive, relation-inductive and few-shot link prediction: QBLP, HART, MetaNIR, HANCL, MetaRH, HYPER, THOR |
 | [temporal-and-dynamic-khgs.md](temporal-and-dynamic-khgs.md) | Time as a role vs. time as validity vs. structural evolution: HyNT, NE-Net, HypeTKG; dynamic hypergraph learning |
+| [hyper-foundation-model-anatomy.md](hyper-foundation-model-anatomy.md) | HYPER taken apart: ICLR 2026 venue settled, the relation graph and `Enc_PI`, what Theorem C.2 really proves, slot-masked training, measured cost against HCNet and ULTRA, pretraining mixtures and the 0.9 M-fact corpus ceiling, the v1→v3 baseline corrections, public checkpoints and data, and the NBFNet → ULTRA → KG-ICL → HCNet → HYPER → THOR lineage. Added in run 02. |
+| [geometry-and-algebraic-interfaces.md](geometry-and-algebraic-interfaces.md) | The representation layer under the models: the five hyperbolic and multi-curvature n-ary papers audited (HYPER², PolygonE, gyro-centroid, H²GNN, GAHE) and why none beats ReAlE; ReAlE's five relational-algebra primitives theorem by theorem; the planner–store interface gap and LOTUS semantic operators; Lu, Tupikina and Alam's two-axis taxonomy reproduced with counts. Added in run 02. |
 
 ### Using and trusting the results
 

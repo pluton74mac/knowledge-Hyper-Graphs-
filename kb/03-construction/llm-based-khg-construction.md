@@ -4,7 +4,7 @@ type: survey
 status: draft
 tags: [hypergraph, n-ary, llm, rag, extraction, prompts, HyperGraphRAG, Hyper-RAG, GraphRAG, LightRAG]
 created: 2026-09-19
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # LLM-based knowledge hypergraph construction
@@ -151,6 +151,19 @@ entity and relation vector database", extract questions, generate answers ([Hype
   (8,257 vs 2,579 on TechReport).
 - **Order-aware hypergraph RAG** ([Wu et al., 2026](https://arxiv.org/abs/2604.12185)) augments the
   hypergraph with precedence structure learned "without requiring explicit temporal supervision".
+- **Hyper-KGGen** ([Huang et al., 2026](https://arxiv.org/abs/2602.19543)) is the first of these to treat
+  construction itself as the object of study rather than a preprocessing step for retrieval. It replaces
+  the single extraction prompt of §3–§4 with a *coarse-to-fine* ladder — binary skeleton, then qualified
+  binary relations (time, location, conditions), then general n-ary event hyperedges — and adds a Global
+  Skill Library of distilled free-text extraction rules, evolved by resampling each training document K
+  times and distilling skills from the relations the model recovers only sometimes. Its measurement of the
+  systems in §3–§4 on document-level n-ary extraction is the sharpest number in this note: HyperGraphRAG's
+  extractor scores micro precision 0.3828 / recall 0.1072 on HyperDocRED, against 0.8024 / 0.4300 for
+  Hyper-KGGen+. **Correction to earlier drafts of this KB:** the paper is not a bare preprint — the v2 HTML
+  carries the KDD '26 conference block (32nd ACM SIGKDD, Jeju Island, 9–13 August 2026,
+  DOI 10.1145/3770855.3818198), and the repository README states acceptance. Mechanism, all tables, the
+  code-versus-paper discrepancies and the benchmark's non-release are in
+  [skill-driven extraction and the scenario gap](skill-driven-extraction-and-the-scenario-gap.md).
 
 ## 6. Design choices that recur
 
@@ -165,7 +178,11 @@ entity and relation vector database", extract questions, generate answers ([Hype
 | Storage | graph + community reports | graph + KV | bipartite graph + 2 vector DBs | Hypergraph-DB + 2 vector DBs |
 | Fact verification | none | none | none | none |
 
-**Schema-guided vs schema-free.** All four are schema-free. Schema-guided alternatives exist outside RAG:
+**Schema-guided vs schema-free.** All four are schema-free. So, in substance, are their 2026 successors:
+Hyper-KGGen constrains a hyperedge only to "at least 2" distinct participants whose "order has no
+semantics", and Hyper-Extract's YAML templates type the *record* (fields, identity expressions) without
+bounding arity or naming roles — see
+[skill-driven extraction and the scenario gap](skill-driven-extraction-and-the-scenario-gap.md) §9. Schema-guided alternatives exist outside RAG:
 SPIRES/OntoGPT constrains output to a LinkML schema and grounds "all matched elements" to ontology
 identifiers, with accuracy "comparable to the mid-range of existing Relation Extraction (RE) methods" but
 zero training data ([Caufield et al., 2024](https://arxiv.org/abs/2304.02711)); Text2KGBench measures
@@ -218,6 +235,7 @@ available in isolation but have not been combined in a published hypergraph RAG 
 - Lien, et al. "HyperRAG: Reasoning N-ary Facts over Hypergraphs for Retrieval Augmented Generation." arXiv 2602.14470, 2026. https://arxiv.org/html/2602.14470v1
 - Chen, S., Xu, Y., Han, X., Xue, R., Wu, D., Gao, Y., Yan, C., Gao, Y. "Hypergraph-based Multimodal Retrieval-Augmented Generation with Incremental Refinement." ACM MM 2026 / arXiv 2608.16628. https://arxiv.org/abs/2608.16628
 - Wu, K., Kuai, C., Li, Z., Jiang, J., et al. "Knowledge Is Not Static: Order-Aware Hypergraph RAG for Language Models." arXiv 2604.12185, 2026. https://arxiv.org/abs/2604.12185
+- Huang, R., Feng, Y., Xue, R., Ying, S., Yong, J.-H., Shi, C., Du, S., Gao, Y. "Hyper-KGGen: A Skill-Driven Knowledge Extractor for High-Quality Knowledge Hypergraph Generation." KDD '26, DOI 10.1145/3770855.3818198; arXiv:2602.19543, v2 5 July 2026. https://arxiv.org/html/2602.19543v2
 - Caufield, J. H., Hegde, H., Emonet, V., Harris, N. L., et al. "Structured prompt interrogation and recursive extraction of semantics (SPIRES): A method for populating knowledge bases using zero-shot learning." Bioinformatics 40(3), 2024 / arXiv 2304.02711. https://arxiv.org/abs/2304.02711
 - Mihindukulasooriya, N., Tiwari, S., Enguix, C. F., Lata, K. "Text2KGBench: A Benchmark for Ontology-Driven Knowledge Graph Generation from Text." ISWC 2023 / arXiv 2308.02357. https://arxiv.org/abs/2308.02357
 - Mihindukulasooriya, N., D'Souza, N. S., Chowdhury, F., Samulowitz, H. "Automatic Prompt Optimization for Knowledge Graph Construction: Insights from an Empirical Study." LLM+Graph Workshop, VLDB 2025 / arXiv 2506.19773. https://arxiv.org/abs/2506.19773

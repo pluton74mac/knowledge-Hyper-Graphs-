@@ -54,10 +54,15 @@ CONVENTIONS.md How to write and organise notes so the base keeps growing cleanly
 
 ## State of the base
 
-First research run completed 2026-09-20: 102 content notes across ten sections, about 27,000 lines,
-936 distinct sources, a 304-entry glossary, 57 open questions grouped into seven themes, and seven
-candidate projects. Every note carries inline citations and a sources section; claims that could not
-be checked against a primary source are marked `[unverified]`. Run logs are in `notes/research-log/`.
+Two research runs so far. Run 01 (2026-09-19/20) built the base: 102 content notes across ten
+sections. Run 02 (2026-09-21) was a second pass seeded by an external one-shot frontier survey: six
+new notes (HYPER taken apart, geometry and algebraic interfaces, skill-driven extraction, hierarchical
+and planned retrieval, temporal hyperedges and editable agent memory, and a synthesis of the frontier
+as one composed stack), corrections to fourteen existing notes, and a new open-question theme on
+whether the layers compose. Current state: 108 content notes, about 29,600 lines, 988 distinct
+sources, a 300-entry glossary, 82 open questions in eight themes, and eight candidate projects. Every
+note carries inline citations and a sources section; claims that could not be checked against a
+primary source are marked `[unverified]`. Run logs are in `notes/research-log/`.
 
 ## Maintaining the base
 

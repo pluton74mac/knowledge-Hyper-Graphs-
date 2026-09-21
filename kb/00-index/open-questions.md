@@ -4,12 +4,12 @@ type: question
 status: reviewed
 tags: [index, open-questions, research-agenda]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # Open questions
 
-The register of questions the research raised and did not answer. Part A groups them into seven
+The register of questions the research raised and did not answer. Part A groups them into eight
 cross-cutting themes, each with the experiment or search that would settle it. Part B lists the
 questions by the section that raised them. Part C maps the most tractable ones to candidate
 projects. Add new questions at the end of the relevant section list with the date and the note that
@@ -43,6 +43,7 @@ interchange format, not the learning libraries, not the walk theory, not the vis
 - **[04.4]** Every hypergraph-learning library takes a 0/1 incidence matrix. What tensor encoding carries role-labelled incidences and still supports the standard Laplacian operators? See [tensor and sparse representations](../04-storage-and-formats/tensor-and-sparse-representations.md).
 - **[09.5] [10.4]** Would a versioned HIF schema plus a `roles` convention on incidence attributes make HIF a knowledge-hypergraph format, or does it need a relation-type and schema layer that no library has? Can it gain roles, types and provenance without becoming RDF? See [HIF](../04-storage-and-formats/hif-hypergraph-interchange-format.md), [standards bodies](../09-ecosystem/standards-bodies-and-specifications.md).
 - **[01.1] [08.3]** Higher-order motif analysis, hyper-cores, modularity and homophily are all defined on untyped, undirected hyperedges. What do they become on typed, directed, role-labelled facts, and does a typed motif census separate knowledge bases the way untyped profiles separate social hypergraphs? See [higher-order interactions](../01-foundations/higher-order-interactions.md), [current frontier directions](../08-history-and-frontier/current-frontier-directions.md).
+- **[05.17] [03.9]** No n-ary model uses a linguistic role inventory, and extraction skills are free text with no role constraints (added 2026-09-21). See [geometry and algebraic interfaces](../05-query-embeddings-reasoning/geometry-and-algebraic-interfaces.md), [skill-driven extraction](../03-construction/skill-driven-extraction-and-the-scenario-gap.md).
 - **[03.3]** Can role signatures be induced at LLM scale? Tensor methods work on small corpora; web-scale pipelines induce concepts, not roles. See [schema induction and ontology alignment](../03-construction/schema-induction-and-ontology-alignment.md).
 - **[06.2]** Do role labels help or hurt readers of a hypergraph drawing, and at what density do they become noise? Every KHG tool shows them; nobody has measured. See [perception and evaluation studies](../06-visualization/perception-and-evaluation-studies.md).
 
@@ -54,6 +55,7 @@ The gap-filling pass confirmed that no replication study of n-ary link predictio
 
 - **[08.4]** Is there an n-ary completion benchmark not descended from the 2015 Freebase dump, and what happens to the 2016 to 2025 gains when one exists? JF17K leaks 44.5% of test main triples into training and has no validation split; WikiPeople is under 3% hyper-relational after literal filtering. See [benchmarks derived from Freebase and Wikidata](../02-knowledge-representation/benchmarks-derived-from-freebase-and-wikidata.md), [dataset quality and leakage](../09-ecosystem/dataset-quality-and-leakage-issues.md).
 - **[09.3]** Does any replication study of n-ary link prediction exist, the analogue of the triple-based reproducibility literature? None was found. See [benchmarks and evaluation protocols](../05-query-embeddings-reasoning/benchmarks-and-evaluation-protocols.md).
+- **[05.13] [07.9] [03.7]** Three run-02 findings on evidence quality: HYPER's reified-ULTRA baseline moved by a factor of 50 between preprint versions and nobody has re-run it; PRoH's "harder" 3–6 hop split is self-generated and scores higher than its 1–3 hop split; Hyper-KGGen's "top-heavy extraction" failure mode is asserted, not measured; and HyperDocRED, the only document-level n-ary benchmark, is not distributed (added 2026-09-21).
 - **[07.2]** Would a hypergraph-RAG system survive GraphRAG-Bench? The benchmark is public and contains zero occurrences of "hypergraph". See [critical reading of hypergraph-RAG claims](../10-comparative-and-critique/critical-reading-of-hypergraph-rag-claims.md).
 - **[07.3]** Is there a knowledge-hypergraph analogue of higher-order link prediction under Benson et al.'s LLM-free, temporally split protocol? Predicting the missing participant of an n-ary fact under that protocol would be a real benchmark. See [hypergraph algorithms for knowledge](../05-query-embeddings-reasoning/hypergraph-algorithms-for-knowledge.md).
 - **[05.4]** Are n-ary link predictors more miscalibrated at higher arity, given that MRR averages over prediction tasks and so reweights by arity? No calibration study exists. See [explainability and uncertainty](../05-query-embeddings-reasoning/explainability-and-uncertainty.md).
@@ -68,6 +70,7 @@ The gap-filling pass confirmed that no replication study of n-ary link predictio
 
 The gap-filling pass added a governance angle: **[10.6]** erasure semantics for an n-ary fact and **[10.7]** whether a whole hyperedge is more re-identifying than its reification. Both turn on the same unanswered question of what the unit of a fact is. See [privacy, licensing and governance](../10-comparative-and-critique/privacy-licensing-and-governance.md).
 
+- **[07.10] [05.8] [03.8]** Where does validity sit on an n-ary fact, which roles form its key, and does insertion order change the extracted graph? The second pass found the only incremental extractor keys hyperedges without their participants, so an insert can silently promote a binary edge (added 2026-09-21). See [temporal hyperedges and editable agent memory](../07-applications/temporal-hyperedges-and-editable-agent-memory.md).
 - **[03.1] [04.3] [03.4]** When `r(a,b)` and `r(a,b,t)` are extracted from different documents, is the second a refinement, a distinct fact, or a contradiction? If an arity-4 fact becomes arity-5, is it the same fact? What is the delta unit for a versioned hypergraph? No system, format or benchmark has an opinion, and the answer determines incremental construction, archive formats and provenance. See [incremental and streaming construction](../03-construction/incremental-and-streaming-construction.md), [versioning, provenance and scale](../04-storage-and-formats/versioning-provenance-and-scale.md).
 - **[02.1]** Is there a partial-completeness or local-closed-world assumption for n-ary facts? AMIE's assumption is stated for binary relations and its n-ary generalisation is ambiguous. See [open world, closed world and uncertainty](../02-knowledge-representation/open-world-vs-closed-world-and-uncertainty.md).
 - **[02.5]** What does a weight on a reifier mean? No semantics exists for probabilistic hyper-relational facts where the qualifiers are about, rather than part of, the fact.
@@ -100,6 +103,21 @@ The gap-filling pass added a governance angle: **[10.6]** erasure semantics for 
 - **[09.1]** Has any openCypher improvement proposal ever proposed hyperedges or n-ary relationships? The proposal archive was not searched.
 - Two hypergraph communities (higher-order network science; knowledge representation and learning) measurably do not cite each other. What would a shared venue, dataset or format look like? See [venues and community events](../08-history-and-frontier/venues-and-community-events.md), [research groups and people](../08-history-and-frontier/research-groups-and-people.md).
 
+### Theme 8 — Do the layers compose? (added 2026-09-21)
+
+The second research pass arranged the frontier as one stack (extract → store → complete / algebra /
+plan → generate and act → write back) and found that every published system implements two or three
+layers and treats the rest as given. Two layer boundaries have never been crossed in one experiment.
+See [the composed stack](../08-history-and-frontier/composed-stack-and-research-bets.md).
+
+- **[08.6]** Does a planner's lift (PRoH over HyperGraphRAG) survive on an extracted, incomplete hypergraph that an inductive completer (HYPER-style) has filled? A completer has never been run under a retriever. See [hierarchical and planned hypergraph retrieval](../07-applications/hierarchical-and-planned-hypergraph-retrieval.md), [HYPER anatomy](../05-query-embeddings-reasoning/hyper-foundation-model-anatomy.md).
+- **[08.7]** Can an embedding that implements relational algebra (ReAlE) be the query interface for an LLM planner, so the planner emits operators rather than English, and does that beat cosine retrieval on multi-hop questions? See [geometry and algebraic interfaces](../05-query-embeddings-reasoning/geometry-and-algebraic-interfaces.md).
+- **[08.8]** Is there one artefact on which extraction, inductive completion, retrieval and long-horizon memory can all be scored, and how do the four scores correlate? See [the composed stack](../08-history-and-frontier/composed-stack-and-research-bets.md) §3.
+- **[08.9]** Do extraction skills (Hyper-KGGen) and agent procedural skills (HyperSkill) unify as typed hyperedges with arity and role constraints, and does typing reduce extraction instability? See [skill-driven extraction](../03-construction/skill-driven-extraction-and-the-scenario-gap.md), [AI agents memory and planning](../07-applications/ai-agents-memory-and-planning.md).
+
+**What would settle it:** one pipeline that extracts, completes, plans and remembers over the same
+corpus, scored on all four abilities. Candidate project P8.
+
 ## Part B — Questions by section
 
 ### 01 Foundations
@@ -123,6 +141,9 @@ The gap-filling pass added a governance angle: **[10.6]** erasure semantics for 
 4. [03.4] The delta unit for a versioned hypergraph.
 5. [03.5] A shape language for hypergraph incidence.
 6. [03.6] Does inter-annotator agreement fall with arity? Re-analysing the MEE raw annotations by argument count would answer it without new annotation. Raised 2026-09-20 by [human-in-the-loop annotation and cost](../03-construction/human-in-the-loop-annotation-and-cost.md).
+7. [03.7] Is the "top-heavy" failure mode real? No paper reports the arity distribution of an extractor's output against gold; an arity-stratified table on HyperDocRED would test Hyper-KGGen's own motivating claim. Raised 2026-09-21 by [skill-driven extraction and the scenario gap](../03-construction/skill-driven-extraction-and-the-scenario-gap.md).
+8. [03.8] Does order of insertion change the graph? Feed the same corpus to an incremental extractor in two permutations and measure hyperedge-set agreement: the obvious confluence test, never run. Raised 2026-09-21 by the same note.
+9. [03.9] What must a skill be, to be checkable? Free-text trigger–action skills cannot be validated, composed or transferred with guarantees; a typed skill (arity signature, role inventory, identity rule) could be, but nothing has tried. Raised 2026-09-21 by the same note.
 
 ### 04 Storage and formats
 1. [04.1] HIF versioning on the first breaking change.
@@ -139,6 +160,17 @@ The gap-filling pass added a governance angle: **[10.6]** erasure semantics for 
 5. [05.5] Hypertree-decomposition planning over an incidence index.
 6. [05.6] Does any hyper-relational model beat a well-tuned classical KG embedding on de-leaked JF17K, on native rather than decomposed data? Raised 2026-09-20 by [reproducibility of n-ary link prediction](../05-query-embeddings-reasoning/reproducibility-of-n-ary-link-prediction.md).
 7. [05.7] Are hypergraph neural networks structurally a poor fit for knowledge hypergraphs? HADES (2026) finds they degrade on heterophilic nodes joined by semantically diverse hyperedges, which is what a typed n-ary fact looks like. Raised 2026-09-20 by [reading the frontier, 2026 Q3](../08-history-and-frontier/reading-the-frontier-2026-q3.md).
+8. [05.8] Can a key role set (the roles whose binding may hold for at most one valid fact at a time) be induced from an extracted KHG rather than declared, so that supersession becomes decidable? Raised 2026-09-21 by [temporal and dynamic KHGs](../05-query-embeddings-reasoning/temporal-and-dynamic-khgs.md).
+9. [05.9] Does VITA's time triplet, re-evaluated under an extrapolation split, beat timestamp-per-n-tuple models such as MT-Path, or does the interval representation only help interpolation? Raised 2026-09-21 by the same note.
+10. [05.10] HYPER's Theorem C.2 only asserts that an injective, bounded, Lipschitz `Enc_PI` exists in the hypothesis class; does the trained encoder stay injective, and does injectivity or merely boundedness do the work? Raised 2026-09-21 by [HYPER anatomy](../05-query-embeddings-reasoning/hyper-foundation-model-anatomy.md).
+11. [05.11] HYPER's relation graph has O(|R|²k²) edges; what sparsification keeps the transfer result at Wikidata-scale relation vocabularies (|R| ≈ 5,000, k = 9, about 2×10⁹ potential edges)? Raised 2026-09-21 by the same note.
+12. [05.12] Why does pretraining on 50 knowledge graphs make both HYPER and ULTRA worse than pretraining on 3: distribution shift, or an optimisation artefact at 30,000 steps? Raised 2026-09-21 by the same note.
+13. [05.13] Has anyone outside the authors' group re-run reified ULTRA on the 16 HYPER datasets, given that the published baseline moved by a factor of 50 between preprint versions? Raised 2026-09-21 by the same note.
+14. [05.14] Is any n-ary benchmark actually hyperbolic? No δ-hyperbolicity statistic has been published for JF17K, FB-AUTO, M-FB15K, WikiPeople or WD50K, so the whole hyperbolic family rests on an analogy. Raised 2026-09-21 by [geometry and algebraic interfaces](../05-query-embeddings-reasoning/geometry-and-algebraic-interfaces.md).
+15. [05.15] Would ReAlE's five algebraic primitives, exposed as planner-callable tools, let an LLM plan beat an end-to-end query-embedding model on WD50K-QE or NQE query patterns? Raised 2026-09-21 by the same note (companion to [08.7]).
+16. [05.16] Does the ReAlE parametrisation extend to Cartesian product (hence join), or is there an impossibility result analogous to its Theorem 10 for HypE and selection? Raised 2026-09-21 by the same note.
+17. [05.17] Is there any n-ary link-prediction model that uses a linguistic role inventory (PropBank, FrameNet, VerbNet) so roles transfer across relations and datasets, rather than dataset-specific role strings? Raised 2026-09-21 by the same note.
+18. [05.18] Does H²GNN's result survive a re-run against ReAlE and against HypE at its published numbers on the same splits? Raised 2026-09-21 by the same note.
 
 ### 06 Visualization
 1. [06.1] Incidence vs region encodings on the same hypergraph, measured.
@@ -153,6 +185,13 @@ The gap-filling pass added a governance angle: **[10.6]** erasure semantics for 
 3. [07.3] Higher-order link prediction protocol for knowledge hypergraphs.
 4. [07.4] Transfer of reaction-network hypergraph algorithms.
 5. [07.5] Public role-labelled financial or legal n-ary benchmark.
+6. [07.6] Does a hierarchy beat a better search? H²RAG (hierarchical) and PRoH or Graph-R1 (planned or learned) have never been compared on the same corpus, and cost very differently. Raised 2026-09-21 by [hierarchical and planned hypergraph retrieval](../07-applications/hierarchical-and-planned-hypergraph-retrieval.md).
+7. [07.7] What is the break-even query volume for a hierarchical index that costs about 35 LLM tokens per corpus token to build (HiRAG on UltraDomain Mix)? Raised 2026-09-21 by the same note.
+8. [07.8] Is community detection over hyperedges better than GMM clustering over entity embeddings, holding the summary layer and the reader fixed (H²RAG vs HiRAG, isolated)? Raised 2026-09-21 by the same note.
+9. [07.9] Why do both PRoH and HyperGraphRAG score higher on PRoH's 3–6 hop split than on the 1–3 hop split; does hop distance in an extracted hypergraph track question difficulty at all? Raised 2026-09-21 by the same note.
+10. [07.10] At what granularity should validity sit on an n-ary fact, the whole hyperedge or each role-binding, given that whole-edge closure duplicates n−1 bindings on every single-role change? Raised 2026-09-21 by [temporal hyperedges and editable agent memory](../07-applications/temporal-hyperedges-and-editable-agent-memory.md).
+11. [07.11] Would adding Graphiti-style invalidation to a hypergraph memory move LoCoMo's temporal column or LongMemEval's knowledge-update slice, and which is the right measurement? Raised 2026-09-21 by the same note.
+12. [07.12] EvoGraph-R1 can insert, update and delete but is rewarded only on answer F1 and well-formedness; what reward makes an agent retract correctly, and can it be scored without a ground-truth timeline? Raised 2026-09-21 by the same note.
 
 ### 08 History and frontier
 1. [08.1] Three-way store comparison with cost and latency.
@@ -160,6 +199,10 @@ The gap-filling pass added a governance angle: **[10.6]** erasure semantics for 
 3. [08.3] Higher-order network measures on typed, directed, role-labelled KHGs.
 4. [08.4] An n-ary benchmark not descended from Freebase 2015.
 5. [08.5] Human factors of curating n-ary facts vs reified triples.
+6. [08.6] Planner lift on a completer-filled extracted hypergraph. Raised 2026-09-21 by [the composed stack](../08-history-and-frontier/composed-stack-and-research-bets.md).
+7. [08.7] Relational-algebra embeddings as the planner's query interface. Raised 2026-09-21 by the same note.
+8. [08.8] One artefact scoring extraction, completion, retrieval and memory. Raised 2026-09-21 by the same note.
+9. [08.9] Extraction skills and agent skills as one typed-hyperedge object. Raised 2026-09-21 by the same note.
 
 ### 09 Ecosystem
 1. [09.1] openCypher proposals for hyperedges.
@@ -176,6 +219,8 @@ The gap-filling pass added a governance angle: **[10.6]** erasure semantics for 
 5. [10.5] Is the relation-instance pattern really the bottleneck?
 6. [10.6] What are the correct erasure semantics for an n-ary fact? Removing one participant under a right-to-erasure request leaves three bad options: delete the fact, delete the incidence, or tombstone. No published system implements any. Raised 2026-09-20 by [privacy, licensing and governance](../10-comparative-and-critique/privacy-licensing-and-governance.md).
 7. [10.7] Is a hyperedge measurably more re-identifying than its reification? An attribute-inference or k-anonymity attack on the same facts in both encodings has never been run. Raised 2026-09-20 by the same note.
+8. [10.8] Would retrieval over an inductively completed hypergraph (HYPER-style) beat retrieval over the extracted one, and can the completion be made auditable? No system combines the two as of 2026-09-21. Raised 2026-09-21 by [hierarchical and planned hypergraph retrieval](../07-applications/hierarchical-and-planned-hypergraph-retrieval.md) (companion to [08.6]).
+9. [10.9] What would a learned index scoring function (corpus-specific hyperedge weights) add on top of a learned traversal policy? Nothing learns the EWO analogue. Raised 2026-09-21 by the same note.
 
 ## Part C — Candidate first projects
 
@@ -190,7 +235,8 @@ listed in `projects/README.md` as candidate vectors; none is started.
 | P4 | **Arity ablation of hypergraph RAG**: run one hypergraph-RAG system with hyperedges intact, split pairwise, and as whole-sentence chunks, on one public domain and on GraphRAG-Bench | 1, 3 | 10.2, 07.1, 07.2 |
 | P5 | **Reader study**: incidence vs Euler drawing of the same KHG, with and without role labels | 2, 6 | 06.1, 06.2 |
 | P6 | **Schema width survey**: compute acyclicity class and hypertree width for Wikidata qualifier schemas and one biomedical schema | 5 | 01.3, 05.5 |
-| P7 | **Agent memory prototype**: a hypergraph memory for a small agent vs a flat vector store, with fact identity and arity-conditional merging rules made explicit | 4 | 03.1, 04.3 |
+| P7 | **Agent memory prototype**: a hypergraph memory for a small agent vs a flat vector store, with fact identity, arity-conditional merging rules and **valid-time on the hyperedge with supersession** made explicit (reframed 2026-09-21) | 4, 8 | 03.1, 04.3, 08.6 |
+| P8 | **Four-ability evaluation suite**: one corpus scored on gold n-ary extraction, inductive completion of the extracted graph, high-arity-edge-ablated multi-hop retrieval, and a superseding memory trace; see [the composed stack](../08-history-and-frontier/composed-stack-and-research-bets.md) §3 (added 2026-09-21) | 3, 8 | 08.6, 08.7, 08.8, 08.9 |
 
 ## Sources
 

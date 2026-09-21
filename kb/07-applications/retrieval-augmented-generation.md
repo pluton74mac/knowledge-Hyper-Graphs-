@@ -4,7 +4,7 @@ type: survey
 status: draft
 tags: [hypergraph, n-ary, RAG, retrieval, LLM, GraphRAG, benchmark, evaluation]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # Retrieval-augmented generation over knowledge hypergraphs
@@ -146,8 +146,12 @@ way one reads that, it shows the ranking among hypergraph RAG systems flips with
   [DOI](https://dl.acm.org/doi/10.1145/3774904.3792611)). Attacks the *static planning* of earlier
   KH-RAG: a context-aware planner sketches the local hypergraph neighbourhood, questions are decomposed
   into a dynamically evolving DAG of subquestions, and an Entity-Weighted-Overlap heuristic ranks
-  hyperedge traversals. Reports **+19.73 % F1 and +8.41 % G-E over HyperGraphRAG** on average — the
-  largest reported margin over the reference system, and one of the few cross-paper comparisons.
+  hyperedge traversals. Reports **+19.73 F1 and +8.41 G-E over HyperGraphRAG** on average — these are
+  *percentage points*, not relative gains (Medicine 35.35 → 52.94, CS 31.30 → 54.15), a correction
+  made on 2026-09-21 against the v2 full text. Largest reported margin over the reference system, and
+  one of the few cross-paper comparisons. Mechanism, token table and the problems with its 3–6 hop
+  split are in
+  [hierarchical-and-planned-hypergraph-retrieval](hierarchical-and-planned-hypergraph-retrieval.md) §2.
 - **Cog-RAG** ([Hu et al., 2026](https://arxiv.org/abs/2511.13201), AAAI 2026,
   [proceedings](https://ojs.aaai.org/index.php/AAAI/article/view/40363)). Dual hypergraph: a *theme*
   hypergraph over chunks plus an *entity* hypergraph, aligned by a top-down "cognitive" retrieval pass.
@@ -166,6 +170,12 @@ way one reads that, it shows the ranking among hypergraph RAG systems flips with
   Re-DocRED (50 seed training documents, 100 test documents). Reported micro precision/recall on the
   test split: 0.8024 / 0.4300 for Hyper-KGGen+ versus 0.3828 / 0.1072 for HyperGraphRAG's extractor —
   i.e. the extraction quality of the reference system is itself a major error source.
+
+The *retrieval* side of this literature — planned traversal (PRoH), learned traversal policies
+(Graph-R1, ICML 2026, by HyperGraphRAG's own authors, which roughly doubles HyperGraphRAG's
+open-domain F1 by changing only the search; HyperGraphPro), and the hierarchical / community-summary
+generation (HiRAG, **H²RAG** at PAKDD 2026, HHS-RAG, EEG-MedRAG) — is surveyed with its cost numbers
+in [hierarchical-and-planned-hypergraph-retrieval](hierarchical-and-planned-hypergraph-retrieval.md).
 
 ## 6. The critique: when do graphs (and hypergraphs) pay?
 

@@ -4,7 +4,7 @@ type: survey
 status: draft
 tags: [hgnn, hypergcn, hnhn, unignn, allset, ed-hnn, hypergraph-transformer, expressivity, clique-expansion, star-expansion, hypertree-width, dhg, topox, pyg, dgl]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # Hypergraph neural networks and what they can express
@@ -177,7 +177,7 @@ Two things follow that matter for knowledge hypergraphs:
 
 HYPER's node-inductive table gives an unusually direct comparison of unlabelled HNNs against
 relation-aware models on knowledge hypergraphs (MRR;
-[Huang et al. 2025](https://arxiv.org/abs/2506.12362), Table 2):
+[Huang et al. 2025](https://arxiv.org/abs/2506.12362), Table 2 of v1, Table 3 of the ICLR 2026 v3; the HYPER and HCNet rows are identical across versions, the ULTRA rows are not — see [hyper-foundation-model-anatomy.md](hyper-foundation-model-anatomy.md) §8):
 
 | Model | JF-IND | WP-IND | MFB-IND |
 |---|---|---|---|

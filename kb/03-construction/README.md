@@ -4,7 +4,7 @@ type: survey
 status: draft
 tags: [hypergraph, n-ary, construction, index]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # 03 — Construction
@@ -37,6 +37,7 @@ mathematics.
 | [hypergraph-construction-from-data](hypergraph-construction-from-data.md) | Co-occurrence, co-authorship, baskets, tables, relational databases, event logs and feature-kNN — and a five-question test for when such a hypergraph is "knowledge". |
 | [multimodal-and-multilingual-construction](multimodal-and-multilingual-construction.md) | Building KHGs from images, video, tables and non-English text: the 2026 multimodal hypergraph-RAG systems, scene hypergraphs, multimedia event extraction, ACE/MEE/MINION as the only multilingual resources — and what does not exist. |
 | [human-in-the-loop-annotation-and-cost](human-in-the-loop-annotation-and-cost.md) | The annotation instruments for n-ary facts (HyperRED's rubric, ACE, MEE/MINION, Wikidata qualifiers), inter-annotator agreement and the missing arity study, active learning, and what curation costs from Cyc to $0.0063 per 1k tokens. |
+| [skill-driven-extraction-and-the-scenario-gap](skill-driven-extraction-and-the-scenario-gap.md) | Hyper-KGGen (KDD 2026), HyperDocRED and Hyper-Extract read against paper and code: the coarse-to-fine ladder, the free-text skill library and its supervised stability reward, what the soft metric measures, why the benchmark is unavailable as of 2026-09-21, and why no extractor is yet both incremental and consistent. Added in run 02. |
 
 ## Reading paths
 
