@@ -24,3 +24,19 @@ questions each one answers, and the themes it moves are in
 | P6 | Schema width survey | Acyclicity class and hypertree width of Wikidata qualifier schemas and one biomedical schema | `kb/01-foundations/hypergraph-theory-results.md`, `kb/01-foundations/n-ary-relations-and-relational-algebra.md` |
 | P7 | Agent memory prototype | Hypergraph memory for a small agent vs a flat vector store, with explicit fact-identity, arity-merging and valid-time/supersession rules | `kb/07-applications/ai-agents-memory-and-planning.md`, `kb/07-applications/temporal-hyperedges-and-editable-agent-memory.md`, `kb/03-construction/incremental-and-streaming-construction.md` |
 | P8 | Four-ability evaluation suite | One corpus scored on n-ary extraction, inductive completion, edge-ablated multi-hop retrieval, and a superseding memory trace | `kb/08-history-and-frontier/composed-stack-and-research-bets.md`, `kb/05-query-embeddings-reasoning/benchmarks-and-evaluation-protocols.md` |
+| P9 | Extraction gate | An n-ary extraction pass with role constraints, scored against gold facts, emitting a candidate queue instead of writing to the graph; measure instability across runs and insertion orders | `kb/03-construction/llm-based-khg-construction.md`, `kb/03-construction/skill-driven-extraction-and-the-scenario-gap.md`, `kb/03-construction/n-ary-relation-extraction-from-text.md` |
+| P10 | Judgment-model walker | Retrieval as a policy over a code-owned traverser: code enumerates incident hyperedges, a judgment model scores next-edge, stop and prune as closed choices; a general LLM first, then a decision-only model behind the same interface, on a gold graph | `kb/07-applications/hierarchical-and-planned-hypergraph-retrieval.md`, `kb/07-applications/retrieval-augmented-generation.md`, `kb/05-query-embeddings-reasoning/llm-and-khg-interaction.md` |
+| P11 | Goal-directed construction | Express a design idea as goal hyperedges with unbound roles; one agent per discipline binds roles with evidence; a termination criterion says when the disciplines connect. Two disciplines first, then the four-discipline EEG case | `kb/03-construction/incremental-and-streaming-construction.md`, `kb/07-applications/temporal-hyperedges-and-editable-agent-memory.md`, `kb/02-knowledge-representation/knowledge-hypergraph-schema-design.md` |
+
+## Assembly order towards hyper-base
+
+The candidates are stepping stones to [hyper-base](https://github.com/pluton74mac/hyper-base):
+each returns one component or one measured insight, and hyper-base assembles them. Dependency order:
+
+1. **Test bed and format.** P2 (record format with roles, validator, loaders), then P3 as data only
+   (a clean corpus with gold n-ary facts). Every later project is scored on this corpus in this format.
+2. **Components, independent of each other.** P1 (store), P6 (schema checks), P7 (fact identity and
+   supersession), P9 (extraction gate), P10 (walker), P5 (how humans read the graph).
+3. **Retrieval evidence.** P4, using P10's walker on P3's corpus.
+4. **Integration.** P8 scores P9, P7, P10 and P4 on one corpus. Coherent scores mean the components compose.
+5. **Assembly.** hyper-base adds P11's goal mechanism and a multi-writer candidate queue on top of P8's pipeline.
