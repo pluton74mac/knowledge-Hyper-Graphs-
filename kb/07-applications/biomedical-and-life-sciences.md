@@ -4,7 +4,7 @@ type: survey
 status: draft
 tags: [hypergraph, n-ary, biomedicine, metabolic-networks, reactome, polypharmacy, drug-drug-interaction, EHR, protein-complex]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # Biomedicine and the life sciences
@@ -121,6 +121,16 @@ Medicine is the domain where hypergraph RAG has been tested most:
   LLM use, +6.3 % over GraphRAG and +6.0 % over LightRAG, and a second medical corpus in pathology
   ([Feng et al., 2025](https://arxiv.org/abs/2504.08758);
   [Feng et al., 2026](https://www.nature.com/articles/s41467-026-71411-1)).
+- **EbmKG / IdepRAG** ([Dou et al., 2025](https://arxiv.org/abs/2503.16530), arXiv only) is the earliest of
+  the three, and the only one built for *evidence-based medicine* rather than general QA: 41,504
+  drug descriptions and clinical guidelines (UpToDate and a Chinese pharmacy site, mixed language)
+  become 806,495 evidence hyperedges over MeSH-normalised entities, grouped under 433,611 topic
+  hyperedges. Six test sets covering licensing-exam QA, hallucination detection and a 100-case
+  decision-support set. Average 82.4 against 79.1 without retrieval and 76.3 for GraphRAG
+  (Qwen2.5-72B); nearly all of the margin is on decision support, and on the exam sets no retrieval
+  method helps. The stated limitation is the honest one: the system retrieves evidence but does
+  not grade its quality, which is half of what evidence-based medicine means. The released data
+  link was dead on 2026-09-21.
 
 Details, costs and caveats are in [retrieval-augmented-generation](retrieval-augmented-generation.md).
 The caveats apply with extra force in medicine, where LLM-as-a-judge scoring is a poor proxy for
@@ -150,3 +160,4 @@ clinical correctness.
 - PrimeKG code repository, GitHub, checked 2026-09-20. https://github.com/mims-harvard/PrimeKG
 - Luo, H. et al. *HyperGraphRAG.* NeurIPS 2025; arXiv:2503.21322. https://arxiv.org/abs/2503.21322
 - Feng, Y. et al. *Hyper-RAG.* arXiv:2504.08758, 30 Mar 2025; *Nature Communications* 17(1):5778, 27 Apr 2026. https://arxiv.org/abs/2504.08758 ; https://doi.org/10.1038/s41467-026-71411-1
+- Dou, C., Zhang, Y., Jin, Z., Jiao, W., Zhao, H., Zhao, Y., Tao, Z. *Enhancing LLM Generation with Knowledge Hypergraph for Evidence-Based Medicine.* arXiv:2503.16530, 18 Mar 2025. https://arxiv.org/abs/2503.16530

@@ -1031,6 +1031,7 @@ confirmed in that run; the note that cites them says which part is unconfirmed.
 - Hu, H., Feng, Y., Li, R., Xue, R., Hou, X., Tian, Z., Gao, Y., Du, S. *Cog-RAG: Cognitive-Inspired Dual-Hypergraph with Theme Alignment Retrieval-Augmented Generation.* AAAI 2026, 40(37):31032–31040; arXiv:2511.13201. https://arxiv.org/abs/2511.13201
 - Hu, H. et al. *Cog-RAG.* AAAI proceedings. https://ojs.aaai.org/index.php/AAAI/article/view/40363
 - Sharma, K., Kumar, P., Li, Y. *OG-RAG: Ontology-Grounded Retrieval-Augmented Generation For Large Language Models.* arXiv:2412.15235, 12 Dec 2024. https://arxiv.org/abs/2412.15235
+- Dou, C., Zhang, Y., Jin, Z., Jiao, W., Zhao, H., Zhao, Y., Tao, Z. *Enhancing LLM Generation with Knowledge Hypergraph for Evidence-Based Medicine.* arXiv:2503.16530 (v1, 18 Mar 2025; arXiv only as of 2026-09-21; Peking University / Beijing Jiaotong University). https://arxiv.org/abs/2503.16530 — HTML full text read; data link https://drive.google.com/rag4ebm returned 404 on 2026-09-21.
 - Wu, K., Kuai, C., Li, Z. et al. *Knowledge Is Not Static: Order-Aware Hypergraph RAG for Language Models.* arXiv:2604.12185, 14 Apr 2026. https://arxiv.org/abs/2604.12185
 - Huang, R., Feng, Y., Xue, R., Ying, S., Yong, J.-H., Shi, C., Du, S., Gao, Y. *Hyper-KGGen: A Skill-Driven Knowledge Extractor for High-Quality Knowledge Hypergraph Generation.* arXiv:2602.19543, 23 Feb 2026. https://arxiv.org/abs/2602.19543
 - *HKVM-RAG: Key-Value-Separated Hypergraph Evidence Organization for Multi-Hop RAG.* arXiv:2606.07218, 2026. https://arxiv.org/pdf/2606.07218
@@ -2020,4 +2021,4 @@ repository pages on the same date.
 - https://www.wikidata.org/wiki/Help:Statements — 02-knowledge-representation, 06-visualization
 - https://www.wikidata.org/wiki/Wikidata:Data_model — 02-knowledge-representation, 06-visualization
 
-_988 distinct URLs; 183 shared across sections._
+_990 distinct URLs; 183 shared across sections._

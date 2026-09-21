@@ -181,6 +181,16 @@ this session, not a proof of absence]`.
 This is the clearest structural weakness of the subfield: four systems, four benchmarks, four metric
 suites, one direction of comparison (downwards, to binary-graph baselines).
 
+Addendum (2026-09-21): there is a *fifth* system that predates all four and is cited by none of
+them. **EbmKG / IdepRAG** ([Dou et al., 2025](https://arxiv.org/abs/2503.16530)) was posted on 18 March 2025, nine
+days before HyperGraphRAG v1; its hyperedges are medical evidence units under topic hyperedges,
+retrieved by random walk plus LLM-scored ranking. Its baselines are VectorRAG and Microsoft GraphRAG
+only, its six test sets are its own, and — the detail worth keeping — **GraphRAG comes out below
+no retrieval at all** on both Qwen2.5-72B (76.3 vs 79.1) and GPT-4o (74.2 vs 77.6). That is the same
+direction as the Han et al. and GraphRAG-Bench findings in §5, from a group with no stake in the
+hypergraph-versus-graph question beyond its own system. It also has no hypergraph-versus-graph
+ablation, the same gap as the others (checklist item 3), and its data link was dead when checked.
+
 ---
 
 ## 5. The independent evidence: GraphRAG-Bench (ICLR 2026)
@@ -338,6 +348,7 @@ for the pipelines themselves.
 
 - Feng, Y., Hu, H., Hou, X., Liu, S., Ying, S., Du, S., Hu, H., Gao, Y. "Hyper-RAG: Combating LLM Hallucinations using Hypergraph-Driven Retrieval-Augmented Generation." arXiv:2504.08758, submitted 30 March 2025; *Nature Communications* 17(1):5778, 27 Apr 2026. https://arxiv.org/abs/2504.08758 ; https://doi.org/10.1038/s41467-026-71411-1 ; code https://github.com/iMoonLab/Hyper-RAG
 - Han, H., Ma, L., Wang, Y., Shomer, H., Lei, Y., Qi, Z., Guo, K., Hua, Z., Long, B., Liu, H., Aggarwal, C. C., Tang, J. "RAG vs. GraphRAG: A Systematic Evaluation and Key Insights." arXiv:2502.11371, 17 Feb 2025, rev. 4 Mar 2026. https://arxiv.org/abs/2502.11371
+- Dou, C., Zhang, Y., Jin, Z., Jiao, W., Zhao, H., Zhao, Y., Tao, Z. "Enhancing LLM Generation with Knowledge Hypergraph for Evidence-Based Medicine." arXiv:2503.16530, 18 Mar 2025. https://arxiv.org/abs/2503.16530 — Table 1 read in the HTML full text; the paper cites neither HyperGraphRAG nor Hyper-RAG, and neither cites it (checked mechanically on the arXiv full texts of all three — HyperGraphRAG v3, Hyper-RAG latest, this paper v1 — on 2026-09-21; the Nature Communications version of Hyper-RAG not checked).
 - Luo, H., et al. "HyperGraphRAG: Retrieval-Augmented Generation via Hypergraph-Structured Knowledge Representation." NeurIPS 2025; arXiv:2503.21322. https://arxiv.org/abs/2503.21322 ; code https://github.com/LHRLAB/HyperGraphRAG
 - "PRoH: Dynamic Planning and Reasoning over Knowledge Hypergraphs for Retrieval-Augmented Generation." Zai, X., Tan, X., Wang, X., Liu, Q., Xu, X., Zhang, W. arXiv:2510.12434, 14 Oct 2025, rev. 18 Feb 2026; ACM Web Conference 2026, DOI 10.1145/3774904.3792611. https://arxiv.org/abs/2510.12434
 - "HyperRAG: Reasoning N-ary Facts over Hypergraphs for Retrieval Augmented Generation." *Proceedings of the ACM Web Conference 2026*. DOI 10.1145/3774904.3792710. https://dl.acm.org/doi/10.1145/3774904.3792710 (metadata only; page returned HTTP 403)

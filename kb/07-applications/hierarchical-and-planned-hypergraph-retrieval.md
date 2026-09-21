@@ -292,6 +292,13 @@ was found. Three things can be said anyway:
   hypergraph" with joint semantic–temporal retrieval, plus a cross-disease, cross-role EEG clinical
   QA benchmark. Baselines TimeRAG and HyperGraphRAG. Here the hierarchy is *given* by the domain
   rather than induced, which sidesteps the clustering question entirely.
+- **EbmKG / IdepRAG** ([Dou et al., 2025](https://arxiv.org/abs/2503.16530), arXiv, 18 Mar 2025) is the earliest
+  two-tier hypergraph in this literature: *evidence* hyperedges (extracted text units with an
+  entity set) under *topic* hyperedges (LLM summaries of evidence sharing an entity–label pair).
+  Retrieval walks the entity–topic bipartite graph, then ranks evidence inside the chosen topics.
+  The hierarchy is induced by a deterministic grouping rule rather than clustering, which makes it
+  cheap and reproducible but only one level deep. See
+  [retrieval-augmented-generation §5](retrieval-augmented-generation.md#5-other-20252026-systems).
 - **Cog-RAG** ([Hu et al., 2026](https://arxiv.org/abs/2511.13201), AAAI 2026) is best read as a
   two-layer G3 system: a theme hypergraph over chunks above an entity hypergraph, with top-down
   alignment. See [retrieval-augmented-generation §5](retrieval-augmented-generation.md#5-other-20252026-systems).
@@ -403,3 +410,4 @@ the subfield was accused of lacking.
 - Huang, R., Feng, Y., Xue, R., Ying, S., Yong, J.-H., Shi, C., Du, S., Gao, Y. *Hyper-KGGen: A Skill-Driven Knowledge Extractor for High-Quality Knowledge Hypergraph Generation.* arXiv:2602.19543, 23 Feb 2026. https://arxiv.org/abs/2602.19543
 - Huang, X., Galkin, M., Bronstein, M. M., Ceylan, İ. İ. *HYPER: A Foundation Model for Inductive Link Prediction with Knowledge Hypergraphs.* arXiv:2506.12362, 14 Jun 2025 (rev. 8 May 2026); code https://github.com/HxyScotthuang/HYPER. https://arxiv.org/abs/2506.12362
 - Nguyen Phu, Nguyen Quang, Luu, Ngo Van, Le, Nguyen. *HyperProve.* arXiv:2609.13768, 12 Sep 2026. https://arxiv.org/abs/2609.13768
+- Dou, C., Zhang, Y., Jin, Z., Jiao, W., Zhao, H., Zhao, Y., Tao, Z. *Enhancing LLM Generation with Knowledge Hypergraph for Evidence-Based Medicine.* arXiv:2503.16530, 18 Mar 2025. https://arxiv.org/abs/2503.16530

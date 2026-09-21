@@ -34,7 +34,9 @@ This matters more than it looks, because two different things are called a hyper
   extracted from the same text ([Feng et al., 2025](https://arxiv.org/abs/2504.08758)); Cog-RAG adds a
   *theme* hypergraph whose hyperedges group chunks by topic, on top of an entity hypergraph
   ([Hu et al., 2026](https://arxiv.org/abs/2511.13201)); OG-RAG's hyperedges are ontology-grounded
-  clusters of facts ([Sharma et al., 2024](https://arxiv.org/abs/2412.15235)).
+  clusters of facts ([Sharma et al., 2024](https://arxiv.org/abs/2412.15235)); EbmKG's hyperedges
+  are units of medical *evidence* text, grouped under a second tier of *topic* hyperedges
+  ([Dou et al., 2025](https://arxiv.org/abs/2503.16530)).
 
 So most hypergraph-RAG systems sit between sense **A** (n-ary fact) and sense **D** (latent grouping) of
 the taxonomy in [applications-overview](applications-overview.md). None of the main systems stores a
@@ -164,6 +166,29 @@ way one reads that, it shows the ranking among hypergraph RAG systems flips with
   evidence is retrieved as an ordered interaction trajectory rather than a set, with a learned
   transition model and no explicit temporal annotation. Evaluated on tropical-cyclone and
   port-operation scenarios against permutation-invariant baselines.
+- **EbmKG / IdepRAG** ([Dou et al., 2025](https://arxiv.org/abs/2503.16530), arXiv only, 18 Mar 2025 — nine
+  days *before* HyperGraphRAG v1 and twelve before Hyper-RAG, and cited by neither). An
+  evidence-based-medicine system from Peking University. The hypergraph has medical entities as
+  nodes (MeSH-normalised) and **two tiers of hyperedge**: an *evidence* hyperedge is an
+  LLM-extracted text unit with its entity set and a relation label; a *topic* hyperedge groups the
+  evidence that shares an entity–label pair across documents, with an LLM-written summary. Retrieval
+  (IDEP, "importance-driven evidence prioritization") is a random walk on the entity–topic bipartite
+  graph to pick topics, then an LLM extracts query-conditioned "features" with usefulness scores and
+  evidence is ranked by attention-weighted similarity to them. Built from 41,504 drug descriptions
+  and guidelines (about 10,000 in English, the rest Chinese) into 217,236 entities, 433,611 topics
+  and 806,495 evidence hyperedges with Qwen2.5-72B-Instruct — on 16 A100-80G GPUs for two weeks,
+  which is the largest construction bill reported in this note. Six test sets (three medical QA,
+  two hallucination-detection, one decision-support), baselines VectorRAG and Microsoft GraphRAG
+  only; averages 82.4 vs 79.1 (no retrieval) vs 76.3 (GraphRAG) with Qwen, 79.6 / 77.6 / 74.2
+  with GPT-4o. Almost all of the gain is on the 100-question decision-support set (60.9 → 77.8 with
+  Qwen); on the licensing-exam QA sets no retrieval method beats the bare model by more than a point.
+  What it adds to this note: (i) **GraphRAG scores below no retrieval** on both models, Table 1; (ii)
+  the authors' error analysis attributes only 6.7 % of IdepRAG's errors to retrieval and most of the
+  rest to corpus coverage (the figure-only breakdown, roughly three quarters coverage, is
+  `[unverified]`); (iii) no ablation isolates the hypergraph from a plain graph, only IDEP's own
+  components. The paper says test sets and the hypergraph are released at a Google Drive short link;
+  that link returned HTTP 404 on 2026-09-21, and no code repository is named. The paper is licensed
+  CC BY-NC-ND 4.0; the corpus licence is unstated.
 - **Hyper-KGGen** ([Huang et al., 2026](https://arxiv.org/abs/2602.19543)). Construction rather than
   retrieval: a coarse-to-fine extractor with a "global skill library" distilled per domain, plus
   **HyperDocRED**, a document-level knowledge-hypergraph extraction benchmark restructured from
@@ -252,6 +277,7 @@ See [case-studies](case-studies.md) for the numbers gathered in one place and
 - Hu, H., Feng, Y., Li, R., Xue, R., Hou, X., Tian, Z., Gao, Y., Du, S. *Cog-RAG: Cognitive-Inspired Dual-Hypergraph with Theme Alignment Retrieval-Augmented Generation.* AAAI 2026, 40(37):31032–31040; arXiv:2511.13201. https://arxiv.org/abs/2511.13201
 - Hu, H. et al. *Cog-RAG.* Proceedings of the AAAI Conference on Artificial Intelligence. https://ojs.aaai.org/index.php/AAAI/article/view/40363
 - Sharma, K., Kumar, P., Li, Y. *OG-RAG: Ontology-Grounded Retrieval-Augmented Generation For Large Language Models.* arXiv:2412.15235, 12 Dec 2024. https://arxiv.org/abs/2412.15235
+- Dou, C., Zhang, Y., Jin, Z., Jiao, W., Zhao, H., Zhao, Y., Tao, Z. *Enhancing LLM Generation with Knowledge Hypergraph for Evidence-Based Medicine.* arXiv:2503.16530 (v1, 18 Mar 2025; no later version or venue as of 2026-09-21). https://arxiv.org/abs/2503.16530 — HTML full text read for the hypergraph definition, Table 1, Table 3, the construction cost and the error analysis; data link https://drive.google.com/rag4ebm returned 404 on 2026-09-21.
 - Wu, K., Kuai, C., Li, Z. et al. *Knowledge Is Not Static: Order-Aware Hypergraph RAG for Language Models.* arXiv:2604.12185, 14 Apr 2026. https://arxiv.org/abs/2604.12185
 - Huang, R., Feng, Y., Xue, R., Ying, S., Yong, J.-H., Shi, C., Du, S., Gao, Y. *Hyper-KGGen: A Skill-Driven Knowledge Extractor for High-Quality Knowledge Hypergraph Generation.* arXiv:2602.19543, 23 Feb 2026. https://arxiv.org/abs/2602.19543
 - Xiang, Z., Wu, C., Zhang, Q., Chen, S., Hong, Z., Huang, X., Su, J. *When to use Graphs in RAG: A Comprehensive Analysis for Graph Retrieval-Augmented Generation.* ICLR 2026; arXiv:2506.05690 (v3, 22 Feb 2026). https://arxiv.org/abs/2506.05690
