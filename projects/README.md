@@ -5,7 +5,7 @@ folder, created from `_template/`, and links back to the `kb/` notes it depends 
 
 | Project | Status | One-line goal |
 |---|---|---|
-| _(none yet)_ | | |
+| [hyper-base](hyper-base/) | idea | A knowledge base whose structure is a knowledge hypergraph: agents contribute facts through an extraction gate, a linter applies supersession rules, a judgment-model walker retrieves. First target: an EEG device across four disciplines. Combines P7 and P2 and layers B, E, G of the composed stack. To move to its own repo. |
 
 ## Candidate vectors (to be confirmed with the repository owner)
 
