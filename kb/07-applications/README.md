@@ -18,7 +18,7 @@ taxonomy of what a hyperedge *means* in each setting, then read by domain or by 
 | File | What it covers |
 |---|---|
 | [applications-overview](applications-overview.md) | The four senses of "hypergraph" in applied work; application types; the domain × application-type matrix |
-| [retrieval-augmented-generation](retrieval-augmented-generation.md) | HyperGraphRAG, Hyper-RAG, HyperRAG, PRoH, Cog-RAG, OG-RAG, OKH-RAG, Hyper-KGGen; costs; the GraphRAG-Bench critique |
+| [retrieval-augmented-generation](retrieval-augmented-generation.md) | HyperGraphRAG, Hyper-RAG, HyperRAG, PRoH, Cog-RAG, OG-RAG, EbmKG/IdepRAG, OKH-RAG, Hyper-KGGen; costs; the GraphRAG-Bench critique |
 | [question-answering-over-n-ary-facts](question-answering-over-n-ary-facts.md) | WikiPeopleQA, StarQE/NQE/LKHGT complex query answering, temporal and event QA, SciREX/HyperDocRED |
 | [biomedical-and-life-sciences](biomedical-and-life-sciences.md) | Reactions and pathways, protein complexes, HODDI, polypharmacy, HypKG, PrimeKG contrast, clinical RAG |
 | [chemistry-and-reaction-networks](chemistry-and-reaction-networks.md) | Directed multi-hypergraphs, integer hyperflows, assembly, retrosynthesis AND/OR search |

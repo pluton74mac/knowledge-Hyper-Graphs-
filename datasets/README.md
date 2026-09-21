@@ -2,7 +2,7 @@
 
 **No bulk data is committed to this repository.** This directory holds *manifests* — pointers,
 licences, checksums and fetch instructions — and nothing else. Everything listed here was
-checked on **2026-09-20**, except the HyperDocRED row in §2.1, checked **2026-09-21**.
+checked on **2026-09-20**, except the HyperDocRED row in §2.1 and the EbmKG row in §2.4, checked **2026-09-21**.
 
 Background, statistics and task descriptions live in
 [../kb/09-ecosystem/datasets-and-benchmarks.md](../kb/09-ecosystem/datasets-and-benchmarks.md).
@@ -85,6 +85,7 @@ statistics by different papers; a name alone does not identify data.
 |---|---|---|---|---|
 | **HyperGraphRAG** contexts + questions (Medicine, Agriculture, CS, Legal, Mix; 512 questions each) | [LHRLAB/HyperGraphRAG › evaluation](https://github.com/LHRLAB/HyperGraphRAG/blob/main/evaluation/README.md) | code MIT; **corpus licence unstated**, and the Medicine context is built from copyrighted clinical guidelines | `rag-corpora/hypergraphrag/` | the repository directs users to a **Terabox** link — no DOI, no checksum; mirror it yourself and record a hash |
 | **Hyper-RAG** datasets (NeurologyCrop + nine others) | [iMoonLab/Hyper-RAG](https://github.com/iMoonLab/Hyper-RAG) | code Apache-2.0; **corpus licence unstated** | `rag-corpora/hyper-rag/` | Google Drive / Baidu Cloud links in the README |
+| **EbmKG** (evidence-based-medicine hypergraph: 217,236 entities, 433,611 topics, 806,495 evidence hyperedges from 41,504 documents) + six test sets | [Dou et al., 2025](https://arxiv.org/abs/2503.16530) | paper CC BY-NC-ND 4.0; **corpus licence unstated** — built from UpToDate guidelines and a Chinese pharmacy site, both proprietary | `rag-corpora/ebmkg/` | **Not obtainable as of 2026-09-21.** The only link in the paper, `https://drive.google.com/rag4ebm`, returns HTTP 404 and is not a valid Drive URL form; no code repository is named. Ask the authors. |
 | **UltraDomain** (upstream of three HyperGraphRAG domains) | named in [Luo et al., 2025](https://arxiv.org/html/2503.21322v3) | `[unverified]` | `rag-corpora/ultradomain/` | `[unverified]` canonical location not confirmed in this run |
 
 Treat everything in this sub-table as **provisional**: none of it is archived with a DOI, and
@@ -129,6 +130,7 @@ the licensing is unresolved. See section 8 of
 - XGI-DATA, <https://github.com/xgi-org/xgi-data> and <https://zenodo.org/communities/xgi>; hypergraphx-data, <https://hgx-team.github.io/hypergraphx-data/>; both checked 2026-09-20.
 - Luo, H., E, H., Chen, G. et al. (2025). *HyperGraphRAG.* arXiv:2503.21322. <https://arxiv.org/html/2503.21322v3>
 - Feng, Y., Hu, H., Ying, S. et al. (2026). *Hyper-RAG.* Nature Communications 17, 5778. <https://doi.org/10.1038/s41467-026-71411-1>
+- Dou, C., Zhang, Y., Jin, Z., Jiao, W., Zhao, H., Zhao, Y., Tao, Z. (2025). *Enhancing LLM Generation with Knowledge Hypergraph for Evidence-Based Medicine.* arXiv:2503.16530. Statistics from the introduction and Appendix A.3; data link checked 2026-09-21. <https://arxiv.org/abs/2503.16530>
 - YAGO 4.5 downloads, <https://yago-knowledge.org/downloads/yago-4-5>; ConceptNet, <https://conceptnet.io/>; SNAP, <https://snap.stanford.edu/data/>; KONECT, <http://konect.cc/>; all checked 2026-09-20.
 - Huang, R., Feng, Y., Xue, R. et al. (2026). *Hyper-KGGen: A Skill-Driven Knowledge Extractor for High-Quality Knowledge Hypergraph Generation* (introduces HyperDocRED). KDD '26, DOI 10.1145/3770855.3818198; arXiv:2602.19543 v2. Table 1 for the statistics; repository <https://github.com/Rizrock/Hyper-KGGen> cloned 2026-09-21 and confirmed to contain no dataset files. <https://arxiv.org/html/2602.19543v2>
 - Tan, Q., Xu, L., Bing, L., Ng, H. T., Aljunied, S. M. (2022). *Revisiting DocRED — Addressing the False Negative Problem in Relation Extraction.* EMNLP 2022; arXiv:2205.12696. Upstream corpus of HyperDocRED. <https://arxiv.org/abs/2205.12696>
