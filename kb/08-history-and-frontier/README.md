@@ -4,7 +4,7 @@ type: index
 status: draft
 tags: [history, frontier, index, section-readme]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # 08 — History and frontier
@@ -44,6 +44,7 @@ orienting new work.
 | [current-frontier-directions.md](current-frontier-directions.md) | survey | Fifteen active directions, each with claim / who / key papers / open problems: hypergraph foundation models, LLM+KHG neurosymbolic reasoning, temporal and dynamic KHGs, inductive and zero-shot n-ary completion, standards, scalable hypergraph databases, higher-order network science meeting KR, topological deep learning, expressivity theory, the benchmark crisis, multimodal KHGs, KHGs as agent memory, hypergraph-RAG evaluation and construction quality, hypergraph serialisation for language models, and causal hypergraphs. Ends with six cross-cutting gaps nobody is filling. |
 | [research-groups-and-people.md](research-groups-and-people.md) | survey | Who works on this, grouped by community, with affiliations as stated by the latest source checked on 2026-09-20 and `[unverified]` markers where a primary page could not be reached. Covers Fatemi/Poole, Galkin, the Fribourg line (Rosso/Yang/Cudré-Mauroux), Guan and the CAS group, Gao/Feng and iMoon-Lab, Battiston and Hypergraphx, the XGI team, PNNL/HyperNetX, the HIF authors, Benson, Hajij and TopoX, Haoran Luo, ETH's higher-order database group, TypeDB, HypergraphDB and OpenCog Hyperon. |
 | [reading-the-frontier-2026-q3.md](reading-the-frontier-2026-q3.md) | survey | A dated, repeatable arXiv snapshot of June–September 2026: the exact queries, 404 records, and every knowledge-relevant paper grouped into the fifteen frontier directions. Zero hyper-relational papers, eight new hypergraph-RAG systems, a new tool-hypergraph cluster, and the AHORN and TAHB infrastructure releases. |
+| [composed-stack-and-research-bets.md](composed-stack-and-research-bets.md) | survey | Second-pass synthesis (2026-09-21): the fifteen directions arranged as layers of one system (extract → store → complete / algebra / plan → generate and act → write back), a table of which published system implements which layer, the four abilities that current evaluation conflates, and seven ranked research bets. Adds questions [08.6]–[08.9] and candidate project P8. |
 | [venues-and-community-events.md](venues-and-community-events.md) | survey | The four venue families, the specific 2026 editions (ISWC, ESWC, WWW, KDD, CIKM, NeurIPS, ICLR, ICML, LoG, CVPR, ACL, EMNLP, NetSci with HONS/TopoNets/hackathon, IEEE VIS, Graph Drawing), Dagstuhl 21352, and the annual rhythm. Notes that there is no knowledge-hypergraph conference and no Dagstuhl seminar for the KHG community. |
 
 Every source cited anywhere in this section is collected, with full bibliographic detail, in

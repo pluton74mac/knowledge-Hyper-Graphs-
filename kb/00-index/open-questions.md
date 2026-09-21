@@ -4,12 +4,12 @@ type: question
 status: reviewed
 tags: [index, open-questions, research-agenda]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # Open questions
 
-The register of questions the research raised and did not answer. Part A groups them into seven
+The register of questions the research raised and did not answer. Part A groups them into eight
 cross-cutting themes, each with the experiment or search that would settle it. Part B lists the
 questions by the section that raised them. Part C maps the most tractable ones to candidate
 projects. Add new questions at the end of the relevant section list with the date and the note that
@@ -100,6 +100,21 @@ The gap-filling pass added a governance angle: **[10.6]** erasure semantics for 
 - **[09.1]** Has any openCypher improvement proposal ever proposed hyperedges or n-ary relationships? The proposal archive was not searched.
 - Two hypergraph communities (higher-order network science; knowledge representation and learning) measurably do not cite each other. What would a shared venue, dataset or format look like? See [venues and community events](../08-history-and-frontier/venues-and-community-events.md), [research groups and people](../08-history-and-frontier/research-groups-and-people.md).
 
+### Theme 8 — Do the layers compose? (added 2026-09-21)
+
+The second research pass arranged the frontier as one stack (extract → store → complete / algebra /
+plan → generate and act → write back) and found that every published system implements two or three
+layers and treats the rest as given. Two layer boundaries have never been crossed in one experiment.
+See [the composed stack](../08-history-and-frontier/composed-stack-and-research-bets.md).
+
+- **[08.6]** Does a planner's lift (PRoH over HyperGraphRAG) survive on an extracted, incomplete hypergraph that an inductive completer (HYPER-style) has filled? A completer has never been run under a retriever. See [hierarchical and planned hypergraph retrieval](../07-applications/hierarchical-and-planned-hypergraph-retrieval.md), [HYPER anatomy](../05-query-embeddings-reasoning/hyper-foundation-model-anatomy.md).
+- **[08.7]** Can an embedding that implements relational algebra (ReAlE) be the query interface for an LLM planner, so the planner emits operators rather than English, and does that beat cosine retrieval on multi-hop questions? See [geometry and algebraic interfaces](../05-query-embeddings-reasoning/geometry-and-algebraic-interfaces.md).
+- **[08.8]** Is there one artefact on which extraction, inductive completion, retrieval and long-horizon memory can all be scored, and how do the four scores correlate? See [the composed stack](../08-history-and-frontier/composed-stack-and-research-bets.md) §3.
+- **[08.9]** Do extraction skills (Hyper-KGGen) and agent procedural skills (HyperSkill) unify as typed hyperedges with arity and role constraints, and does typing reduce extraction instability? See [skill-driven extraction](../03-construction/skill-driven-extraction-and-the-scenario-gap.md), [AI agents memory and planning](../07-applications/ai-agents-memory-and-planning.md).
+
+**What would settle it:** one pipeline that extracts, completes, plans and remembers over the same
+corpus, scored on all four abilities. Candidate project P8.
+
 ## Part B — Questions by section
 
 ### 01 Foundations
@@ -160,6 +175,10 @@ The gap-filling pass added a governance angle: **[10.6]** erasure semantics for 
 3. [08.3] Higher-order network measures on typed, directed, role-labelled KHGs.
 4. [08.4] An n-ary benchmark not descended from Freebase 2015.
 5. [08.5] Human factors of curating n-ary facts vs reified triples.
+6. [08.6] Planner lift on a completer-filled extracted hypergraph. Raised 2026-09-21 by [the composed stack](../08-history-and-frontier/composed-stack-and-research-bets.md).
+7. [08.7] Relational-algebra embeddings as the planner's query interface. Raised 2026-09-21 by the same note.
+8. [08.8] One artefact scoring extraction, completion, retrieval and memory. Raised 2026-09-21 by the same note.
+9. [08.9] Extraction skills and agent skills as one typed-hyperedge object. Raised 2026-09-21 by the same note.
 
 ### 09 Ecosystem
 1. [09.1] openCypher proposals for hyperedges.
@@ -190,7 +209,8 @@ listed in `projects/README.md` as candidate vectors; none is started.
 | P4 | **Arity ablation of hypergraph RAG**: run one hypergraph-RAG system with hyperedges intact, split pairwise, and as whole-sentence chunks, on one public domain and on GraphRAG-Bench | 1, 3 | 10.2, 07.1, 07.2 |
 | P5 | **Reader study**: incidence vs Euler drawing of the same KHG, with and without role labels | 2, 6 | 06.1, 06.2 |
 | P6 | **Schema width survey**: compute acyclicity class and hypertree width for Wikidata qualifier schemas and one biomedical schema | 5 | 01.3, 05.5 |
-| P7 | **Agent memory prototype**: a hypergraph memory for a small agent vs a flat vector store, with fact identity and arity-conditional merging rules made explicit | 4 | 03.1, 04.3 |
+| P7 | **Agent memory prototype**: a hypergraph memory for a small agent vs a flat vector store, with fact identity, arity-conditional merging rules and **valid-time on the hyperedge with supersession** made explicit (reframed 2026-09-21) | 4, 8 | 03.1, 04.3, 08.6 |
+| P8 | **Four-ability evaluation suite**: one corpus scored on gold n-ary extraction, inductive completion of the extracted graph, high-arity-edge-ablated multi-hop retrieval, and a superseding memory trace; see [the composed stack](../08-history-and-frontier/composed-stack-and-research-bets.md) §3 (added 2026-09-21) | 3, 8 | 08.6, 08.7, 08.8, 08.9 |
 
 ## Sources
 
