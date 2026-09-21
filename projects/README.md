@@ -31,12 +31,20 @@ questions each one answers, and the themes it moves are in
 ## Assembly order towards hyper-base
 
 The candidates are stepping stones to [hyper-base](https://github.com/pluton74mac/hyper-base):
-each returns one component or one measured insight, and hyper-base assembles them. Dependency order:
+each returns one component or one measured insight, and hyper-base assembles them. The owner has
+set a deadline of a working hyper-base in under two months. The week-by-week schedule, the scope
+guards on P3, P5 and P8, and the done-condition of each project are in
+[hyper-base/docs/roadmap.md](https://github.com/pluton74mac/hyper-base/blob/main/docs/roadmap.md).
 
-1. **Test bed and format.** P2 (record format with roles, validator, loaders), then P3 as data only
-   (a clean corpus with gold n-ary facts). Every later project is scored on this corpus in this format.
-2. **Components, independent of each other.** P1 (store), P6 (schema checks), P7 (fact identity and
-   supersession), P9 (extraction gate), P10 (walker), P5 (how humans read the graph).
-3. **Retrieval evidence.** P4, using P10's walker on P3's corpus.
-4. **Integration.** P8 scores P9, P7, P10 and P4 on one corpus. Coherent scores mean the components compose.
-5. **Assembly.** hyper-base adds P11's goal mechanism and a multi-writer candidate queue on top of P8's pipeline.
+| Week | Projects |
+|---|---|
+| 1 | P2 format, P3 phase 1 corpus, P6 schema check. Corpus and format frozen on day 5 |
+| 2 | P7 fact identity and supersession, P9 extraction gate, P10 walker with a general LLM |
+| 3 | P1 store bake-off, P10 with a decision-only model, P5 as an online quiz |
+| 4 | P4 arity ablation with P10's walker on P3's corpus |
+| 5 | P8 four-ability suite on one corpus |
+| 6 | P11 goal-directed construction, two disciplines then the EEG goal set |
+| 7 | Assembly: multi-writer queue and goal mechanism on P8's pipeline; EEG run end to end |
+| 8 | Evaluation against an llm-wiki baseline; buffer; write-ups |
+
+Each project ends with a folder here, one result table, one figure and one post draft.
