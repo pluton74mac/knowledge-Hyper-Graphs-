@@ -4,7 +4,7 @@ type: tool
 status: draft
 tags: [ecosystem, software, libraries, hypergraph, n-ary, HIF, rdf-star, databases, visualization]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # Software libraries for hypergraphs and knowledge hypergraphs
@@ -131,17 +131,37 @@ needs them must use `pyoxigraph`, Jena or RDF4J instead. This matters directly f
 |---|---|---|---|---|---|---|---|
 | **HyperGraphRAG** | Python | RAG over an LLM-extracted knowledge hypergraph (NeurIPS 2025) | n-ary hyperedge = one natural-language fact linking ≥2 extracted entities | MIT | 451 | last commit 2026-05-12 | [LHRLAB/HyperGraphRAG](https://github.com/LHRLAB/HyperGraphRAG) |
 | **Hyper-RAG** | Python | RAG with low-order (pairwise) *and* high-order hyperedges, backed by Hypergraph-DB, with a web UI (Nature Communications 2026) | mixed pairwise + hyperedge store | Apache-2.0 | 322 | last commit 2026-06-27 | [iMoonLab/Hyper-RAG](https://github.com/iMoonLab/Hyper-RAG) |
-| **Hyper-Extract** | Python | CLI + library that turns unstructured text into graphs, hypergraphs or spatio-temporal structures with an LLM | n-ary hyperedges produced by LLM extraction | GitHub metadata "Other" (`NOASSERTION`) | 3,978 | created 2026-01-07; last commit 2026-09-20 — the fastest-growing hypergraph repository found in this survey | [yifanfeng97/Hyper-Extract](https://github.com/yifanfeng97/Hyper-Extract) |
+| **Hyper-Extract** | Python (3.11+) | CLI + library (`he`) turning documents into any of **nine** typed structures — Model, List, Set, Graph, **Hypergraph**, Temporal / Spatial / Spatio-Temporal Graph, Document corpus — via **ten** built-in engines and 40 bilingual domain templates; also an MCP server | hyperedge = named, typed record with an unordered `participants` list; identity declared per template (`entity_id`, `relation_id`, `relation_members`) | **Apache-2.0** (licence file and README badge; *corrected* from the 2026-09-20 reading of GitHub's metadata) | ~4,000 (458 forks) | created 2026-01-07; commit `395039e` 2026-09-20; PyPI `hyperextract` **0.10.3**, 2026-09-20 (19 releases) — checked 2026-09-21; the fastest-growing hypergraph repository found in this survey | [yifanfeng97/hyper-extract](https://github.com/yifanfeng97/hyper-extract) |
 | **LightRAG** | Python | *contrast case*: graph RAG with **binary** entity–relation edges | binary edges + vector index | MIT | 39,768 | PyPI `lightrag-hku` **1.5.7**, 2026-09-02; last commit 2026-09-20 | [HKUDS/LightRAG](https://github.com/HKUDS/LightRAG) |
 | **nano-graphrag** | Python | *contrast case*: minimal graph RAG, binary edges; the code ancestor several hypergraph-RAG repos fork | binary edges | MIT | 3,990 | PyPI **0.0.8.2**, 2024-10-19; last commit 2026-01-27 | [gusye1234/nano-graphrag](https://github.com/gusye1234/nano-graphrag) |
 
 Two things stand out. First, the binary-edge GraphRAG implementations still have an order of
 magnitude more stars than the hypergraph research repositories (LightRAG 39,768 vs
-HyperGraphRAG 451). Second, **Hyper-Extract**, created on 2026-01-07 by the author of DHG and
-Hyper-RAG, reached 3,978 stars in roughly eight months — nearly as many as nano-graphrag and
-almost nine times HyperGraphRAG. The hypergraph idea appears to travel much further when it is
-packaged as a one-command extraction tool than when it is packaged as a research pipeline. See
+HyperGraphRAG 451). Second, **Hyper-Extract**, created on 2026-01-07 by Yifan Feng — the author of DHG and
+Hyper-RAG, and joint first author of Hyper-KGGen — reached roughly 4,000 stars in about eight months,
+nearly as many as nano-graphrag and almost nine times HyperGraphRAG. The hypergraph idea appears to travel
+much further when it is packaged as a one-command extraction tool than when it is packaged as a research
+pipeline. See
 [../07-applications/retrieval-augmented-generation.md](../07-applications/retrieval-augmented-generation.md).
+
+**Hyper-Extract, verified in detail (repository cloned and read 2026-09-21).** The three README figures
+most often quoted need deflating. The "11+ Extraction Engines" are ten registered methods —
+`chunk_rag`, `graph_rag`, `light_rag`, `hyper_rag`, `hypergraph_rag`, `cog_rag`, `itext2kg`,
+`itext2kg_star`, `kg_gen`, `atom` (`hyperextract/methods/registry.py`), of which three are
+hypergraph-typed. The "80+ YAML Templates" are 40 files under `hyperextract/templates/presets/`
+(general, finance, legal, medicine, tcm, industry, education), each declaring `language: [zh, en]`, so
+the count is of language variants. The nine knowledge structures are real and are the nine modules in
+`hyperextract/types/`. Two design points matter for this KB. (i) Templates carry an `identifiers:` block
+and a validator with diagnostic codes HE-T001…HE-T009, which is more schema discipline than any research
+KHG-RAG pipeline applies — but role slots are mandatory only for the *binary* graph family
+(`source`/`target`, plus `time_field`/`location_field` for temporal and spatial graphs); the hypergraph
+type takes one unordered participant list, so roles vanish exactly where arity rises. (ii) It is the only
+tool here built for repeated ingestion — `he feed` under an existing source id, `he remove --document`,
+`he info --sources`, with `track_sources=True` source ledgers on both node and edge memories — yet
+identity is exact string equality on a key and post-collision merging is an LLM call
+(`ontomem`'s `MergeStrategy.LLM.BALANCED`), so inserts can still fork an entity or silently change a
+hyperedge's arity. Full analysis in
+[../03-construction/skill-driven-extraction-and-the-scenario-gap.md](../03-construction/skill-driven-extraction-and-the-scenario-gap.md).
 
 ---
 
@@ -207,3 +227,5 @@ Stated as observations from the table above, not as claims from any one source:
 - GitHub repository metadata (stars, licence, `pushed_at`) retrieved via the GitHub repository search API on 2026-09-20 for every repository linked above.
 - PyPI JSON API (`https://pypi.org/pypi/<name>/json`), crates.io API, Maven Central `search.maven.org` and the Julia General registry (`JuliaRegistries/General`), all queried 2026-09-20, for package versions and upload dates.
 - Local verification in a Python 3.11.15 virtualenv with `hypernetx==2.4.3`, `xgi==0.10.2`, `hypergraphx==1.8.0`, `rdflib==7.6.0` (2026-09-20): HIF round-trip behaviour, `hypernetx.hif.schema_url`, and the rdflib RDF-star parse failures reported above.
+- Feng, Y. *Hyper-Extract* repository: `README.md`, `LICENSE` (Apache-2.0), `hyperextract/types/`, `hyperextract/methods/registry.py`, `hyperextract/templates/presets/`, `hyperextract/utils/template_engine/validator.py`. Cloned and read at commit `395039e` (2026-09-20); checked 2026-09-21. <https://github.com/yifanfeng97/hyper-extract>
+- PyPI `hyperextract` 0.10.3 (Apache-2.0, uploaded 2026-09-20, 19 releases) and `ontomem` 0.6.0 (Apache-2.0), queried 2026-09-21. <https://pypi.org/project/hyperextract/> · <https://pypi.org/project/ontomem/>

@@ -4,7 +4,7 @@ type: survey
 status: draft
 tags: [venues, conferences, workshops, community, calendar, ecosystem]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # Venues and community events
@@ -63,10 +63,12 @@ NetSci satellites, Dagstuhl seminars and a handful of large-ML workshops.
 - **NeurIPS.** HyperGraphRAG was accepted to the **NeurIPS 2025 main conference**
   ([proceedings](https://proceedings.neurips.cc/paper_files/paper/2025/file/df55ee6e59f8ac4a625219e11fe9ddba-Paper-Conference.pdf)).
   NeurIPS workshops matter as much: HYPER was presented at the NeurIPS 2025 **"New Perspectives in
-  Graph Machine Learning"** workshop ([page](https://neurips.cc/virtual/2025/127653)).
+  Graph Machine Learning"** workshop ([page](https://neurips.cc/virtual/2025/127653)) before its
+  ICLR 2026 acceptance.
 - **ICLR.** ULTRA (ICLR 2024), GraphRAG-Bench (ICLR 2026,
-  [arXiv:2506.05690](https://arxiv.org/abs/2506.05690)), and HYPER per its authors' repository
-  ([GitHub](https://github.com/HxyScotthuang/HYPER)).
+  [arXiv:2506.05690](https://arxiv.org/abs/2506.05690)), and HYPER (ICLR 2026, confirmed 2026-09-21
+  from the OpenReview PDF header and the repository BibTeX; see
+  [HYPER anatomy](../05-query-embeddings-reasoning/hyper-foundation-model-anatomy.md)).
 - **ICML.** The topological-deep-learning position paper, ICML 2024, PMLR 235
   ([arXiv:2402.08871](https://arxiv.org/abs/2402.08871)). ICML 2026 ran a **"Graph Foundation Models:
   A New Era for Graph Machine Learning"** workshop on Friday 10 July 2026

@@ -422,6 +422,15 @@ arXiv dates are v1 submission dates; repository and wiki pages give the date che
 - Luo, H., E, H., Yang, Y., Yao, T., Guo, Y., Tang, Z. et al. "Text2NKG: Fine-Grained N-ary Relation Extraction for N-ary relational Knowledge Graph Construction." NeurIPS 2024 / arXiv 2310.05185. https://arxiv.org/abs/2310.05185
 - arXiv Atom API sweep of `all:hypergraph`, `all:"n-ary"`, `all:"higher-order networks"` and `abs:"higher-order network"` restricted to `submittedDate:[202606010000 TO 202609202359]`, run 2026-09-20; 404 unique records. https://export.arxiv.org/api/query
 
+## Added in run 02 (2026-09-21) — skill-driven extraction, the scenario gap, and incremental consistency
+
+- Huang, R., Feng, Y., Xue, R., Ying, S., Yong, J.-H., Shi, C., Du, S., Gao, Y. "Hyper-KGGen: A Skill-Driven Knowledge Extractor for High-Quality Knowledge Hypergraph Generation." **KDD '26** — Proceedings of the 32nd ACM SIGKDD Conference on Knowledge Discovery and Data Mining V.2, Jeju Island, 9–13 August 2026; DOI 10.1145/3770855.3818198; ISBN 979-8-4007-2259-2; CC BY 4.0. arXiv:2602.19543, v1 23 February 2026, v2 5 July 2026. Full v2 HTML read 2026-09-21: Sections 1–6, Tables 1–6, Appendices A–C. Supersedes earlier "no venue" entries for this paper. https://arxiv.org/html/2602.19543v2
+- Rizrock (R. Huang). Hyper-KGGen source repository — `hyper_kggen/schema.py`, `hyper_kggen/prompts.py`, `skill_acquisition/experience.py`, `skill_acquisition/prompts.py`, `skill_acquisition/schema.py`, `README.md`. MIT licence; 9 stars; latest commit 2026-06-07 ("refactor project structure"). Cloned and read 2026-09-21. Confirms: skills stored as free-text `{trigger, action}` pairs; hyperedge schema = unordered `linked_nodes` (min length 2, distinct) + free-string `type`; skill controller operations ADD/MERGE/SKIP/DELETE; no hindsight-reasoning prompt in the released code; no HyperDocRED data files. https://github.com/Rizrock/Hyper-KGGen
+- Tan, Q., Xu, L., Bing, L., Ng, H. T., Aljunied, S. M. "Revisiting DocRED — Addressing the False Negative Problem in Relation Extraction." EMNLP 2022 / arXiv:2205.12696, 25 May 2022 (rev. 16 June 2023). The corpus HyperDocRED restructures. https://arxiv.org/abs/2205.12696
+- Zhang, H., Si, J., Yan, G., Qi, B., Cai, P., Mao, S., Wang, D., Shi, B. "RAKG: Document-level Retrieval Augmented Knowledge Graph Construction." arXiv:2504.09823, 14 April 2025. Pre-entity retrieval for cross-document consistency; a Hyper-KGGen baseline; binary triples only; reports 95.91% on MINE against GraphRAG's 89.71%. https://arxiv.org/abs/2504.09823
+- Feng, Y. Hyper-Extract source repository — `hyperextract/types/hypergraph.py` (`_prune_dangling_edges`, `known_nodes` injection, `OMem` construction with `track_sources=True`), `hyperextract/types/base.py` (`feed_text`), `hyperextract/templates/presets/general/base_hypergraph.yaml` (`identifiers:` block), `hyperextract/utils/template_engine/validator.py` (HE-T001…HE-T009). Apache-2.0; commit `395039e` of 2026-09-20. Cloned and read 2026-09-21. The evidence for the entity-forking and silent-arity-change analysis. https://github.com/yifanfeng97/hyper-extract
+- WebSearch sweep for 2026 work on *consistent* incremental knowledge-hypergraph extraction (queries on incremental consistency, entity forking and arity conflict in KHG extraction), run 2026-09-21: **no** paper found proposing or claiming consistency guarantees for incremental KHG extraction. Dated absence claim.
+
 ## 04-storage-and-formats
 
 Every source cited by a note in [`kb/04-storage-and-formats/`](../../kb/04-storage-and-formats/),
@@ -766,6 +775,77 @@ GitHub REST API was not reachable from this session).
 - Gebru, T., Morgenstern, J., Vecchione, B., Wortman Vaughan, J., Wallach, H., Daumé III, H., Crawford, K. "Datasheets for Datasets." CACM 64(12), December 2021 / arXiv 1803.09010. https://doi.org/10.1145/3458723
 - Yu, W., Lu, Y., Yang, D. "THOR: Inductive Link Prediction over Hyper-Relational Knowledge Graphs." arXiv 2602.05424, 5 February 2026. https://arxiv.org/abs/2602.05424
 
+## Added in run 02 (2026-09-21) — HYPER anatomy, HCNet, and the binary KGFM precursors
+
+### HYPER (venue settled: ICLR 2026)
+
+- Huang, X., Galkin, M., Bronstein, M. M., Ceylan, İ. İ. "HYPER: A Foundation Model for Inductive Link Prediction with Knowledge Hypergraphs." **ICLR 2026**. arXiv:2506.12362 — v1 14 Jun 2025, v2 13 Feb 2026, **v3 8 May 2026 (cite this one)**. https://arxiv.org/abs/2506.12362 ; v3 HTML https://arxiv.org/html/2506.12362v3
+  - Venue confirmed 2026-09-21: the OpenReview PDF at https://openreview.net/pdf?id=YLTQbMoAaX carries the header "Published as a conference paper at ICLR 2026"; the repository BibTeX gives `booktitle={International Conference on Learning Representations}, year={2026}`. The OpenReview HTML and api2 endpoints were behind a bot challenge on that date, so the forum page itself could not be read directly. The NeurIPS 2025 "New Perspectives in Graph Machine Learning" workshop appearance (https://neurips.cc/virtual/2025/127653) is a separate, earlier event.
+  - **Numbers changed between v1 and v3.** v1 Table 2 (node-inductive) ULTRA†(50KG) = 0.346 / 0.286 / 0.149; v3 Table 3 ULTRA‡(50KG) = 0.007 / 0.029 / 0.026. v1 Table 1 ULTRA†(50KG) at the 100% columns = 0.111 / 0.262 / 0.065 / 0.150; v3 Table 2 = 0.001 / 0.190 / 0.004 / 0.001. v1: ULTRA(50KG) "performs only marginally better than the version trained on just 3"; v3: "performs much worse". HYPER's own rows are unchanged. v3 also adds ULTRA‡(4HG) and ULTRA‡(3KG+2HG) baselines and a second reification scheme (†).
+  - Key v3 locations: Table 1 capability matrix (§2); relation graph and `Enc_PI` (§4); Theorem 4.1 informal, formalised as Theorem C.2 with Proposition C.1 (equivariance) in Appendix C; sparse-matmul relation-graph construction in Appendix B; compute (single H100, 4 days pretraining; Triton kernel halving time and cutting memory ~5×, O(k|E|) → O(|V|)) in Appendix D; complexity and the FB15k-237 scalability table (ULTRA 1.19 s/batch, 12.87 GB; HCNet 2.64, 18.03; HYPER 4.51, 25.30; 225,409 parameters) in Appendix F; architecture, training objective and the KG-ICL comparison in Appendix G.
+- HYPER implementation, checked 2026-09-21 by direct fetch: https://github.com/HxyScotthuang/HYPER — MIT; README states ICLR 2026; **three public checkpoints** `ckpts/HYPER-3KG.pth` (2,833,802 B), `HYPER-4HG.pth` (2,834,222 B), `HYPER-3KG+2HG.pth` (2,833,802 B); **datasets shipped in-repo** under `hypergraph_dataset/` (verified `JF-100/train.txt` 148,593 B, `JF-IND/train.txt` 95,639 B, `JF17K/train.txt` 3,368,397 B); Triton `rspmm` at `hyper/rspmm/triton_rspmm.py` (class `HyperRelConvSumAggr`), enabled via `use_triton` (Python default `False`, but `config/pretrain/pretrain_3KG+2HG.yaml` sets `use_triton: yes` for both encoders); engine acknowledged as adapted from the ULTRA PyG implementation.
+
+### Neural substrate
+
+- Huang, X., Romero Orth, M., Barceló, P., Bronstein, M. M., Ceylan, İ. İ. "Link Prediction with Relational Hypergraphs" (HC-MPNN / HCNet). *Transactions on Machine Learning Research*, 2025 (repository states TMLR 2025/05). arXiv:2402.04062, v3 9 Jun 2025. https://arxiv.org/abs/2402.04062 ; code https://github.com/HxyScotthuang/HC-MPNN
+  - HCNet message: `σ(W⁽ˡ⁾[h⁽ˡ⁾_{v|q} ‖ Σ_{(e,i)∈E(v)} g_{ρ(e),q}⁽ˡ⁾(⊙_{j≠i}(α⁽ˡ⁾h⁽ˡ⁾_{e(j)|q} + (1−α⁽ˡ⁾)p_j))] + b⁽ˡ⁾)`, α a learnable scalar, p_j sinusoidal.
+  - §6.3: HCNet is evaluated **without inverse-relation augmentation** and still reaches the top 3 on 7 of 8 GraIL splits; "Theorem G.4 implies that all current models based on conditional message passing, including NBFNets, need inverse relation augmentation to match the expressive power of HCNet".
+
+### Binary KG foundation-model precursors
+
+- Cui, Y., Sun, Z., Hu, W. "A Prompt-Based Knowledge Graph Foundation Model for Universal In-Context Reasoning" (KG-ICL). *NeurIPS 2024*; arXiv:2410.12288. Prompt graph centred on a query-related example fact, unified tokeniser, two MPNNs; 43 KGs, transductive and inductive. https://arxiv.org/abs/2410.12288 ; code and datasets https://github.com/nju-websoft/KG-ICL (released 2024-10-14; uses the same `rspmm` kernel family, `use_rspmm` defaulted to False on 2025-03-22). In HYPER v3 Table 12, zero-shot average MRR over the 16 new datasets: KG-ICL 4/5/6-layer = 0.139 / 0.048 / 0.143, against HYPER (3KG+2HG) 0.236 and ULTRA‡ (3KG+2HG) 0.183; KG-ICL's own pretraining mix is FB-v1, NL-v1, CoDEx-Small.
+- Galkin, M., Yuan, X., Mostafa, H., Tang, J., Zhu, Z. "Towards Foundation Models for Knowledge Graph Reasoning" (ULTRA). *ICLR 2024*; arXiv:2310.04562. https://arxiv.org/abs/2310.04562
+- Lee, J., Chung, C., Whang, J. J. "InGram: Inductive Knowledge Graph Embedding via Relation Graphs." *ICML 2023*; arXiv:2305.19987. Source of the relation graph and of HYPER's 25/50/75/100% unseen-relation split protocol. https://arxiv.org/abs/2305.19987
+- Zhu, Z., Zhang, Z., Xhonneux, L.-P., Tang, J. "Neural Bellman-Ford Networks: A General Graph Neural Network Framework for Link Prediction" (NBFNet). *NeurIPS 2021*; arXiv:2106.06935. https://arxiv.org/abs/2106.06935
+- Zhu, Z., Yuan, X., Galkin, M., Xhonneux, S., Zhang, M., Gazeau, M., Tang, J. "A*Net: A Scalable Path-based Reasoning Approach for Knowledge Graphs." *NeurIPS 2023*; arXiv:2206.04798. https://arxiv.org/abs/2206.04798
+- Teru, K. K., Denis, E., Hamilton, W. L. "Inductive Relation Prediction by Subgraph Reasoning" (GraIL). *ICML 2020*; arXiv:1911.06962. https://arxiv.org/abs/1911.06962
+- Yadati, N. "Neural Message Passing for Multi-Relational Ordered and Recursive Hypergraphs" (G-MPNN). *NeurIPS 2020*. https://proceedings.neurips.cc/paper/2020/hash/217eedd1ba8c592db97d0dbe54c7adfc-Abstract.html ; code https://github.com/naganandy/G-MPNN-R
+
+### Training-objective ancestry
+
+- Sun, Z., Deng, Z.-H., Nie, J.-Y., Tang, J. "RotatE: Knowledge Graph Embedding by Relational Rotation in Complex Space." *ICLR 2019*; arXiv:1902.10197. Source of the self-adversarial negative-sampling loss HYPER optimises (512 negatives in pretraining, 256 for fine-tuning; adversarial temperature 1). https://arxiv.org/abs/1902.10197
+- Galárraga, L. A., Teflioudi, C., Hose, K., Suchanek, F. "AMIE: Association Rule Mining under Incomplete Evidence in Ontological Knowledge Bases." *WWW 2013*. Source of the partial completeness assumption under which HYPER masks one slot per k-ary fact. https://doi.org/10.1145/2488388.2488425
+
+### n-ary pretraining corpora (the whole supply, as of 2026-09-21)
+
+- HYPER v3 Table 16 gives the only n-ary pretraining corpora anyone has used: M-FB15K (415,375 train facts, max arity 5), WikiPeople (305,725, max arity 9), JF17K (61,104, max arity 6), FB-AUTO (6,778, max arity 5). The best checkpoint (3KG+2HG) sees ≈0.91 M facts in total, of which the higher-arity part is on the order of 90 k. No larger n-ary corpus was located on 2026-09-21.
+
+## Added in run 02 (2026-09-21) — temporal n-ary models, interpolation vs extrapolation
+
+- Un, C., Lu, Y., Yang, T., Yang, D. "VITA: Versatile Time Representation Learning for Temporal Hyper-Relational Knowledge Graphs." arXiv:2505.11803, 17 May 2025. https://arxiv.org/abs/2505.11803
+- Hou, Z., Su, M., Jin, X., Li, Z., Bai, L., Guo, J., Cheng, X. "Mixture Policy based Multi-Hop Reasoning over N-tuple Temporal Knowledge Graphs" (MT-Path). arXiv:2505.12788, 19 May 2025. https://arxiv.org/abs/2505.12788
+- Ahrabian, K., Boxer, E., Pujara, J. "Toward Better Temporal Structures for Geopolitical Events Forecasting" (HTKGH, htkgh-polecat). arXiv:2601.00430, 1 January 2026 (v2, 17 March 2026). https://arxiv.org/abs/2601.00430
+- Wang, J., Wang, B., Qiu, M., Pan, S., Xiong, B., Liu, H., Luo, L., Liu, T., Hu, Y., Yin, B., Gao, W. "A Survey on Temporal Knowledge Graph Completion: Taxonomy, Progress, and Prospects." arXiv:2308.02457, 4 August 2023. https://arxiv.org/abs/2308.02457
+- Trivedi, R., Dai, H., Wang, Y., Song, L. "Know-Evolve: Deep Temporal Reasoning for Dynamic Knowledge Graphs." arXiv:1705.05742, 2017. https://arxiv.org/abs/1705.05742
+- Han, Z., Ding, Z., Ma, Y., Gu, Y., Tresp, V. "Learning Neural Ordinary Equations for Forecasting Future Links on Temporal Knowledge Graphs" (TANGO). EMNLP 2021, pp. 8352–8364. https://aclanthology.org/2021.emnlp-main.658/
+
+## Added in run 02 (2026-09-21) — geometry and algebraic interfaces
+
+### Hyperbolic / multi-curvature models for n-ary facts
+
+- Yan, S., Zhang, Z., Sun, X., Xu, G., Jin, L., Li, S. "HYPER²: Hyperbolic embedding for hyper-relational link prediction." *Neurocomputing* 492:440–451, July 2022. DOI 10.1016/j.neucom.2022.04.026. Preprint: "HYPER^2: Hyperbolic Poincare Embedding for Hyper-Relational Link Prediction", arXiv:2104.09871, 20 April 2021. Verified via Crossref and the arXiv API on 2026-09-21 (supersedes the earlier `[unverified]` entry). https://arxiv.org/abs/2104.09871
+- Yan, S., Zhang, Z., Sun, X., Xu, G., Li, S., Liu, Q., Liu, N., Wang, S. "PolygonE: Modeling N-ary Relational Data as Gyro-Polygons in Hyperbolic Space." *Proceedings of the AAAI Conference on Artificial Intelligence* 36(4):4308–4317, 2022. DOI 10.1609/aaai.v36i4.20351. Verified via the AAAI OJS record and Crossref on 2026-09-21 (supersedes the earlier `[unverified]` entry). https://doi.org/10.1609/aaai.v36i4.20351 · PDF https://cdn.aaai.org/ojs/20351/20351-13-24364-1-2-20220628.pdf
+- Yan, S., Zhang, Z., Xu, G., Sun, X., Li, S., Wang, S. "Modeling N-ary relational data as gyro-polygons with learnable gyro-centroid." *Knowledge-Based Systems* 251:109164, September 2022. DOI 10.1016/j.knosys.2022.109164. This is the paper the literature refers to as "WPolygonE+". Verified via Crossref on 2026-09-21 (supersedes the earlier `[unverified]` entry). https://doi.org/10.1016/j.knosys.2022.109164
+- Li, M., Shi, X., Qiao, C., Zhang, T., Jin, H. "Hyperbolic Hypergraph Neural Networks for Multi-Relational Knowledge Hypergraph Representation" (H²GNN). arXiv:2412.12158, 11 December 2024. Preprint only: one version, no journal reference, no DOI and no code repository named, as of 2026-09-21. Hyper-star message passing (position-typed star expansion) plus Lorentz-space aggregation; node classification on DBLP/Cora/PubMed/Citeseer, link prediction on JF17K and FB-AUTO. https://arxiv.org/abs/2412.12158
+- Cao, Z., Xu, Q., Yang, Z., He, Y., Cao, X., Huang, Q. "GAHE: Geometry-aware embedding for hyper-relational knowledge graph representation." *ACM Transactions on Multimedia Computing, Communications and Applications*, 2025. Multi-curvature (Euclidean + hyperbolic + spherical) position-aware tensor factorisation. `[unverified]` — bibliographic details taken from the reference list of Lu, Tupikina and Alam 2026; full text not read.
+
+### ReAlE and the relational-algebra interface
+
+- Fatemi, B., Taslakian, P., Vazquez, D., Poole, D. "Knowledge Hypergraph Embedding Meets Relational Algebra" (ReAlE). *Journal of Machine Learning Research* 24(105):1–34, 2023; ICML 2023 journal-track poster (https://icml.cc/virtual/2023/poster/25671); preprint arXiv:2102.09557, 18 February 2021. The published venue, not previously recorded in this KB. Primitives represented: renaming, projection, set union, selection, **set difference** (not join; Cartesian product is not claimed). https://www.jmlr.org/papers/v24/22-063.html · https://arxiv.org/abs/2102.09557
+- Patel, L., Jha, S., Pan, M., Gupta, H., Asawa, P., Guestrin, C., Zaharia, M. "Semantic Operators: A Declarative Model for Rich, AI-based Data Processing." arXiv:2407.11418. Journal version: "Semantic Operators and Their Optimization", *PVLDB* 18, pp. 4171ff. Implemented in the LOTUS engine, https://github.com/lotus-data/lotus. Relational-algebra-shaped operators (sem_filter, sem_join, sem_agg, sem_topk) over tables with natural-language predicates; the closest existing analogue to an algebraic planner interface, but not over an embedding store or n-ary facts. https://arxiv.org/abs/2407.11418 · https://www.vldb.org/pvldb/vol18/p4171-patel.pdf
+
+### Taxonomy and adjacent geometry
+
+- Lu, X., Tupikina, L., Alam, M. "Two-dimensional Taxonomy for N-ary Knowledge Representation Learning Methods." *IEEE Transactions on Knowledge and Data Engineering*, accepted 29 August 2026 (manuscript received 27 June 2025, revised 8 June 2026); author's accepted manuscript, 20 pp.; arXiv:2506.05626 v3. Axis labels verified from v3: methodology (translation / tensor factorisation / deep neural network / logic rule / hyperedge expansion) × semantic awareness (position-aware / role-aware / **aware-less**). Table II covers 49 models. https://arxiv.org/abs/2506.05626
+- Xin, L., Nayyeri, M., Makki Nayeri, Z., Staab, S. "Geometric Structural Knowledge Graph Foundation Model." arXiv:2512.22931, 28 December 2025. Geometry (real / complex / split-complex / dual transformations) combined with an ULTRA-style relation graph — binary knowledge graphs only, not hyperbolic. `[unverified]` beyond the abstract. https://arxiv.org/abs/2512.22931
+
+### Absence claims, dated 2026-09-21
+
+- arXiv API full-text search (`export.arxiv.org/api/query`): `"knowledge hypergraph" AND hyperbolic` → 1 result (H²GNN, 2412.12158); `"hyper-relational" AND hyperbolic` → 3 (H²GNN, HYPER², NestE 2312.09219); `"n-ary" AND hyperbolic` → 1 (HYPER²); `"relational hypergraph" AND "foundation model"` → 0. No paper combines hyperbolic geometry with a HYPER/ULTRA-style relation graph over knowledge hypergraphs.
+- No δ-hyperbolicity / Gromov-hyperbolicity measurement published for JF17K, FB-AUTO, M-FB15K, WikiPeople or WD50K; none of the five hyperbolic n-ary papers reports one.
+- No system located that exposes relational-algebra primitives over a knowledge-hypergraph embedding store as planner-callable operations for an LLM. Nearest neighbours: LOTUS semantic operators (tables, not embeddings), StarQE/NQE/SQE/LKHGT (operators internal to the model), agentic GraphRAG frameworks (topological, not algebraic actions).
+- Lu, Tupikina and Alam 2026 (v3) does not index HCNet, HART, THOR, HYPER², PolygonE or the gyro-centroid follow-up; "gyro" does not occur in the paper.
+
 ## 06-visualization
 
 Bibliography for `kb/06-visualization/`. Compiled 2026-09-20. Grouped by topic; every entry is cited
@@ -1088,6 +1168,35 @@ confirmed in that run; the note that cites them says which part is unconfirmed.
 - RelationalAI. Company site. https://relational.ai/
 - Wikidata. *Wikidata:Statistics*, figures dated 31 August 2025. https://www.wikidata.org/wiki/Wikidata:Statistics
 
+## Added in run 02 (2026-09-21) — hierarchical and planned hypergraph retrieval
+
+- Yang, H., Huang, L., Chen, M., Cai, J. *H²RAG: A Hierarchical Knowledge and Hypergraph Reasoning Framework for Retrieval-Augmented Generation.* In *Advances in Knowledge Discovery and Data Mining*, PAKDD 2026 (Hong Kong, 9–12 June 2026), Lecture Notes in Computer Science vol. 16600, pp. 238–250. Springer Singapore, first online 9 June 2026. https://doi.org/10.1007/978-981-92-1468-6_14 — abstract and Crossref metadata read 2026-09-21; full text paywalled; no arXiv preprint or code repository found.
+- Huang, H., Huang, Y., Yang, J., Pan, Z., Chen, Y., Ma, K., Chen, H., Cheng, J. *Retrieval-Augmented Generation with Hierarchical Knowledge* (HiRAG). EMNLP 2025 Findings; arXiv:2503.10150, v1 13 Mar 2025, v3 26 Sep 2025. https://arxiv.org/abs/2503.10150 ; code https://github.com/hhy-huang/HiRAG
+- Luo, H., E, H., Chen, G., Lin, Q., Guo, Y., Xu, F., Kuang, Z., Song, M., Wu, X., Zhu, Y., Luu, A. T. *Graph-R1: Towards Agentic GraphRAG Framework via End-to-end Reinforcement Learning.* ICML 2026; arXiv:2507.21892, v1 29 Jul 2025, v2 2 Jun 2026. https://arxiv.org/abs/2507.21892 ; code https://github.com/LHRLAB/Graph-R1
+- Park, J., Lee, S., Khan, O. Z., Kim, H. J., Kim, J.-K. *HyperGraphPro: Progress-Aware Reinforcement Learning for Structure-Guided Hypergraph RAG.* arXiv:2601.17755, v2 12 Apr 2026. https://arxiv.org/abs/2601.17755 — v1 (25 Jan 2026) was titled *ProGraph-R1: Progress-aware Reinforcement Learning for Graph Retrieval Augmented Generation*; same authors, retitled at revision.
+- Zhang, T., Wu, J., Kang, Y. *HHS-RAG: Hierarchical hypergraph retrieval-augmented generation with hyperbolic contrastive learning and subgraph-level decision.* *Journal of Intelligent Information Systems*, published online 29 July 2026. https://doi.org/10.1007/s10844-026-01077-0 — abstract only; full text paywalled (checked 2026-09-21).
+- Wang, S., Fang, Y., Zhou, Y., Liu, X., Ma, Y. *ArchRAG: Attributed Community-based Hierarchical Retrieval-Augmented Generation.* AAAI 2026, 40(19):15868–15876; arXiv:2502.09891, v1 14 Feb 2025, v4 11 May 2026. https://arxiv.org/abs/2502.09891
+- Wang, Y., Luo, H., Meng, L., Jia, Z., Zhou, X., Wen, Q. *EEG-MedRAG: Enhancing EEG-based Clinical Decision-Making via Hierarchical Hypergraph Retrieval-Augmented Generation.* arXiv:2508.13735, v1 19 Aug 2025, v2 11 Oct 2025. https://arxiv.org/abs/2508.13735
+- Song, Y., Tao, X., Yang, Z., Luo, Y., Tang, J. *EHRAG: Bridging Semantic Gaps in Lightweight GraphRAG via Hybrid Hypergraph Construction and Retrieval.* ACL 2026 Findings; arXiv:2604.17458, v1 19 Apr 2026. https://arxiv.org/abs/2604.17458
+- Yang, Y., Wang, H., Peng, Y., Kim, J., Bi, L. *HyperWalker: Dynamic Hypergraph-Based Deep Diagnosis for Multi-Hop Clinical Modeling across EHR and X-Ray in Medical VLMs.* arXiv:2601.13919, 20 Jan 2026. https://arxiv.org/abs/2601.13919
+- Zai, X., Tan, X., Wang, X., Liu, Q., Xu, X., Zhang, W. *PRoH.* arXiv:2510.12434 v2 (18 Feb 2026) full text read 2026-09-21 for the EWO formula, the plan context graph, the sub-question DAG state search, Tables 1–4 and Figure 6. https://arxiv.org/abs/2510.12434 ; repository announced at https://github.com/zaixjun/PRoH (HTTP 403 through this session's proxy, contents unverified).
+
+## Added in run 02 (2026-09-21) — time on the hyperedge, and hypergraphs as editable agent memory
+
+- Rasmussen, P., Paliychuk, P., Beauvais, T., Ryan, J., Chalef, D. "Zep: A Temporal Knowledge Graph Architecture for Agent Memory." arXiv:2501.13956, 20 January 2025. https://arxiv.org/abs/2501.13956
+- Wang, Z. "TOKI: A Bitemporal Operator Algebra for Contradiction Resolution in LLM-Agent Persistent Memory." arXiv:2606.06240, 4 June 2026. https://arxiv.org/abs/2606.06240
+- Niksarli, A., Baheti, G. "A Graph-Native Bitemporal Memory Store for Conversational AI Agents." arXiv:2607.26520, 29 July 2026. https://arxiv.org/abs/2607.26520
+- Brown, S. "Quipu: A Governed Bitemporal Knowledge Graph Store." arXiv:2608.16813, 17 August 2026. https://arxiv.org/abs/2608.16813
+- Yang, C., Zhou, C., Xiao, Y., Dong, S., Zhuang, L., Zhang, Y., Wang, Z., Hong, Z., Yuan, Z., Xiang, Z., Chen, S., Zhou, H., Zhang, Q., Liu, N., Su, J., Wang, X., Chang, Y., Huang, X. "Graph-based Agent Memory: Taxonomy, Techniques, and Applications." arXiv:2602.05665, 5 February 2026. https://arxiv.org/abs/2602.05665
+- DEEP-PolyU. "Awesome-GraphMemory" resource list accompanying arXiv:2602.05665. GitHub, checked 2026-09-21. https://github.com/DEEP-PolyU/Awesome-GraphMemory
+- Nguyen, D. D. A., Qiu, Z., Chen, S., Liew, A. W.-C. "Graph-Based Personalized Memory for LLM Agents: Representation, Evolution, Retrieval, and Evaluation." arXiv:2609.08599, 8 September 2026. https://arxiv.org/abs/2609.08599
+- Cui, Z., Cao, J., Wen, Z., Yuan, B., Feng, J., Chen, S. "EdgeMem: LLM-Free Agent Memory Construction and Retrieval via Evidence-Preserving Multi-Anchor Hypergraph." arXiv:2609.05553, 3 September 2026. https://arxiv.org/abs/2609.05553
+- Feng, Y., Zhang, R., Luo, H., Lin, Z., Yang, C., Luu, A. T. "Diachronic Hypergraphs for Orchestrated Multi-Agent Multimodal Memory Curation" (MAGE). arXiv:2608.29678, 30 August 2026. https://arxiv.org/abs/2608.29678
+- Lin, J., Jiang, C., Lin, X., Zhang, R., Zhu, X., Liu, J., Tang, C., Du, Y., Gao, S., Ning, J., Liu, L., Huang, Z., Li, T., Ye, J., He, J. "EvoGraph-R1: Self-Evolving Multimodal Knowledge Hypergraphs for Agentic Retrieval." CVPR 2026; arXiv:2607.12764, 14 July 2026. https://arxiv.org/abs/2607.12764
+- Maharana, A., Lee, D.-H., Tulyakov, S., Bansal, M., Barbieri, F., Fang, Y. "Evaluating Very Long-Term Conversational Memory of LLM Agents" (LoCoMo). arXiv:2402.17753, 27 February 2024. https://arxiv.org/abs/2402.17753
+- Wu, D., Wang, H., Yu, W., Zhang, Y., Chang, K.-W., Yu, D. "LongMemEval: Benchmarking Chat Assistants on Long-Term Interactive Memory." ICLR 2025; arXiv:2410.10813, 14 October 2024. https://arxiv.org/abs/2410.10813
+- Ahrabian, K., Boxer, E., Pujara, J. "Toward Better Temporal Structures for Geopolitical Events Forecasting" (HTKGH, htkgh-polecat). arXiv:2601.00430, 1 January 2026. https://arxiv.org/abs/2601.00430
+
 ## 08-history-and-frontier
 
 Bibliography for `kb/08-history-and-frontier/`. Compiled 2026-09-20 (timeline entries from the
@@ -1360,6 +1469,17 @@ the authors' own claims.
 - Kang, D. Y. S., Kim, J., Jeon, J., Kim, S.-W. "TAHB: A Comprehensive Benchmark for Text-Attributed Hypergraph Learning." arXiv 2608.15055, 15 August 2026. https://arxiv.org/abs/2608.15055
 - Konda, K. "Hypergraph Embedding Indexing for Efficient Dense Vector Retrieval." arXiv 2608.22980, 24 August 2026. https://arxiv.org/abs/2608.22980
 
+## Added in run 02 (2026-09-21) — the composed stack
+
+Sources newly cited from section 08 by `composed-stack-and-research-bets.md`; all others it cites are already listed above or in the by-topic files of sections 03, 05 and 07.
+
+- Fatemi, B., Taslakian, P., Vazquez, D., Poole, D. "Knowledge Hypergraph Embedding Meets Relational Algebra" (ReAlE). arXiv:2102.09557, 2021. https://arxiv.org/abs/2102.09557
+- Zai, X., Tan, X., Wang, X., Liu, Q., Xu, X., Zhang, W. "PRoH: Dynamic Planning and Reasoning over Knowledge Hypergraphs for Retrieval-Augmented Generation." WWW 2026; arXiv:2510.12434. https://arxiv.org/abs/2510.12434
+- Yue, J., Hu, C., Sheng, J., Zhou, Z., Zhang, W., Liu, T., Guo, L., Deng, Y. "HyperMem: Hypergraph Memory for Long-Term Conversations." arXiv:2604.08256, 2026. https://arxiv.org/abs/2604.08256
+- Xu, R., Yang, T., Huang, W.-C. "HyperSkill: Self-Evolving LLM Agents via Hypergraph-Structured Skill Memory." arXiv:2608.16114, 2026. https://arxiv.org/abs/2608.16114
+- Rasmussen, P., Paliychuk, P., Beauvais, T., Ryan, J., Chalef, D. "Zep: A Temporal Knowledge Graph Architecture for Agent Memory." arXiv:2501.13956, 2025. https://arxiv.org/abs/2501.13956
+- Galkin, M., Trivedi, P., Maheshwari, G., Usbeck, R., Lehmann, J. "Message Passing for Hyper-Relational Knowledge Graphs" (StarE). EMNLP 2020. https://aclanthology.org/2020.emnlp-main.596/
+
 ## 09-ecosystem
 
 Bibliography for `kb/09-ecosystem/` and `datasets/README.md`. Compiled **2026-09-20**; every web
@@ -1561,6 +1681,13 @@ the `[unverified]` list in [`books-surveys-and-courses.md`](../../kb/09-ecosyste
 - Schaub, M. T. "HIntNets — Higher-order interactions and Laplacian dynamics in complex networks: structure, dynamics and control." Project page, RWTH Aachen; talk index 2017–2020 including NetSci 2018, Complex Networks 2018 and ICCS 2018; MSCA-IF-GF project ID 702410. Checked 2026-09-20. https://michaelschaub.github.io/HIntNets/
 - `[unverified]` YouTube playlists and individual lectures on hypergraphs and higher-order networks (including recorded lectures by Ginestra Bianconi) are indexed by search engines, but direct fetches of `youtube.com` watch and playlist URLs on 2026-09-20 returned only site chrome, so no YouTube URL is recorded here as verified. The one exception is the tutorial video linked from the KAIST hypergraph-mining tutorial page, which that page itself vouches for.
 
+## Added in run 02 (2026-09-21) — Hyper-Extract verified from source
+
+- Feng, Y. Hyper-Extract repository, cloned and read 2026-09-21 at commit `395039e` (2026-09-20, "bump version to 0.10.3"). Licence **Apache-2.0** (root `LICENSE` file plus README badge) — corrects the 2026-09-20 reading of GitHub metadata as "Other (`NOASSERTION`)". Nine auto-types in `hyperextract/types/` (Model, List, Set, Graph, Hypergraph, Temporal/Spatial/Spatio-Temporal Graph, Document); **ten** registered engines in `hyperextract/methods/registry.py` (`chunk_rag`, `graph_rag`, `light_rag`, `hyper_rag`, `hypergraph_rag`, `cog_rag`, `itext2kg`, `itext2kg_star`, `kg_gen`, `atom`), not the README's "11+"; **40** preset templates under `hyperextract/templates/presets/` each declaring `language: [zh, en]`, not the README's "80+"; ~4,000 stars / 458 forks; 533 commits on `main`. Repository path is now lower-case `hyper-extract`. https://github.com/yifanfeng97/hyper-extract
+- PyPI JSON API, `hyperextract`: version **0.10.3**, licence Apache-2.0, uploaded 2026-09-20, 19 releases, Python 3.11+. Queried 2026-09-21. https://pypi.org/project/hyperextract/
+- PyPI JSON API, `ontomem` 0.6.0, Apache-2.0, "a self-consolidating memory layer for AI agents with schema-first design, intelligent merging, and hybrid search capabilities" — the entity/hyperedge merge layer Hyper-Extract depends on (`MergeStrategy.LLM.BALANCED` by default for graph and hypergraph types). Queried 2026-09-21. https://pypi.org/project/ontomem/
+- Hyper-Extract documentation site and AtomGit mirror, as linked from the README (docs at `yifanfeng97.github.io/Hyper-Extract/latest/`; mirror at `atomgit.com/yifanfeng97/Hyper-Extract`). Recorded from the README, not independently fetched, 2026-09-21. `[unverified]`
+
 ## 10-comparative-and-critique
 
 Bibliography for `kb/10-comparative-and-critique/`. Compiled 2026-09-20. Grouped by topic; every
@@ -1700,6 +1827,13 @@ repository pages on the same date.
 - xiongbo010/ShrinkE — no licence stated. https://github.com/xiongbo010/ShrinkE
 - PaddlePaddle/Research, `KG/ACL2021_GRAN` — Apache-2.0 (code); ships download scripts for JF17K and WikiPeople. https://github.com/PaddlePaddle/Research/tree/master/KG/ACL2021_GRAN
 
+## Added in run 02 (2026-09-21) — hierarchical and planned hypergraph retrieval
+
+- Yang, H., Huang, L., Chen, M., Cai, J. *H²RAG: A Hierarchical Knowledge and Hypergraph Reasoning Framework for Retrieval-Augmented Generation.* PAKDD 2026, LNCS vol. 16600, pp. 238–250, Springer Singapore, first online 9 June 2026. https://doi.org/10.1007/978-981-92-1468-6_14 — claims 20.33 % Exact Match, 14.61 % F1 and 11.53 % Generalized Score over HyperGraphRAG and HiRAG on UltraDomain (Agriculture, CS, Legal, Mix); full text paywalled, so whether these are points or relative gains is unverified (checked 2026-09-21).
+- Luo, H. et al. *Graph-R1: Towards Agentic GraphRAG Framework via End-to-end Reinforcement Learning.* ICML 2026; arXiv:2507.21892. https://arxiv.org/abs/2507.21892 — average F1 57.82 vs HyperGraphRAG 29.40 (Qwen2.5-7B, six open-domain datasets); same author group as HyperGraphRAG.
+- Huang, H. et al. *Retrieval-Augmented Generation with Hierarchical Knowledge* (HiRAG). EMNLP 2025 Findings; arXiv:2503.10150. https://arxiv.org/abs/2503.10150 — main results are GPT-4o pairwise win rates, not EM/F1; indexing the 625,948-token UltraDomain Mix corpus consumed 21,898,765 tokens / 17,208 s.
+- Zai, X. et al. *PRoH.* arXiv:2510.12434 v2, full text read 2026-09-21 — per-domain F1 table, the 200-question-per-domain 3–6 hop split, and the PRoH-L-only token table underlying §8.
+
 ## Sources cited in more than one section
 
 - https://arxiv.org/abs/2503.21322 — 02-knowledge-representation, 03-construction, 05-query-embeddings-reasoning, 06-visualization, 07-applications, 08-history-and-frontier, 09-ecosystem, 10-comparative-and-critique
@@ -1736,14 +1870,19 @@ repository pages on the same date.
 - https://arxiv.org/abs/2404.01039 — 05-query-embeddings-reasoning, 08-history-and-frontier, 09-ecosystem
 - https://arxiv.org/abs/2404.09848 — 02-knowledge-representation, 05-query-embeddings-reasoning, 10-comparative-and-critique
 - https://arxiv.org/abs/2404.16130 — 03-construction, 08-history-and-frontier, 10-comparative-and-critique
+- https://arxiv.org/abs/2501.13956 — 03-construction, 07-applications, 08-history-and-frontier
 - https://arxiv.org/abs/2504.16537 — 05-query-embeddings-reasoning, 07-applications, 08-history-and-frontier
 - https://arxiv.org/abs/2506.05690 — 07-applications, 08-history-and-frontier, 10-comparative-and-critique
 - https://arxiv.org/abs/2507.11520 — 01-foundations, 08-history-and-frontier, 10-comparative-and-critique
 - https://arxiv.org/abs/2508.03280 — 02-knowledge-representation, 05-query-embeddings-reasoning, 08-history-and-frontier
+- https://arxiv.org/abs/2601.17755 — 05-query-embeddings-reasoning, 07-applications, 08-history-and-frontier
 - https://arxiv.org/abs/2602.14470 — 05-query-embeddings-reasoning, 07-applications, 08-history-and-frontier
 - https://arxiv.org/abs/2602.19543 — 03-construction, 07-applications, 08-history-and-frontier
 - https://arxiv.org/abs/2604.08256 — 05-query-embeddings-reasoning, 07-applications, 08-history-and-frontier
 - https://arxiv.org/abs/2604.15648 — 03-construction, 05-query-embeddings-reasoning, 08-history-and-frontier
+- https://arxiv.org/abs/2606.06240 — 07-applications, 08-history-and-frontier, 10-comparative-and-critique
+- https://arxiv.org/abs/2607.12764 — 03-construction, 07-applications, 08-history-and-frontier
+- https://arxiv.org/abs/2608.29678 — 03-construction, 07-applications, 08-history-and-frontier
 - https://arxiv.org/abs/cs/9812022 — 01-foundations, 05-query-embeddings-reasoning, 08-history-and-frontier
 - https://dl.acm.org/doi/10.1145/2402.322390 — 01-foundations, 03-construction, 08-history-and-frontier
 - https://doi.org/10.1109/TPAMI.2020.3039374 — 03-construction, 08-history-and-frontier, 09-ecosystem
@@ -1774,6 +1913,7 @@ repository pages on the same date.
 - https://arxiv.org/abs/1802.06916 — 03-construction, 08-history-and-frontier
 - https://arxiv.org/abs/1905.08287 — 01-foundations, 05-query-embeddings-reasoning
 - https://arxiv.org/abs/1906.11295 — 05-query-embeddings-reasoning, 10-comparative-and-critique
+- https://arxiv.org/abs/2102.09557 — 05-query-embeddings-reasoning, 08-history-and-frontier
 - https://arxiv.org/abs/2104.11329 — 01-foundations, 08-history-and-frontier
 - https://arxiv.org/abs/2106.08166 — 05-query-embeddings-reasoning, 07-applications
 - https://arxiv.org/abs/2106.13264 — 05-query-embeddings-reasoning, 09-ecosystem
@@ -1784,26 +1924,28 @@ repository pages on the same date.
 - https://arxiv.org/abs/2211.10962 — 02-knowledge-representation, 08-history-and-frontier
 - https://arxiv.org/abs/2211.13469 — 05-query-embeddings-reasoning, 07-applications
 - https://arxiv.org/abs/2307.10219 — 05-query-embeddings-reasoning, 08-history-and-frontier
+- https://arxiv.org/abs/2310.04562 — 05-query-embeddings-reasoning, 08-history-and-frontier
 - https://arxiv.org/abs/2401.08878 — 08-history-and-frontier, 09-ecosystem
 - https://arxiv.org/abs/2402.02441 — 08-history-and-frontier, 09-ecosystem
 - https://arxiv.org/abs/2402.04062 — 05-query-embeddings-reasoning, 08-history-and-frontier
+- https://arxiv.org/abs/2503.10150 — 07-applications, 10-comparative-and-critique
+- https://arxiv.org/abs/2505.11803 — 05-query-embeddings-reasoning, 08-history-and-frontier
 - https://arxiv.org/abs/2506.05626 — 03-construction, 05-query-embeddings-reasoning
 - https://arxiv.org/abs/2506.12362 — 05-query-embeddings-reasoning, 08-history-and-frontier
-- https://arxiv.org/abs/2601.17755 — 05-query-embeddings-reasoning, 08-history-and-frontier
+- https://arxiv.org/abs/2507.21892 — 07-applications, 10-comparative-and-critique
+- https://arxiv.org/abs/2601.00430 — 05-query-embeddings-reasoning, 07-applications
 - https://arxiv.org/abs/2602.05424 — 05-query-embeddings-reasoning, 08-history-and-frontier
 - https://arxiv.org/abs/2604.12185 — 03-construction, 07-applications
 - https://arxiv.org/abs/2605.13690 — 05-query-embeddings-reasoning, 08-history-and-frontier
 - https://arxiv.org/abs/2605.21858 — 05-query-embeddings-reasoning, 08-history-and-frontier
-- https://arxiv.org/abs/2606.06240 — 08-history-and-frontier, 10-comparative-and-critique
 - https://arxiv.org/abs/2606.10921 — 07-applications, 08-history-and-frontier
-- https://arxiv.org/abs/2607.12764 — 03-construction, 08-history-and-frontier
 - https://arxiv.org/abs/2607.19830 — 03-construction, 08-history-and-frontier
 - https://arxiv.org/abs/2608.02650 — 07-applications, 08-history-and-frontier
 - https://arxiv.org/abs/2608.03491 — 08-history-and-frontier, 10-comparative-and-critique
 - https://arxiv.org/abs/2608.16114 — 07-applications, 08-history-and-frontier
 - https://arxiv.org/abs/2608.16628 — 03-construction, 08-history-and-frontier
-- https://arxiv.org/abs/2608.29678 — 03-construction, 08-history-and-frontier
 - https://arxiv.org/abs/2609.01216 — 03-construction, 08-history-and-frontier
+- https://arxiv.org/abs/2609.05553 — 07-applications, 08-history-and-frontier
 - https://arxiv.org/abs/2609.20278 — 04-storage-and-formats, 08-history-and-frontier
 - https://catalog.ldc.upenn.edu/LDC2006T06 — 03-construction, 10-comparative-and-critique
 - https://deephypergraph.readthedocs.io/ — 04-storage-and-formats, 05-query-embeddings-reasoning
@@ -1815,6 +1957,7 @@ repository pages on the same date.
 - https://docs.stardog.com/query-stardog/edge-properties — 04-storage-and-formats, 07-applications
 - https://doi.org/10.1002/jgt.3190110306 — 06-visualization, 10-comparative-and-critique
 - https://doi.org/10.1007/978-3-030-88361-4_5 — 05-query-embeddings-reasoning, 09-ecosystem
+- https://doi.org/10.1007/978-981-92-1468-6_14 — 07-applications, 10-comparative-and-critique
 - https://doi.org/10.1016/0166-218X(93 — 02-knowledge-representation, 07-applications
 - https://doi.org/10.1016/0166-218x(93 — 01-foundations, 05-query-embeddings-reasoning
 - https://doi.org/10.1016/j.physrep.2020.05.004 — 08-history-and-frontier, 09-ecosystem
@@ -1850,8 +1993,10 @@ repository pages on the same date.
 - https://github.com/uma-pi1/kge — 05-query-embeddings-reasoning, 09-ecosystem
 - https://github.com/xgi-org/xgi-data — 04-storage-and-formats, 09-ecosystem
 - https://github.com/xiongbo010/ShrinkE — 05-query-embeddings-reasoning, 10-comparative-and-critique
+- https://github.com/yifanfeng97/hyper-extract — 03-construction, 09-ecosystem
 - https://icml.cc/Conferences/2009/papers/576.pdf — 02-knowledge-representation, 10-comparative-and-critique
 - https://link.springer.com/chapter/10.1007/978-3-642-16720-1_3 — 01-foundations, 08-history-and-frontier
+- https://neurips.cc/virtual/2025/127653 — 05-query-embeddings-reasoning, 08-history-and-frontier
 - https://pmc.ncbi.nlm.nih.gov/articles/PMC4350149/ — 02-knowledge-representation, 10-comparative-and-critique
 - https://rdf4j.org/ — 04-storage-and-formats, 09-ecosystem
 - https://tinkerpop.apache.org/docs/current/reference/ — 04-storage-and-formats, 05-query-embeddings-reasoning
@@ -1875,4 +2020,4 @@ repository pages on the same date.
 - https://www.wikidata.org/wiki/Help:Statements — 02-knowledge-representation, 06-visualization
 - https://www.wikidata.org/wiki/Wikidata:Data_model — 02-knowledge-representation, 06-visualization
 
-_936 distinct URLs; 172 shared across sections._
+_988 distinct URLs; 183 shared across sections._

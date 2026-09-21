@@ -202,3 +202,74 @@ GitHub REST API was not reachable from this session).
 - Lu, X., Tupikina, L., Alam, M. "Two-Dimensional Taxonomy for n-Ary Knowledge Representation Learning Methods." IEEE TKDE 2026 / arXiv 2506.05626. https://arxiv.org/abs/2506.05626
 - Gebru, T., Morgenstern, J., Vecchione, B., Wortman Vaughan, J., Wallach, H., Daumé III, H., Crawford, K. "Datasheets for Datasets." CACM 64(12), December 2021 / arXiv 1803.09010. https://doi.org/10.1145/3458723
 - Yu, W., Lu, Y., Yang, D. "THOR: Inductive Link Prediction over Hyper-Relational Knowledge Graphs." arXiv 2602.05424, 5 February 2026. https://arxiv.org/abs/2602.05424
+
+## Added in run 02 (2026-09-21) — HYPER anatomy, HCNet, and the binary KGFM precursors
+
+### HYPER (venue settled: ICLR 2026)
+
+- Huang, X., Galkin, M., Bronstein, M. M., Ceylan, İ. İ. "HYPER: A Foundation Model for Inductive Link Prediction with Knowledge Hypergraphs." **ICLR 2026**. arXiv:2506.12362 — v1 14 Jun 2025, v2 13 Feb 2026, **v3 8 May 2026 (cite this one)**. https://arxiv.org/abs/2506.12362 ; v3 HTML https://arxiv.org/html/2506.12362v3
+  - Venue confirmed 2026-09-21: the OpenReview PDF at https://openreview.net/pdf?id=YLTQbMoAaX carries the header "Published as a conference paper at ICLR 2026"; the repository BibTeX gives `booktitle={International Conference on Learning Representations}, year={2026}`. The OpenReview HTML and api2 endpoints were behind a bot challenge on that date, so the forum page itself could not be read directly. The NeurIPS 2025 "New Perspectives in Graph Machine Learning" workshop appearance (https://neurips.cc/virtual/2025/127653) is a separate, earlier event.
+  - **Numbers changed between v1 and v3.** v1 Table 2 (node-inductive) ULTRA†(50KG) = 0.346 / 0.286 / 0.149; v3 Table 3 ULTRA‡(50KG) = 0.007 / 0.029 / 0.026. v1 Table 1 ULTRA†(50KG) at the 100% columns = 0.111 / 0.262 / 0.065 / 0.150; v3 Table 2 = 0.001 / 0.190 / 0.004 / 0.001. v1: ULTRA(50KG) "performs only marginally better than the version trained on just 3"; v3: "performs much worse". HYPER's own rows are unchanged. v3 also adds ULTRA‡(4HG) and ULTRA‡(3KG+2HG) baselines and a second reification scheme (†).
+  - Key v3 locations: Table 1 capability matrix (§2); relation graph and `Enc_PI` (§4); Theorem 4.1 informal, formalised as Theorem C.2 with Proposition C.1 (equivariance) in Appendix C; sparse-matmul relation-graph construction in Appendix B; compute (single H100, 4 days pretraining; Triton kernel halving time and cutting memory ~5×, O(k|E|) → O(|V|)) in Appendix D; complexity and the FB15k-237 scalability table (ULTRA 1.19 s/batch, 12.87 GB; HCNet 2.64, 18.03; HYPER 4.51, 25.30; 225,409 parameters) in Appendix F; architecture, training objective and the KG-ICL comparison in Appendix G.
+- HYPER implementation, checked 2026-09-21 by direct fetch: https://github.com/HxyScotthuang/HYPER — MIT; README states ICLR 2026; **three public checkpoints** `ckpts/HYPER-3KG.pth` (2,833,802 B), `HYPER-4HG.pth` (2,834,222 B), `HYPER-3KG+2HG.pth` (2,833,802 B); **datasets shipped in-repo** under `hypergraph_dataset/` (verified `JF-100/train.txt` 148,593 B, `JF-IND/train.txt` 95,639 B, `JF17K/train.txt` 3,368,397 B); Triton `rspmm` at `hyper/rspmm/triton_rspmm.py` (class `HyperRelConvSumAggr`), enabled via `use_triton` (Python default `False`, but `config/pretrain/pretrain_3KG+2HG.yaml` sets `use_triton: yes` for both encoders); engine acknowledged as adapted from the ULTRA PyG implementation.
+
+### Neural substrate
+
+- Huang, X., Romero Orth, M., Barceló, P., Bronstein, M. M., Ceylan, İ. İ. "Link Prediction with Relational Hypergraphs" (HC-MPNN / HCNet). *Transactions on Machine Learning Research*, 2025 (repository states TMLR 2025/05). arXiv:2402.04062, v3 9 Jun 2025. https://arxiv.org/abs/2402.04062 ; code https://github.com/HxyScotthuang/HC-MPNN
+  - HCNet message: `σ(W⁽ˡ⁾[h⁽ˡ⁾_{v|q} ‖ Σ_{(e,i)∈E(v)} g_{ρ(e),q}⁽ˡ⁾(⊙_{j≠i}(α⁽ˡ⁾h⁽ˡ⁾_{e(j)|q} + (1−α⁽ˡ⁾)p_j))] + b⁽ˡ⁾)`, α a learnable scalar, p_j sinusoidal.
+  - §6.3: HCNet is evaluated **without inverse-relation augmentation** and still reaches the top 3 on 7 of 8 GraIL splits; "Theorem G.4 implies that all current models based on conditional message passing, including NBFNets, need inverse relation augmentation to match the expressive power of HCNet".
+
+### Binary KG foundation-model precursors
+
+- Cui, Y., Sun, Z., Hu, W. "A Prompt-Based Knowledge Graph Foundation Model for Universal In-Context Reasoning" (KG-ICL). *NeurIPS 2024*; arXiv:2410.12288. Prompt graph centred on a query-related example fact, unified tokeniser, two MPNNs; 43 KGs, transductive and inductive. https://arxiv.org/abs/2410.12288 ; code and datasets https://github.com/nju-websoft/KG-ICL (released 2024-10-14; uses the same `rspmm` kernel family, `use_rspmm` defaulted to False on 2025-03-22). In HYPER v3 Table 12, zero-shot average MRR over the 16 new datasets: KG-ICL 4/5/6-layer = 0.139 / 0.048 / 0.143, against HYPER (3KG+2HG) 0.236 and ULTRA‡ (3KG+2HG) 0.183; KG-ICL's own pretraining mix is FB-v1, NL-v1, CoDEx-Small.
+- Galkin, M., Yuan, X., Mostafa, H., Tang, J., Zhu, Z. "Towards Foundation Models for Knowledge Graph Reasoning" (ULTRA). *ICLR 2024*; arXiv:2310.04562. https://arxiv.org/abs/2310.04562
+- Lee, J., Chung, C., Whang, J. J. "InGram: Inductive Knowledge Graph Embedding via Relation Graphs." *ICML 2023*; arXiv:2305.19987. Source of the relation graph and of HYPER's 25/50/75/100% unseen-relation split protocol. https://arxiv.org/abs/2305.19987
+- Zhu, Z., Zhang, Z., Xhonneux, L.-P., Tang, J. "Neural Bellman-Ford Networks: A General Graph Neural Network Framework for Link Prediction" (NBFNet). *NeurIPS 2021*; arXiv:2106.06935. https://arxiv.org/abs/2106.06935
+- Zhu, Z., Yuan, X., Galkin, M., Xhonneux, S., Zhang, M., Gazeau, M., Tang, J. "A*Net: A Scalable Path-based Reasoning Approach for Knowledge Graphs." *NeurIPS 2023*; arXiv:2206.04798. https://arxiv.org/abs/2206.04798
+- Teru, K. K., Denis, E., Hamilton, W. L. "Inductive Relation Prediction by Subgraph Reasoning" (GraIL). *ICML 2020*; arXiv:1911.06962. https://arxiv.org/abs/1911.06962
+- Yadati, N. "Neural Message Passing for Multi-Relational Ordered and Recursive Hypergraphs" (G-MPNN). *NeurIPS 2020*. https://proceedings.neurips.cc/paper/2020/hash/217eedd1ba8c592db97d0dbe54c7adfc-Abstract.html ; code https://github.com/naganandy/G-MPNN-R
+
+### Training-objective ancestry
+
+- Sun, Z., Deng, Z.-H., Nie, J.-Y., Tang, J. "RotatE: Knowledge Graph Embedding by Relational Rotation in Complex Space." *ICLR 2019*; arXiv:1902.10197. Source of the self-adversarial negative-sampling loss HYPER optimises (512 negatives in pretraining, 256 for fine-tuning; adversarial temperature 1). https://arxiv.org/abs/1902.10197
+- Galárraga, L. A., Teflioudi, C., Hose, K., Suchanek, F. "AMIE: Association Rule Mining under Incomplete Evidence in Ontological Knowledge Bases." *WWW 2013*. Source of the partial completeness assumption under which HYPER masks one slot per k-ary fact. https://doi.org/10.1145/2488388.2488425
+
+### n-ary pretraining corpora (the whole supply, as of 2026-09-21)
+
+- HYPER v3 Table 16 gives the only n-ary pretraining corpora anyone has used: M-FB15K (415,375 train facts, max arity 5), WikiPeople (305,725, max arity 9), JF17K (61,104, max arity 6), FB-AUTO (6,778, max arity 5). The best checkpoint (3KG+2HG) sees ≈0.91 M facts in total, of which the higher-arity part is on the order of 90 k. No larger n-ary corpus was located on 2026-09-21.
+
+## Added in run 02 (2026-09-21) — temporal n-ary models, interpolation vs extrapolation
+
+- Un, C., Lu, Y., Yang, T., Yang, D. "VITA: Versatile Time Representation Learning for Temporal Hyper-Relational Knowledge Graphs." arXiv:2505.11803, 17 May 2025. https://arxiv.org/abs/2505.11803
+- Hou, Z., Su, M., Jin, X., Li, Z., Bai, L., Guo, J., Cheng, X. "Mixture Policy based Multi-Hop Reasoning over N-tuple Temporal Knowledge Graphs" (MT-Path). arXiv:2505.12788, 19 May 2025. https://arxiv.org/abs/2505.12788
+- Ahrabian, K., Boxer, E., Pujara, J. "Toward Better Temporal Structures for Geopolitical Events Forecasting" (HTKGH, htkgh-polecat). arXiv:2601.00430, 1 January 2026 (v2, 17 March 2026). https://arxiv.org/abs/2601.00430
+- Wang, J., Wang, B., Qiu, M., Pan, S., Xiong, B., Liu, H., Luo, L., Liu, T., Hu, Y., Yin, B., Gao, W. "A Survey on Temporal Knowledge Graph Completion: Taxonomy, Progress, and Prospects." arXiv:2308.02457, 4 August 2023. https://arxiv.org/abs/2308.02457
+- Trivedi, R., Dai, H., Wang, Y., Song, L. "Know-Evolve: Deep Temporal Reasoning for Dynamic Knowledge Graphs." arXiv:1705.05742, 2017. https://arxiv.org/abs/1705.05742
+- Han, Z., Ding, Z., Ma, Y., Gu, Y., Tresp, V. "Learning Neural Ordinary Equations for Forecasting Future Links on Temporal Knowledge Graphs" (TANGO). EMNLP 2021, pp. 8352–8364. https://aclanthology.org/2021.emnlp-main.658/
+
+## Added in run 02 (2026-09-21) — geometry and algebraic interfaces
+
+### Hyperbolic / multi-curvature models for n-ary facts
+
+- Yan, S., Zhang, Z., Sun, X., Xu, G., Jin, L., Li, S. "HYPER²: Hyperbolic embedding for hyper-relational link prediction." *Neurocomputing* 492:440–451, July 2022. DOI 10.1016/j.neucom.2022.04.026. Preprint: "HYPER^2: Hyperbolic Poincare Embedding for Hyper-Relational Link Prediction", arXiv:2104.09871, 20 April 2021. Verified via Crossref and the arXiv API on 2026-09-21 (supersedes the earlier `[unverified]` entry). https://arxiv.org/abs/2104.09871
+- Yan, S., Zhang, Z., Sun, X., Xu, G., Li, S., Liu, Q., Liu, N., Wang, S. "PolygonE: Modeling N-ary Relational Data as Gyro-Polygons in Hyperbolic Space." *Proceedings of the AAAI Conference on Artificial Intelligence* 36(4):4308–4317, 2022. DOI 10.1609/aaai.v36i4.20351. Verified via the AAAI OJS record and Crossref on 2026-09-21 (supersedes the earlier `[unverified]` entry). https://doi.org/10.1609/aaai.v36i4.20351 · PDF https://cdn.aaai.org/ojs/20351/20351-13-24364-1-2-20220628.pdf
+- Yan, S., Zhang, Z., Xu, G., Sun, X., Li, S., Wang, S. "Modeling N-ary relational data as gyro-polygons with learnable gyro-centroid." *Knowledge-Based Systems* 251:109164, September 2022. DOI 10.1016/j.knosys.2022.109164. This is the paper the literature refers to as "WPolygonE+". Verified via Crossref on 2026-09-21 (supersedes the earlier `[unverified]` entry). https://doi.org/10.1016/j.knosys.2022.109164
+- Li, M., Shi, X., Qiao, C., Zhang, T., Jin, H. "Hyperbolic Hypergraph Neural Networks for Multi-Relational Knowledge Hypergraph Representation" (H²GNN). arXiv:2412.12158, 11 December 2024. Preprint only: one version, no journal reference, no DOI and no code repository named, as of 2026-09-21. Hyper-star message passing (position-typed star expansion) plus Lorentz-space aggregation; node classification on DBLP/Cora/PubMed/Citeseer, link prediction on JF17K and FB-AUTO. https://arxiv.org/abs/2412.12158
+- Cao, Z., Xu, Q., Yang, Z., He, Y., Cao, X., Huang, Q. "GAHE: Geometry-aware embedding for hyper-relational knowledge graph representation." *ACM Transactions on Multimedia Computing, Communications and Applications*, 2025. Multi-curvature (Euclidean + hyperbolic + spherical) position-aware tensor factorisation. `[unverified]` — bibliographic details taken from the reference list of Lu, Tupikina and Alam 2026; full text not read.
+
+### ReAlE and the relational-algebra interface
+
+- Fatemi, B., Taslakian, P., Vazquez, D., Poole, D. "Knowledge Hypergraph Embedding Meets Relational Algebra" (ReAlE). *Journal of Machine Learning Research* 24(105):1–34, 2023; ICML 2023 journal-track poster (https://icml.cc/virtual/2023/poster/25671); preprint arXiv:2102.09557, 18 February 2021. The published venue, not previously recorded in this KB. Primitives represented: renaming, projection, set union, selection, **set difference** (not join; Cartesian product is not claimed). https://www.jmlr.org/papers/v24/22-063.html · https://arxiv.org/abs/2102.09557
+- Patel, L., Jha, S., Pan, M., Gupta, H., Asawa, P., Guestrin, C., Zaharia, M. "Semantic Operators: A Declarative Model for Rich, AI-based Data Processing." arXiv:2407.11418. Journal version: "Semantic Operators and Their Optimization", *PVLDB* 18, pp. 4171ff. Implemented in the LOTUS engine, https://github.com/lotus-data/lotus. Relational-algebra-shaped operators (sem_filter, sem_join, sem_agg, sem_topk) over tables with natural-language predicates; the closest existing analogue to an algebraic planner interface, but not over an embedding store or n-ary facts. https://arxiv.org/abs/2407.11418 · https://www.vldb.org/pvldb/vol18/p4171-patel.pdf
+
+### Taxonomy and adjacent geometry
+
+- Lu, X., Tupikina, L., Alam, M. "Two-dimensional Taxonomy for N-ary Knowledge Representation Learning Methods." *IEEE Transactions on Knowledge and Data Engineering*, accepted 29 August 2026 (manuscript received 27 June 2025, revised 8 June 2026); author's accepted manuscript, 20 pp.; arXiv:2506.05626 v3. Axis labels verified from v3: methodology (translation / tensor factorisation / deep neural network / logic rule / hyperedge expansion) × semantic awareness (position-aware / role-aware / **aware-less**). Table II covers 49 models. https://arxiv.org/abs/2506.05626
+- Xin, L., Nayyeri, M., Makki Nayeri, Z., Staab, S. "Geometric Structural Knowledge Graph Foundation Model." arXiv:2512.22931, 28 December 2025. Geometry (real / complex / split-complex / dual transformations) combined with an ULTRA-style relation graph — binary knowledge graphs only, not hyperbolic. `[unverified]` beyond the abstract. https://arxiv.org/abs/2512.22931
+
+### Absence claims, dated 2026-09-21
+
+- arXiv API full-text search (`export.arxiv.org/api/query`): `"knowledge hypergraph" AND hyperbolic` → 1 result (H²GNN, 2412.12158); `"hyper-relational" AND hyperbolic` → 3 (H²GNN, HYPER², NestE 2312.09219); `"n-ary" AND hyperbolic` → 1 (HYPER²); `"relational hypergraph" AND "foundation model"` → 0. No paper combines hyperbolic geometry with a HYPER/ULTRA-style relation graph over knowledge hypergraphs.
+- No δ-hyperbolicity / Gromov-hyperbolicity measurement published for JF17K, FB-AUTO, M-FB15K, WikiPeople or WD50K; none of the five hyperbolic n-ary papers reports one.
+- No system located that exposes relational-algebra primitives over a knowledge-hypergraph embedding store as planner-callable operations for an LLM. Nearest neighbours: LOTUS semantic operators (tables, not embeddings), StarQE/NQE/SQE/LKHGT (operators internal to the model), agentic GraphRAG frameworks (topological, not algebraic actions).
+- Lu, Tupikina and Alam 2026 (v3) does not index HCNet, HART, THOR, HYPER², PolygonE or the gyro-centroid follow-up; "gyro" does not occur in the paper.

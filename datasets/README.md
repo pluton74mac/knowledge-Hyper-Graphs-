@@ -2,7 +2,7 @@
 
 **No bulk data is committed to this repository.** This directory holds *manifests* — pointers,
 licences, checksums and fetch instructions — and nothing else. Everything listed here was
-checked on **2026-09-20**.
+checked on **2026-09-20**, except the HyperDocRED row in §2.1, checked **2026-09-21**.
 
 Background, statistics and task descriptions live in
 [../kb/09-ecosystem/datasets-and-benchmarks.md](../kb/09-ecosystem/datasets-and-benchmarks.md).
@@ -60,6 +60,7 @@ statistics by different papers; a name alone does not identify data.
 | **FB-AUTO**, **M-FB15K** | [ServiceNow/HypE](https://github.com/ServiceNow/HypE) | **no licence file** — contact authors before redistributing | `n-ary-kg/fb-auto/`, `n-ary-kg/m-fb15k/` | `git clone --depth 1 https://github.com/ServiceNow/HypE` |
 | **WD20K** (inductive) | [Ali et al., ISWC 2021](https://doi.org/10.1007/978-3-030-88361-4_5) | `[unverified]` | `n-ary-kg/wd20k/` | follow the paper's artefact link |
 | **HyNT** numeric/temporal sets | [bdi-lab/HyNT](https://github.com/bdi-lab/HyNT) | GitHub metadata "Other" | `n-ary-kg/hynt/` | `git clone --depth 1 https://github.com/bdi-lab/HyNT` |
+| **HyperDocRED** (document-level n-ary extraction benchmark; train 50 docs / 1,016 entities / 636 correlations, test 100 / 2,127 / 1,371) | announced in [Huang et al., KDD '26](https://arxiv.org/abs/2602.19543); code repository [Rizrock/Hyper-KGGen](https://github.com/Rizrock/Hyper-KGGen) | code MIT; **dataset licence undetermined — no dataset is distributed**; derived from Re-DocRED ([Tan et al., 2022](https://arxiv.org/abs/2205.12696)), whose terms govern any redistribution | `n-ary-kg/hyperdocred/` | **Not obtainable as of 2026-09-21.** The paper says the benchmark is released; the repository ships code only and expects the user to supply `$DATA_DIR/processed_data.json` and `processed_data_test.json`. No Zenodo, HuggingFace or supplementary link exists in the paper or README. Ask the authors, or rebuild from Re-DocRED — note that the restructuring procedure is one sentence long, so a rebuild will not be the same data. |
 
 ### 2.2 Hypergraph-learning benchmarks
 
@@ -129,3 +130,5 @@ the licensing is unresolved. See section 8 of
 - Luo, H., E, H., Chen, G. et al. (2025). *HyperGraphRAG.* arXiv:2503.21322. <https://arxiv.org/html/2503.21322v3>
 - Feng, Y., Hu, H., Ying, S. et al. (2026). *Hyper-RAG.* Nature Communications 17, 5778. <https://doi.org/10.1038/s41467-026-71411-1>
 - YAGO 4.5 downloads, <https://yago-knowledge.org/downloads/yago-4-5>; ConceptNet, <https://conceptnet.io/>; SNAP, <https://snap.stanford.edu/data/>; KONECT, <http://konect.cc/>; all checked 2026-09-20.
+- Huang, R., Feng, Y., Xue, R. et al. (2026). *Hyper-KGGen: A Skill-Driven Knowledge Extractor for High-Quality Knowledge Hypergraph Generation* (introduces HyperDocRED). KDD '26, DOI 10.1145/3770855.3818198; arXiv:2602.19543 v2. Table 1 for the statistics; repository <https://github.com/Rizrock/Hyper-KGGen> cloned 2026-09-21 and confirmed to contain no dataset files. <https://arxiv.org/html/2602.19543v2>
+- Tan, Q., Xu, L., Bing, L., Ng, H. T., Aljunied, S. M. (2022). *Revisiting DocRED — Addressing the False Negative Problem in Relation Extraction.* EMNLP 2022; arXiv:2205.12696. Upstream corpus of HyperDocRED. <https://arxiv.org/abs/2205.12696>

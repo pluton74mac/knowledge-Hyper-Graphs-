@@ -4,7 +4,7 @@ type: index
 status: reviewed
 tags: [index, navigation, onboarding]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # Reading paths
@@ -56,6 +56,7 @@ You need to construct and store a knowledge hypergraph.
 3. [Benchmarks derived from Freebase and Wikidata](../02-knowledge-representation/benchmarks-derived-from-freebase-and-wikidata.md) and [dataset quality and leakage](../09-ecosystem/dataset-quality-and-leakage-issues.md) — read these before trusting any number.
 4. [Knowledge hypergraph embedding models](../05-query-embeddings-reasoning/knowledge-hypergraph-embedding-models.md) and [benchmarks and evaluation protocols](../05-query-embeddings-reasoning/benchmarks-and-evaluation-protocols.md).
 5. [Hypergraph neural networks](../05-query-embeddings-reasoning/hypergraph-neural-networks.md), [inductive and few-shot settings](../05-query-embeddings-reasoning/inductive-and-few-shot-settings.md), [temporal and dynamic KHGs](../05-query-embeddings-reasoning/temporal-and-dynamic-khgs.md).
+5a. [HYPER anatomy](../05-query-embeddings-reasoning/hyper-foundation-model-anatomy.md) and [geometry and algebraic interfaces](../05-query-embeddings-reasoning/geometry-and-algebraic-interfaces.md) — the foundation model taken apart, and the representation layer under it (added in run 02).
 6. [Tensor and sparse representations](../04-storage-and-formats/tensor-and-sparse-representations.md).
 7. [Machine-learning era](../08-history-and-frontier/machine-learning-era.md) and [current frontier directions](../08-history-and-frontier/current-frontier-directions.md).
 8. [Hypergraph vs bipartite graph debate](../10-comparative-and-critique/hypergraph-vs-bipartite-graph-debate.md) — what a hypergraph model must beat.
@@ -69,6 +70,7 @@ You need to construct and store a knowledge hypergraph.
 5. [Vector stores and hybrid storage in hypergraph-RAG systems](../04-storage-and-formats/vector-stores-and-hybrid-storage-for-rag.md).
 6. [LLMs and knowledge hypergraphs](../05-query-embeddings-reasoning/llm-and-khg-interaction.md).
 7. [AI agents — memory and planning](../07-applications/ai-agents-memory-and-planning.md).
+7a. [Hierarchical and planned hypergraph retrieval](../07-applications/hierarchical-and-planned-hypergraph-retrieval.md), [skill-driven extraction and the scenario gap](../03-construction/skill-driven-extraction-and-the-scenario-gap.md) and [temporal hyperedges and editable agent memory](../07-applications/temporal-hyperedges-and-editable-agent-memory.md) — the second pass on retrieval, extraction and memory (added in run 02).
 8. [The LLM era, 2023–2026](../08-history-and-frontier/llm-era-2023-2026.md) — the hype-versus-shown ledger.
 
 ## Path 5 — The visualiser (half a day)
@@ -86,7 +88,7 @@ You need to construct and store a knowledge hypergraph.
 1. [Timeline](../08-history-and-frontier/timeline.md), read fully.
 2. [Origins](../08-history-and-frontier/origins-hypergraph-theory.md), [knowledge-representation lineage](../08-history-and-frontier/knowledge-representation-lineage.md), [machine-learning era](../08-history-and-frontier/machine-learning-era.md), [LLM era](../08-history-and-frontier/llm-era-2023-2026.md).
 3. [Standards convergence](../08-history-and-frontier/standards-convergence.md).
-4. [Current frontier directions](../08-history-and-frontier/current-frontier-directions.md).
+4. [Current frontier directions](../08-history-and-frontier/current-frontier-directions.md), then [the composed stack](../08-history-and-frontier/composed-stack-and-research-bets.md) for the directions arranged as layers of one system and the bets that follow.
 5. [Open debates](../10-comparative-and-critique/open-debates.md) and [research groups and people](../08-history-and-frontier/research-groups-and-people.md).
 6. [Open questions](open-questions.md).
 

@@ -54,7 +54,7 @@ layer; "prompt" means it is a fixed prompt or heuristic; "—" means absent):
 | Hyper-RAG ([Feng et al., 2025](https://arxiv.org/abs/2504.08758)) | prompt | x | — | — | kNN, low/high-order | x | — |
 | PRoH ([Zai et al., 2026](https://arxiv.org/abs/2510.12434)) | reuses | reuses | — | — | x (planning, DAG, EWO) | x | — |
 | Hyper-KGGen ([Huang et al., 2026](https://arxiv.org/abs/2602.19543)) | x (skills) | x | — | — | simple | x (to show A matters) | skills only |
-| HYPER ([Huang et al., 2025](https://arxiv.org/abs/2506.12362)) | — | gold graphs | x | — | — | — | — |
+| HYPER ([Huang et al., 2025](https://arxiv.org/abs/2506.12362), ICLR 2026) | — | gold graphs | x | — | — | — | — |
 | ReAlE ([Fatemi et al., 2021](https://arxiv.org/abs/2102.09557)) | — | gold graphs | x | x (in embedding space) | — | — | — |
 | HyperMem ([Yue et al., 2026](https://arxiv.org/abs/2604.08256)) | prompt | x (topics/episodes/facts) | — | — | retrieval | x | — |
 | HyperSkill ([Xu et al., 2026](https://arxiv.org/abs/2608.16114)) | trajectories | x (skills as hyperedges) | — | — | dual-path retrieval | x | x (merge/prune) |
@@ -82,9 +82,10 @@ and [../07-applications/temporal-hyperedges-and-editable-agent-memory.md](../07-
 Stated as results, each with the note that holds the evidence.
 
 - **Native hypergraph message passing is an inductive bias, not a convenience.** Reifying a
-  hypergraph and running a binary KG foundation model on it loses to HYPER, and adding more binary
-  pretraining graphs barely helps, because reified graphs are tripartite structures the pretraining
-  corpus never contained ([Huang et al., 2025](https://arxiv.org/abs/2506.12362) §5.2;
+  hypergraph and running a binary KG foundation model on it loses to HYPER, and pretraining that
+  model on 50 graphs instead of 3 makes it *worse* (the ICLR 2026 revision reversed the preprint's
+  "marginally better"), because reified graphs are tripartite structures the pretraining corpus never
+  contained ([Huang et al., 2025](https://arxiv.org/abs/2506.12362) §5.2;
   [inductive-and-few-shot-settings.md](../05-query-embeddings-reasoning/inductive-and-few-shot-settings.md) §3).
   This is the strongest published argument that layer C must be hypergraph-native.
 - **Domain diversity beats volume for hypergraph pretraining.** Hyper-FM's scaling law and HYPER's
@@ -172,13 +173,17 @@ Opinion, but each bet names the experiment and the layer boundary it tests.
    events, contracts, protocols, incident reports, multi-party conversations), not a bigger
    Freebase. No shared n-ary pretraining corpus exists (see the anatomy note).
 6. **Role semantics, not slot indices (A, C, D).** Position 3 of one relation is not a universal
-   concept; without roles, transfer across schemas is a coincidence of ordering. The taxonomy
-   evidence that position-aware models dominate and role-aware ones are thin is in
+   concept; without roles, transfer across schemas is a coincidence of ordering. By headcount the
+   two-axis taxonomy has *more* role-aware than position-aware models, but "role-aware" there means
+   qualifier-aware, and every geometry or foundation model is position-aware; no model uses a
+   linguistic role inventory. The evidence is in
    [geometry-and-algebraic-interfaces.md](../05-query-embeddings-reasoning/geometry-and-algebraic-interfaces.md).
    This is Theme 2 of the open-questions register.
 7. **Cost as a first-class metric (all layers).** Dual conditional message passing plus multi-step
    planning does not ship; distilled walkers and approximate relation graphs are the productisation
-   research, and no planner paper yet reports a token-budget Pareto curve.
+   research. PRoH reports tokens only for its lightweight variant, HYPER costs 1.7× HCNet and 3.8×
+   ULTRA per training batch in time, and no hypergraph-RAG paper plots accuracy against a token
+   budget.
 
 ---
 

@@ -4,7 +4,7 @@ type: survey
 status: draft
 tags: [embedding, link-prediction, n-ary, hyper-relational, m-transh, rae, nalp, hinge, hype, getd, stare, neuinfer, ram, gran, shrinke, hyconve, hynt, hahe, hypermono, hyper, foundation-model]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # Knowledge hypergraph embedding models, 2016 to 2026
@@ -17,13 +17,19 @@ The field's own census: "nearly 50 methods" between 2016 and 2025
 ([Wei, Guan, Li, Jin, Guo and Cheng, *A Survey of Link Prediction in N-ary Knowledge Graphs*,
 EMNLP 2025 / arXiv:2506.08970](https://arxiv.org/abs/2506.08970)). A second, orthogonal
 classification is given by [Lu, Tupikina and Alam, *Two-Dimensional Taxonomy for n-Ary Knowledge
-Representation Learning Methods*, IEEE TKDE 2026 / arXiv:2506.05626](https://arxiv.org/abs/2506.05626).
+Representation Learning Methods*, IEEE TKDE 2026 / arXiv:2506.05626](https://arxiv.org/abs/2506.05626):
+methodology (translation / tensor factorisation / deep neural / logic rule / hyperedge expansion) ×
+semantic awareness (position-aware / role-aware / aware-less). Its Table II is reproduced in full,
+with counts and two corrections, in
+[geometry-and-algebraic-interfaces.md](geometry-and-algebraic-interfaces.md) §4.
 
 Related notes: [benchmarks-and-evaluation-protocols.md](benchmarks-and-evaluation-protocols.md)
 (what the numbers mean), [hypergraph-neural-networks.md](hypergraph-neural-networks.md) (the
 non-knowledge side of the same encoder designs),
 [inductive-and-few-shot-settings.md](inductive-and-few-shot-settings.md),
-[temporal-and-dynamic-khgs.md](temporal-and-dynamic-khgs.md).
+[temporal-and-dynamic-khgs.md](temporal-and-dynamic-khgs.md),
+[geometry-and-algebraic-interfaces.md](geometry-and-algebraic-interfaces.md) (the hyperbolic family
+audited, ReAlE's relational algebra, and the two-axis taxonomy reproduced in full).
 
 ---
 
@@ -178,7 +184,18 @@ argument that "the number of related entities grows exponentially along the NKG 
 aligns with the superlinear growth in hyperbolic space"; PolygonE treats an n-ary fact as a
 *gyro-polygon* and scores by vertex-to-gyrocentroid distance, WPolygonE+ adds learned entity weights
 ([Yan et al., *Neurocomputing* 2022; AAAI 2022; *KBS* 2022, as summarised by
-Wei et al. 2025](https://arxiv.org/abs/2506.08970) §3.1).
+Wei et al. 2025](https://arxiv.org/abs/2506.08970) §3.1). All three are the work of one group and
+are now verified against the publishers: HYPER² is
+[Yan, Zhang, Sun, Xu, Jin and Li, *Neurocomputing* 492:440–451, 2022](https://arxiv.org/abs/2104.09871)
+(preprint arXiv:2104.09871), PolygonE is
+[Yan et al., AAAI 2022, 36(4):4308–4317](https://doi.org/10.1609/aaai.v36i4.20351), and the
+"WPolygonE+" paper is *Modeling N-ary relational data as gyro-polygons with learnable gyro-centroid*,
+[*Knowledge-Based Systems* 251:109164, 2022](https://doi.org/10.1016/j.knosys.2022.109164) — the
+`[unverified]` marks on these three can be dropped. The family later gains **H²GNN** (hyperbolic
+message passing, 2024) and **GAHE** (multi-curvature, 2025). None of the five reports a
+hyperbolicity measurement for any n-ary dataset, and none beats ReAlE's 2021/2023 numbers on the
+FB-AUTO/JF17K/M-FB15K protocol: see
+[geometry-and-algebraic-interfaces.md](geometry-and-algebraic-interfaces.md) §1 for the audit.
 
 **HyperMLN** is the first explainability-oriented model: a Markov logic network over n-ary facts
 coupled to a KHG embedding through variational EM ([Chen, Wang, Wang and Li, *Explainable Link
@@ -310,14 +327,20 @@ Their note: data for HypE and S2S come from Di et al. 2021, the rest from Luo et
 | m-DistMult | 2020 | same | 0.463 | 0.784 | 0.705 | — |
 | m-TransH | 2020 | same (re-run) | 0.444 | 0.728 | 0.623 | — |
 | HSimplE | 2020 | same | 0.472 | 0.798 | 0.730 | — |
-| HypE | 2020 | same | **0.494** | **0.804** | **0.777** | — |
+| HypE | 2020 | same | 0.494 | 0.804 | 0.777 | — |
+| G-MPNN | 2020 | [Fatemi et al. 2023](https://www.jmlr.org/papers/v24/22-063.html) T.1, same protocol | 0.501 | — | 0.779 | — |
+| ReAlE | 2021/2023 | same | **0.530** | **0.861** | **0.801** | — |
 | HINGE | 2020 | [Galkin et al.](https://arxiv.org/abs/2009.10847) T.2–3, object only, MRR | 0.449 | — | — | 0.243 |
 | StarE + Transformer | 2020 | same | 0.574 (H) / 0.562 (T) | — | — | 0.308 |
 | NaLP-Fix | 2020 | same | 0.245 | — | — | 0.177 |
 
 Corresponding Hits@10 for the HypE block on JF17K / FB-AUTO / M-FB15K: HypE 0.656 / 0.856 / 0.881,
 HSimplE 0.645 / 0.855 / 0.859, m-DistMult 0.634 / 0.845 / 0.844, r-SimplE 0.168 / 0.147 / 0.070
-([Fatemi et al. 2020](https://arxiv.org/abs/1906.00137), Table 1).
+([Fatemi et al. 2020](https://arxiv.org/abs/1906.00137), Table 1). ReAlE's Hits@10 on the same three:
+0.677 / 0.908 / 0.901 ([Fatemi et al. 2023](https://www.jmlr.org/papers/v24/22-063.html), Table 1).
+ReAlE is the strongest verified all-positions result in this KB, and the later hyperbolic and
+message-passing models on these datasets (H²GNN: JF17K 0.498, FB-AUTO 0.757) do not reach it — see
+[geometry-and-algebraic-interfaces.md](geometry-and-algebraic-interfaces.md) §1.3.
 
 ### 4c. Models in the chronology without a score verified here
 
@@ -358,6 +381,11 @@ therefore **`[unverified]` here**. HYPER's and THOR's inductive numbers are give
 
 - Wei, J., Guan, S., Li, D., Jin, X., Guo, J., Cheng, X. *A Survey of Link Prediction in N-ary Knowledge Graphs*. arXiv:2506.08970, 10 June 2025; EMNLP 2025 main conference, <https://doi.org/10.18653/v1/2025.emnlp-main.1451>. <https://arxiv.org/abs/2506.08970>
 - Lu, X., Tupikina, L., Alam, M. *Two-Dimensional Taxonomy for n-Ary Knowledge Representation Learning Methods*. IEEE TKDE, 2026; arXiv:2506.05626. <https://arxiv.org/abs/2506.05626>
+- Fatemi, B., Taslakian, P., Vazquez, D., Poole, D. *Knowledge Hypergraph Embedding Meets Relational Algebra* (ReAlE). *JMLR* 24(105):1–34, 2023; preprint arXiv:2102.09557. <https://www.jmlr.org/papers/v24/22-063.html>
+- Yan, S., Zhang, Z., Sun, X., Xu, G., Jin, L., Li, S. "HYPER²: Hyperbolic embedding for hyper-relational link prediction". *Neurocomputing* 492:440–451, 2022; preprint arXiv:2104.09871. <https://arxiv.org/abs/2104.09871>
+- Yan, S., Zhang, Z., Sun, X., Xu, G., Li, S., Liu, Q., Liu, N., Wang, S. "PolygonE: Modeling N-ary Relational Data as Gyro-Polygons in Hyperbolic Space". *AAAI 2022* 36(4):4308–4317. <https://doi.org/10.1609/aaai.v36i4.20351>
+- Yan, S., Zhang, Z., Xu, G., Sun, X., Li, S., Wang, S. "Modeling N-ary relational data as gyro-polygons with learnable gyro-centroid". *Knowledge-Based Systems* 251:109164, 2022. <https://doi.org/10.1016/j.knosys.2022.109164>
+- Li, M., Shi, X., Qiao, C., Zhang, T., Jin, H. *Hyperbolic Hypergraph Neural Networks for Multi-Relational Knowledge Hypergraph Representation* (H²GNN). arXiv:2412.12158, 11 December 2024. <https://arxiv.org/abs/2412.12158>
 - Wen, J., Li, J., Mao, Y., Chen, S., Zhang, R. *On the representation and embedding of knowledge bases beyond binary relations*. IJCAI 2016; arXiv:1604.08642. <https://arxiv.org/abs/1604.08642>
 - Zhang, R., Li, J., Mei, J., Mao, Y. "Scalable Instance Reconstruction in Knowledge Bases via Relatedness Affiliated Embedding". *WWW 2018*. <https://doi.org/10.1145/3178876.3186017>
 - Guan, S., Jin, X., Wang, Y., Cheng, X. "Link Prediction on N-ary Relational Data". *WWW 2019*. <https://doi.org/10.1145/3308558.3313414>

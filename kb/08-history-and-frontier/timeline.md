@@ -4,7 +4,7 @@ type: timeline
 status: draft
 tags: [hypergraph, history, timeline, knowledge-graph, n-ary, standards, rag]
 created: 2026-09-19
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # Timeline of hypergraphs as knowledge structures
@@ -103,12 +103,12 @@ Conventions: "arXiv" dates are v1 submission dates; conference years are the yea
 | 2025 (Apr 23) | Tsang, Wang, Song, "Transformers for Complex Query Answering over Knowledge Hypergraphs" | Logical CQA moves to KHGs | [arXiv 2504.16537](https://arxiv.org/abs/2504.16537) |
 | 2025 (May 17) | Un, Lu, Yang, Yang, VITA, temporal hyper-relational KGs | Time-validity types on n-ary facts | [arXiv 2505.11803](https://arxiv.org/abs/2505.11803) |
 | 2025 (Jun 6) | Xiang et al., GraphRAG-Bench, "When to use Graphs in RAG" (ICLR 2026) | Shows GraphRAG often loses to vanilla RAG; sets evaluation expectations | [arXiv 2506.05690](https://arxiv.org/abs/2506.05690); [GitHub](https://github.com/GraphRAG-Bench/GraphRAG-Benchmark) |
-| 2025 (Jun) | Wei, Guan et al., "A Survey of Link Prediction in N-ary Knowledge Graphs"; Huang, Galkin, Bronstein, Ceylan, HYPER foundation model for inductive KHG link prediction (NeurIPS 2025 workshop presentation; repository states ICLR 2026 — venue unsettled) | Field-level synthesis; transfer across arities | [arXiv 2506.08970](https://arxiv.org/abs/2506.08970); [arXiv 2506.12362](https://arxiv.org/abs/2506.12362) |
+| 2025 (Jun) | Wei, Guan et al., "A Survey of Link Prediction in N-ary Knowledge Graphs"; Huang, Galkin, Bronstein, Ceylan, HYPER foundation model for inductive KHG link prediction (ICLR 2026, after a NeurIPS 2025 workshop presentation; venue settled 2026-09-21, see [HYPER anatomy](../05-query-embeddings-reasoning/hyper-foundation-model-anatomy.md)) | Field-level synthesis; transfer across arities | [arXiv 2506.08970](https://arxiv.org/abs/2506.08970); [arXiv 2506.12362](https://arxiv.org/abs/2506.12362) |
 | 2025 (Jul 15) | HIF, "The hypergraph interchange format for higher-order networks" (arXiv; *Network Science* 13:e21, online 11 Dec 2025) | JSON interchange standard agreed by HyperNetX, XGI, Hypergraphx, SimpleHypergraphs.jl maintainers | [arXiv 2507.11520](https://arxiv.org/abs/2507.11520); [Cambridge Core](https://doi.org/10.1017/nws.2025.10018) |
 | 2025 (Aug 5) | Wang et al., "Understanding the Embedding Models on Hyper-relational Knowledge Graph", CIKM 2025 | Shows plain KGE on decomposed HKGs matches specialised HKGE models: benchmark and method critique | [arXiv 2508.03280](https://arxiv.org/abs/2508.03280) |
 | 2025 (Oct 14) | Zai et al., PRoH (WWW 2026) | Planning-and-reasoning agent over KHGs; +19.73% F1 over HyperGraphRAG | [arXiv 2510.12434](https://arxiv.org/abs/2510.12434) |
 | 2026 (Feb 5) | Yu, Lu, Yang, THOR, fully inductive link prediction over HKGs | Inductive HKG completion across 12 datasets | [arXiv 2602.05424](https://arxiv.org/abs/2602.05424) |
-| 2026 (Feb 16–23) | HyperRAG (n-ary reasoning retrieval); Hyper-KGGen with HyperDocRED benchmark | Retrieval that reasons over hyperedges; document-level KHG extraction benchmark | [arXiv 2602.14470](https://arxiv.org/abs/2602.14470); [arXiv 2602.19543](https://arxiv.org/abs/2602.19543) |
+| 2026 (Feb 16–23) | HyperRAG (n-ary reasoning retrieval); Hyper-KGGen with HyperDocRED benchmark (KDD 2026) | Retrieval that reasons over hyperedges; document-level KHG extraction benchmark (announced, not distributed as of 2026-09-21) | [arXiv 2602.14470](https://arxiv.org/abs/2602.14470); [arXiv 2602.19543](https://arxiv.org/abs/2602.19543) |
 | 2026 (Apr 7) | RDF 1.2 Concepts and RDF 1.2 Semantics published as W3C Candidate Recommendation Snapshots (triple terms, reifiers, `rdf:reifies`); syntaxes and SPARQL 1.2 still Working Drafts as of Sept 2026 | The RDF answer to qualifiers becomes near-final | [RDF 1.2 Concepts](https://www.w3.org/TR/rdf12-concepts/); [WG publications](https://www.w3.org/groups/wg/rdf-star/publications/) |
 | 2026 (Apr–May) | HyperGVL benchmark for vision-language models on hypergraphs; "The WidthWall" strict expressivity hierarchy for HGNNs; "Hypergraph as Language" (Hyper-Align) tokenising hypergraphs for LLMs; Hypergraphx-data repository | Multimodal, theoretical and data infrastructure fronts open simultaneously | [arXiv 2604.15648](https://arxiv.org/abs/2604.15648); [arXiv 2605.13690](https://arxiv.org/abs/2605.13690); [arXiv 2605.21858](https://arxiv.org/abs/2605.21858); [arXiv 2605.18166](https://arxiv.org/abs/2605.18166) |
 | 2026 (Jun–Aug) | DocTrace on-demand hypergraph working memory; EvoGraph-R1 self-evolving multimodal KHGs (CVPR 2026); HyperSkill hypergraph skill memory for agents | Hypergraphs move into **agent memory** | [arXiv 2606.10921](https://arxiv.org/abs/2606.10921); [arXiv 2607.12764](https://arxiv.org/abs/2607.12764); [arXiv 2608.16114](https://arxiv.org/abs/2608.16114) |
@@ -192,13 +192,13 @@ All sources in this file are listed, with full bibliographic detail, in [sources
 - Un, C., Lu, Y., Yang, T., Yang, D. "VITA." arXiv 2025. https://arxiv.org/abs/2505.11803
 - Xiang, Z. et al. "When to use Graphs in RAG." ICLR 2026. https://arxiv.org/abs/2506.05690
 - Wei, J., Guan, S. et al. "A Survey of Link Prediction in N-ary Knowledge Graphs." arXiv 2025. https://arxiv.org/abs/2506.08970
-- Huang, X., Galkin, M., Bronstein, M. M., Ceylan, İ. İ. "HYPER: A Foundation Model for Inductive Link Prediction with Knowledge Hypergraphs." arXiv:2506.12362, 14 Jun 2025; presented at the NeurIPS 2025 "New Perspectives in Graph Machine Learning" workshop, while the authors' repository states ICLR 2026 — cite as a preprint until one is confirmed. https://arxiv.org/abs/2506.12362 ; https://neurips.cc/virtual/2025/127653 ; https://github.com/HxyScotthuang/HYPER
+- Huang, X., Galkin, M., Bronstein, M. M., Ceylan, İ. İ. "HYPER: A Foundation Model for Inductive Link Prediction with Knowledge Hypergraphs." arXiv:2506.12362, 14 Jun 2025; ICLR 2026 (OpenReview PDF header "Published as a conference paper at ICLR 2026", https://openreview.net/pdf?id=YLTQbMoAaX, and repository BibTeX; verified 2026-09-21). Earlier presented at the NeurIPS 2025 "New Perspectives in Graph Machine Learning" workshop. https://arxiv.org/abs/2506.12362 ; https://neurips.cc/virtual/2025/127653 ; https://github.com/HxyScotthuang/HYPER
 - Coll, M. et al. "HIF: The hypergraph interchange format for higher-order networks." *Network Science* 13, 2025. https://doi.org/10.1017/nws.2025.10018 ; https://arxiv.org/abs/2507.11520
 - Wang, Y. et al. "Understanding the Embedding Models on Hyper-relational Knowledge Graph." CIKM 2025. https://arxiv.org/abs/2508.03280
 - Zai, X. et al. "PRoH." WWW 2026. https://arxiv.org/abs/2510.12434
 - Yu, W., Lu, Y., Yang, D. "THOR." arXiv 2026. https://arxiv.org/abs/2602.05424
 - "HyperRAG: Reasoning N-ary Facts over Hypergraphs for RAG." arXiv 2026. https://arxiv.org/abs/2602.14470
-- Huang, R. et al. "Hyper-KGGen." arXiv 2026. https://arxiv.org/abs/2602.19543
+- Huang, R. et al. "Hyper-KGGen." arXiv:2602.19543, 2026; KDD 2026, DOI 10.1145/3770855.3818198. https://arxiv.org/abs/2602.19543
 - W3C. RDF 1.2 Concepts and Abstract Data Model, CR Snapshot 7 Apr 2026. https://www.w3.org/TR/rdf12-concepts/ ; WG publications list. https://www.w3.org/groups/wg/rdf-star/publications/
 - Wei, Y. et al. "HyperGVL." arXiv 2026. https://arxiv.org/abs/2604.15648
 - "The WidthWall: A Strict Expressivity Hierarchy for Hypergraph Neural Networks." arXiv 2026. https://arxiv.org/abs/2605.13690

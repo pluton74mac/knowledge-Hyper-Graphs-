@@ -4,7 +4,7 @@ type: survey
 status: draft
 tags: [people, groups, community, affiliations, ecosystem]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 # Who works on knowledge hypergraphs
@@ -43,7 +43,7 @@ Vazquez (then ServiceNow Research / Element AI).
 ### Mikhail (Michael) Galkin
 
 Author of StarE (EMNLP 2020), WD50K, the inductive-hyper-relational ISWC 2021 best paper, ULTRA
-(ICLR 2024) and HYPER (arXiv, Jun 2025; NeurIPS 2025 workshop presentation, repository states ICLR 2026). **Research Scientist at Google**, working on graph ML, knowledge
+(ICLR 2024) and HYPER (arXiv, Jun 2025; ICLR 2026). **Research Scientist at Google**, working on graph ML, knowledge
 graphs and graph foundation models; speaker at the ICML 2026 "Graph Foundation Models" workshop
 ([personal site](https://migalkin.github.io/);
 [Google at ICML 2026](https://research.google/conferences-and-events/google-at-icml-2026/)).
