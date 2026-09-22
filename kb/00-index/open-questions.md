@@ -225,8 +225,8 @@ corpus, scored on all four abilities. Candidate project P8.
 ## Part C — Candidate first projects
 
 Each is small enough to start from this repository and would move at least one theme. They are
-listed in `projects/README.md` as candidate vectors, with the order in which they assemble into
-[hyper-base](https://github.com/pluton74mac/hyper-base); none is started.
+listed in `projects/README.md` as candidate vectors and organised as one programme in
+`projects/PLAN.md`; none is started.
 
 | Id | Project | Themes moved | Questions |
 |---|---|---|---|
@@ -240,7 +240,7 @@ listed in `projects/README.md` as candidate vectors, with the order in which the
 | P8 | **Four-ability evaluation suite**: one corpus scored on gold n-ary extraction, inductive completion of the extracted graph, high-arity-edge-ablated multi-hop retrieval, and a superseding memory trace; see [the composed stack](../08-history-and-frontier/composed-stack-and-research-bets.md) §3 (added 2026-09-21) | 3, 8 | 08.6, 08.7, 08.8, 08.9 |
 | P9 | **Extraction gate**: an n-ary extraction pass with role constraints, scored against gold facts, that emits a candidate queue rather than writing to the graph; instability measured across runs and insertion orders (added 2026-09-21) | 2, 3, 8 | 03.9, 05.17, 08.9, 07.10, 03.8, 03.5 |
 | P10 | **Judgment-model walker**: retrieval as a policy over a code-owned traverser, where a judgment model answers next-edge, stop and prune as closed choices; a general LLM first, then a decision-only model behind the same interface, on a gold graph (added 2026-09-21) | 1, 8 | 08.6, 08.7, 07.2 |
-| P11 | **Goal-directed construction**: a design idea as goal hyperedges with unbound roles, one agent per discipline binding roles with evidence, and a termination criterion for when the disciplines connect (added 2026-09-21) | 4, 6, 8 | 03.1, 04.3, 07.10, 08.5 |
+| P11 | **Goal-directed construction**: a multi-discipline design question as goal hyperedges with unbound roles, one agent per discipline binding roles with evidence, and a termination criterion for when the disciplines connect (added 2026-09-21) | 4, 6, 8 | 03.1, 04.3, 07.10, 08.5 |
 
 ## Sources
 
