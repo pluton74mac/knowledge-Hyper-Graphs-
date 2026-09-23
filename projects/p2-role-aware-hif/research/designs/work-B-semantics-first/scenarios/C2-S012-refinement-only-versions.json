@@ -1,0 +1,22 @@
+{
+  "khg_scenario": "khg-scenario/1.0.0",
+  "id": "C2-S012",
+  "title": "a new version must refine the old one: closing an open interval is accepted, changing a core binding is refused",
+  "requires": ["history"],
+  "schema": "p2-gate.schema.json",
+  "given": [
+    {"at": "2026-10-01T00:00:01Z", "put": ["@fixture:ex:LouisXIV", "@fixture:ex:LouisXIII", "@fixture:ex:KingOfFrance",
+                                          {"@fixture": "f:king-14", "drop_bindings": ["b4"], "set_evidence_supports": {"e1": ["b1", "b2", "b3"]}}]}
+  ],
+  "when": [
+    {"op": "put", "args": {"records": [{"@fixture": "f:king-14", "set_evidence_supports": {"e1": ["b1", "b2", "b3"]},
+                                        "add_evidence": [{"id": "e3", "type": "curated", "mode": "manual", "source": {"doc_id": "doc:regnal-list"}, "supports": ["b4"]}]}]},
+     "then": {"select": "receipt", "equals": [["f:king-14", 2, "versioned"]]}},
+    {"op": "get", "args": {"id": "f:king-14", "version": 1}, "then": {"select": "valid_time_kind", "equals": "since"}},
+    {"op": "get", "args": {"id": "f:king-14"}, "then": {"select": "valid_time_kind", "equals": "period"}},
+    {"op": "put", "args": {"records": [{"@fixture": "f:king-14", "set_evidence_supports": {"e1": ["b1", "b2", "b3"]},
+                                        "add_evidence": [{"id": "e3", "type": "curated", "mode": "manual", "source": {"doc_id": "doc:regnal-list"}, "supports": ["b4"]}],
+                                        "set_binding": {"b1": {"entity": "ex:LouisXIII"}}}]}, "then": {"error": "KHG-D013"}},
+    {"op": "put", "args": {"records": [{"@fixture": "f:king-14"}]}, "then": {"error": "KHG-D013"}}
+  ]
+}

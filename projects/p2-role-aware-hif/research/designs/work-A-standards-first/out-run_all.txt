@@ -1,0 +1,207 @@
+wrote khg-document-1.0.0.json
+wrote khg-hif-profile-1.0.0.json
+wrote khg-schema-1.0.0.json
+wrote khg-queue-1.0.0.json
+meta-schemas are valid draft-07:
+  OK khg-document-1.0.0.json
+  OK khg-hif-profile-1.0.0.json
+  OK khg-queue-1.0.0.json
+  OK khg-schema-1.0.0.json
+1. relation-type schema documents:
+  OK  jsonschema / OK  fastjsonschema : gate-demo.schema.json
+  OK  jsonschema / OK  fastjsonschema : builtin.schema.json
+2. C1 document:
+  OK  jsonschema / OK  fastjsonschema : gate-fixture.khg.json
+3. HIF export:
+  OK  jsonschema / OK  fastjsonschema : gate-fixture.hif.json vs vendored HIF 0.1.0
+  OK  jsonschema / OK  fastjsonschema : gate-fixture.hif.json vs KHG HIF profile
+   network-type=directed nodes=30 edges=12 incidences=34
+   repeated (edge,node) pairs: {'f3|ex:TP53': ['regulator', 'target'], 'f5|ex:YYZ': ['stop', 'stop']}
+4. fold/unfold round trip:
+   from_hif(to_hif(doc)) == canonical(doc): True
+5. identity keys, arity (C1 definition) and distinct participants:
+   f1   treats                    arity=4 participants=4 content=sha256:65f4cbe86735 core=sha256:a8603e53b358 key=sha256:900216d650f9 events=['sha256:b19a09026fc0']
+   f10  chief-executive           arity=2 participants=2 content=sha256:f9f92f8c35ca core=sha256:f9f92f8c35ca key=sha256:3b7d0853f49b events=['sha256:b5abceb0721c']
+   f11  chief-executive           arity=2 participants=2 content=sha256:a2519af1a9f3 core=sha256:a2519af1a9f3 key=sha256:3b7d0853f49b events=[]
+   f2   co-administration-causes  arity=3 participants=3 content=sha256:1d675495a1de core=sha256:1d675495a1de key=- events=[]
+   f3   regulates                 arity=3 participants=2 content=sha256:0e154c5254a0 core=sha256:d36459d0bd4f key=- events=[]
+   f4   regulates                 arity=2 participants=2 content=sha256:50f9bc7ce829 core=sha256:50f9bc7ce829 key=- events=[]
+   f5   flight                    arity=5 participants=4 content=sha256:c744a672ec85 core=sha256:b6f31ce3a03c key=- events=[]
+   f6   population                arity=3 participants=3 content=sha256:dbd237bfb43b core=sha256:ce14abb9d309 key=sha256:a584f85ba860 events=[]
+   f8   catalysed-by              arity=1 participants=1 content=sha256:e222c6356889 core=sha256:e222c6356889 key=- events=[]
+   f9   asserts                   arity=2 participants=2 content=sha256:8971137b9d72 core=sha256:8971137b9d72 key=- events=[]
+   g1   catalysed-by              arity=1 participants=1 content=sha256:13255672407e core=sha256:13255672407e key=- events=[]
+   s1   khg:supersedes            arity=3 participants=3 content=sha256:ea95dfc543bd core=sha256:72331659f9cd key=- events=[]
+P6 hypergraph (core+qualifier, domain relations):
+   asserts ['asserter', 'statement']
+   catalysed-by ['catalyst', 'reaction']
+   chief-executive ['organisation', 'person']
+   co-administration-causes ['agent', 'effect']
+   flight ['carrier', 'flight-number', 'stop']
+   population ['count', 'place', 'point-in-time']
+   regulates ['context', 'regulator', 'target']
+   treats ['condition', 'dosage', 'population', 'treatment']
+baselines:
+  c1     -> pass []
+  hif    -> pass []
+  schema -> pass []
+  schema -> pass []
+  queue  -> pass []
+  ok   M01 KHG-J001  J ['KHG-J001'] zero-byte file
+  ok   M02 KHG-J003  J ['KHG-J003'] NaN in incidence attrs (not strict JSON)
+  ok   M03 KHG-J002  J ['KHG-J002'] duplicate key inside one attrs object
+  ok   M04 KHG-J004  J ['KHG-J004'] lone surrogate escape in a label
+  ok   M05 KHG-J005  J ['KHG-J005'] integer beyond 2^53-1 (HIF id)
+  ok   M06 KHG-H001  H [] no incidences array
+  ok   M07 KHG-H002  H [] top-level 'version' key
+  ok   M08 KHG-H002  H [] top-level 'roles' vocabulary block
+  ok   M09 KHG-H002  H [] top-level '$schema' key
+  ok   M10 KHG-H002  H [] record-level 'role' on an incidence
+  ok   M11 KHG-H002  H [] record-level 'relation' on an edge
+  ok   M12 KHG-H002  H [] record-level 'type' on a node
+  ok   M13 KHG-H003  H [] incidence attrs is a string
+  ok   M14 KHG-H004  H [] direction holds a role name
+  ok   M15 KHG-H004  H [] network-type outside the enum
+  ok   M16 KHG-H003  H [] id 1.5 (non-integral number)
+  ok   M17 KHG-H003  H [] id null
+  ok   M18 KHG-H001  H [] incidence without node
+  ok   M19 KHG-P001  P [] no role-convention / khg-profile declaration
+  ok   M20 KHG-P001  P [] hif-schema is the moving 'latest' URL (as in the KB sample)
+  ok   M21 KHG-P003  P [] integer ids (valid HIF, not the profile)
+  ok   M22 KHG-P003  P [] empty-string id
+  ok   M23 KHG-P003  P [] entity id with the reserved '_:' prefix
+  ok   M24 KHG-P004  P [] incidence without attrs.role
+  ok   M25 KHG-P004  P [] list-valued role (legacy shape, profile mode)
+  ok   M26 KHG-P005  P [] directed file, incidence without direction
+  ok   M27 KHG-P006  P [] network-type 'asc'
+  ok   M28 KHG-P007  P [] metadata.default_attrs (HyperNetX would invent values)
+  ok   M29 KHG-P008  P [] derived node without its value attrs
+  ok   M30 KHG-P009  P [] edge record without status
+  ok   M31 KHG-P014  P [] binding with two values (node and literal)
+  ok   M32 KHG-P014  P [] edge with no bindings
+  ok   M33 KHG-P015  P [] quantity without unit
+  ok   M34 KHG-P015  P [] time literal with month 13
+  ok   M35 KHG-P015  P [] text literal without language tag
+  ok   M36 KHG-P016  P [] status 'superseded' without superseded-by
+  ok   M37 KHG-P016  P [] status outside the enum ('disputed')
+  ok   M38 KHG-P017  P [] probability confidence above 1
+  ok   M39 KHG-P017  P [] bare-number confidence (no scale)
+  ok   M40 KHG-P017  P [] span offsets without a document digest
+  ok   M41 KHG-P018  P [] stored arity field (arity is derived, never stored)
+  ok   M42 KHG-P019  P [] reserved key inside opaque edge attrs
+  ok   M43 KHG-P010  P ['KHG-P010'] literal node id does not match its value
+  ok   M44 KHG-P011  P ['KHG-P011'] node declared twice
+  ok   M45 KHG-P012  P ['KHG-P012'] incidence names an undeclared edge
+  ok   M46 KHG-P013  P ['KHG-P013'] exact duplicate incidence (edge, node, role)
+  ok   M47 KHG-S001  S ['KHG-S001'] unknown relation
+  ok   M48 KHG-S002  S ['KHG-S002', 'KHG-S003'] role not declared for the relation
+  ok   M49 KHG-S003  S ['KHG-S003'] required role missing on an asserted fact
+  ok   M50 KHG-S004  S ['KHG-S004'] role bound more often than max
+  ok   M51 KHG-S005  S ['KHG-S005'] literal where an entity is expected
+  ok   M52 KHG-S006  S ['KHG-S006'] entity of the wrong type
+  ok   M53 KHG-S007  S ['KHG-S007'] literal value outside the declared values
+  ok   M54 KHG-S008  S ['KHG-S008'] unbound slot on an asserted fact
+  ok   M55 KHG-S009  S ['KHG-S006', 'KHG-S009'] novalue and a value for the same role
+  ok   M56 KHG-S010  S ['KHG-S010'] ordered role without position
+  ok   M57 KHG-S011  S ['KHG-S011'] direction contradicts the declared direction
+  ok   M58 KHG-S012  S ['KHG-S012'] duplicate binding (same role and value)
+  ok   M59 KHG-S013  S ['KHG-S013'] dangling hyperedge reference
+  ok   M60 KHG-S014  S ['KHG-S014', 'KHG-S015'] nesting cycle
+  ok   M61 KHG-S015  S ['KHG-S015'] reference to an edge of a disallowed relation
+  ok   M62 KHG-S016  S ['KHG-S016'] asserted fact without evidence
+  ok   M63 KHG-S017  S ['KHG-S017'] binding cites an unknown evidence id
+  ok   M64 KHG-S018  S ['KHG-S018'] span text does not match the source
+  ok   M65 KHG-S019  S ['KHG-S019'] extracted evidence without a run id
+  ok   M66 KHG-S020  S ['KHG-S020'] valid interval reversed
+  ok   M67 KHG-S021  S ['KHG-S021'] score confidence outside its range
+  ok   M68 KHG-S022  S ['KHG-S022'] superseded fact with no khg:supersedes record
+  ok   M69 KHG-S023  S ['KHG-S023'] supersession across different key bindings
+  ok   M70 KHG-S024  S ['KHG-S002', 'KHG-S024'] time role used as a binding (must be lifted into valid)
+  ok   M71 KHG-S025  S ['KHG-S025'] unknown schema id
+  ok   M72 KHG-S026  S ['KHG-S026'] edge record duplicated (same id, same recorded)
+  ok   M73 KHG-S027  S ['KHG-S027'] id not in NFC (decomposed e-acute)
+  ok   M74 KHG-D001  D [] relation with no roles
+  ok   M75 KHG-D001  D [] schema id without a semantic version
+  ok   M76 KHG-D001  D [] unknown datatype
+  ok   M77 KHG-D001  D [] end-older policy on a non-temporal key
+  ok   M78 KHG-D002  D ['KHG-D002'] usage names an undeclared type
+  ok   M79 KHG-D003  D ['KHG-D003'] key names a role the relation does not use
+  ok   M80 KHG-D004  D ['KHG-D004'] min greater than max
+  ok   M81 KHG-D005  D ['KHG-D005'] valid-time role also used in a relation
+  ok   M82 KHG-D006  D ['KHG-D006'] domain schema uses the reserved khg: prefix
+  ok   M83 KHG-Q001  Q [] queue payload not in status candidate
+  ok   M84 KHG-Q001  Q [] log action outside the vocabulary
+  ok   M85 KHG-Q003  Q ['KHG-Q003'] recorded keys differ from recomputed keys
+  ok   M86 KHG-Q004  Q ['KHG-Q004'] log entry names a missing item
+  ok   M87 KHG-Q005  Q ['KHG-Q005'] decision after a terminal decision
+  ok   M89 KHG-Q002  Q ['KHG-Q002'] stream does not start with its header line
+  ok   M90 KHG-P002  P [] unsupported khg-profile major version
+  ok   M88 KHG-Q006  Q ['KHG-Q006'] accept while a violation is open
+90 cases, 0 failures
+A/B. round trips through the sketch loaders (offline):
+  xgi             exact=True roles=34/34 directions=34/34 incidence-attrs=34/34 records=34 -> 34 C1-equal=True idempotent=True
+  hnx             exact=True roles=34/34 directions=34/34 incidence-attrs=34/34 records=34 -> 34 C1-equal=True idempotent=True
+  chain xgi->hnx  exact=True roles=34/34 directions=34/34 incidence-attrs=34/34 records=34 -> 34 C1-equal=True idempotent=True
+  XGI object: DiHypergraph | f3 in/out: [['ex:HeLa', 'ex:TP53'], ['ex:TP53']] | f5 head set: ['ex:YYZ', 'ex:羽田']
+  HNX cells: 32 for 34 incidence records; cell (f5, ex:YYZ) role: stop | extras riding in that cell: 1
+C. determinism of the chain output bytes under PYTHONHASHSEED 0..3:
+   distinct outputs: 1 1ef20fedfb2ab534
+D. library-evidence preview (the libraries' own HIF functions on the same file):
+  xgi.read_hif/write_hif: roles=0/34 records=34 -> 33 directions=33/34 metadata=preserved
+  hnx.from_hif/to_hif: roles=32/34 records=34 -> 32 metadata=lost metadata_keys_lost=6 weights_added=32
+  passed   C2-01 put then get returns the canonical record
+  passed   C2-02 putting identical content again is a no-op
+  passed   C2-03 a closed valid interval is a new version; as_at sees the old one
+  passed   C2-04 incident is complete and ordered by edge id
+  passed   C2-05 incident filtered by role
+  passed   C2-06 default status filter excludes superseded versions
+  passed   C2-07 status filter can include superseded
+  passed   C2-08 as_of filters by valid time (an ended fact stays asserted)
+  passed   C2-09 find matches at least the given bindings
+  passed   C2-10 find exact needs the whole binding multiset
+  passed   C2-11 temporal key: overlapping holders are reported under end-older, not rewritten
+  passed   C2-12 key conflict under reject policy is an error
+  passed   C2-13 supersession is one batch; the walk follows it forward
+  passed   C2-14 the walk runs backward too
+  passed   C2-15 superseded without a supersession record is rejected
+  passed   C2-16 retracted is terminal
+  passed   C2-17 candidates never enter the store
+  passed   C2-18 bindings of an asserted edge are immutable
+  passed   C2-19 a goal's unbound slot can be bound by a new version
+  passed   C2-20 keyset pagination is stable
+  passed   C2-21 the unbound goal is visible only when goals are asked for
+  passed   C2-22 nesting: incident on an edge id returns the facts about it
+conformance: 22 / 22 passed
+smoke test: queue -> structural lint -> accept -> store -> export
+  lint violations=0 put=['f1'] queue-lines-valid=True khg-export-valid=True hif-export-profile-valid=True roles=['condition', 'dosage', 'population', 'treatment'] hif->khg equals khg export=True
+migrated: 8 nodes, 3 edges; arity f2 = 3
+role keys unchanged in HIF: True
+  sample                                        imported: C1 ok S ok profile ok role-records kept=True 
+  c01-sample-undirected                         imported: C1 ok S ok profile ok role-records kept=True 
+  c02-undirected-with-direction                 imported: C1 ok S ok profile ok role-records kept=True 
+  c03-no-network-type                           imported: C1 ok S ok profile ok role-records kept=True 
+  c04-asc                                       rejected KHG-P006 network-type asc is not a knowledge hypergraph
+  c05-two-roles-same-direction                  imported: C1 ok S ok profile ok role-records kept=True 
+  c06-two-roles-different-direction             imported: C1 ok S ok profile ok role-records kept=True 
+  c07-two-roles-undirected                      imported: C1 ok S ok profile ok role-records kept=True 
+  c08-isolated-nodes                            imported: C1 ok S ok profile ok role-records kept=True 
+  c09-empty-edges                               imported: C1 ok S ok profile ok role-records kept=True {'untyped-edge': 1, 'empty-edge-dropped': 2}
+  c10-nested-fact                               imported: C1 ok S ok profile ok role-records kept=True 
+  c11-integer-ids                               imported: C1 ok S ok profile ok role-records kept=True 
+  c12-mixed-int-str-ids                         rejected KHG-P003 node ids '1' and 1 collide after conversion to strings
+  c13-unicode-ids                               imported: C1 ok S ['KHG-S027', 'KHG-S027'] profile ok role-records kept=True 
+  c14-directed-missing-direction                rejected KHG-P005 directed file with an incidence lacking direction
+  c15-incidence-attrs-absent-or-empty           imported: C1 ok S ok profile ok role-records kept=True {'unlabelled-incidence': 2}
+  c16-attr-value-shapes                         imported: C1 ok S ok profile ok role-records kept=True {'renamed-edge-attr': 1, 'renamed-incidence-attr': 2}
+  c17-weights-everywhere                        imported: C1 ok S ok profile ok role-records kept=True 
+  c18-weight-key-inside-attrs                   imported: C1 ok S ok profile ok role-records kept=True 
+  c19-duplicate-node-edge-records               rejected KHG-P011 node n1 declared twice
+  c20-hnx-reserved-metadata-keys                imported: C1 ok S ok profile ok role-records kept=True {'unlabelled-incidence': 1, 'renamed-metadata-key': 1}
+  c21-attr-key-equals-python-parameter          imported: C1 ok S ok profile ok role-records kept=True {'untyped-edge': 1, 'empty-edge-dropped': 1}
+  c21-node-attr-key-equals-python-parameter     imported: C1 ok S ok profile ok role-records kept=True 
+  c22-nan-in-attrs                              rejected J: KHG-J003 non-standard constant NaN
+  c23-big-int-ids                               imported: C1 ok S ok profile ok role-records kept=True {'undeclared-edge': 2}
+  c24-empty-incidences                          imported: C1 ok S ok profile ok role-records kept=True 
+  c25-plain-no-attrs                            imported: C1 ok S ok profile ok role-records kept=True {'undeclared-edge': 2, 'unlabelled-incidence': 4}
+  c26-edge-attr-key-equals-python-parameter     imported: C1 ok S ok profile ok role-records kept=True {'untyped-edge': 1, 'empty-edge-dropped': 1}
+imported with every (edge, node, role, direction) record kept: 22

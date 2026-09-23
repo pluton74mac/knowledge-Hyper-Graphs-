@@ -1,0 +1,225 @@
+{
+ "header": {
+  "kind": "header",
+  "khg": "khg-record/1.0.0",
+  "document_id": "kb-sample-migrated",
+  "schema": {
+   "id": "kb-sample",
+   "version": "1.0.0",
+   "sha256": "sha256:f4c754bd6f08e138a0ae1a27bf1786acfd057799041fd8424a968f052cac0b7a"
+  },
+  "snapshot": "current",
+  "complete": true,
+  "extensions": {
+   "hif:metadata": {
+    "title": "Sample knowledge hypergraph in HIF (Hypergraph Interchange Format)",
+    "description": "Three n-ary facts from a toy biomedical knowledge base. Each hyperedge is one fact; each incidence carries the role the entity plays in that fact. Directed: 'tail' incidences are the inputs/subjects of the relation, 'head' incidences are the outputs/objects.",
+    "created": "2026-09-19",
+    "kb-section": "kb/04-storage-and-formats"
+   }
+  }
+ },
+ "records": [
+  {
+   "kind": "entity",
+   "id": "drug:metformin",
+   "types": [
+    "Drug"
+   ],
+   "label": "metformin"
+  },
+  {
+   "kind": "entity",
+   "id": "disease:T2DM",
+   "types": [
+    "Disease"
+   ],
+   "label": "type 2 diabetes mellitus"
+  },
+  {
+   "kind": "entity",
+   "id": "dose:500mg-bid",
+   "types": [
+    "Dosage"
+   ],
+   "label": "500 mg twice daily"
+  },
+  {
+   "kind": "entity",
+   "id": "pop:adults",
+   "types": [
+    "Population"
+   ],
+   "label": "adults"
+  },
+  {
+   "kind": "entity",
+   "id": "drug:insulin",
+   "types": [
+    "Drug"
+   ],
+   "label": "insulin"
+  },
+  {
+   "kind": "entity",
+   "id": "effect:hypoglycemia",
+   "types": [
+    "AdverseEffect"
+   ],
+   "label": "hypoglycaemia"
+  },
+  {
+   "kind": "entity",
+   "id": "org:ADA",
+   "types": [
+    "Organisation"
+   ],
+   "label": "American Diabetes Association"
+  },
+  {
+   "kind": "entity",
+   "id": "doc:guideline-2024",
+   "types": [
+    "Document"
+   ],
+   "label": "Standards of Care 2024"
+  },
+  {
+   "kind": "fact",
+   "id": "f1",
+   "relation": "treats",
+   "status": "asserted",
+   "bindings": [
+    {
+     "role": "condition",
+     "value": {
+      "entity": "disease:T2DM"
+     },
+     "bid": "b1"
+    },
+    {
+     "role": "dosage",
+     "value": {
+      "entity": "dose:500mg-bid"
+     },
+     "bid": "b2"
+    },
+    {
+     "role": "population",
+     "value": {
+      "entity": "pop:adults"
+     },
+     "bid": "b3"
+    },
+    {
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2024-01-01T00:00:00Z",
+       "precision": 11
+      }
+     },
+     "bid": "b4"
+    },
+    {
+     "role": "treatment",
+     "value": {
+      "entity": "drug:metformin"
+     },
+     "bid": "b5"
+    }
+   ],
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "imported",
+     "mode": "automatic",
+     "source": {
+      "doc_id": "doc:guideline-2024"
+     }
+    }
+   ],
+   "extensions": {
+    "hif:weight": 0.95
+   }
+  },
+  {
+   "kind": "fact",
+   "id": "f2",
+   "relation": "co-administration-causes",
+   "status": "asserted",
+   "bindings": [
+    {
+     "role": "agent",
+     "value": {
+      "entity": "drug:insulin"
+     },
+     "bid": "b1"
+    },
+    {
+     "role": "agent",
+     "value": {
+      "entity": "drug:metformin"
+     },
+     "bid": "b2"
+    },
+    {
+     "role": "effect",
+     "value": {
+      "entity": "effect:hypoglycemia"
+     },
+     "bid": "b3"
+    }
+   ],
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "imported",
+     "mode": "automatic",
+     "source": {
+      "doc_id": "doc:guideline-2024"
+     }
+    }
+   ],
+   "extensions": {
+    "hif:weight": 0.8
+   }
+  },
+  {
+   "kind": "fact",
+   "id": "f3",
+   "relation": "publishes",
+   "status": "asserted",
+   "bindings": [
+    {
+     "role": "publication",
+     "value": {
+      "entity": "doc:guideline-2024"
+     },
+     "bid": "b1"
+    },
+    {
+     "role": "publisher",
+     "value": {
+      "entity": "org:ADA"
+     },
+     "bid": "b2"
+    }
+   ],
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "imported",
+     "mode": "automatic",
+     "source": {
+      "doc_id": "doc:guideline-2024"
+     }
+    }
+   ],
+   "extensions": {
+    "hif:weight": 1.0
+   }
+  }
+ ]
+}

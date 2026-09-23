@@ -1,0 +1,5 @@
+khg-record-1.0.0: 6004 documents (668 accepted, 5336 rejected); disagreements old/new x jsonschema/fastjsonschema: 0
+khg-hif-1.0.0: 6002 documents (1825 accepted, 4177 rejected); disagreements old/new x jsonschema/fastjsonschema: 0
+khg-schema-1.0.0: 6002 documents (319 accepted, 5683 rejected); disagreements old/new x jsonschema/fastjsonschema: 0
+khg-queue-1.0.0: 6005 documents (1256 accepted, 4749 rejected); disagreements old/new x jsonschema/fastjsonschema: 0
+TOTAL DISAGREEMENTS: 0

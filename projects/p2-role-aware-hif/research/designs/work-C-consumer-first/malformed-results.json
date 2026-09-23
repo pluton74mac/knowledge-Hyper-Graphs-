@@ -1,0 +1,690 @@
+[
+ {
+  "id": "M01",
+  "input": "hif",
+  "what": "zero-byte file",
+  "expect": "L0 J-PARSE",
+  "got": "L0 J-PARSE",
+  "ok": true
+ },
+ {
+  "id": "M02",
+  "input": "hif",
+  "what": "NaN literal in attrs",
+  "expect": "L0 J-NAN",
+  "got": "L0 J-NAN",
+  "ok": true
+ },
+ {
+  "id": "M03",
+  "input": "hif",
+  "what": "duplicate key inside one attrs object",
+  "expect": "L0 J-DUP-KEY",
+  "got": "L0 J-DUP-KEY",
+  "ok": true
+ },
+ {
+  "id": "M04",
+  "input": "hif",
+  "what": "lone UTF-16 surrogate escape in a string",
+  "expect": "L0 J-SURROGATE",
+  "got": "L0 J-SURROGATE",
+  "ok": true
+ },
+ {
+  "id": "M05",
+  "input": "hif",
+  "what": "no incidences key",
+  "expect": "L1 H-SCHEMA",
+  "got": "L1 H-SCHEMA H-SCHEMA",
+  "ok": true
+ },
+ {
+  "id": "M06",
+  "input": "hif",
+  "what": "extra top-level key (roles)",
+  "expect": "L1 H-SCHEMA",
+  "got": "L1 H-SCHEMA H-SCHEMA",
+  "ok": true
+ },
+ {
+  "id": "M07",
+  "input": "hif",
+  "what": "top-level version key",
+  "expect": "L1 H-SCHEMA",
+  "got": "L1 H-SCHEMA H-SCHEMA",
+  "ok": true
+ },
+ {
+  "id": "M08",
+  "input": "hif",
+  "what": "record-level role on an incidence (outside attrs)",
+  "expect": "L1 H-SCHEMA",
+  "got": "L1 H-SCHEMA H-SCHEMA",
+  "ok": true
+ },
+ {
+  "id": "M09",
+  "input": "hif",
+  "what": "incidence without node",
+  "expect": "L1 H-SCHEMA",
+  "got": "L1 H-SCHEMA H-SCHEMA",
+  "ok": true
+ },
+ {
+  "id": "M10",
+  "input": "hif",
+  "what": "direction outside head/tail",
+  "expect": "L1 H-SCHEMA",
+  "got": "L1 H-SCHEMA H-SCHEMA",
+  "ok": true
+ },
+ {
+  "id": "M11",
+  "input": "hif",
+  "what": "id of the wrong type (float)",
+  "expect": "L1 H-SCHEMA",
+  "got": "L1 H-SCHEMA H-SCHEMA",
+  "ok": true
+ },
+ {
+  "id": "M12",
+  "input": "hif",
+  "what": "integer id (valid HIF, outside the profile: ids are strings)",
+  "expect": "L2 P-ID",
+  "got": "L2 P-ID",
+  "ok": true
+ },
+ {
+  "id": "M13",
+  "input": "hif",
+  "what": "network-type asc",
+  "expect": "L2 P-NETWORK-TYPE",
+  "got": "L2 P-NETWORK-TYPE",
+  "ok": true
+ },
+ {
+  "id": "M14",
+  "input": "hif",
+  "what": "metadata without the profile declaration",
+  "expect": "L2 P-METADATA",
+  "got": "L2 P-METADATA",
+  "ok": true
+ },
+ {
+  "id": "M15",
+  "input": "hif",
+  "what": "metadata without the roles-convention declaration",
+  "expect": "L2 P-METADATA",
+  "got": "L2 P-METADATA",
+  "ok": true
+ },
+ {
+  "id": "M16",
+  "input": "hif",
+  "what": "incidence without a role",
+  "expect": "L2 P-ROLE",
+  "got": "L2 P-ROLE",
+  "ok": true
+ },
+ {
+  "id": "M17",
+  "input": "hif",
+  "what": "empty role string",
+  "expect": "L2 P-ROLE",
+  "got": "L2 P-ROLE",
+  "ok": true
+ },
+ {
+  "id": "M18",
+  "input": "hif",
+  "what": "role list instead of one role per incidence record",
+  "expect": "L2 P-ROLE",
+  "got": "L2 P-ROLE",
+  "ok": true
+ },
+ {
+  "id": "M19",
+  "input": "hif",
+  "what": "metadata.default_attrs (HyperNetX would invent values from it)",
+  "expect": "L2 P-METADATA",
+  "got": "L2 P-METADATA",
+  "ok": true
+ },
+ {
+  "id": "M20",
+  "input": "hif",
+  "what": "record-level weight (the profile never writes or reads weight)",
+  "expect": "L2 P-SCHEMA",
+  "got": "L2 P-SCHEMA",
+  "ok": true
+ },
+ {
+  "id": "M21",
+  "input": "hif",
+  "what": "directed network, one incidence without direction",
+  "expect": "L2 P-DIRECTED-NO-DIRECTION",
+  "got": "L2 P-DIRECTED-NO-DIRECTION",
+  "ok": true
+ },
+ {
+  "id": "M22",
+  "input": "hif",
+  "what": "edge without relation",
+  "expect": "L2 P-RELATION",
+  "got": "L2 P-RELATION",
+  "ok": true
+ },
+ {
+  "id": "M23",
+  "input": "hif",
+  "what": "edge attr outside relation/khg-* (confidence written as a bare number)",
+  "expect": "L2 P-SCHEMA",
+  "got": "L2 P-SCHEMA",
+  "ok": true
+ },
+ {
+  "id": "M24",
+  "input": "hif",
+  "what": "node declared twice",
+  "expect": "L3 P-DUP-NODE",
+  "got": "L3 P-DUP-NODE",
+  "ok": true
+ },
+ {
+  "id": "M25",
+  "input": "hif",
+  "what": "the same incidence record twice (same edge and khg-bid)",
+  "expect": "L3 P-DUP-BID",
+  "got": "L3 P-DUP-BID",
+  "ok": true
+ },
+ {
+  "id": "M26",
+  "input": "hif",
+  "what": "incidence names a node with no node record",
+  "expect": "L3 P-UNDECLARED-NODE",
+  "got": "L3 P-UNDECLARED-NODE",
+  "ok": true
+ },
+ {
+  "id": "M27",
+  "input": "hif",
+  "what": "incidence names an edge with no edge record",
+  "expect": "L3 P-UNDECLARED-EDGE",
+  "got": "L3 P-UNDECLARED-EDGE",
+  "ok": true
+ },
+ {
+  "id": "M28",
+  "input": "hif",
+  "what": "hyperedge-reference node pointing at a missing edge",
+  "expect": "L3 P-REF-DANGLING",
+  "got": "L3 P-REF-DANGLING",
+  "ok": true
+ },
+ {
+  "id": "M29",
+  "input": "hif",
+  "what": "literal node whose id is not the hash of its literal",
+  "expect": "L3 P-LITERAL-ID",
+  "got": "L3 P-LITERAL-ID",
+  "ok": true
+ },
+ {
+  "id": "M30",
+  "input": "hif",
+  "what": "role not allowed for the relation (caught after import)",
+  "expect": "L3 S-ROLE",
+  "got": "L3 S-ROLE",
+  "ok": true
+ },
+ {
+  "id": "M40",
+  "input": "c1",
+  "what": "unknown record kind",
+  "expect": "L2 R-KIND",
+  "got": "L2 R-KIND",
+  "ok": true
+ },
+ {
+  "id": "M41",
+  "input": "c1",
+  "what": "hyperedge without relation",
+  "expect": "L2 R-SCHEMA",
+  "got": "L2 R-SCHEMA",
+  "ok": true
+ },
+ {
+  "id": "M42",
+  "input": "c1",
+  "what": "id without namespace and with a space",
+  "expect": "L2 R-ID",
+  "got": "L2 R-ID",
+  "ok": true
+ },
+ {
+  "id": "M43",
+  "input": "c1",
+  "what": "id not in NFC (decomposed e + diaeresis)",
+  "expect": "L3 R-ID-NFC",
+  "got": "L3 C-ENTITY-REF R-ID-NFC",
+  "ok": true
+ },
+ {
+  "id": "M44",
+  "input": "c1",
+  "what": "id in a reserved namespace",
+  "expect": "L3 R-ID-RESERVED",
+  "got": "L3 C-ENTITY-REF R-ID-RESERVED",
+  "ok": true
+ },
+ {
+  "id": "M45",
+  "input": "c1",
+  "what": "value with two tags",
+  "expect": "L2 R-VALUE",
+  "got": "L2 R-VALUE",
+  "ok": true
+ },
+ {
+  "id": "M46",
+  "input": "c1",
+  "what": "decimal not in canonical form (trailing zero)",
+  "expect": "L2 R-LIT-LEXICAL",
+  "got": "L2 R-LIT-LEXICAL",
+  "ok": true
+ },
+ {
+  "id": "M47",
+  "input": "c1",
+  "what": "impossible calendar date",
+  "expect": "L3 R-LIT-DATE",
+  "got": "L3 R-DERIVED R-LIT-DATE",
+  "ok": true
+ },
+ {
+  "id": "M48",
+  "input": "c1",
+  "what": "time lexical form finer than its declared precision",
+  "expect": "L2 R-LIT-LEXICAL",
+  "got": "L2 R-LIT-LEXICAL",
+  "ok": true
+ },
+ {
+  "id": "M49",
+  "input": "c1",
+  "what": "quantity without unit",
+  "expect": "L2 R-LIT-UNIT",
+  "got": "L2 R-LIT-UNIT",
+  "ok": true
+ },
+ {
+  "id": "M50",
+  "input": "c1",
+  "what": "lang-string without lang",
+  "expect": "L2 R-LIT-LANG",
+  "got": "L2 R-LIT-LANG",
+  "ok": true
+ },
+ {
+  "id": "M51",
+  "input": "c1",
+  "what": "quantity amount below its lower bound",
+  "expect": "L3 R-LIT-BOUNDS",
+  "got": "L3 R-DERIVED R-LIT-BOUNDS",
+  "ok": true
+ },
+ {
+  "id": "M52",
+  "input": "c1",
+  "what": "status outside the lifecycle",
+  "expect": "L2 R-STATUS",
+  "got": "L2 R-STATUS",
+  "ok": true
+ },
+ {
+  "id": "M53",
+  "input": "c1",
+  "what": "two bindings with the same bid",
+  "expect": "L3 R-DUP-BID",
+  "got": "L3 R-DUP-BID",
+  "ok": true
+ },
+ {
+  "id": "M54",
+  "input": "c1",
+  "what": "evidence on a binding that does not exist",
+  "expect": "L3 R-EVIDENCE-REF",
+  "got": "L3 R-EVIDENCE-REF",
+  "ok": true
+ },
+ {
+  "id": "M55",
+  "input": "c1",
+  "what": "text selectors without the document hash",
+  "expect": "L2 R-EVIDENCE-DOC-HASH",
+  "got": "L2 R-EVIDENCE-DOC-HASH",
+  "ok": true
+ },
+ {
+  "id": "M56",
+  "input": "c1",
+  "what": "position span disagrees with the quote length (code points)",
+  "expect": "L3 R-SELECTOR-SPAN",
+  "got": "L3 R-DERIVED R-SELECTOR-SPAN",
+  "ok": true
+ },
+ {
+  "id": "M57",
+  "input": "c1",
+  "what": "valid_time.from after valid_time.to",
+  "expect": "L3 R-VALID-TIME",
+  "got": "L3 R-VALID-TIME",
+  "ok": true
+ },
+ {
+  "id": "M58",
+  "input": "c1",
+  "what": "declared arity disagrees with the bindings",
+  "expect": "L3 R-DERIVED",
+  "got": "L3 R-DERIVED",
+  "ok": true
+ },
+ {
+  "id": "M59",
+  "input": "c1",
+  "what": "valid_time disagrees with the time bindings",
+  "expect": "L3 R-DERIVED",
+  "got": "L3 R-DERIVED",
+  "ok": true
+ },
+ {
+  "id": "M60",
+  "input": "c1",
+  "what": "relation not declared in the schema",
+  "expect": "L3 S-RELATION",
+  "got": "L3 S-FILLER S-NESTING S-RELATION",
+  "ok": true
+ },
+ {
+  "id": "M61",
+  "input": "c1",
+  "what": "role not allowed for the relation",
+  "expect": "L3 S-ROLE",
+  "got": "L3 S-ROLE",
+  "ok": true
+ },
+ {
+  "id": "M62",
+  "input": "c1",
+  "what": "required role missing on an asserted fact",
+  "expect": "L3 S-ROLE-MIN",
+  "got": "L3 S-ROLE-MIN",
+  "ok": true
+ },
+ {
+  "id": "M63",
+  "input": "c1",
+  "what": "role bound more often than max",
+  "expect": "L3 S-ROLE-MAX",
+  "got": "L3 S-FILLER S-ROLE-MAX",
+  "ok": true
+ },
+ {
+  "id": "M64",
+  "input": "c1",
+  "what": "entity of the wrong type",
+  "expect": "L3 S-FILLER",
+  "got": "L3 S-FILLER",
+  "ok": true
+ },
+ {
+  "id": "M65",
+  "input": "c1",
+  "what": "literal where an entity is expected",
+  "expect": "L3 S-FILLER",
+  "got": "L3 S-FILLER",
+  "ok": true
+ },
+ {
+  "id": "M66",
+  "input": "c1",
+  "what": "hyperedge with no bindings",
+  "expect": "L3 S-NO-BINDINGS",
+  "got": "L3 S-NO-BINDINGS S-ROLE-MIN",
+  "ok": true
+ },
+ {
+  "id": "M67",
+  "input": "c1",
+  "what": "a hyperedge that references itself",
+  "expect": "L3 C-NESTING-CYCLE",
+  "got": "L3 C-NESTING-CYCLE S-FILLER S-NESTING",
+  "ok": true
+ },
+ {
+  "id": "M68",
+  "input": "c1",
+  "what": "reference to a relation that is not nestable",
+  "expect": "L3 S-NESTING",
+  "got": "L3 S-FILLER S-NESTING",
+  "ok": true
+ },
+ {
+  "id": "M69",
+  "input": "c1",
+  "what": "unbound value outside a goal",
+  "expect": "L3 S-UNBOUND",
+  "got": "L3 S-UNBOUND",
+  "ok": true
+ },
+ {
+  "id": "M70",
+  "input": "c1",
+  "what": "novalue and a concrete value for the same role",
+  "expect": "L3 S-NOVALUE-MIXED",
+  "got": "L3 S-FILLER S-NOVALUE-MIXED",
+  "ok": true
+ },
+ {
+  "id": "M71",
+  "input": "c1",
+  "what": "asserted fact without evidence",
+  "expect": "L3 S-EVIDENCE-MISSING",
+  "got": "L3 S-EVIDENCE-MISSING",
+  "ok": true
+ },
+ {
+  "id": "M72",
+  "input": "c1",
+  "what": "direction contradicting the role usage",
+  "expect": "L3 S-DIRECTION",
+  "got": "L3 S-DIRECTION",
+  "ok": true
+ },
+ {
+  "id": "M73",
+  "input": "c1",
+  "what": "ordered role with a gap in positions",
+  "expect": "L3 S-POSITION",
+  "got": "L3 S-POSITION",
+  "ok": true
+ },
+ {
+  "id": "M74",
+  "input": "c1",
+  "what": "the same filler twice in an unordered role",
+  "expect": "L3 S-DUP-BINDING",
+  "got": "L3 S-DUP-BINDING",
+  "ok": true
+ },
+ {
+  "id": "M75",
+  "input": "c1",
+  "what": "must_differ violated",
+  "expect": "L3 S-CONSTRAINT",
+  "got": "L3 S-CONSTRAINT S-DUP-BINDING",
+  "ok": true
+ },
+ {
+  "id": "M76",
+  "input": "c1",
+  "what": "confidence outside its declared scale",
+  "expect": "L3 S-CONFIDENCE",
+  "got": "L3 S-CONFIDENCE",
+  "ok": true
+ },
+ {
+  "id": "M77",
+  "input": "c1",
+  "what": "supersession naming a missing record",
+  "expect": "L3 C-SUPERSESSION",
+  "got": "L3 C-SUPERSESSION",
+  "ok": true
+ },
+ {
+  "id": "M78",
+  "input": "c1",
+  "what": "supersession cycle",
+  "expect": "L3 C-SUPERSESSION",
+  "got": "L3 C-SUPERSESSION",
+  "ok": true
+ },
+ {
+  "id": "M79",
+  "input": "c1",
+  "what": "status not superseded although a supersession record names it",
+  "expect": "L3 C-SUPERSESSION",
+  "got": "L3 C-KEY-COLLISION C-SUPERSESSION",
+  "ok": true
+ },
+ {
+  "id": "M80",
+  "input": "c1",
+  "what": "entity reference without an entity record",
+  "expect": "L3 C-ENTITY-REF",
+  "got": "L3 C-ENTITY-REF",
+  "ok": true
+ },
+ {
+  "id": "M81",
+  "input": "c1",
+  "what": "entity and hyperedge share an id",
+  "expect": "L3 C-DUP-ID",
+  "got": "L3 C-DUP-ID",
+  "ok": true
+ },
+ {
+  "id": "M82",
+  "input": "c1",
+  "what": "container of an unknown major version",
+  "expect": "L2 R-FORMAT",
+  "got": "L2 R-FORMAT",
+  "ok": true
+ },
+ {
+  "id": "M83",
+  "input": "c1",
+  "what": "record typed under a schema the container does not carry",
+  "expect": "L3 C-SCHEMA-REF",
+  "got": "L3 C-SCHEMA-REF",
+  "ok": true
+ },
+ {
+  "id": "M84",
+  "input": "c1",
+  "what": "two current facts with the same key and overlapping valid time",
+  "expect": "L3 C-KEY-COLLISION",
+  "got": "L3 C-KEY-COLLISION",
+  "ok": true
+ },
+ {
+  "id": "M85",
+  "input": "c1",
+  "what": "candidate status in a store container",
+  "expect": "L3 C-STATUS-CANDIDATE",
+  "got": "L3 C-STATUS-CANDIDATE",
+  "ok": true
+ },
+ {
+  "id": "M90",
+  "input": "c1",
+  "what": "schema version not semver",
+  "expect": "L2 D-SEMVER",
+  "got": "L2 D-SEMVER",
+  "ok": true
+ },
+ {
+  "id": "M91",
+  "input": "c1",
+  "what": "relation type with no roles",
+  "expect": "L2 D-NO-ROLES",
+  "got": "L2 D-NO-ROLES",
+  "ok": true
+ },
+ {
+  "id": "M92",
+  "input": "c1",
+  "what": "role used twice in one relation",
+  "expect": "L3 D-DUP-USAGE",
+  "got": "L3 D-DUP-USAGE",
+  "ok": true
+ },
+ {
+  "id": "M93",
+  "input": "c1",
+  "what": "key names a role the relation does not use",
+  "expect": "L3 D-KEY",
+  "got": "L3 D-KEY",
+  "ok": true
+ },
+ {
+  "id": "M94",
+  "input": "c1",
+  "what": "key role that is not required",
+  "expect": "L3 D-KEY",
+  "got": "L3 D-KEY R-DERIVED",
+  "ok": true
+ },
+ {
+  "id": "M95",
+  "input": "c1",
+  "what": "primary names a non-core role",
+  "expect": "L3 D-PRIMARY",
+  "got": "L3 D-PRIMARY",
+  "ok": true
+ },
+ {
+  "id": "M96",
+  "input": "c1",
+  "what": "unknown entity type in fillers",
+  "expect": "L3 D-TYPE",
+  "got": "L3 D-TYPE S-FILLER",
+  "ok": true
+ },
+ {
+  "id": "M97",
+  "input": "c1",
+  "what": "usage of a role missing from the global vocabulary",
+  "expect": "L3 D-ROLE-UNDECLARED",
+  "got": "L3 D-PRIMARY D-ROLE-UNDECLARED S-ROLE S-ROLE-MIN",
+  "ok": true
+ },
+ {
+  "id": "M98",
+  "input": "c1",
+  "what": "min > max",
+  "expect": "L3 D-CARDINALITY",
+  "got": "L3 D-CARDINALITY S-ROLE-MIN",
+  "ok": true
+ },
+ {
+  "id": "M99",
+  "input": "c1",
+  "what": "relation kind outside the enum",
+  "expect": "L2 D-SCHEMA",
+  "got": "L2 D-SCHEMA",
+  "ok": true
+ }
+]

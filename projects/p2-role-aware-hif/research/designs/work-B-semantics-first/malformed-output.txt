@@ -1,0 +1,116 @@
+   OK1   accepted   -         want -            directed gate fixture (HIF)                                    | ACCEPTED
+   OK2   accepted   -         want -            undirected gate fixture (HIF)                                  | ACCEPTED
+   OK3   accepted   -         want -            directed gate fixture (C1)                                     | ACCEPTED
+   OK4   accepted   -         want -            gate schema                                                    | ACCEPTED
+   OK5   accepted   -         want -            queue item and its action log from the smoke test              | ACCEPTED
+   MC01  J          KHG-J001  want KHG-J001     zero-byte file (R02 case 34)                                   | KHG-J001: empty document
+   MC02  J          KHG-J001  want KHG-J001     not JSON: truncated document                                   | KHG-J001: not JSON: Unterminated string starting at: line 1 column 187 (char 186)
+   MC03  J          KHG-J003  want KHG-J003     duplicate key inside one attrs object (R02 case 36)            | KHG-J003: duplicate key 'role'
+   MC04  J          KHG-J004  want KHG-J004     NaN literal (R02 case 35, R03 c22, R01 V19)                    | KHG-J004: non-finite number NaN
+   MC05  J          KHG-J005  want KHG-J005     lone surrogate escape in a string                              | KHG-J005: lone surrogate in string
+   MC06  H          KHG-H001  want KHG-H001     no incidences (R01 V01, R02 case 31)                           | (root): required: 'incidences' is a required property
+   MC07  H          KHG-H002  want KHG-H002     top-level 'version' key (R01 V02, R02 case 04)                 | (root): additionalProperties: Additional properties are not allowed ('version' was unexpected)
+   MC08  H          KHG-H002  want KHG-H002     top-level 'roles' vocabulary (R02 case 05)                     | (root): additionalProperties: Additional properties are not allowed ('roles' was unexpected)
+   MC09  H          KHG-H002  want KHG-H002     top-level '$schema' (R02 case 06)                              | (root): additionalProperties: Additional properties are not allowed ('$schema' was unexpected)
+   MC10  H          KHG-H003  want KHG-H003     record-level 'role' on an incidence (R01 V03, R02 case 11)     | incidences/0: additionalProperties: Additional properties are not allowed ('role' was unexpected)
+   MC11  H          KHG-H003  want KHG-H003     record-level 'relation' on an edge (R02 case 13)               | edges/0: additionalProperties: Additional properties are not allowed ('relation' was unexpected)
+   MC12  H          KHG-H003  want KHG-H003     record-level 'type' on a node (R02 case 14)                    | nodes/0: additionalProperties: Additional properties are not allowed ('type' was unexpected)
+   MC13  H          KHG-H004  want KHG-H004     incidence attrs is a string (R02 case 10)                      | incidences/0/attrs: type: 'context' is not of type 'object'
+   MC14  H          KHG-H005  want KHG-H005     direction 'treatment' (R01 V05, R02 case 12)                   | incidences/0/direction: enum: 'treatment' is not one of ['head', 'tail']
+   MC15  H          KHG-H006  want KHG-H006     incidence without node (R01 V04)                               | incidences/0: required: 'node' is a required property
+   MC16  H          KHG-H007  want KHG-H007     id of type float 1.5 (R02 case 18)                             | incidences/0/node: type: 1.5 is not of type 'string', 'integer'
+   MC17  H          KHG-H007  want KHG-H007     id of type boolean (R02 case 19)                               | incidences/0/node: type: True is not of type 'string', 'integer'
+   MC18  H          KHG-H007  want KHG-H007     id null (R02 case 20)                                          | incidences/0/node: type: None is not of type 'string', 'integer'
+   MC19  H          KHG-H008  want KHG-H008     network-type 'knowledge-hypergraph' (R02 case 26)              | network-type: enum: 'knowledge-hypergraph' is not one of ['undirected', 'directed', 'asc']
+   MC20  P          KHG-P001  want KHG-P001     metadata without the khg-profile declaration (R01 V07)         | metadata: required: 'khg-profile' is a required property
+   MC21  P          KHG-P001  want KHG-P001     no metadata at all                                             | (root): required: 'metadata' is a required property
+   MC22  P          KHG-P002  want KHG-P002     integer ids (R02 cases 15-17, 22)                              | incidences/0/edge: type: 7 is not of type 'string'
+   MC23  P          KHG-P003  want KHG-P003     empty-string id (R02 case 21)                                  | incidences/0/node: pattern: '' does not match '^[^\\s\\x00-\\x1f\\x7f]{1,512}$'
+   MC24  P          KHG-P005  want KHG-P005     incidence of a fact without a role (R01 V08)                   | incidences/0/attrs: required: 'role' is a required property
+   MC25  P          KHG-P006  want KHG-P006     list-valued role (R01 V09, R02 case 09)                        | incidences/0/attrs/role: type: ['context', 'regulator'] is not of type 'string'
+   MC26  P          KHG-P006  want KHG-P006     empty role string (R01 V09)                                    | incidences/0/attrs/role: pattern: '' does not match '^[^\\s\\x00-\\x1f\\x7f/]{1,256}$'
+   MC27  P          KHG-P014  want KHG-P014     legacy 'roles' key beside 'role' (R01 V20)                     | incidences/0/attrs: not: 'roles' should not be valid under {'const': 'roles'}
+   MC28  P          KHG-P007  want KHG-P007  +1 network-type 'asc' (R03 D8, c04)                               | network-type: enum: 'asc' is not one of ['directed', 'undirected']
+   MC29  P          KHG-P008  want KHG-P008     metadata.default_attrs (R03 D7, c20)                           | metadata: not: 'default_attrs' should not be valid under {'const': 'default_attrs'}
+   MC30  P          KHG-P010  want KHG-P010     directed file, an incidence without direction (R01 V12, R02 ca | incidences/3: required: 'direction' is a required property
+   MC31  P          KHG-P011  want KHG-P011     undirected file carrying record-level direction (R01 V13, R02  | incidences/0: not: {'edge': 'f:born-louis14-paris', 'node': 'ex:Paris', 'direction': 'head', 'attrs': {'role':
+   MC32  P          KHG-P012  want KHG-P012     fact edge without khg:relation (R01 V14)                       | edges/0/attrs: required: 'khg:relation' is a required property
+   MC33  P          KHG-P013  want KHG-P013     edge without khg:kind (R01 V40)                                | edges/0/attrs: required: 'khg:kind' is a required property
+   MC34  P          KHG-P014  want KHG-P014     unknown khg: key in incidence attrs                            | incidences/0/attrs: anyOf: 'khg:roles' is not valid under any of the given schemas
+   MC35  P          KHG-P004  want KHG-P004     literal node whose id lacks the _: prefix                      | nodes/20/node: pattern: 'lit-1' does not match '^_:(lit|sv|nv|var|ref):[^\\s]+$'
+   MC36  P          KHG-P004  want KHG-P004     entity node id using the reserved _: prefix                    | nodes/0/node: not: '_:ex' should not be valid under {'type': 'string', 'pattern': '^_:'}
+   MC37  P          KHG-P009  want KHG-P009     hif-schema pinned to the moving 'main' URL                     | metadata/hif-schema: const: 'https://raw.githubusercontent.com/HIF-org/HIF-standard/b691a3d2ec32100c0229ebe115
+   MC38  P          KHG-P015  want KHG-P015     role-position 0                                                | incidences/32/attrs/role-position: minimum: 0 is less than the minimum of 1
+   MC39  D(decode)  KHG-D001  want KHG-D001     node declared twice (R01 V16, R03 c19)                         | KHG-D001: duplicate node 'ex:AirCanada'
+   MC40  D(decode)  KHG-D001  want KHG-D001     edge declared twice (R01 V16)                                  | KHG-D001: duplicate edge 'f:born-louis14-paris'
+   MC41  D(decode)  KHG-D002  want KHG-D002     incidence names an undeclared node (R01 V17, R02 case 28)      | KHG-D002: incidence names undeclared node 'ex:ghost'
+   MC42  D(decode)  KHG-D003  want KHG-D003     incidence names an undeclared edge (R02 case 29)               | KHG-D003: incidence names undeclared edge 'f:ghost'
+   MC43  D(decode)  KHG-D005  want KHG-D005     literal node id does not match its value                       | KHG-D005: literal node id '_:lit:86e4637ee45af992a7467d24f2a93a64' does not match its value
+   MC44  D(decode)  KHG-D009  want KHG-D009     schema hash in metadata does not match the schema              | KHG-D009: schema hash mismatch
+   MC45  D(decode)  KHG-S016  want KHG-S016     incidence direction contradicts the role's declared direction  | KHG-S016: direction 'tail' contradicts declared 'head'
+   MC46  S/D        KHG-D002  want KHG-D002     fact-ref node pointing to a missing edge (R01 V18)             | KHG-D002 f:claim-1.b2: fact 'f:ghost' not in document
+   MC47  C          KHG-C001  want KHG-C001     binding value with two kinds (entity and literal)              | records/20/bindings/0/value: maxProperties: {'entity': 'ex:HeLa', 'literal': {'datatype': 'string', 'value': '
+   MC48  C          KHG-C002  want KHG-C002     status outside the lifecycle enum (R01 V36)                    | records/20/status: enum: 'archived' is not one of ['candidate', 'asserted', 'disputed', 'superseded', 'retract
+   MC49  C          KHG-C003  want KHG-C003     confidence as a bare number (R01 V32)                          | records/21/confidence: type: 0.9 is not of type 'object'
+   MC50  C          KHG-C004  want KHG-C004     quantity without unit (R01 V26)                                | records/25/bindings/1/value/literal: required: 'unit' is a required property
+   MC51  C          KHG-C004  want KHG-C004     time precision 15                                              | records/23/bindings/2/value/literal/precision: maximum: 15 is greater than the maximum of 14
+   MC52  C          KHG-C005  want KHG-C005     UNBOUND value in a fact (R01 V34)                              | records/20/bindings/0/value: not: {'unbound': {'var': 'x'}} should not be valid under {'required': ['unbound']
+   MC53  C          KHG-C006  want KHG-C006     status superseded without status_ref (R01 V37)                 | records/29: required: 'status_ref' is a required property
+   MC54  C          KHG-C007  want KHG-C007     extracted evidence without selectors and activity (R01 V47, re | records/22/evidence/0: required: 'activity' is a required property
+   MC55  C          KHG-C008  want KHG-C008     rank deprecated without rank_reason                            | records/20: required: 'rank_reason' is a required property
+   MC56  C          KHG-C007  want KHG-C007     span selector with a negative start                            | records/22/evidence/0/selectors/1/start: minimum: -1 is less than the minimum of 0
+   MC57  C          KHG-C009  want KHG-C009     record-level key outside the format (e.g. 'weight')            | records/20: additionalProperties: Additional properties are not allowed ('weight' was unexpected)
+   MC58  S/D        KHG-S001  want KHG-S001     relation not declared (R01 V21)                                | KHG-S001 f:reg-1: relation 'inhibits' not declared
+   MC59  S/D        KHG-S002  want KHG-S002     role not allowed for the relation (R01 V22)                    | KHG-S002 f:reg-1: role 'agent' not allowed for 'regulates'
+   MC60  S/D        KHG-S003  want KHG-S003     required role missing on an asserted fact (R01 V23)            | KHG-S003 f:reg-1: required role 'target' has 0 of 1 bindings
+   MC61  S/D        KHG-S004  want KHG-S004     role bound more often than max (R01 V24)                       | KHG-S004 f:reg-1: role 'target' bound 2 times, max 1
+   MC62  S/D        KHG-S005  want KHG-S005     entity of the wrong type (R01 V25)                             | KHG-S005 f:reg-1.b2: filler kind/type not allowed for role 'regulator'
+   MC63  S/D        KHG-S005  want KHG-S005     literal where an entity is expected (R01 V25)                  | KHG-S005 f:reg-1.b2: filler kind/type not allowed for role 'regulator'
+   MC64  S          KHG-S006  want KHG-S006     time literal with month 13 (R01 V26)                           | KHG-S006: M out of range in '+1610-13-14T00:00:00Z'
+   MC65  S          KHG-S006  want KHG-S006     day set below year precision (R01 V26)                         | KHG-S006: M set below precision in '+2019-06-01T00:00:00Z'
+   MC66  S/D        KHG-S007  want KHG-S007  +1 fact with no bindings (R01 V27)                                | KHG-S007 f:reg-1: no bindings; KHG-S003 f:reg-1: required role 'regulator' has 0 of 1 bindings; KHG-S003 f:reg
+   MC67  S/D        KHG-S005  want KHG-S005     fact reference in a role that takes no facts (R01 V29)         | KHG-S005 f:reg-1.b1: filler kind/type not allowed for role 'context'
+   MC68  S/D        KHG-S009  want KHG-S009     valid time starts after it ends (R01 V30)                      | KHG-S009 f:king-13: valid time is empty (start after end)
+   MC69  S/D        KHG-S010  want KHG-S010     confidence scale not declared (R01 V32)                        | KHG-S010 f:coadmin-1: confidence scale 'gut-feeling' undeclared
+   MC70  S/D        KHG-S010  want KHG-S010     confidence outside its scale (R01 V32)                         | KHG-S010 f:coadmin-1: confidence 1.4 outside [0.0, 1.0]
+   MC71  S/D        KHG-S011  want KHG-S011     asserted fact with no evidence (R01 V33)                       | KHG-S011 f:reg-1: asserted fact without supporting evidence
+   MC72  S/D        KHG-S013  want KHG-S013     novalue and a concrete value in one role (R01 V35)             | KHG-S013 f:cat-7: novalue and another filler for role 'catalyst'
+   MC73  S/D        KHG-S014  want KHG-S014     the same filler twice in an unordered role (set semantics)     | KHG-S014 f:coadmin-1: duplicate filler in unordered role 'agent'
+   MC74  S/D        KHG-S015  want KHG-S015     ordered role with a gap in positions                           | KHG-S015 f:route-1: positions of ordered role 'stop' are [1, 2, 5], expected 1..3
+   MC75  S/D        KHG-S015  want KHG-S015     position on an unordered role                                  | KHG-S015 f:coadmin-1: position on unordered role 'agent'
+   MC76  S/D        KHG-S018  want KHG-S018     goal omits a required role instead of leaving it unbound       | KHG-S018 g:who-1774: goal omits required role 'holder' (bind it or leave it unbound)
+   MC77  S/D        KHG-S019  want KHG-S019     one unbound variable used twice in a goal                      | KHG-S019 g:who-1774: an unbound variable is repeated
+   MC78  S/D        KHG-S020  want KHG-S020     id not in Unicode NFC                                          | KHG-S020 id 'ex:Kraków' is not NFC; KHG-S020 id 'ex:Kraków' is not NFC
+   MC79  S/D        KHG-S022  want KHG-S022     evidence supports an unknown binding id                        | KHG-S022 f:king-14.e2: supports unknown bid 'b9'
+   MC80  S/D        KHG-S023  want KHG-S023     precision below the role's precision_min                       | KHG-S023 f:pop-łódź-2019.b3: precision below 9
+   MC81  S/D        KHG-S023  want KHG-S023     unit not allowed for the role                                  | KHG-S023 f:pop-łódź-2019.b2: unit 'wd:Q11573' not allowed
+   MC82  S/D        KHG-S025  want KHG-S025     the same binding id twice in one fact                          | KHG-S025 f:reg-1: bid 'b1' used twice
+   MC83  S/D        KHG-S005  want KHG-S005     somevalue where the role forbids it                            | KHG-S005 f:claim-1.b2: somevalue not allowed for role 'claim'
+   MC84  S/D        KHG-D008  want KHG-D008     nesting cycle (R01 V28)                                        | KHG-D008 nesting cycle through 'm:dis-x' -> 'm:dis-x'
+   MC85  S/D        KHG-D010  want KHG-D010     status_ref points at a record of the wrong kind (R01 V37)      | KHG-D010 f:born-skłodowska-kraków: status superseded needs status_ref to a khg:supersedes record naming it as 
+   MC86  S/D        KHG-D012  want KHG-D012     supersession cycle (R01 V37)                                   | KHG-D012 supersession cycle through 'f:born-skłodowska-warszawa' -> 'f:born-skłodowska-kraków'
+   MC87  S/D        KHG-D011  want KHG-D011     correction between facts of different relations (R01 V37)      | KHG-D011 m:sup-1: correction across relations ['born_in', 'regulates']
+   MC88  S/D        KHG-D016  want KHG-D016     two asserted facts, same key binding, overlapping valid time ( | KHG-D016 key conflict on position_held: ['f:king-13', 'f:king-14']
+   MC89  S/D        KHG-D015  want KHG-D015     stored derived fields disagree with the bindings (R01 V15)     | KHG-D015 f:reg-1: derived fields disagree with the bindings
+   MC90  S/D        KHG-D017  want KHG-D017     a candidate inside a store document (queue boundary, F9)       | KHG-D017 f:reg-1: status candidate outside the queue
+   MC91  S/D        KHG-D002  want KHG-D002     entity referenced but not declared in a complete document (R01 | KHG-D002 f:reg-1.b1: entity 'ex:HeLa' has no record
+   MC92  S/D        KHG-D007  want KHG-D007     one id names both an entity and a fact                         | KHG-D007 id 'f:reg-1' names both an entity and a fact
+   MC93  M(json)    KHG-M001  want KHG-M001     relation with no roles (R01 V43)                               | relations/0/roles: minItems: [] should be non-empty
+   MC94  M(sem)     KHG-M002  want KHG-M002     a role used twice in one relation (R01 V44)                    | regulates: role 'regulator' used twice
+   MC95  M(sem)     KHG-M003  want KHG-M003     key names a role the relation does not use (R01 V44)           | position_held: key role 'office' is not a role of the relation
+   MC96  M(sem)     KHG-M003  want KHG-M003     key built on a time-slot role                                  | position_held: key role 'start_time' has slot 'time'
+   MC97  M(json)    KHG-M004  want KHG-M004     schema version not semver (R01 V45)                            | version: pattern: '1.0' does not match '^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$'
+   MC98  M(json)    KHG-M006  want KHG-M006     unknown datatype (R01 V46)                                     | relations/0/roles/0/fillers/0/literal: enum: 'date' is not one of ['time', 'quantity', 'string', 'lang_string'
+   MC99  M(sem)     KHG-M005  want KHG-M005     unknown entity type in a filler (R01 V46)                      | regulates.regulator: unknown entity type 'Protein'
+   MC100 M(json)    KHG-M014  want KHG-M014     complete: true on an optional role                             | relations/0/roles/2/min: minimum: 0 is less than the minimum of 1
+   MC101 M(sem)     KHG-M007  want KHG-M007     time model names a role that is not a time slot                | position_held: time.start 'replaces' is not a time-slot role of the relation
+   MC102 M(sem)     KHG-M008  want KHG-M008     user schema declares a relation in the reserved khg: namespace | 'khg:regulates' uses the reserved khg: namespace
+   MC103 M(sem)     KHG-M011  want KHG-M011     temporal key on a relation without an interval time model      | born_in: temporal key needs time model 'interval'
+   MC104 Q          KHG-Q001  want KHG-Q001     candidate without run_id (R01 V47)                             | extraction: required: 'run_id' is a required property
+   MC105 Q          KHG-Q002  want KHG-Q002     candidate payload with status asserted                         | payload/status: const: 'candidate' was expected
+   MC106 Q          KHG-Q003  want KHG-Q003     unknown item_kind (R01 V48)                                    | item_kind: enum: 'new_thing' is not one of ['new_fact', 'goal_binding', 'merge_proposal', 'supersession_propos
+   MC107 Q          KHG-Q004  want KHG-Q004     lint log entry without findings                                | (root): required: 'findings' is a required property
+   MC108 Q(fold)    KHG-Q005  want KHG-Q005     log entry whose state_before does not follow the fold (accepte | l-000004: state_before 'pending' but the fold gives 'accepted'
+cases: 108 negative + 5 positive; expected codes without a case: none
+code coverage (constraints; uncovered): {'P': (74, 0), 'C': (848, 0), 'M': (161, 0), 'Q': (153, 0), 'H': (28, 0)}
+FAILED EXPECTATIONS: 0

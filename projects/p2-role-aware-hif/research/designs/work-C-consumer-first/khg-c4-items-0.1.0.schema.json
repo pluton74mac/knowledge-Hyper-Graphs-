@@ -1,0 +1,127 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:khg:schema:khg-c4-items:0.1.0",
+  "title": "khg-c4-items/0.1.0: the question-set and gold item shapes C5 reads (a draft handed to P3a, who owns C4)",
+  "type": "object",
+  "required": ["kind"],
+  "properties": {"kind": {"enum": ["c4-extraction-doc", "c4-completion-query", "c4-retrieval-question", "c4-memory-trace", "c4-memory-question"], "x-khg-code": "I-KIND"}},
+  "allOf": [
+    {"if": {"properties": {"kind": {"const": "c4-extraction-doc"}}}, "then": {"$ref": "#/definitions/extraction_doc"}},
+    {"if": {"properties": {"kind": {"const": "c4-completion-query"}}}, "then": {"$ref": "#/definitions/completion_query"}},
+    {"if": {"properties": {"kind": {"const": "c4-retrieval-question"}}}, "then": {"$ref": "#/definitions/retrieval_question"}},
+    {"if": {"properties": {"kind": {"const": "c4-memory-trace"}}}, "then": {"$ref": "#/definitions/memory_trace"}},
+    {"if": {"properties": {"kind": {"const": "c4-memory-question"}}}, "then": {"$ref": "#/definitions/memory_question"}}
+  ],
+  "definitions": {
+    "id": {"$ref": "urn:khg:schema:khg-record:1.0.0#/definitions/id"},
+    "value": {"$ref": "urn:khg:schema:khg-record:1.0.0#/definitions/value"},
+    "binding": {"$ref": "urn:khg:schema:khg-record:1.0.0#/definitions/binding"},
+    "hyperedge": {"$ref": "urn:khg:schema:khg-record:1.0.0#/definitions/hyperedge"},
+    "timebound": {"$ref": "urn:khg:schema:khg-record:1.0.0#/definitions/timebound"},
+    "timestamp": {"$ref": "urn:khg:schema:khg-record:1.0.0#/definitions/timestamp"},
+    "sha": {"$ref": "urn:khg:schema:khg-record:1.0.0#/definitions/sha"},
+    "split": {"enum": ["train", "valid", "test"]},
+    "qset": {"type": "string", "pattern": "^[a-z][a-z0-9-]*/(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"},
+    "pattern": {"type": "object", "required": ["role", "value"], "additionalProperties": false,
+                "properties": {"role": {"type": "string"}, "value": {"$ref": "#/definitions/value"},
+                               "position": {"type": "integer", "minimum": 0}}},
+    "aliases": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string", "minLength": 1}}},
+    "answer": {"type": "object", "required": ["mode", "values"], "additionalProperties": false,
+               "properties": {"mode": {"enum": ["single", "set"]}, "values": {"type": "array", "items": {"$ref": "#/definitions/value"}}}},
+    "extraction_doc": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "doc_id", "split", "qset", "text", "text_sha256", "annotation", "gold"],
+      "properties": {
+        "kind": {"const": "c4-extraction-doc"}, "doc_id": {"$ref": "#/definitions/id"},
+        "split": {"$ref": "#/definitions/split"}, "qset": {"$ref": "#/definitions/qset"},
+        "text": {"type": "string"}, "text_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "annotation": {"type": "object", "required": ["method", "exhaustive"], "additionalProperties": false,
+                       "properties": {"method": {"type": "string"}, "exhaustive": {"type": "boolean"},
+                                      "annotators": {"type": "integer", "minimum": 0}}},
+        "gold": {"type": "array", "items": {"$ref": "#/definitions/hyperedge"}},
+        "alternatives": {"type": "object", "additionalProperties": {"type": "array", "items": {"$ref": "#/definitions/hyperedge"}}},
+        "entity_aliases": {"$ref": "#/definitions/aliases"},
+        "seen_core_keys": {"type": "array", "items": {"$ref": "#/definitions/sha"}}
+      }
+    },
+    "completion_query": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "qid", "split", "qset", "fact_id", "relation", "arity", "target", "context", "candidate_universe"],
+      "properties": {
+        "kind": {"const": "c4-completion-query"}, "qid": {"type": "string"},
+        "split": {"$ref": "#/definitions/split"}, "qset": {"$ref": "#/definitions/qset"},
+        "fact_id": {"$ref": "#/definitions/id"}, "relation": {"type": "string"},
+        "arity": {"type": "integer", "minimum": 0},
+        "target": {"$ref": "#/definitions/binding"},
+        "context": {"type": "array", "items": {"$ref": "#/definitions/binding"}},
+        "candidate_universe": {"enum": ["all_entities", "seen_in_position", "inference_graph"]},
+        "as_of": {"anyOf": [{"$ref": "#/definitions/timebound"}, {"type": "null"}]},
+        "inductive": {"type": "object", "additionalProperties": false,
+                      "properties": {"unseen_context_entities": {"type": "integer", "minimum": 0}, "unseen_relation": {"type": "boolean"}}}
+      }
+    },
+    "retrieval_question": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "qid", "qset", "split", "type", "text", "anchors", "answer", "support", "hops", "source_class", "answerable", "provenance"],
+      "properties": {
+        "kind": {"const": "c4-retrieval-question"}, "qid": {"type": "string"}, "qset": {"$ref": "#/definitions/qset"},
+        "split": {"$ref": "#/definitions/split"}, "type": {"enum": ["retrieval_qa"]}, "text": {"type": "string", "minLength": 1},
+        "template_id": {"type": "string"},
+        "anchors": {"type": "array", "minItems": 1, "items": {"$ref": "#/definitions/id"}},
+        "answer": {"$ref": "#/definitions/answer"}, "aliases": {"$ref": "#/definitions/aliases"},
+        "support": {"type": "object", "required": ["sets"], "additionalProperties": false,
+                    "properties": {"sets": {"type": "array", "minItems": 1, "items": {"type": "array", "minItems": 1, "items": {"$ref": "#/definitions/id"}}}}},
+        "required_edge": {"type": "object", "required": ["fact_id", "relation", "arity"], "additionalProperties": false,
+                          "properties": {"fact_id": {"$ref": "#/definitions/id"}, "relation": {"type": "string"}, "arity": {"type": "integer"}}},
+        "hops": {"type": "integer", "minimum": 1}, "source_class": {"enum": ["binary", "n-ary"]},
+        "as_of": {"anyOf": [{"$ref": "#/definitions/timebound"}, {"type": "null"}]},
+        "answerable": {"type": "boolean"},
+        "provenance": {"type": "object", "required": ["generator", "generator_version", "verified"], "additionalProperties": false,
+                       "properties": {"generator": {"type": "string"}, "generator_version": {"type": "string"},
+                                      "verified": {"enum": ["human", "model", "none"]}, "verifiers": {"type": "integer", "minimum": 0}}}
+      }
+    },
+    "memory_trace": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "trace_id", "qset", "split", "events"],
+      "properties": {
+        "kind": {"const": "c4-memory-trace"}, "trace_id": {"type": "string"}, "qset": {"$ref": "#/definitions/qset"},
+        "split": {"$ref": "#/definitions/split"},
+        "events": {"type": "array", "minItems": 1, "items": {
+          "type": "object", "required": ["step", "tx_time"], "additionalProperties": false,
+          "properties": {"step": {"type": "integer", "minimum": 1}, "tx_time": {"$ref": "#/definitions/timestamp"},
+                         "text": {"type": "string"}, "put": {"$ref": "#/definitions/hyperedge"},
+                         "apply": {"type": "object", "required": ["op"], "properties": {"op": {"enum": ["supersede", "transition", "end_validity", "add_evidence"]}}}},
+          "oneOf": [{"required": ["put"]}, {"required": ["apply"]}]}}
+      }
+    },
+    "memory_question": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "qid", "trace_id", "qset", "split", "ask_after_step", "subtype", "text", "as_of", "as_at", "key",
+                   "answer", "stale_values", "future_values", "support", "answerable", "tolerance"],
+      "properties": {
+        "kind": {"const": "c4-memory-question"}, "qid": {"type": "string"}, "trace_id": {"type": "string"},
+        "qset": {"$ref": "#/definitions/qset"}, "split": {"$ref": "#/definitions/split"},
+        "ask_after_step": {"type": "integer", "minimum": 1},
+        "subtype": {"enum": ["current_value", "past_value", "change_detection", "count_changes", "abstention"]},
+        "text": {"type": "string", "minLength": 1},
+        "as_of": {"anyOf": [{"const": "end_of_trace"}, {"$ref": "#/definitions/timebound"}]},
+        "as_at": {"anyOf": [{"const": "after_step"}, {"$ref": "#/definitions/timestamp"}]},
+        "key": {"type": "object", "required": ["relation", "key", "target_role"], "additionalProperties": false,
+                "properties": {"relation": {"type": "string"}, "key": {"type": "array", "items": {"$ref": "#/definitions/pattern"}},
+                               "target_role": {"type": "string"}}},
+        "answer": {"$ref": "#/definitions/answer"},
+        "stale_values": {"type": "array", "items": {"type": "object", "required": ["value", "fact_id", "kind"], "additionalProperties": false,
+                         "properties": {"value": {"$ref": "#/definitions/value"}, "fact_id": {"$ref": "#/definitions/id"},
+                                        "kind": {"enum": ["expired", "retracted"]}}}},
+        "future_values": {"type": "array", "items": {"type": "object", "required": ["value", "fact_id"], "additionalProperties": false,
+                          "properties": {"value": {"$ref": "#/definitions/value"}, "fact_id": {"$ref": "#/definitions/id"}}}},
+        "support": {"type": "object", "required": ["current", "history"], "additionalProperties": false,
+                    "properties": {"current": {"type": "array", "items": {"$ref": "#/definitions/id"}},
+                                   "history": {"type": "array", "items": {"$ref": "#/definitions/id"}}}},
+        "aliases": {"$ref": "#/definitions/aliases"},
+        "answerable": {"type": "boolean"}, "tolerance": {"type": ["number", "null"]},
+        "keyed_relation_arity": {"type": "integer", "minimum": 0}, "n_supersessions_on_key": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

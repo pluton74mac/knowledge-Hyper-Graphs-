@@ -1,0 +1,178 @@
+{
+ "metadata": {
+  "created": "2026-09-19",
+  "description": "Three n-ary facts from a toy biomedical knowledge base. Each hyperedge is one fact; each incidence carries the role the entity plays in that fact. Directed: 'tail' incidences are the inputs/subjects of the relation, 'head' incidences are the outputs/objects.",
+  "kb-section": "kb/04-storage-and-formats",
+  "khg-profile": "1.0.0",
+  "khg-schema": "kb-sample/1.0.0",
+  "title": "Sample knowledge hypergraph in HIF (Hypergraph Interchange Format)"
+ },
+ "nodes": [
+  {
+   "node": "disease:T2DM",
+   "types": [
+    "Disease"
+   ],
+   "label": "type 2 diabetes mellitus"
+  },
+  {
+   "node": "doc:guideline-2024",
+   "types": [
+    "Document"
+   ],
+   "label": "Standards of Care 2024"
+  },
+  {
+   "node": "dose:500mg-bid",
+   "types": [
+    "Dosage"
+   ],
+   "label": "500 mg twice daily"
+  },
+  {
+   "node": "drug:insulin",
+   "types": [
+    "Drug"
+   ],
+   "label": "insulin"
+  },
+  {
+   "node": "drug:metformin",
+   "types": [
+    "Drug"
+   ],
+   "label": "metformin"
+  },
+  {
+   "node": "effect:hypoglycemia",
+   "types": [
+    "AdverseEffect"
+   ],
+   "label": "hypoglycaemia"
+  },
+  {
+   "node": "org:ADA",
+   "types": [
+    "Organisation"
+   ],
+   "label": "American Diabetes Association"
+  },
+  {
+   "node": "pop:adults",
+   "types": [
+    "Population"
+   ],
+   "label": "adults"
+  }
+ ],
+ "edges": [
+  {
+   "edge": "f1",
+   "relation": "treats",
+   "status": "asserted",
+   "valid": {
+    "from": "2024-01-01"
+   },
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "curated",
+     "source": "doc:guideline-2024",
+     "confidence": {
+      "value": 0.95,
+      "scale": "score",
+      "min": 0,
+      "max": 1
+     }
+    }
+   ],
+   "bindings": [
+    {
+     "role": "condition",
+     "node": "disease:T2DM",
+     "direction": "head"
+    },
+    {
+     "role": "dosage",
+     "node": "dose:500mg-bid",
+     "direction": "tail"
+    },
+    {
+     "role": "population",
+     "node": "pop:adults",
+     "direction": "tail"
+    },
+    {
+     "role": "treatment",
+     "node": "drug:metformin",
+     "direction": "tail"
+    }
+   ]
+  },
+  {
+   "edge": "f2",
+   "relation": "co-administration-causes",
+   "status": "asserted",
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "curated",
+     "source": "doc:guideline-2024",
+     "confidence": {
+      "value": 0.8,
+      "scale": "score",
+      "min": 0,
+      "max": 1
+     }
+    }
+   ],
+   "bindings": [
+    {
+     "role": "agent",
+     "node": "drug:insulin",
+     "direction": "tail"
+    },
+    {
+     "role": "agent",
+     "node": "drug:metformin",
+     "direction": "tail"
+    },
+    {
+     "role": "effect",
+     "node": "effect:hypoglycemia",
+     "direction": "head"
+    }
+   ]
+  },
+  {
+   "edge": "f3",
+   "relation": "publishes",
+   "status": "asserted",
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "curated",
+     "source": "doc:guideline-2024",
+     "confidence": {
+      "value": 1.0,
+      "scale": "score",
+      "min": 0,
+      "max": 1
+     }
+    }
+   ],
+   "bindings": [
+    {
+     "role": "publication",
+     "node": "doc:guideline-2024",
+     "direction": "head"
+    },
+    {
+     "role": "publisher",
+     "node": "org:ADA",
+     "direction": "tail"
+    }
+   ]
+  }
+ ]
+}

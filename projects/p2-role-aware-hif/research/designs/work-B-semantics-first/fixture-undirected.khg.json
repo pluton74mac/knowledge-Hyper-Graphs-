@@ -1,0 +1,141 @@
+{
+ "header": {
+  "kind": "header",
+  "khg": "khg-record/1.0.0",
+  "document_id": "p2-gate-fixture-undirected",
+  "schema": {
+   "id": "p2-gate",
+   "version": "1.0.0",
+   "sha256": "sha256:8b2eb97583f1ef73523a8cb3f074ffe8f2098f46c4e5f43af344475afd822b00"
+  },
+  "snapshot": "current",
+  "complete": true
+ },
+ "records": [
+  {
+   "kind": "entity",
+   "id": "ex:Maria_Skłodowska",
+   "types": [
+    "Person"
+   ],
+   "label": "Maria Skłodowska"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:Pierre_Curie",
+   "types": [
+    "Person"
+   ],
+   "label": "Pierre Curie"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:AirCanada",
+   "types": [
+    "Airline"
+   ],
+   "label": "Air Canada"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:YYZ",
+   "types": [
+    "Airport"
+   ],
+   "label": "Toronto Pearson"
+  },
+  {
+   "kind": "fact",
+   "id": "f:married-curie",
+   "relation": "married",
+   "status": "asserted",
+   "bindings": [
+    {
+     "bid": "b1",
+     "role": "spouse",
+     "value": {
+      "entity": "ex:Maria_Skłodowska"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "spouse",
+     "value": {
+      "entity": "ex:Pierre_Curie"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1895-07-26T00:00:00Z",
+       "precision": 11
+      }
+     }
+    },
+    {
+     "bid": "b4",
+     "role": "end_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1906-04-19T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "curated",
+     "mode": "manual",
+     "source": {
+      "doc_id": "doc:biography"
+     }
+    }
+   ]
+  },
+  {
+   "kind": "fact",
+   "id": "f:loop-yyz",
+   "relation": "flies_between",
+   "status": "asserted",
+   "bindings": [
+    {
+     "bid": "b1",
+     "role": "carrier",
+     "value": {
+      "entity": "ex:AirCanada"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "destination",
+     "value": {
+      "entity": "ex:YYZ"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "origin",
+     "value": {
+      "entity": "ex:YYZ"
+     }
+    }
+   ],
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "curated",
+     "mode": "manual",
+     "source": {
+      "doc_id": "doc:sightseeing-flight"
+     }
+    }
+   ]
+  }
+ ]
+}

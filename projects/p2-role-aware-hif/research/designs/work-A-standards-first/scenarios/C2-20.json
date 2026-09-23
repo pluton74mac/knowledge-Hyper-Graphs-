@@ -1,0 +1,250 @@
+{
+ "id": "C2-20",
+ "title": "keyset pagination is stable",
+ "requires": [],
+ "schema": "gate-demo/1.0.0",
+ "given": [
+  {
+   "put": [
+    {
+     "node": "ex:ADA",
+     "types": [
+      "Organisation"
+     ],
+     "label": "American Diabetes Association"
+    },
+    {
+     "node": "ex:HeLa",
+     "types": [
+      "CellLine"
+     ],
+     "label": "HeLa"
+    },
+    {
+     "node": "ex:MYC",
+     "types": [
+      "Gene"
+     ],
+     "label": "MYC"
+    },
+    {
+     "node": "ex:R1",
+     "types": [
+      "Reaction"
+     ],
+     "label": "reaction R1"
+    },
+    {
+     "node": "ex:R2",
+     "types": [
+      "Reaction"
+     ],
+     "label": "reaction R2"
+    },
+    {
+     "node": "ex:T2DM",
+     "types": [
+      "Disease"
+     ],
+     "label": "type 2 diabetes mellitus"
+    },
+    {
+     "node": "ex:TP53",
+     "types": [
+      "Gene"
+     ],
+     "label": "TP53"
+    },
+    {
+     "node": "ex:YYZ",
+     "types": [
+      "Airport"
+     ],
+     "label": "Toronto Pearson"
+    },
+    {
+     "node": "ex:Zürich",
+     "types": [
+      "City"
+     ],
+     "label": "Zürich"
+    },
+    {
+     "node": "ex:acme",
+     "types": [
+      "Organisation"
+     ],
+     "label": "Acme"
+    },
+    {
+     "node": "ex:adults",
+     "types": [
+      "Population"
+     ],
+     "label": "adults"
+    },
+    {
+     "node": "ex:air-canada",
+     "types": [
+      "Organisation"
+     ],
+     "label": "Air Canada"
+    },
+    {
+     "node": "ex:ana",
+     "types": [
+      "Person"
+     ],
+     "label": "Ana"
+    },
+    {
+     "node": "ex:anna",
+     "types": [
+      "Person"
+     ],
+     "label": "Anna"
+    },
+    {
+     "node": "ex:hypoglycaemia",
+     "types": [
+      "AdverseEffect"
+     ],
+     "label": "hypoglycaemia"
+    },
+    {
+     "node": "ex:insulin",
+     "types": [
+      "Drug"
+     ],
+     "label": "insulin"
+    },
+    {
+     "node": "ex:metformin",
+     "types": [
+      "Drug"
+     ],
+     "label": "metformin"
+    },
+    {
+     "node": "ex:羽田",
+     "types": [
+      "Airport"
+     ],
+     "label": "東京国際空港 (羽田)"
+    },
+    {
+     "edge": "f1",
+     "relation": "treats",
+     "status": "asserted",
+     "rank": "preferred",
+     "bindings": [
+      {
+       "role": "condition",
+       "node": "ex:T2DM",
+       "direction": "head"
+      },
+      {
+       "role": "dosage",
+       "literal": {
+        "datatype": "quantity",
+        "value": "500",
+        "unit": "ex:milligram"
+       },
+       "direction": "tail",
+       "evidence": [
+        "e2"
+       ]
+      },
+      {
+       "role": "population",
+       "node": "ex:adults",
+       "direction": "tail"
+      },
+      {
+       "role": "treatment",
+       "node": "ex:metformin",
+       "direction": "tail"
+      }
+     ],
+     "valid": {
+      "from": "2024-01-01"
+     },
+     "evidence": [
+      {
+       "id": "e1",
+       "type": "curated",
+       "source": "doc:ada-standards-2024"
+      },
+      {
+       "id": "e2",
+       "type": "extracted",
+       "source": "doc:pmid-0000001",
+       "digest": "sha256:7dac853671047fe09ef4dd22d52818dfd1a03a3a0b06ca2699b7068675e19a31",
+       "exact": "500 mg metformin",
+       "prefix": "start with ",
+       "suffix": " twice daily",
+       "start": 196,
+       "end": 212,
+       "agent": "extractor-x",
+       "version": "0.3.1",
+       "run": "p9-run-1",
+       "model": "model-y-2026-06",
+       "prompt": "skill:treats/v2",
+       "params": {
+        "temperature": 0.0,
+        "seed": 13
+       },
+       "confidence": {
+        "value": 0.82,
+        "scale": "probability"
+       }
+      }
+     ]
+    },
+    {
+     "edge": "f2",
+     "relation": "co-administration-causes",
+     "status": "asserted",
+     "bindings": [
+      {
+       "role": "agent",
+       "node": "ex:insulin",
+       "direction": "tail"
+      },
+      {
+       "role": "agent",
+       "node": "ex:metformin",
+       "direction": "tail"
+      },
+      {
+       "role": "effect",
+       "node": "ex:hypoglycaemia",
+       "direction": "head"
+      }
+     ],
+     "evidence": [
+      {
+       "id": "e1",
+       "type": "curated",
+       "source": "doc:ada-standards-2024"
+      }
+     ]
+    }
+   ],
+   "at": "2026-01-01T00:00:00Z"
+  }
+ ],
+ "when": {
+  "op": "incident",
+  "args": {
+   "node": "ex:metformin",
+   "after": "f1",
+   "limit": 1
+  }
+ },
+ "then": {
+  "ids": [
+   "f2"
+  ]
+ }
+}

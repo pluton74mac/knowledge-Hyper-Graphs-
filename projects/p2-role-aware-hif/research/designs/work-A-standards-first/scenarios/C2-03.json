@@ -1,0 +1,237 @@
+{
+ "id": "C2-03",
+ "title": "a closed valid interval is a new version; as_at sees the old one",
+ "requires": [
+  "as_at"
+ ],
+ "schema": "gate-demo/1.0.0",
+ "given": [
+  {
+   "put": [
+    {
+     "node": "ex:ADA",
+     "types": [
+      "Organisation"
+     ],
+     "label": "American Diabetes Association"
+    },
+    {
+     "node": "ex:HeLa",
+     "types": [
+      "CellLine"
+     ],
+     "label": "HeLa"
+    },
+    {
+     "node": "ex:MYC",
+     "types": [
+      "Gene"
+     ],
+     "label": "MYC"
+    },
+    {
+     "node": "ex:R1",
+     "types": [
+      "Reaction"
+     ],
+     "label": "reaction R1"
+    },
+    {
+     "node": "ex:R2",
+     "types": [
+      "Reaction"
+     ],
+     "label": "reaction R2"
+    },
+    {
+     "node": "ex:T2DM",
+     "types": [
+      "Disease"
+     ],
+     "label": "type 2 diabetes mellitus"
+    },
+    {
+     "node": "ex:TP53",
+     "types": [
+      "Gene"
+     ],
+     "label": "TP53"
+    },
+    {
+     "node": "ex:YYZ",
+     "types": [
+      "Airport"
+     ],
+     "label": "Toronto Pearson"
+    },
+    {
+     "node": "ex:Zürich",
+     "types": [
+      "City"
+     ],
+     "label": "Zürich"
+    },
+    {
+     "node": "ex:acme",
+     "types": [
+      "Organisation"
+     ],
+     "label": "Acme"
+    },
+    {
+     "node": "ex:adults",
+     "types": [
+      "Population"
+     ],
+     "label": "adults"
+    },
+    {
+     "node": "ex:air-canada",
+     "types": [
+      "Organisation"
+     ],
+     "label": "Air Canada"
+    },
+    {
+     "node": "ex:ana",
+     "types": [
+      "Person"
+     ],
+     "label": "Ana"
+    },
+    {
+     "node": "ex:anna",
+     "types": [
+      "Person"
+     ],
+     "label": "Anna"
+    },
+    {
+     "node": "ex:hypoglycaemia",
+     "types": [
+      "AdverseEffect"
+     ],
+     "label": "hypoglycaemia"
+    },
+    {
+     "node": "ex:insulin",
+     "types": [
+      "Drug"
+     ],
+     "label": "insulin"
+    },
+    {
+     "node": "ex:metformin",
+     "types": [
+      "Drug"
+     ],
+     "label": "metformin"
+    },
+    {
+     "node": "ex:羽田",
+     "types": [
+      "Airport"
+     ],
+     "label": "東京国際空港 (羽田)"
+    },
+    {
+     "edge": "f11",
+     "relation": "chief-executive",
+     "status": "asserted",
+     "bindings": [
+      {
+       "role": "organisation",
+       "node": "ex:acme",
+       "direction": "tail"
+      },
+      {
+       "role": "person",
+       "node": "ex:anna",
+       "direction": "head"
+      }
+     ],
+     "valid": {
+      "from": "2019-05"
+     },
+     "evidence": [
+      {
+       "id": "e1",
+       "type": "curated",
+       "source": "doc:acme-annual-report-2019"
+      }
+     ]
+    }
+   ],
+   "at": "2026-01-01T00:00:00Z"
+  },
+  {
+   "put": [
+    {
+     "edge": "f11",
+     "relation": "chief-executive",
+     "status": "asserted",
+     "bindings": [
+      {
+       "role": "organisation",
+       "node": "ex:acme",
+       "direction": "tail"
+      },
+      {
+       "role": "person",
+       "node": "ex:anna",
+       "direction": "head"
+      }
+     ],
+     "valid": {
+      "from": "2019-05",
+      "until": "2021-06"
+     },
+     "evidence": [
+      {
+       "id": "e1",
+       "type": "curated",
+       "source": "doc:acme-annual-report-2019"
+      }
+     ]
+    }
+   ],
+   "at": "2026-02-01T00:00:00Z"
+  }
+ ],
+ "when": {
+  "op": "get",
+  "args": {
+   "id": "f11",
+   "as_at": "2026-01-01T00:00:00Z"
+  }
+ },
+ "then": {
+  "record": {
+   "edge": "f11",
+   "relation": "chief-executive",
+   "status": "asserted",
+   "bindings": [
+    {
+     "role": "organisation",
+     "node": "ex:acme",
+     "direction": "tail"
+    },
+    {
+     "role": "person",
+     "node": "ex:anna",
+     "direction": "head"
+    }
+   ],
+   "valid": {
+    "from": "2019-05"
+   },
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "curated",
+     "source": "doc:acme-annual-report-2019"
+    }
+   ]
+  }
+ }
+}

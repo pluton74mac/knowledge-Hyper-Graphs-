@@ -1,0 +1,188 @@
+schema sha256 sha256:8b2eb97583f1ef73523a8cb3f074ffe8f2098f46c4e5f43af344475afd822b00
+meta-schemas are themselves valid draft-07:
+  OK record
+  OK lang
+  OK profile
+schema document:
+  OK  p2-gate.schema.json vs khg-schema/1.0.0: jsonschema=0 errors, fastjsonschema=pass
+== fixture-directed
+  OK  C1 doc vs khg-record/1.0.0: jsonschema=0 errors, fastjsonschema=pass
+  OK  canonical C1 doc vs khg-record/1.0.0: jsonschema=0 errors, fastjsonschema=pass
+  OK  HIF vs vendored hif_schema_v0.1.0 (blob e2105bb): jsonschema=0 errors, fastjsonschema=pass
+  OK  HIF vs khg-hif/1.0.0 profile (allOf vendored): jsonschema=0 errors, fastjsonschema=pass
+   xgi class: DiHypergraph | stale: 0 unlabelled: 0
+  OK  HIF after XGI and HNX vs profile: jsonschema=0 errors, fastjsonschema=pass
+   chain C1->HIF->XGI->HIF->HNX->HIF->C1 canonical equality: True
+   XGI-only equal: True | HNX-only equal: True
+   records=35 bindings=49 incidences=49 nodes=41 edges=15 network-type=directed
+== fixture-undirected
+  OK  C1 doc vs khg-record/1.0.0: jsonschema=0 errors, fastjsonschema=pass
+  OK  canonical C1 doc vs khg-record/1.0.0: jsonschema=0 errors, fastjsonschema=pass
+  OK  HIF vs vendored hif_schema_v0.1.0 (blob e2105bb): jsonschema=0 errors, fastjsonschema=pass
+  OK  HIF vs khg-hif/1.0.0 profile (allOf vendored): jsonschema=0 errors, fastjsonschema=pass
+   xgi class: Hypergraph | stale: 0 unlabelled: 0
+  OK  HIF after XGI and HNX vs profile: jsonschema=0 errors, fastjsonschema=pass
+   chain C1->HIF->XGI->HIF->HNX->HIF->C1 canonical equality: True
+   XGI-only equal: True | HNX-only equal: True
+   records=6 bindings=7 incidences=7 nodes=6 edges=2 network-type=undirected
+ALL OK
+== fixture-directed: sketch chain HIF->XGI->HIF->HNX->HIF
+   incidences: multiset equal = True
+   nodes: multiset equal = True
+   edges: multiset equal = True
+   metadata equal = True | network-type equal = True
+   (edge,node,direction,role,position,bid) tuples equal = True (49 incidences)
+   repeated (edge,node) pairs in source: {'f:reg-1|ex:TP53': 2, 'f:route-1|ex:YYZ': 2}
+   xgi.read_hif/write_hif: incidences 49 -> 48; records with role kept 0/49
+   hnx.from_hif/to_hif: incidences 49 -> 47; role records kept 47; metadata keys lost 12 of 12; nodes 41 -> 41
+   hnx second generation to_hif: None
+== fixture-undirected: sketch chain HIF->XGI->HIF->HNX->HIF
+   incidences: multiset equal = True
+   nodes: multiset equal = True
+   edges: multiset equal = True
+   metadata equal = True | network-type equal = True
+   (edge,node,direction,role,position,bid) tuples equal = True (7 incidences)
+   repeated (edge,node) pairs in source: {'f:loop-yyz|ex:YYZ': 2}
+   xgi.read_hif/write_hif: incidences 7 -> 6; records with role kept 0/7
+   hnx.from_hif/to_hif: incidences 7 -> 6; role records kept 6; metadata keys lost 12 of 12; nodes 6 -> 6
+   hnx second generation to_hif: dict with 6 incidences
+== smoke test: queue -> structural lint -> store -> export
+   lint: linted pass []
+   accept: accepted {'store_ids': ['f:king-14'], 'tx': 3}
+   export khg-json valid: True | export HIF valid (vendored, profile): True True
+   exported records == fixture records (ignoring store-assigned version/recorded_at): True
+   action log: [('l-000001', 'submit', None, 'pending', 'agent'), ('l-000002', 'lint', 'pending', 'linted', 'linter'), ('l-000003', 'accept', 'linted', 'accepted', 'person')]
+== scenarios
+   PASS S-ASAT-01 as-at before the supersession sees the old belief: got 'asserted'
+   PASS S-ASAT-02 as-at now sees the revision: got 'superseded'
+   PASS S-WALK-01 forward walk: got [{'from': 'f:born-skłodowska-kraków', 'via': 'm:sup-1', 'reason': 'correction', 'to': ['f:born-skłodowska-warszawa']}]
+   PASS S-WALK-02 backward walk: got [['f:born-skłodowska-kraków']]
+   PASS S-KEY-01 key timeline ordered by start: got ['f:king-13', 'f:king-14']
+   PASS S-KEY-02 by_key as of 1650-01-01: got ['f:king-14']
+   PASS S-KEY-03 overlapping put is refused atomically: got 'KHG-D016'
+   PASS S-KEY-04 refused put wrote nothing: got None
+   PASS S-ID-01 changing a core binding in a new version is refused: got 'KHG-D013'
+   PASS S-ID-02 appending evidence makes a new version: got 'versioned'
+   PASS S-ID-03 identical put is a no-op: got 'noop'
+   PASS S-Q-01 a candidate cannot enter the store: got 'KHG-D017'
+   PASS S-INC-01 incident on TP53 (both roles, one fact): got ['f:reg-1']
+   PASS S-INC-02 incident on TP53 as target: got ['f:reg-1']
+   PASS S-INC-03 default status filter hides superseded and quoted: got ['f:born-skłodowska-warszawa']
+   PASS S-INC-04 incident on a fact (nesting): got ['f:claim-1']
+   PASS S-FIND-01 at_least with a repeated role: got ['f:coadmin-1']
+   PASS S-FIND-02 exact rejects a partial pattern: got []
+== C3 records: khg-queue/1.0.0 under jsonschema and fastjsonschema, and the fold over the log
+   PASS S-Q-02 queue item, 3 log entries and a verdict are valid under both validators: got True
+   PASS S-Q-03 the log folds without a Q005/Q007: got []
+   PASS S-Q-04 the verdict's keys equal the design's example (§7.3): got ('sha256:187ca682671fd4daaa6944fced4e05b7b9198b6bf0b4c29e6bb402d61bf9ecd2', 'sha256:852ea9ca3abcc722e33e903dcdab88f5895cef077241fdf339ee1db0aeb55524')
+cases: 108 negative + 5 positive; expected codes without a case: none
+code coverage (constraints; uncovered): {'P': (74, 0), 'C': (848, 0), 'M': (161, 0), 'Q': (153, 0), 'H': (28, 0)}
+FAILED EXPECTATIONS: 0
+P: 74 constraints, uncovered: none
+C: 848 constraints, uncovered: none
+M: 161 constraints, uncovered: none
+Q: 153 constraints, uncovered: none
+H: 28 constraints, uncovered: none
+   P001 no nodes                                P ['KHG-P001']
+   P004 value node id without _:                P ['KHG-P004']
+   P005 incidence without attrs                 P ['KHG-P005']
+   P005 malformed khg:bid                       P ['KHG-P005']
+   P008 unknown khg-* metadata key              P ['KHG-P008']
+   P009 khg-schema-sha256 malformed             P ['KHG-P009']
+   P012 edge without attrs                      P ['KHG-P012']
+   P012 khg:evidence not an array               P ['KHG-P012']
+   P013 node without attrs                      P ['KHG-P004', 'KHG-P013']
+   P013 literal node without khg:literal        P ['KHG-P013']
+   H004 metadata not an object                  H ['KHG-H004']
+   H009 weight not a number                     H ['KHG-H009']
+   H009 incidences not an array                 H ['KHG-H009']
+   C001 value with an unknown kind key          C ['KHG-C001']
+   C004 time literal without precision          C ['KHG-C004']
+   C006 abandoned goal without closed_reason    C ['KHG-C006']
+   C010 fact without bindings                   C ['KHG-C010']
+   C010 version 0                               C ['KHG-C010']
+   C011 bad extension key                       C ['KHG-C011']
+   C011 record id with a space                  C ['KHG-C011']
+   M007 time slot with max 2                    M ['KHG-M007']
+   M015 unknown field on a relation             M ['KHG-M015']
+   M015 filler with two kinds                   M ['KHG-M015']
+   Q001 extraction doc without doc_id           Q ['KHG-Q001']
+   Q001 extractor without version               Q ['KHG-Q001']
+   Q003 unknown record kind                     Q ['KHG-Q003']
+   Q004 lint entry without outcome              Q ['KHG-Q004']
+   Q008 verdict label unknown                   Q ['KHG-Q008']
+registry probes: 28; mismatches: 0
+khg-record-1.0.0: 6004 documents (668 accepted, 5336 rejected); disagreements old/new x jsonschema/fastjsonschema: 0
+khg-hif-1.0.0: 6002 documents (1825 accepted, 4177 rejected); disagreements old/new x jsonschema/fastjsonschema: 0
+khg-schema-1.0.0: 6002 documents (319 accepted, 5683 rejected); disagreements old/new x jsonschema/fastjsonschema: 0
+khg-queue-1.0.0: 6005 documents (1256 accepted, 4749 rejected); disagreements old/new x jsonschema/fastjsonschema: 0
+TOTAL DISAGREEMENTS: 0
+C1       refines            arity 2->2   vt unstated->period   core_key= True  key= True  | refine: e gets a new version with n's content and the union of evidence
+C1r      generalises        arity 2->2   vt period->unstated   core_key= True  key= True  | support: n's evidence appended to e, supports mapped to e's bindings
+C1c-i    refines            arity 3->3   vt unstated->unstated core_key= False key= None  | refine: e gets a new version with n's content and the union of evidence
+C1c-ii   refines            arity 2->3   vt unstated->unstated core_key= True  key= None  | refine: e gets a new version with n's content and the union of evidence
+C2a      distinct           arity 3->3   vt invariant->invariant core_key= False key= False | distinct: insert n
+C2a-naive key_conflict       arity 3->3   vt invariant->invariant core_key= False key= True  | dispute: khg:disputes record; both disputed
+C2b      distinct           arity 3->3   vt invariant->invariant core_key= False key= False | distinct: insert n
+C2b'     distinct           arity 2->2   vt invariant->invariant core_key= False key= None  | distinct: insert n
+C2c      distinct           arity 2->2   vt period->since      core_key= True  key= None  | distinct: insert n
+C2c-k    key_timeline       arity 2->2   vt period->since      core_key= True  key= True  | distinct facts on the same key timeline
+C3a      key_conflict       arity 2->2   vt since->since       core_key= False key= True  | succession: close e (end := start of the other; inferred evidence); status unchanged
+C3b      key_conflict       arity 2->2   vt since->since       core_key= False key= True  | dispute (close_older not applicable: starts unknown/unordered or older already ended)
+C3c      negation_conflict  arity 1->2   vt unstated->unstated core_key= False key= None  | dispute: khg:disputes record; both disputed
+C4a      key_conflict       arity 4->5   vt since->since       core_key= False key= True  | succession: close e (end := start of the other; inferred evidence); status unchanged
+C4a-u    key_conflict       arity 4->5   vt unstated->unstated core_key= False key= True  | dispute (close_older not applicable: starts unknown/unordered or older already ended)
+C4a-o    refines            arity 4->5   vt unstated->unstated core_key= False key= True  | refine: e gets a new version with n's content and the union of evidence
+C4b      refines            arity 2->4   vt invariant->invariant core_key= True  key= None  | refine: e gets a new version with n's content and the union of evidence
+I5       duplicate          arity 2->2   vt unstated->unstated core_key= True  key= None  | merge-evidence: n's evidence appended to e (new version of e, same content)
+I6       distinct           arity 3->3   vt unstated->unstated core_key= True  key= None  | distinct: insert n
+I7       distinct           arity 2->2   vt unstated->unstated core_key= False key= None  | distinct: insert n
+I8       duplicate          arity 3->3   vt unstated->unstated core_key= True  key= None  | merge-evidence: n's evidence appended to e (new version of e, same content)
+I11      refines            arity 3->3   vt invariant->invariant core_key= True  key= None  | refine: e gets a new version with n's content and the union of evidence
+I11-x    distinct           arity 3->3   vt invariant->invariant core_key= True  key= None  | distinct: insert n
+I12      refines            arity 2->2   vt unstated->unstated core_key= False key= None  | refine: e gets a new version with n's content and the union of evidence
+I14      distinct           arity 3->3   vt invariant->invariant core_key= True  key= None  | distinct: insert n
+X1       key_timeline       arity 2->2   vt period->since      core_key= False key= True  | distinct facts on the same key timeline (possible overlap only: info)
+X2       key_conflict       arity 2->2   vt period->since      core_key= False key= True  | dispute (close_older not applicable: starts unknown/unordered or older already ended)
+X3       key_conflict       arity 2->2   vt unstated->unstated core_key= False key= True  | dispute (close_older not applicable: starts unknown/unordered or older already ended)
+X4       key_conflict       arity 2->2   vt since->since       core_key= False key= True  | succession: close n (end := start of the other; inferred evidence); status unchanged
+X5       negation_conflict  arity 1->2   vt unstated->unstated core_key= False key= None  | dispute: khg:disputes record; both disputed
+X6       distinct           arity 2->3   vt unstated->unstated core_key= False key= None  | distinct: insert n
+X7       refines            arity 2->3   vt unstated->unstated core_key= False key= None  | refine: e gets a new version with n's content and the union of evidence
+X8       distinct           arity 2->2   vt unstated->unstated core_key= False key= None  | distinct: insert n
+X9       generalises        arity 2->2   vt period->unstated   core_key= True  key= None  | support: n's evidence appended to e, supports mapped to e's bindings
+-- policy variants of C3a (key {organisation}, temporal):
+   on_collision=supersede  -> key_conflict: supersession: e superseded by n (reason correction); khg:supersedes record
+   on_collision=dispute    -> key_conflict: dispute: khg:disputes record; both disputed
+   on_collision=reject     -> key_conflict: reject: put refused (KHG-D016)
+-- store-level: undated marriage vs {m1 1990-1995, m2 2001-}: ['generalises', 'generalises'] => ambiguous generalisation: needs_review
+generated schema vs khg-schema/1.0.0: OK
+migrated C1 vs khg-record/1.0.0: OK
+semantic findings: none
+HIF vs vendored schema: OK | vs profile: OK | network-type: directed
+chain C1->HIF->XGI->HIF->HNX->HIF->C1 canonical equality: True
+roles kept: compare
+MIGRATE-W01 treats: edges.attrs.valid-from mapped to a start_time binding (time slot); direction 'tail' chosen by the migration, following the sample's own convention
+MIGRATE-W02 f1: HIF weight 0.95 kept as extensions.hif:weight; not read as confidence (no scale is stated)
+MIGRATE-W02 f2: HIF weight 0.8 kept as extensions.hif:weight; not read as confidence (no scale is stated)
+MIGRATE-W02 f3: HIF weight 1.0 kept as extensions.hif:weight; not read as confidence (no scale is stated)
+MIGRATE-I01 metadata.conventions and metadata.schema (moving 'main' URL) replaced by the khg-hif/1.0.0 declaration block
+MIGRATE-I02 edges.attrs.arity dropped: arity is derived; stored values checked against the derived ones
+   PASS C2-S012 put(records=...) -> [['f:king-14', 2, 'versioned']]
+   PASS C2-S012 get(id='f:king-14', version=1) -> 'since'
+   PASS C2-S012 get(id='f:king-14') -> 'period'
+   PASS C2-S012 put(records=...) -> 'KHG-D013'
+   PASS C2-S012 put(records=...) -> 'KHG-D013'
+   PASS C2-S031 get(id='f:born-skłodowska-kraków', as_at='2026-10-01T00:00:01Z') -> 'asserted'
+   PASS C2-S031 get(id='f:born-skłodowska-kraków') -> 'superseded'
+   PASS C2-S031 supersession_walk(id='f:born-skłodowska-kraków', direction='forward') -> [{'from': 'f:born-skłodowska-kraków', 'via': 'm:sup-1', 'reason': 'correction', 'to': ['f:born-skłodowska-warsz
+   PASS C2-S031 incident(node='ex:Maria_Skłodowska') -> ['f:born-skłodowska-warszawa']
+   PASS C2-S034 find(relation='married', pattern=[], valid_at='+1903-01-01T00:00:00Z') -> ['f:m-period', 'f:m-since']
+   PASS C2-S034 find(relation='married', pattern=[], valid_at='+1903-01-01T00:00:00Z', valid_mode='possible') -> ['f:m-period', 'f:m-since', 'f:m-undated']
+   PASS C2-S034 find(relation='married', pattern=[], valid_at='+1900-06-01T00:00:00Z') -> ['f:m-period']
+   PASS C2-S034 find(relation='married', pattern=[], valid_at='+2026-01-01T00:00:00Z') -> ['f:m-since']
+   PASS C2-S034 find(relation='married', pattern=[]) -> ['f:m-period', 'f:m-since', 'f:m-undated']
+   PASS C2-S040 put(records=...) -> 'KHG-D016'
+   PASS C2-S040 get(id='f:king-14b') -> None
+   PASS C2-S040 by_key(relation='position_held', key_bindings=[{'role': 'position', 'value': {'entity': 'ex:KingO) -> ['f:king-13']
+ALL SCENARIOS PASS

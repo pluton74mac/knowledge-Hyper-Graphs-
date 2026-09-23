@@ -1,0 +1,212 @@
+[
+ {
+  "metadata": {
+   "khg-profile": "1.0.0",
+   "khg-schema": "gate-demo/1.0.0",
+   "queue": "p9-run-1+2"
+  }
+ },
+ {
+  "item": "q1",
+  "at": "2026-09-23T10:00:00Z",
+  "payload": {
+   "edge": "f1",
+   "relation": "treats",
+   "status": "candidate",
+   "rank": "preferred",
+   "bindings": [
+    {
+     "role": "condition",
+     "node": "ex:T2DM",
+     "direction": "head"
+    },
+    {
+     "role": "dosage",
+     "literal": {
+      "datatype": "quantity",
+      "value": "500",
+      "unit": "ex:milligram"
+     },
+     "direction": "tail",
+     "evidence": [
+      "e2"
+     ]
+    },
+    {
+     "role": "population",
+     "node": "ex:adults",
+     "direction": "tail"
+    },
+    {
+     "role": "treatment",
+     "node": "ex:metformin",
+     "direction": "tail"
+    }
+   ],
+   "valid": {
+    "from": "2024-01-01"
+   },
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "curated",
+     "source": "doc:ada-standards-2024"
+    },
+    {
+     "id": "e2",
+     "type": "extracted",
+     "source": "doc:pmid-0000001",
+     "digest": "sha256:7dac853671047fe09ef4dd22d52818dfd1a03a3a0b06ca2699b7068675e19a31",
+     "exact": "500 mg metformin",
+     "prefix": "start with ",
+     "suffix": " twice daily",
+     "start": 196,
+     "end": 212,
+     "agent": "extractor-x",
+     "version": "0.3.1",
+     "run": "p9-run-1",
+     "model": "model-y-2026-06",
+     "prompt": "skill:treats/v2",
+     "params": {
+      "temperature": 0.0,
+      "seed": 13
+     },
+     "confidence": {
+      "value": 0.82,
+      "scale": "probability"
+     }
+    }
+   ]
+  },
+  "keys": {
+   "content": "sha256:65f4cbe8673596a3a1e787cfa01d5f433a71c3eca419aa4072bd769eebd821cd",
+   "core": "sha256:a8603e53b358934dd735bca5060ebf74eb8788869ddd4aee8ce6f4078240f16a",
+   "events": [
+    "sha256:b19a09026fc005bcfbe9e2576d811b8716e38e9d4afc814ecdfdd8ff464bdc04"
+   ]
+  },
+  "order": {
+   "permutation": "order-A",
+   "position": 0
+  }
+ },
+ {
+  "log": "l1",
+  "at": "2026-09-23T10:05:00Z",
+  "item": "q1",
+  "actor": {
+   "agent": "person:reviewer-1"
+  },
+  "action": "verdict",
+  "verdict": "correct",
+  "evidence": "e2"
+ },
+ {
+  "log": "l2",
+  "at": "2026-09-23T10:05:01Z",
+  "item": "q1",
+  "actor": {
+   "agent": "person:reviewer-1"
+  },
+  "action": "accept",
+  "reason": "span supports every binding",
+  "after": {
+   "edge": "f1",
+   "recorded": "2026-09-23T10:05:01Z"
+  }
+ },
+ {
+  "item": "q2",
+  "at": "2026-09-23T11:00:00Z",
+  "payload": {
+   "edge": "cand-7",
+   "relation": "treats",
+   "status": "candidate",
+   "bindings": [
+    {
+     "role": "condition",
+     "node": "ex:T2DM",
+     "direction": "head"
+    },
+    {
+     "role": "dosage",
+     "literal": {
+      "datatype": "quantity",
+      "value": "500",
+      "unit": "ex:milligram"
+     },
+     "direction": "tail"
+    },
+    {
+     "role": "population",
+     "node": "ex:adults",
+     "direction": "tail"
+    },
+    {
+     "role": "treatment",
+     "node": "ex:metformin",
+     "direction": "tail"
+    }
+   ],
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "extracted",
+     "source": "doc:pmid-0000002",
+     "digest": "sha256:3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b",
+     "exact": "metformin 500 mg",
+     "start": 88,
+     "end": 104,
+     "agent": "extractor-x",
+     "version": "0.3.1",
+     "run": "p9-run-2",
+     "prompt": "skill:treats/v2",
+     "confidence": {
+      "value": 0.74,
+      "scale": "probability"
+     }
+    }
+   ]
+  },
+  "keys": {
+   "content": "sha256:65f4cbe8673596a3a1e787cfa01d5f433a71c3eca419aa4072bd769eebd821cd",
+   "core": "sha256:a8603e53b358934dd735bca5060ebf74eb8788869ddd4aee8ce6f4078240f16a",
+   "events": [
+    "sha256:6221baab77d3f13d90d3478f93b6459324a3dc9dca750b0b54daeaf28f3ffaf4"
+   ]
+  },
+  "order": {
+   "permutation": "order-B",
+   "position": 3
+  }
+ },
+ {
+  "log": "l3",
+  "at": "2026-09-23T11:00:01Z",
+  "item": "q2",
+  "actor": {
+   "agent": "khg-lint",
+   "version": "1.0.0"
+  },
+  "action": "flag",
+  "rule": "KHG-L001",
+  "severity": "warning",
+  "path": "",
+  "message": "content key equals asserted edge f1"
+ },
+ {
+  "log": "l4",
+  "at": "2026-09-23T11:02:00Z",
+  "item": "q2",
+  "actor": {
+   "agent": "person:reviewer-1"
+  },
+  "action": "merge",
+  "target": "f1",
+  "reason": "same fact, second source",
+  "after": {
+   "edge": "f1",
+   "recorded": "2026-09-23T11:02:00Z"
+  }
+ }
+]

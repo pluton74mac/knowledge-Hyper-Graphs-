@@ -1,0 +1,1152 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:khg:schema:khg-record:1.0.0",
+  "title": "khg-record/1.0.0: one line of a C1 container (header, entity, hyperedge, supersession)",
+  "type": "object",
+  "required": [
+    "kind"
+  ],
+  "properties": {
+    "kind": {
+      "enum": [
+        "header",
+        "relation-schema",
+        "entity",
+        "hyperedge",
+        "supersession"
+      ],
+      "x-khg-code": "R-KIND"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "header"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/definitions/header"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "entity"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/definitions/entity"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "hyperedge"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/definitions/hyperedge"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "supersession"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/definitions/supersession"
+      }
+    }
+  ],
+  "definitions": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,31}:[^\\s<>\"{}|\\\\^`\\u0000-\\u001f\\u007f]{1,256}$",
+      "x-khg-code": "R-ID"
+    },
+    "sym": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,63}$",
+      "x-khg-code": "R-SYM"
+    },
+    "local": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._-]{1,64}$",
+      "x-khg-code": "R-LOCAL-ID"
+    },
+    "sha": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "hex64": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]{1,6})?Z$",
+      "x-khg-code": "R-TIMESTAMP"
+    },
+    "timebound": {
+      "type": "string",
+      "pattern": "^-?[0-9]{4,}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]Z)?)?)?$",
+      "x-khg-code": "R-TIME-BOUND"
+    },
+    "schemaref": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,63}/(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "x-khg-code": "R-SCHEMA-REF"
+    },
+    "decimal": {
+      "type": "string",
+      "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]*[1-9])?$",
+      "not": {
+        "const": "-0"
+      }
+    },
+    "confidence": {
+      "type": "object",
+      "required": [
+        "value",
+        "scale"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "type": "number"
+        },
+        "scale": {
+          "$ref": "#/definitions/sym"
+        },
+        "method": {
+          "type": "string"
+        }
+      },
+      "x-khg-code": "R-CONFIDENCE"
+    },
+    "literal": {
+      "type": "object",
+      "required": [
+        "literal",
+        "datatype"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "literal": {
+          "type": "string"
+        },
+        "datatype": {
+          "enum": [
+            "string",
+            "lang-string",
+            "integer",
+            "decimal",
+            "boolean",
+            "time",
+            "quantity",
+            "iri"
+          ],
+          "x-khg-code": "R-LIT-DATATYPE"
+        },
+        "precision": {
+          "enum": [
+            "millennium",
+            "century",
+            "decade",
+            "year",
+            "month",
+            "day",
+            "second"
+          ],
+          "x-khg-code": "R-LIT-PRECISION"
+        },
+        "calendar": {
+          "enum": [
+            "julian"
+          ]
+        },
+        "unit": {
+          "type": "string",
+          "pattern": "^(1|[a-z][a-z0-9-]{0,31}:[^\\s]{1,256})$",
+          "x-khg-code": "R-LIT-UNIT"
+        },
+        "lang": {
+          "type": "string",
+          "pattern": "^[a-z]{2,3}(-[a-z0-9]{1,8})*$",
+          "x-khg-code": "R-LIT-LANG"
+        },
+        "lower": {
+          "$ref": "#/definitions/decimal"
+        },
+        "upper": {
+          "$ref": "#/definitions/decimal"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "datatype": {
+                "enum": [
+                  "string",
+                  "integer",
+                  "decimal",
+                  "boolean",
+                  "iri"
+                ]
+              }
+            }
+          },
+          "then": {
+            "propertyNames": {
+              "enum": [
+                "literal",
+                "datatype"
+              ]
+            },
+            "x-khg-code": "R-LIT-FIELD"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "datatype": {
+                "const": "integer"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "literal": {
+                "pattern": "^-?(0|[1-9][0-9]*)$",
+                "not": {
+                  "const": "-0"
+                }
+              }
+            },
+            "x-khg-code": "R-LIT-LEXICAL"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "datatype": {
+                "enum": [
+                  "decimal",
+                  "quantity"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "literal": {
+                "$ref": "#/definitions/decimal"
+              }
+            },
+            "x-khg-code": "R-LIT-LEXICAL"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "datatype": {
+                "const": "boolean"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "literal": {
+                "enum": [
+                  "true",
+                  "false"
+                ]
+              }
+            },
+            "x-khg-code": "R-LIT-LEXICAL"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "datatype": {
+                "const": "iri"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "literal": {
+                "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s<>\"{}|\\\\^`]*$"
+              }
+            },
+            "x-khg-code": "R-LIT-LEXICAL"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "datatype": {
+                "const": "lang-string"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "lang"
+            ],
+            "propertyNames": {
+              "enum": [
+                "literal",
+                "datatype",
+                "lang"
+              ]
+            },
+            "x-khg-code": "R-LIT-LANG"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "datatype": {
+                "const": "quantity"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "unit"
+            ],
+            "propertyNames": {
+              "enum": [
+                "literal",
+                "datatype",
+                "unit",
+                "lower",
+                "upper"
+              ]
+            },
+            "x-khg-code": "R-LIT-UNIT"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "datatype": {
+                "const": "time"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "precision"
+            ],
+            "propertyNames": {
+              "enum": [
+                "literal",
+                "datatype",
+                "precision",
+                "calendar"
+              ]
+            },
+            "x-khg-code": "R-LIT-PRECISION"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "datatype": {
+                "const": "time"
+              },
+              "precision": {
+                "enum": [
+                  "millennium",
+                  "century",
+                  "decade",
+                  "year"
+                ]
+              }
+            },
+            "required": [
+              "precision"
+            ]
+          },
+          "then": {
+            "properties": {
+              "literal": {
+                "pattern": "^-?[0-9]{4,}$"
+              }
+            },
+            "x-khg-code": "R-LIT-LEXICAL"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "datatype": {
+                "const": "time"
+              },
+              "precision": {
+                "const": "month"
+              }
+            },
+            "required": [
+              "precision"
+            ]
+          },
+          "then": {
+            "properties": {
+              "literal": {
+                "pattern": "^-?[0-9]{4,}-(0[1-9]|1[0-2])$"
+              }
+            },
+            "x-khg-code": "R-LIT-LEXICAL"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "datatype": {
+                "const": "time"
+              },
+              "precision": {
+                "const": "day"
+              }
+            },
+            "required": [
+              "precision"
+            ]
+          },
+          "then": {
+            "properties": {
+              "literal": {
+                "pattern": "^-?[0-9]{4,}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$"
+              }
+            },
+            "x-khg-code": "R-LIT-LEXICAL"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "datatype": {
+                "const": "time"
+              },
+              "precision": {
+                "const": "second"
+              }
+            },
+            "required": [
+              "precision"
+            ]
+          },
+          "then": {
+            "properties": {
+              "literal": {
+                "pattern": "^-?[0-9]{4,}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]Z$"
+              }
+            },
+            "x-khg-code": "R-LIT-LEXICAL"
+          }
+        }
+      ]
+    },
+    "value": {
+      "type": "object",
+      "oneOf": [
+        {
+          "required": [
+            "entity"
+          ]
+        },
+        {
+          "required": [
+            "literal"
+          ]
+        },
+        {
+          "required": [
+            "hyperedge"
+          ]
+        },
+        {
+          "required": [
+            "special"
+          ]
+        }
+      ],
+      "x-khg-code": "R-VALUE",
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "entity"
+            ]
+          },
+          "then": {
+            "properties": {
+              "entity": {
+                "$ref": "#/definitions/id"
+              }
+            },
+            "additionalProperties": false,
+            "x-khg-code": "R-VALUE"
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "literal"
+            ]
+          },
+          "then": {
+            "$ref": "#/definitions/literal"
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "hyperedge"
+            ]
+          },
+          "then": {
+            "properties": {
+              "hyperedge": {
+                "$ref": "#/definitions/id"
+              }
+            },
+            "additionalProperties": false,
+            "x-khg-code": "R-VALUE"
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "special"
+            ]
+          },
+          "then": {
+            "additionalProperties": false,
+            "x-khg-code": "R-VALUE",
+            "properties": {
+              "special": {
+                "enum": [
+                  "somevalue",
+                  "novalue",
+                  "unbound"
+                ]
+              },
+              "expects": {
+                "type": "object",
+                "required": [
+                  "entity_types"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "entity_types": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "$ref": "#/definitions/sym"
+                    }
+                  }
+                }
+              }
+            },
+            "if": {
+              "properties": {
+                "special": {
+                  "enum": [
+                    "somevalue",
+                    "novalue"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "not": {
+                "required": [
+                  "expects"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "binding": {
+      "type": "object",
+      "required": [
+        "bid",
+        "role",
+        "value"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "bid": {
+          "$ref": "#/definitions/local"
+        },
+        "role": {
+          "$ref": "#/definitions/sym"
+        },
+        "slot": {
+          "enum": [
+            "core",
+            "qualifier",
+            "time",
+            "meta"
+          ]
+        },
+        "direction": {
+          "enum": [
+            "head",
+            "tail"
+          ]
+        },
+        "position": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "value": {
+          "$ref": "#/definitions/value"
+        }
+      },
+      "x-khg-code": "R-BINDING"
+    },
+    "selector": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "oneOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "quote"
+            },
+            "exact": {
+              "type": "string",
+              "minLength": 1
+            },
+            "prefix": {
+              "type": "string"
+            },
+            "suffix": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "exact"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "position"
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "start",
+            "end"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "x-khg-code": "R-SELECTOR"
+    },
+    "evidence": {
+      "type": "object",
+      "required": [
+        "eid",
+        "type",
+        "mode",
+        "source"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "eid": {
+          "$ref": "#/definitions/local"
+        },
+        "type": {
+          "enum": [
+            "curated",
+            "imported",
+            "extracted",
+            "inferred",
+            "agent_bound"
+          ]
+        },
+        "mode": {
+          "enum": [
+            "manual",
+            "automatic",
+            "semi_automatic"
+          ]
+        },
+        "source": {
+          "type": "object",
+          "required": [
+            "doc"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "doc": {
+              "$ref": "#/definitions/id"
+            },
+            "doc_sha256": {
+              "$ref": "#/definitions/hex64"
+            },
+            "url": {
+              "type": "string"
+            },
+            "revision": {
+              "type": "string"
+            },
+            "retrieved": {
+              "$ref": "#/definitions/timebound"
+            },
+            "licence": {
+              "type": "string"
+            },
+            "fragment": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "selectors": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/selector"
+          }
+        },
+        "reference": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "prop",
+              "value"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "prop": {
+                "$ref": "#/definitions/id"
+              },
+              "value": {
+                "$ref": "#/definitions/value"
+              }
+            }
+          }
+        },
+        "activity": {
+          "type": "object",
+          "required": [
+            "agent"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "agent": {
+              "type": "string",
+              "minLength": 1
+            },
+            "model": {
+              "type": "string"
+            },
+            "run": {
+              "type": "string"
+            },
+            "prompt": {
+              "type": "string"
+            },
+            "params": {
+              "type": "object"
+            }
+          }
+        },
+        "binding_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/local"
+          }
+        },
+        "confidence": {
+          "$ref": "#/definitions/confidence"
+        },
+        "event_hash": {
+          "$ref": "#/definitions/sha"
+        }
+      },
+      "if": {
+        "required": [
+          "selectors"
+        ]
+      },
+      "then": {
+        "properties": {
+          "source": {
+            "required": [
+              "doc",
+              "doc_sha256"
+            ]
+          }
+        },
+        "x-khg-code": "R-EVIDENCE-DOC-HASH"
+      },
+      "x-khg-code": "R-EVIDENCE"
+    },
+    "header": {
+      "type": "object",
+      "required": [
+        "kind",
+        "format",
+        "content",
+        "schemas"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "header"
+        },
+        "format": {
+          "type": "string",
+          "pattern": "^khg-record/1\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+          "x-khg-code": "R-FORMAT"
+        },
+        "content": {
+          "enum": [
+            "snapshot",
+            "history"
+          ]
+        },
+        "as_at": {
+          "$ref": "#/definitions/timestamp"
+        },
+        "created_at": {
+          "$ref": "#/definitions/timestamp"
+        },
+        "created_by": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "schemas": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "version",
+              "sha256"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "version": {
+                "type": "string"
+              },
+              "sha256": {
+                "$ref": "#/definitions/hex64"
+              }
+            }
+          }
+        }
+      }
+    },
+    "entity": {
+      "type": "object",
+      "required": [
+        "kind",
+        "id",
+        "types",
+        "label"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "entity"
+        },
+        "id": {
+          "$ref": "#/definitions/id"
+        },
+        "types": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/sym"
+          }
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "same_as": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/id"
+          }
+        }
+      }
+    },
+    "hyperedge": {
+      "type": "object",
+      "required": [
+        "kind",
+        "id",
+        "relation",
+        "status",
+        "bindings"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "hyperedge"
+        },
+        "id": {
+          "$ref": "#/definitions/id"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "recorded_at": {
+          "$ref": "#/definitions/timestamp"
+        },
+        "recorded_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "change": {
+          "type": "object",
+          "required": [
+            "op"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "op": {
+              "enum": [
+                "put",
+                "supersede",
+                "transition",
+                "end_validity",
+                "add_evidence"
+              ]
+            },
+            "reason": {
+              "type": "string"
+            },
+            "ref": {
+              "$ref": "#/definitions/id"
+            }
+          }
+        },
+        "schema": {
+          "$ref": "#/definitions/schemaref"
+        },
+        "relation": {
+          "$ref": "#/definitions/sym"
+        },
+        "status": {
+          "enum": [
+            "candidate",
+            "asserted",
+            "disputed",
+            "superseded",
+            "retracted",
+            "goal"
+          ],
+          "x-khg-code": "R-STATUS"
+        },
+        "rank": {
+          "enum": [
+            "preferred",
+            "normal",
+            "deprecated"
+          ]
+        },
+        "rank_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "visibility": {
+          "enum": [
+            "visible",
+            "suppressed"
+          ]
+        },
+        "valid_time": {
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "from": {
+              "$ref": "#/definitions/timebound"
+            },
+            "to": {
+              "$ref": "#/definitions/timebound"
+            },
+            "end_cause": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/binding"
+          }
+        },
+        "confidence": {
+          "$ref": "#/definitions/confidence"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/evidence"
+          }
+        },
+        "superseded_by": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/id"
+          }
+        },
+        "arity": {
+          "type": "object",
+          "required": [
+            "arity",
+            "core",
+            "participants"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "arity": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "core": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "participants": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "keys": {
+          "type": "object",
+          "required": [
+            "content",
+            "core"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "content": {
+              "$ref": "#/definitions/sha"
+            },
+            "core": {
+              "$ref": "#/definitions/sha"
+            },
+            "key": {
+              "$ref": "#/definitions/sha"
+            }
+          }
+        }
+      }
+    },
+    "supersession": {
+      "type": "object",
+      "required": [
+        "kind",
+        "id",
+        "superseded",
+        "superseding",
+        "reason",
+        "evidence"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "supersession"
+        },
+        "id": {
+          "$ref": "#/definitions/id"
+        },
+        "superseded": {
+          "$ref": "#/definitions/id"
+        },
+        "superseding": {
+          "$ref": "#/definitions/id"
+        },
+        "reason": {
+          "enum": [
+            "incorrect",
+            "unconfirmed",
+            "conflation",
+            "withdrawn",
+            "duplicate",
+            "refined"
+          ]
+        },
+        "reason_detail": {
+          "type": "string"
+        },
+        "recorded_at": {
+          "$ref": "#/definitions/timestamp"
+        },
+        "recorded_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/evidence"
+          }
+        }
+      }
+    }
+  }
+}

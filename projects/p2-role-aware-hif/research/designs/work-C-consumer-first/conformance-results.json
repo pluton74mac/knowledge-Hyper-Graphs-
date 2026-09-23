@@ -1,0 +1,182 @@
+{
+ "full": [
+  {
+   "test": "S-PUT-001",
+   "outcome": "passed",
+   "title": "put of an identical record is a no-op"
+  },
+  {
+   "test": "S-PUT-002",
+   "outcome": "passed",
+   "title": "put of changed content appends an immutable version; get(as_at) sees the old one"
+  },
+  {
+   "test": "S-PUT-003",
+   "outcome": "passed",
+   "title": "a candidate cannot be put into the store"
+  },
+  {
+   "test": "S-PUT-004",
+   "outcome": "passed",
+   "title": "an unbound value is accepted in a goal and rejected in an asserted fact"
+  },
+  {
+   "test": "S-INC-001",
+   "outcome": "passed",
+   "title": "incident: every hyperedge in which the node fills a role, ordered by id, default filter"
+  },
+  {
+   "test": "S-INC-002",
+   "outcome": "passed",
+   "title": "incident with a role filter; a node in two roles of one fact is returned once"
+  },
+  {
+   "test": "S-INC-003",
+   "outcome": "passed",
+   "title": "incident on a hyperedge id returns the facts that reference it (nesting)"
+  },
+  {
+   "test": "S-INC-004",
+   "outcome": "passed",
+   "title": "incident with where.status includes goals; pagination is stable"
+  },
+  {
+   "test": "S-FIND-001",
+   "outcome": "passed",
+   "title": "find at_least: a repeated role is matched as a multiset"
+  },
+  {
+   "test": "S-FIND-002",
+   "outcome": "passed",
+   "title": "find exact: the pattern must equal the whole binding multiset"
+  },
+  {
+   "test": "S-FIND-003",
+   "outcome": "passed",
+   "title": "find on a typed literal compares datatype and precision"
+  },
+  {
+   "test": "S-KEY-001",
+   "outcome": "passed",
+   "title": "find_by_key with as_of returns the fact valid at that instant"
+  },
+  {
+   "test": "S-KEY-002",
+   "outcome": "passed",
+   "title": "a key collision is never resolved silently: KeyCollision with the declared policy"
+  },
+  {
+   "test": "S-SUP-001",
+   "outcome": "passed",
+   "title": "supersede is atomic: record, status, pointer; the walk terminates at the current belief"
+  },
+  {
+   "test": "S-TIME-001",
+   "outcome": "passed",
+   "title": "end_validity closes valid time in a new version; status stays asserted (world change, not supersession)"
+  },
+  {
+   "test": "S-LIFE-001",
+   "outcome": "passed",
+   "title": "the transition table forbids asserted -> goal"
+  },
+  {
+   "test": "S-EXP-001",
+   "outcome": "passed",
+   "title": "the gate fixture rebuilt through put and one supersede event exports equal to it"
+  },
+  {
+   "test": "S-EXP-002",
+   "outcome": "passed",
+   "title": "load keeps versions and transaction times: load of the gate container exports equal to it"
+  }
+ ],
+ "limited": {
+  "capabilities": [
+   "literal_values",
+   "nesting"
+  ],
+  "results": [
+   {
+    "test": "S-PUT-001",
+    "outcome": "passed",
+    "title": "put of an identical record is a no-op"
+   },
+   {
+    "test": "S-PUT-002",
+    "outcome": "inapplicable"
+   },
+   {
+    "test": "S-PUT-003",
+    "outcome": "passed",
+    "title": "a candidate cannot be put into the store"
+   },
+   {
+    "test": "S-PUT-004",
+    "outcome": "inapplicable"
+   },
+   {
+    "test": "S-INC-001",
+    "outcome": "inapplicable"
+   },
+   {
+    "test": "S-INC-002",
+    "outcome": "passed",
+    "title": "incident with a role filter; a node in two roles of one fact is returned once"
+   },
+   {
+    "test": "S-INC-003",
+    "outcome": "passed",
+    "title": "incident on a hyperedge id returns the facts that reference it (nesting)"
+   },
+   {
+    "test": "S-INC-004",
+    "outcome": "inapplicable"
+   },
+   {
+    "test": "S-FIND-001",
+    "outcome": "passed",
+    "title": "find at_least: a repeated role is matched as a multiset"
+   },
+   {
+    "test": "S-FIND-002",
+    "outcome": "passed",
+    "title": "find exact: the pattern must equal the whole binding multiset"
+   },
+   {
+    "test": "S-FIND-003",
+    "outcome": "passed",
+    "title": "find on a typed literal compares datatype and precision"
+   },
+   {
+    "test": "S-KEY-001",
+    "outcome": "inapplicable"
+   },
+   {
+    "test": "S-KEY-002",
+    "outcome": "inapplicable"
+   },
+   {
+    "test": "S-SUP-001",
+    "outcome": "inapplicable"
+   },
+   {
+    "test": "S-TIME-001",
+    "outcome": "inapplicable"
+   },
+   {
+    "test": "S-LIFE-001",
+    "outcome": "passed",
+    "title": "the transition table forbids asserted -> goal"
+   },
+   {
+    "test": "S-EXP-001",
+    "outcome": "inapplicable"
+   },
+   {
+    "test": "S-EXP-002",
+    "outcome": "inapplicable"
+   }
+  ]
+ }
+}

@@ -1,0 +1,72 @@
+[
+ {
+  "id": "Q01",
+  "what": "candidate without run metadata",
+  "expect": "L2 Q-PAYLOAD",
+  "got": "L2 Q-PAYLOAD",
+  "ok": true
+ },
+ {
+  "id": "Q02",
+  "what": "candidate without evidence",
+  "expect": "L2 Q-PAYLOAD",
+  "got": "L2 Q-PAYLOAD",
+  "ok": true
+ },
+ {
+  "id": "Q03",
+  "what": "candidate payload id outside cand:",
+  "expect": "L2 Q-PAYLOAD",
+  "got": "L2 Q-PAYLOAD",
+  "ok": true
+ },
+ {
+  "id": "Q04",
+  "what": "candidate payload status not candidate",
+  "expect": "L2 Q-PAYLOAD",
+  "got": "L2 Q-PAYLOAD",
+  "ok": true
+ },
+ {
+  "id": "Q05",
+  "what": "run without order_id",
+  "expect": "L2 Q-RUN",
+  "got": "L2 Q-RUN",
+  "ok": true
+ },
+ {
+  "id": "Q06",
+  "what": "log action outside the vocabulary",
+  "expect": "L2 Q-LOG-ACTION",
+  "got": "L2 Q-LOG-ACTION",
+  "ok": true
+ },
+ {
+  "id": "Q07",
+  "what": "lint entry without outcome",
+  "expect": "L2 Q-SCHEMA",
+  "got": "L2 Q-SCHEMA",
+  "ok": true
+ },
+ {
+  "id": "Q08",
+  "what": "log entry naming a missing queue item",
+  "expect": "L3 Q-LOG-TARGET",
+  "got": "L3 Q-LOG-TARGET",
+  "ok": true
+ },
+ {
+  "id": "Q09",
+  "what": "accept after a lint reject",
+  "expect": "L3 Q-TRANSITION",
+  "got": "L3 Q-TRANSITION",
+  "ok": true
+ },
+ {
+  "id": "Q10",
+  "what": "verdict 'other' without a note",
+  "expect": "L2 Q-SCHEMA",
+  "got": "L2 Q-SCHEMA",
+  "ok": true
+ }
+]

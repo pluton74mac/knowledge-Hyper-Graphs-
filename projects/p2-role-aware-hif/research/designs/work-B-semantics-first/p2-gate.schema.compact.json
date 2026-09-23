@@ -1,0 +1,80 @@
+{
+ "khg_schema": "khg-schema/1.0.0",
+ "id": "p2-gate",
+ "version": "1.0.0",
+ "label": "P2 gate fixture schema",
+ "entity_types": [{"id": "Agent"}, {"id": "Airline"}, {"id": "Airport"}, {"id": "CellLine"}, {"id": "Chemical"}, {"id": "Drug"}, {"id": "Gene"}, {"id": "Outcome"}, {"id": "Place"}, {"id": "Position"}, {"id": "Reaction"}, {"id": "Station"}, {"id": "Person", "parents": ["Agent"]}, {"id": "Organisation", "parents": ["Agent"]}],
+ "confidence_scales": [{"id": "llm-0-10", "kind": "bounded", "min": 0, "max": 10, "description": "self-reported extractor score, not a probability"}],
+ "roles": [{"id": "regulator"}, {"id": "target"}, {"id": "context"}, {"id": "agent"}, {"id": "effect"}, {"id": "carrier"}, {"id": "stop"}, {"id": "origin"}, {"id": "destination"}, {"id": "holder"}, {"id": "position"}, {"id": "replaces"}, {"id": "place"}, {"id": "quantity"}, {"id": "person"}, {"id": "birthplace"}, {"id": "reaction"}, {"id": "catalyst"}, {"id": "claimant"}, {"id": "claim"}, {"id": "station"}, {"id": "name"}, {"id": "code"}, {"id": "elevation"}, {"id": "opened"}, {"id": "active"}, {"id": "homepage"}, {"id": "location"}, {"id": "spouse"}, {"id": "start_time", "label": "start time", "mappings": {"wikidata": "P580"}}, {"id": "end_time", "label": "end time", "mappings": {"wikidata": "P582"}}, {"id": "point_in_time", "label": "point in time", "mappings": {"wikidata": "P585"}}],
+ "relations": [
+  {"id": "regulates", "time": {"model": "invariant"},
+   "roles": [
+    {"role": "regulator", "slot": "core", "fillers": [{"entity": ["Gene"]}], "min": 1, "max": 1, "direction": "tail"},
+    {"role": "target", "slot": "core", "fillers": [{"entity": ["Gene"]}], "min": 1, "max": 1, "direction": "head"},
+    {"role": "context", "slot": "qualifier", "fillers": [{"entity": ["CellLine"]}], "min": 0, "max": 1, "direction": "tail"}
+   ]},
+  {"id": "co_administration_causes",
+   "roles": [
+    {"role": "agent", "slot": "core", "fillers": [{"entity": ["Drug"]}], "min": 2, "max": null, "direction": "tail"},
+    {"role": "effect", "slot": "core", "fillers": [{"entity": ["Outcome"]}], "min": 1, "max": 1, "direction": "head"}
+   ]},
+  {"id": "flight_route",
+   "roles": [
+    {"role": "carrier", "slot": "core", "fillers": [{"entity": ["Airline"]}], "min": 1, "max": 1, "direction": "tail"},
+    {"role": "stop", "slot": "core", "fillers": [{"entity": ["Airport"]}], "min": 2, "max": null, "ordered": true, "complete": true, "direction": "head"}
+   ]},
+  {"id": "flies_between", "constraints": [{"type": "must_differ", "roles": ["origin", "destination"], "severity": "warning"}],
+   "roles": [
+    {"role": "carrier", "slot": "core", "fillers": [{"entity": ["Airline"]}], "min": 1, "max": 1},
+    {"role": "origin", "slot": "core", "fillers": [{"entity": ["Airport"]}], "min": 1, "max": 1},
+    {"role": "destination", "slot": "core", "fillers": [{"entity": ["Airport"]}], "min": 1, "max": 1}
+   ]},
+  {"id": "position_held", "mappings": {"wikidata": "P39"}, "primary": {"subject": "holder", "object": "position"}, "time": {"model": "interval", "start": "start_time", "end": "end_time"}, "key": {"roles": ["position"], "temporal": true, "on_collision": "close_older"},
+   "roles": [
+    {"role": "holder", "slot": "core", "fillers": [{"entity": ["Person"]}], "min": 1, "max": 1, "direction": "tail"},
+    {"role": "position", "slot": "core", "fillers": [{"entity": ["Position"]}], "min": 1, "max": 1, "direction": "head"},
+    {"role": "start_time", "slot": "time", "fillers": [{"literal": "time"}], "min": 0, "max": 1, "direction": "tail"},
+    {"role": "end_time", "slot": "time", "fillers": [{"literal": "time"}], "min": 0, "max": 1, "direction": "tail"},
+    {"role": "replaces", "slot": "qualifier", "fillers": [{"entity": ["Person"]}], "min": 0, "max": null, "direction": "tail"}
+   ]},
+  {"id": "married", "time": {"model": "interval", "start": "start_time", "end": "end_time"},
+   "roles": [
+    {"role": "spouse", "slot": "core", "fillers": [{"entity": ["Person"]}], "min": 2, "max": 2, "complete": true},
+    {"role": "start_time", "slot": "time", "fillers": [{"literal": "time"}], "min": 0, "max": 1},
+    {"role": "end_time", "slot": "time", "fillers": [{"literal": "time"}], "min": 0, "max": 1}
+   ]},
+  {"id": "population", "mappings": {"wikidata": "P1082"}, "time": {"model": "invariant"}, "key": {"roles": ["place", "point_in_time"], "temporal": false, "on_collision": "dispute"},
+   "roles": [
+    {"role": "place", "slot": "core", "fillers": [{"entity": ["Place"]}], "min": 1, "max": 1, "direction": "tail"},
+    {"role": "quantity", "slot": "core", "fillers": [{"literal": "quantity", "units": ["1"]}], "min": 1, "max": 1, "direction": "head"},
+    {"role": "point_in_time", "slot": "qualifier", "fillers": [{"literal": "time", "precision_min": 9}], "min": 0, "max": 1, "direction": "tail"}
+   ]},
+  {"id": "station_profile",
+   "roles": [
+    {"role": "station", "slot": "core", "fillers": [{"entity": ["Station"]}], "min": 1, "max": 1, "direction": "tail"},
+    {"role": "name", "slot": "qualifier", "fillers": [{"literal": "lang_string"}], "min": 0, "max": null, "direction": "head"},
+    {"role": "code", "slot": "qualifier", "fillers": [{"literal": "string"}], "min": 0, "max": 1, "direction": "head"},
+    {"role": "elevation", "slot": "qualifier", "fillers": [{"literal": "quantity", "units": ["wd:Q11573"]}], "min": 0, "max": 1, "direction": "head"},
+    {"role": "opened", "slot": "qualifier", "fillers": [{"literal": "time"}], "min": 0, "max": 1, "direction": "head"},
+    {"role": "active", "slot": "qualifier", "fillers": [{"literal": "boolean"}], "min": 0, "max": 1, "direction": "head"},
+    {"role": "homepage", "slot": "qualifier", "fillers": [{"literal": "iri"}], "min": 0, "max": 1, "direction": "head"},
+    {"role": "location", "slot": "qualifier", "fillers": [{"literal": "geo"}], "min": 0, "max": 1, "direction": "head"}
+   ]},
+  {"id": "born_in", "mappings": {"wikidata": "P19"}, "time": {"model": "invariant"}, "key": {"roles": ["person"], "temporal": false, "on_collision": "dispute"},
+   "roles": [
+    {"role": "person", "slot": "core", "fillers": [{"entity": ["Person"]}], "min": 1, "max": 1, "direction": "tail"},
+    {"role": "birthplace", "slot": "core", "fillers": [{"entity": ["Place"]}], "min": 1, "max": 1, "direction": "head"}
+   ]},
+  {"id": "claims", "time": {"model": "invariant"},
+   "roles": [
+    {"role": "claimant", "slot": "core", "fillers": [{"entity": ["Agent"]}], "min": 1, "max": 1, "direction": "tail"},
+    {"role": "claim", "slot": "core", "fillers": [{"fact": ["born_in"]}], "min": 1, "max": 1, "direction": "head", "somevalue": false, "novalue": false},
+    {"role": "point_in_time", "slot": "qualifier", "fillers": [{"literal": "time"}], "min": 0, "max": 1, "direction": "tail"}
+   ]},
+  {"id": "catalysed_by",
+   "roles": [
+    {"role": "reaction", "slot": "core", "fillers": [{"entity": ["Reaction"]}], "min": 1, "max": 1, "direction": "tail"},
+    {"role": "catalyst", "slot": "core", "fillers": [{"entity": ["Chemical"]}], "min": 1, "max": null, "direction": "head"}
+   ]}
+ ]
+}

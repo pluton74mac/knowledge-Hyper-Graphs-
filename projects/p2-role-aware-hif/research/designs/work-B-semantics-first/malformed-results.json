@@ -1,0 +1,1350 @@
+[
+ {
+  "id": "OK1",
+  "description": "directed gate fixture (HIF)",
+  "layer": "-",
+  "codes": [],
+  "expected_layer": "-",
+  "expected_code": "-",
+  "ok": true,
+  "first": "ACCEPTED"
+ },
+ {
+  "id": "OK2",
+  "description": "undirected gate fixture (HIF)",
+  "layer": "-",
+  "codes": [],
+  "expected_layer": "-",
+  "expected_code": "-",
+  "ok": true,
+  "first": "ACCEPTED"
+ },
+ {
+  "id": "OK3",
+  "description": "directed gate fixture (C1)",
+  "layer": "-",
+  "codes": [],
+  "expected_layer": "-",
+  "expected_code": "-",
+  "ok": true,
+  "first": "ACCEPTED"
+ },
+ {
+  "id": "OK4",
+  "description": "gate schema",
+  "layer": "-",
+  "codes": [],
+  "expected_layer": "-",
+  "expected_code": "-",
+  "ok": true,
+  "first": "ACCEPTED"
+ },
+ {
+  "id": "OK5",
+  "description": "queue item and its action log from the smoke test",
+  "layer": "-",
+  "codes": [],
+  "expected_layer": "-",
+  "expected_code": "-",
+  "ok": true,
+  "first": "ACCEPTED"
+ },
+ {
+  "id": "MC01",
+  "description": "zero-byte file (R02 case 34)",
+  "layer": "J",
+  "codes": [
+   "KHG-J001"
+  ],
+  "expected_layer": "J",
+  "expected_code": "KHG-J001",
+  "ok": true,
+  "first": "KHG-J001: empty document"
+ },
+ {
+  "id": "MC02",
+  "description": "not JSON: truncated document",
+  "layer": "J",
+  "codes": [
+   "KHG-J001"
+  ],
+  "expected_layer": "J",
+  "expected_code": "KHG-J001",
+  "ok": true,
+  "first": "KHG-J001: not JSON: Unterminated string starting at: line 1 column 187 (char 186)"
+ },
+ {
+  "id": "MC03",
+  "description": "duplicate key inside one attrs object (R02 case 36)",
+  "layer": "J",
+  "codes": [
+   "KHG-J003"
+  ],
+  "expected_layer": "J",
+  "expected_code": "KHG-J003",
+  "ok": true,
+  "first": "KHG-J003: duplicate key 'role'"
+ },
+ {
+  "id": "MC04",
+  "description": "NaN literal (R02 case 35, R03 c22, R01 V19)",
+  "layer": "J",
+  "codes": [
+   "KHG-J004"
+  ],
+  "expected_layer": "J",
+  "expected_code": "KHG-J004",
+  "ok": true,
+  "first": "KHG-J004: non-finite number NaN"
+ },
+ {
+  "id": "MC05",
+  "description": "lone surrogate escape in a string",
+  "layer": "J",
+  "codes": [
+   "KHG-J005"
+  ],
+  "expected_layer": "J",
+  "expected_code": "KHG-J005",
+  "ok": true,
+  "first": "KHG-J005: lone surrogate in string"
+ },
+ {
+  "id": "MC06",
+  "description": "no incidences (R01 V01, R02 case 31)",
+  "layer": "H",
+  "codes": [
+   "KHG-H001"
+  ],
+  "expected_layer": "H",
+  "expected_code": "KHG-H001",
+  "ok": true,
+  "first": "(root): required: 'incidences' is a required property"
+ },
+ {
+  "id": "MC07",
+  "description": "top-level 'version' key (R01 V02, R02 case 04)",
+  "layer": "H",
+  "codes": [
+   "KHG-H002"
+  ],
+  "expected_layer": "H",
+  "expected_code": "KHG-H002",
+  "ok": true,
+  "first": "(root): additionalProperties: Additional properties are not allowed ('version' was unexpected)"
+ },
+ {
+  "id": "MC08",
+  "description": "top-level 'roles' vocabulary (R02 case 05)",
+  "layer": "H",
+  "codes": [
+   "KHG-H002"
+  ],
+  "expected_layer": "H",
+  "expected_code": "KHG-H002",
+  "ok": true,
+  "first": "(root): additionalProperties: Additional properties are not allowed ('roles' was unexpected)"
+ },
+ {
+  "id": "MC09",
+  "description": "top-level '$schema' (R02 case 06)",
+  "layer": "H",
+  "codes": [
+   "KHG-H002"
+  ],
+  "expected_layer": "H",
+  "expected_code": "KHG-H002",
+  "ok": true,
+  "first": "(root): additionalProperties: Additional properties are not allowed ('$schema' was unexpected)"
+ },
+ {
+  "id": "MC10",
+  "description": "record-level 'role' on an incidence (R01 V03, R02 case 11)",
+  "layer": "H",
+  "codes": [
+   "KHG-H003"
+  ],
+  "expected_layer": "H",
+  "expected_code": "KHG-H003",
+  "ok": true,
+  "first": "incidences/0: additionalProperties: Additional properties are not allowed ('role' was unexpected)"
+ },
+ {
+  "id": "MC11",
+  "description": "record-level 'relation' on an edge (R02 case 13)",
+  "layer": "H",
+  "codes": [
+   "KHG-H003"
+  ],
+  "expected_layer": "H",
+  "expected_code": "KHG-H003",
+  "ok": true,
+  "first": "edges/0: additionalProperties: Additional properties are not allowed ('relation' was unexpected)"
+ },
+ {
+  "id": "MC12",
+  "description": "record-level 'type' on a node (R02 case 14)",
+  "layer": "H",
+  "codes": [
+   "KHG-H003"
+  ],
+  "expected_layer": "H",
+  "expected_code": "KHG-H003",
+  "ok": true,
+  "first": "nodes/0: additionalProperties: Additional properties are not allowed ('type' was unexpected)"
+ },
+ {
+  "id": "MC13",
+  "description": "incidence attrs is a string (R02 case 10)",
+  "layer": "H",
+  "codes": [
+   "KHG-H004"
+  ],
+  "expected_layer": "H",
+  "expected_code": "KHG-H004",
+  "ok": true,
+  "first": "incidences/0/attrs: type: 'context' is not of type 'object'"
+ },
+ {
+  "id": "MC14",
+  "description": "direction 'treatment' (R01 V05, R02 case 12)",
+  "layer": "H",
+  "codes": [
+   "KHG-H005"
+  ],
+  "expected_layer": "H",
+  "expected_code": "KHG-H005",
+  "ok": true,
+  "first": "incidences/0/direction: enum: 'treatment' is not one of ['head', 'tail']"
+ },
+ {
+  "id": "MC15",
+  "description": "incidence without node (R01 V04)",
+  "layer": "H",
+  "codes": [
+   "KHG-H006"
+  ],
+  "expected_layer": "H",
+  "expected_code": "KHG-H006",
+  "ok": true,
+  "first": "incidences/0: required: 'node' is a required property"
+ },
+ {
+  "id": "MC16",
+  "description": "id of type float 1.5 (R02 case 18)",
+  "layer": "H",
+  "codes": [
+   "KHG-H007"
+  ],
+  "expected_layer": "H",
+  "expected_code": "KHG-H007",
+  "ok": true,
+  "first": "incidences/0/node: type: 1.5 is not of type 'string', 'integer'"
+ },
+ {
+  "id": "MC17",
+  "description": "id of type boolean (R02 case 19)",
+  "layer": "H",
+  "codes": [
+   "KHG-H007"
+  ],
+  "expected_layer": "H",
+  "expected_code": "KHG-H007",
+  "ok": true,
+  "first": "incidences/0/node: type: True is not of type 'string', 'integer'"
+ },
+ {
+  "id": "MC18",
+  "description": "id null (R02 case 20)",
+  "layer": "H",
+  "codes": [
+   "KHG-H007"
+  ],
+  "expected_layer": "H",
+  "expected_code": "KHG-H007",
+  "ok": true,
+  "first": "incidences/0/node: type: None is not of type 'string', 'integer'"
+ },
+ {
+  "id": "MC19",
+  "description": "network-type 'knowledge-hypergraph' (R02 case 26)",
+  "layer": "H",
+  "codes": [
+   "KHG-H008"
+  ],
+  "expected_layer": "H",
+  "expected_code": "KHG-H008",
+  "ok": true,
+  "first": "network-type: enum: 'knowledge-hypergraph' is not one of ['undirected', 'directed', 'asc']"
+ },
+ {
+  "id": "MC20",
+  "description": "metadata without the khg-profile declaration (R01 V07)",
+  "layer": "P",
+  "codes": [
+   "KHG-P001"
+  ],
+  "expected_layer": "P",
+  "expected_code": "KHG-P001",
+  "ok": true,
+  "first": "metadata: required: 'khg-profile' is a required property"
+ },
+ {
+  "id": "MC21",
+  "description": "no metadata at all",
+  "layer": "P",
+  "codes": [
+   "KHG-P001"
+  ],
+  "expected_layer": "P",
+  "expected_code": "KHG-P001",
+  "ok": true,
+  "first": "(root): required: 'metadata' is a required property"
+ },
+ {
+  "id": "MC22",
+  "description": "integer ids (R02 cases 15-17, 22)",
+  "layer": "P",
+  "codes": [
+   "KHG-P002"
+  ],
+  "expected_layer": "P",
+  "expected_code": "KHG-P002",
+  "ok": true,
+  "first": "incidences/0/edge: type: 7 is not of type 'string'"
+ },
+ {
+  "id": "MC23",
+  "description": "empty-string id (R02 case 21)",
+  "layer": "P",
+  "codes": [
+   "KHG-P003"
+  ],
+  "expected_layer": "P",
+  "expected_code": "KHG-P003",
+  "ok": true,
+  "first": "incidences/0/node: pattern: '' does not match '^[^\\\\s\\\\x00-\\\\x1f\\\\x7f]{1,512}$'"
+ },
+ {
+  "id": "MC24",
+  "description": "incidence of a fact without a role (R01 V08)",
+  "layer": "P",
+  "codes": [
+   "KHG-P005"
+  ],
+  "expected_layer": "P",
+  "expected_code": "KHG-P005",
+  "ok": true,
+  "first": "incidences/0/attrs: required: 'role' is a required property"
+ },
+ {
+  "id": "MC25",
+  "description": "list-valued role (R01 V09, R02 case 09)",
+  "layer": "P",
+  "codes": [
+   "KHG-P006"
+  ],
+  "expected_layer": "P",
+  "expected_code": "KHG-P006",
+  "ok": true,
+  "first": "incidences/0/attrs/role: type: ['context', 'regulator'] is not of type 'string'"
+ },
+ {
+  "id": "MC26",
+  "description": "empty role string (R01 V09)",
+  "layer": "P",
+  "codes": [
+   "KHG-P006"
+  ],
+  "expected_layer": "P",
+  "expected_code": "KHG-P006",
+  "ok": true,
+  "first": "incidences/0/attrs/role: pattern: '' does not match '^[^\\\\s\\\\x00-\\\\x1f\\\\x7f/]{1,256}$'"
+ },
+ {
+  "id": "MC27",
+  "description": "legacy 'roles' key beside 'role' (R01 V20)",
+  "layer": "P",
+  "codes": [
+   "KHG-P014"
+  ],
+  "expected_layer": "P",
+  "expected_code": "KHG-P014",
+  "ok": true,
+  "first": "incidences/0/attrs: not: 'roles' should not be valid under {'const': 'roles'}"
+ },
+ {
+  "id": "MC28",
+  "description": "network-type 'asc' (R03 D8, c04)",
+  "layer": "P",
+  "codes": [
+   "KHG-P007",
+   "KHG-P011"
+  ],
+  "expected_layer": "P",
+  "expected_code": "KHG-P007",
+  "ok": true,
+  "first": "network-type: enum: 'asc' is not one of ['directed', 'undirected']"
+ },
+ {
+  "id": "MC29",
+  "description": "metadata.default_attrs (R03 D7, c20)",
+  "layer": "P",
+  "codes": [
+   "KHG-P008"
+  ],
+  "expected_layer": "P",
+  "expected_code": "KHG-P008",
+  "ok": true,
+  "first": "metadata: not: 'default_attrs' should not be valid under {'const': 'default_attrs'}"
+ },
+ {
+  "id": "MC30",
+  "description": "directed file, an incidence without direction (R01 V12, R02 case 23, R03 c14)",
+  "layer": "P",
+  "codes": [
+   "KHG-P010"
+  ],
+  "expected_layer": "P",
+  "expected_code": "KHG-P010",
+  "ok": true,
+  "first": "incidences/3: required: 'direction' is a required property"
+ },
+ {
+  "id": "MC31",
+  "description": "undirected file carrying record-level direction (R01 V13, R02 cases 24-25)",
+  "layer": "P",
+  "codes": [
+   "KHG-P011"
+  ],
+  "expected_layer": "P",
+  "expected_code": "KHG-P011",
+  "ok": true,
+  "first": "incidences/0: not: {'edge': 'f:born-louis14-paris', 'node': 'ex:Paris', 'direction': 'head', 'attrs': {'role': 'birthplace', 'khg"
+ },
+ {
+  "id": "MC32",
+  "description": "fact edge without khg:relation (R01 V14)",
+  "layer": "P",
+  "codes": [
+   "KHG-P012"
+  ],
+  "expected_layer": "P",
+  "expected_code": "KHG-P012",
+  "ok": true,
+  "first": "edges/0/attrs: required: 'khg:relation' is a required property"
+ },
+ {
+  "id": "MC33",
+  "description": "edge without khg:kind (R01 V40)",
+  "layer": "P",
+  "codes": [
+   "KHG-P013"
+  ],
+  "expected_layer": "P",
+  "expected_code": "KHG-P013",
+  "ok": true,
+  "first": "edges/0/attrs: required: 'khg:kind' is a required property"
+ },
+ {
+  "id": "MC34",
+  "description": "unknown khg: key in incidence attrs",
+  "layer": "P",
+  "codes": [
+   "KHG-P014"
+  ],
+  "expected_layer": "P",
+  "expected_code": "KHG-P014",
+  "ok": true,
+  "first": "incidences/0/attrs: anyOf: 'khg:roles' is not valid under any of the given schemas"
+ },
+ {
+  "id": "MC35",
+  "description": "literal node whose id lacks the _: prefix",
+  "layer": "P",
+  "codes": [
+   "KHG-P004"
+  ],
+  "expected_layer": "P",
+  "expected_code": "KHG-P004",
+  "ok": true,
+  "first": "nodes/20/node: pattern: 'lit-1' does not match '^_:(lit|sv|nv|var|ref):[^\\\\s]+$'"
+ },
+ {
+  "id": "MC36",
+  "description": "entity node id using the reserved _: prefix",
+  "layer": "P",
+  "codes": [
+   "KHG-P004"
+  ],
+  "expected_layer": "P",
+  "expected_code": "KHG-P004",
+  "ok": true,
+  "first": "nodes/0/node: not: '_:ex' should not be valid under {'type': 'string', 'pattern': '^_:'}"
+ },
+ {
+  "id": "MC37",
+  "description": "hif-schema pinned to the moving 'main' URL",
+  "layer": "P",
+  "codes": [
+   "KHG-P009"
+  ],
+  "expected_layer": "P",
+  "expected_code": "KHG-P009",
+  "ok": true,
+  "first": "metadata/hif-schema: const: 'https://raw.githubusercontent.com/HIF-org/HIF-standard/b691a3d2ec32100c0229ebe1151e9afad015c356/schemas/hif_s"
+ },
+ {
+  "id": "MC38",
+  "description": "role-position 0",
+  "layer": "P",
+  "codes": [
+   "KHG-P015"
+  ],
+  "expected_layer": "P",
+  "expected_code": "KHG-P015",
+  "ok": true,
+  "first": "incidences/32/attrs/role-position: minimum: 0 is less than the minimum of 1"
+ },
+ {
+  "id": "MC39",
+  "description": "node declared twice (R01 V16, R03 c19)",
+  "layer": "D(decode)",
+  "codes": [
+   "KHG-D001"
+  ],
+  "expected_layer": "D (decode)",
+  "expected_code": "KHG-D001",
+  "ok": true,
+  "first": "KHG-D001: duplicate node 'ex:AirCanada'"
+ },
+ {
+  "id": "MC40",
+  "description": "edge declared twice (R01 V16)",
+  "layer": "D(decode)",
+  "codes": [
+   "KHG-D001"
+  ],
+  "expected_layer": "D (decode)",
+  "expected_code": "KHG-D001",
+  "ok": true,
+  "first": "KHG-D001: duplicate edge 'f:born-louis14-paris'"
+ },
+ {
+  "id": "MC41",
+  "description": "incidence names an undeclared node (R01 V17, R02 case 28)",
+  "layer": "D(decode)",
+  "codes": [
+   "KHG-D002"
+  ],
+  "expected_layer": "D (decode)",
+  "expected_code": "KHG-D002",
+  "ok": true,
+  "first": "KHG-D002: incidence names undeclared node 'ex:ghost'"
+ },
+ {
+  "id": "MC42",
+  "description": "incidence names an undeclared edge (R02 case 29)",
+  "layer": "D(decode)",
+  "codes": [
+   "KHG-D003"
+  ],
+  "expected_layer": "D (decode)",
+  "expected_code": "KHG-D003",
+  "ok": true,
+  "first": "KHG-D003: incidence names undeclared edge 'f:ghost'"
+ },
+ {
+  "id": "MC43",
+  "description": "literal node id does not match its value",
+  "layer": "D(decode)",
+  "codes": [
+   "KHG-D005"
+  ],
+  "expected_layer": "D (decode)",
+  "expected_code": "KHG-D005",
+  "ok": true,
+  "first": "KHG-D005: literal node id '_:lit:86e4637ee45af992a7467d24f2a93a64' does not match its value"
+ },
+ {
+  "id": "MC44",
+  "description": "schema hash in metadata does not match the schema",
+  "layer": "D(decode)",
+  "codes": [
+   "KHG-D009"
+  ],
+  "expected_layer": "D (decode)",
+  "expected_code": "KHG-D009",
+  "ok": true,
+  "first": "KHG-D009: schema hash mismatch"
+ },
+ {
+  "id": "MC45",
+  "description": "incidence direction contradicts the role's declared direction (R01 V38)",
+  "layer": "D(decode)",
+  "codes": [
+   "KHG-S016"
+  ],
+  "expected_layer": "S (at decode)",
+  "expected_code": "KHG-S016",
+  "ok": true,
+  "first": "KHG-S016: direction 'tail' contradicts declared 'head'"
+ },
+ {
+  "id": "MC46",
+  "description": "fact-ref node pointing to a missing edge (R01 V18)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-D002"
+  ],
+  "expected_layer": "D",
+  "expected_code": "KHG-D002",
+  "ok": true,
+  "first": "KHG-D002 f:claim-1.b2: fact 'f:ghost' not in document"
+ },
+ {
+  "id": "MC47",
+  "description": "binding value with two kinds (entity and literal)",
+  "layer": "C",
+  "codes": [
+   "KHG-C001"
+  ],
+  "expected_layer": "C",
+  "expected_code": "KHG-C001",
+  "ok": true,
+  "first": "records/20/bindings/0/value: maxProperties: {'entity': 'ex:HeLa', 'literal': {'datatype': 'string', 'value': 'x'}} has too many properties"
+ },
+ {
+  "id": "MC48",
+  "description": "status outside the lifecycle enum (R01 V36)",
+  "layer": "C",
+  "codes": [
+   "KHG-C002"
+  ],
+  "expected_layer": "C",
+  "expected_code": "KHG-C002",
+  "ok": true,
+  "first": "records/20/status: enum: 'archived' is not one of ['candidate', 'asserted', 'disputed', 'superseded', 'retracted', 'quoted']"
+ },
+ {
+  "id": "MC49",
+  "description": "confidence as a bare number (R01 V32)",
+  "layer": "C",
+  "codes": [
+   "KHG-C003"
+  ],
+  "expected_layer": "C",
+  "expected_code": "KHG-C003",
+  "ok": true,
+  "first": "records/21/confidence: type: 0.9 is not of type 'object'"
+ },
+ {
+  "id": "MC50",
+  "description": "quantity without unit (R01 V26)",
+  "layer": "C",
+  "codes": [
+   "KHG-C004"
+  ],
+  "expected_layer": "C",
+  "expected_code": "KHG-C004",
+  "ok": true,
+  "first": "records/25/bindings/1/value/literal: required: 'unit' is a required property"
+ },
+ {
+  "id": "MC51",
+  "description": "time precision 15",
+  "layer": "C",
+  "codes": [
+   "KHG-C004"
+  ],
+  "expected_layer": "C",
+  "expected_code": "KHG-C004",
+  "ok": true,
+  "first": "records/23/bindings/2/value/literal/precision: maximum: 15 is greater than the maximum of 14"
+ },
+ {
+  "id": "MC52",
+  "description": "UNBOUND value in a fact (R01 V34)",
+  "layer": "C",
+  "codes": [
+   "KHG-C005"
+  ],
+  "expected_layer": "C",
+  "expected_code": "KHG-C005",
+  "ok": true,
+  "first": "records/20/bindings/0/value: not: {'unbound': {'var': 'x'}} should not be valid under {'required': ['unbound']}"
+ },
+ {
+  "id": "MC53",
+  "description": "status superseded without status_ref (R01 V37)",
+  "layer": "C",
+  "codes": [
+   "KHG-C006"
+  ],
+  "expected_layer": "C",
+  "expected_code": "KHG-C006",
+  "ok": true,
+  "first": "records/29: required: 'status_ref' is a required property"
+ },
+ {
+  "id": "MC54",
+  "description": "extracted evidence without selectors and activity (R01 V47, record side)",
+  "layer": "C",
+  "codes": [
+   "KHG-C007"
+  ],
+  "expected_layer": "C",
+  "expected_code": "KHG-C007",
+  "ok": true,
+  "first": "records/22/evidence/0: required: 'activity' is a required property"
+ },
+ {
+  "id": "MC55",
+  "description": "rank deprecated without rank_reason",
+  "layer": "C",
+  "codes": [
+   "KHG-C008"
+  ],
+  "expected_layer": "C",
+  "expected_code": "KHG-C008",
+  "ok": true,
+  "first": "records/20: required: 'rank_reason' is a required property"
+ },
+ {
+  "id": "MC56",
+  "description": "span selector with a negative start",
+  "layer": "C",
+  "codes": [
+   "KHG-C007"
+  ],
+  "expected_layer": "C",
+  "expected_code": "KHG-C007",
+  "ok": true,
+  "first": "records/22/evidence/0/selectors/1/start: minimum: -1 is less than the minimum of 0"
+ },
+ {
+  "id": "MC57",
+  "description": "record-level key outside the format (e.g. 'weight')",
+  "layer": "C",
+  "codes": [
+   "KHG-C009"
+  ],
+  "expected_layer": "C",
+  "expected_code": "KHG-C009",
+  "ok": true,
+  "first": "records/20: additionalProperties: Additional properties are not allowed ('weight' was unexpected)"
+ },
+ {
+  "id": "MC58",
+  "description": "relation not declared (R01 V21)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S001"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S001",
+  "ok": true,
+  "first": "KHG-S001 f:reg-1: relation 'inhibits' not declared"
+ },
+ {
+  "id": "MC59",
+  "description": "role not allowed for the relation (R01 V22)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S002"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S002",
+  "ok": true,
+  "first": "KHG-S002 f:reg-1: role 'agent' not allowed for 'regulates'"
+ },
+ {
+  "id": "MC60",
+  "description": "required role missing on an asserted fact (R01 V23)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S003"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S003",
+  "ok": true,
+  "first": "KHG-S003 f:reg-1: required role 'target' has 0 of 1 bindings"
+ },
+ {
+  "id": "MC61",
+  "description": "role bound more often than max (R01 V24)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S004"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S004",
+  "ok": true,
+  "first": "KHG-S004 f:reg-1: role 'target' bound 2 times, max 1"
+ },
+ {
+  "id": "MC62",
+  "description": "entity of the wrong type (R01 V25)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S005"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S005",
+  "ok": true,
+  "first": "KHG-S005 f:reg-1.b2: filler kind/type not allowed for role 'regulator'"
+ },
+ {
+  "id": "MC63",
+  "description": "literal where an entity is expected (R01 V25)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S005"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S005",
+  "ok": true,
+  "first": "KHG-S005 f:reg-1.b2: filler kind/type not allowed for role 'regulator'"
+ },
+ {
+  "id": "MC64",
+  "description": "time literal with month 13 (R01 V26)",
+  "layer": "S",
+  "codes": [
+   "KHG-S006"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S006",
+  "ok": true,
+  "first": "KHG-S006: M out of range in '+1610-13-14T00:00:00Z'"
+ },
+ {
+  "id": "MC65",
+  "description": "day set below year precision (R01 V26)",
+  "layer": "S",
+  "codes": [
+   "KHG-S006"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S006",
+  "ok": true,
+  "first": "KHG-S006: M set below precision in '+2019-06-01T00:00:00Z'"
+ },
+ {
+  "id": "MC66",
+  "description": "fact with no bindings (R01 V27)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S003",
+   "KHG-S007"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S007",
+  "ok": true,
+  "first": "KHG-S007 f:reg-1: no bindings; KHG-S003 f:reg-1: required role 'regulator' has 0 of 1 bindings; KHG-S003 f:reg-1: required role 'target' has 0 of 1 bindings"
+ },
+ {
+  "id": "MC67",
+  "description": "fact reference in a role that takes no facts (R01 V29)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S005"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S005",
+  "ok": true,
+  "first": "KHG-S005 f:reg-1.b1: filler kind/type not allowed for role 'context'"
+ },
+ {
+  "id": "MC68",
+  "description": "valid time starts after it ends (R01 V30)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S009"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S009",
+  "ok": true,
+  "first": "KHG-S009 f:king-13: valid time is empty (start after end)"
+ },
+ {
+  "id": "MC69",
+  "description": "confidence scale not declared (R01 V32)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S010"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S010",
+  "ok": true,
+  "first": "KHG-S010 f:coadmin-1: confidence scale 'gut-feeling' undeclared"
+ },
+ {
+  "id": "MC70",
+  "description": "confidence outside its scale (R01 V32)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S010"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S010",
+  "ok": true,
+  "first": "KHG-S010 f:coadmin-1: confidence 1.4 outside [0.0, 1.0]"
+ },
+ {
+  "id": "MC71",
+  "description": "asserted fact with no evidence (R01 V33)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S011"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S011",
+  "ok": true,
+  "first": "KHG-S011 f:reg-1: asserted fact without supporting evidence"
+ },
+ {
+  "id": "MC72",
+  "description": "novalue and a concrete value in one role (R01 V35)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S013"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S013",
+  "ok": true,
+  "first": "KHG-S013 f:cat-7: novalue and another filler for role 'catalyst'"
+ },
+ {
+  "id": "MC73",
+  "description": "the same filler twice in an unordered role (set semantics)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S014"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S014",
+  "ok": true,
+  "first": "KHG-S014 f:coadmin-1: duplicate filler in unordered role 'agent'"
+ },
+ {
+  "id": "MC74",
+  "description": "ordered role with a gap in positions",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S015"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S015",
+  "ok": true,
+  "first": "KHG-S015 f:route-1: positions of ordered role 'stop' are [1, 2, 5], expected 1..3"
+ },
+ {
+  "id": "MC75",
+  "description": "position on an unordered role",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S015"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S015",
+  "ok": true,
+  "first": "KHG-S015 f:coadmin-1: position on unordered role 'agent'"
+ },
+ {
+  "id": "MC76",
+  "description": "goal omits a required role instead of leaving it unbound",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S018"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S018",
+  "ok": true,
+  "first": "KHG-S018 g:who-1774: goal omits required role 'holder' (bind it or leave it unbound)"
+ },
+ {
+  "id": "MC77",
+  "description": "one unbound variable used twice in a goal",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S019"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S019",
+  "ok": true,
+  "first": "KHG-S019 g:who-1774: an unbound variable is repeated"
+ },
+ {
+  "id": "MC78",
+  "description": "id not in Unicode NFC",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S020"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S020",
+  "ok": true,
+  "first": "KHG-S020 id 'ex:Kraków' is not NFC; KHG-S020 id 'ex:Kraków' is not NFC"
+ },
+ {
+  "id": "MC79",
+  "description": "evidence supports an unknown binding id",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S022"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S022",
+  "ok": true,
+  "first": "KHG-S022 f:king-14.e2: supports unknown bid 'b9'"
+ },
+ {
+  "id": "MC80",
+  "description": "precision below the role's precision_min",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S023"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S023",
+  "ok": true,
+  "first": "KHG-S023 f:pop-łódź-2019.b3: precision below 9"
+ },
+ {
+  "id": "MC81",
+  "description": "unit not allowed for the role",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S023"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S023",
+  "ok": true,
+  "first": "KHG-S023 f:pop-łódź-2019.b2: unit 'wd:Q11573' not allowed"
+ },
+ {
+  "id": "MC82",
+  "description": "the same binding id twice in one fact",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S025"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S025",
+  "ok": true,
+  "first": "KHG-S025 f:reg-1: bid 'b1' used twice"
+ },
+ {
+  "id": "MC83",
+  "description": "somevalue where the role forbids it",
+  "layer": "S/D",
+  "codes": [
+   "KHG-S005"
+  ],
+  "expected_layer": "S",
+  "expected_code": "KHG-S005",
+  "ok": true,
+  "first": "KHG-S005 f:claim-1.b2: somevalue not allowed for role 'claim'"
+ },
+ {
+  "id": "MC84",
+  "description": "nesting cycle (R01 V28)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-D008"
+  ],
+  "expected_layer": "D",
+  "expected_code": "KHG-D008",
+  "ok": true,
+  "first": "KHG-D008 nesting cycle through 'm:dis-x' -> 'm:dis-x'"
+ },
+ {
+  "id": "MC85",
+  "description": "status_ref points at a record of the wrong kind (R01 V37)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-D010"
+  ],
+  "expected_layer": "D",
+  "expected_code": "KHG-D010",
+  "ok": true,
+  "first": "KHG-D010 f:born-skłodowska-kraków: status superseded needs status_ref to a khg:supersedes record naming it as khg:superseded"
+ },
+ {
+  "id": "MC86",
+  "description": "supersession cycle (R01 V37)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-D012"
+  ],
+  "expected_layer": "D",
+  "expected_code": "KHG-D012",
+  "ok": true,
+  "first": "KHG-D012 supersession cycle through 'f:born-skłodowska-warszawa' -> 'f:born-skłodowska-kraków'"
+ },
+ {
+  "id": "MC87",
+  "description": "correction between facts of different relations (R01 V37)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-D011"
+  ],
+  "expected_layer": "D",
+  "expected_code": "KHG-D011",
+  "ok": true,
+  "first": "KHG-D011 m:sup-1: correction across relations ['born_in', 'regulates']"
+ },
+ {
+  "id": "MC88",
+  "description": "two asserted facts, same key binding, overlapping valid time (R01 V42)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-D016"
+  ],
+  "expected_layer": "D",
+  "expected_code": "KHG-D016",
+  "ok": true,
+  "first": "KHG-D016 key conflict on position_held: ['f:king-13', 'f:king-14']"
+ },
+ {
+  "id": "MC89",
+  "description": "stored derived fields disagree with the bindings (R01 V15)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-D015"
+  ],
+  "expected_layer": "D",
+  "expected_code": "KHG-D015",
+  "ok": true,
+  "first": "KHG-D015 f:reg-1: derived fields disagree with the bindings"
+ },
+ {
+  "id": "MC90",
+  "description": "a candidate inside a store document (queue boundary, F9)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-D017"
+  ],
+  "expected_layer": "D",
+  "expected_code": "KHG-D017",
+  "ok": true,
+  "first": "KHG-D017 f:reg-1: status candidate outside the queue"
+ },
+ {
+  "id": "MC91",
+  "description": "entity referenced but not declared in a complete document (R01 V17)",
+  "layer": "S/D",
+  "codes": [
+   "KHG-D002"
+  ],
+  "expected_layer": "D",
+  "expected_code": "KHG-D002",
+  "ok": true,
+  "first": "KHG-D002 f:reg-1.b1: entity 'ex:HeLa' has no record"
+ },
+ {
+  "id": "MC92",
+  "description": "one id names both an entity and a fact",
+  "layer": "S/D",
+  "codes": [
+   "KHG-D007"
+  ],
+  "expected_layer": "D",
+  "expected_code": "KHG-D007",
+  "ok": true,
+  "first": "KHG-D007 id 'f:reg-1' names both an entity and a fact"
+ },
+ {
+  "id": "MC93",
+  "description": "relation with no roles (R01 V43)",
+  "layer": "M(json)",
+  "codes": [
+   "KHG-M001"
+  ],
+  "expected_layer": "M",
+  "expected_code": "KHG-M001",
+  "ok": true,
+  "first": "relations/0/roles: minItems: [] should be non-empty"
+ },
+ {
+  "id": "MC94",
+  "description": "a role used twice in one relation (R01 V44)",
+  "layer": "M(sem)",
+  "codes": [
+   "KHG-M002"
+  ],
+  "expected_layer": "M",
+  "expected_code": "KHG-M002",
+  "ok": true,
+  "first": "regulates: role 'regulator' used twice"
+ },
+ {
+  "id": "MC95",
+  "description": "key names a role the relation does not use (R01 V44)",
+  "layer": "M(sem)",
+  "codes": [
+   "KHG-M003"
+  ],
+  "expected_layer": "M",
+  "expected_code": "KHG-M003",
+  "ok": true,
+  "first": "position_held: key role 'office' is not a role of the relation"
+ },
+ {
+  "id": "MC96",
+  "description": "key built on a time-slot role",
+  "layer": "M(sem)",
+  "codes": [
+   "KHG-M003"
+  ],
+  "expected_layer": "M",
+  "expected_code": "KHG-M003",
+  "ok": true,
+  "first": "position_held: key role 'start_time' has slot 'time'"
+ },
+ {
+  "id": "MC97",
+  "description": "schema version not semver (R01 V45)",
+  "layer": "M(json)",
+  "codes": [
+   "KHG-M004"
+  ],
+  "expected_layer": "M",
+  "expected_code": "KHG-M004",
+  "ok": true,
+  "first": "version: pattern: '1.0' does not match '^(0|[1-9][0-9]*)\\\\.(0|[1-9][0-9]*)\\\\.(0|[1-9][0-9]*)$'"
+ },
+ {
+  "id": "MC98",
+  "description": "unknown datatype (R01 V46)",
+  "layer": "M(json)",
+  "codes": [
+   "KHG-M006"
+  ],
+  "expected_layer": "M",
+  "expected_code": "KHG-M006",
+  "ok": true,
+  "first": "relations/0/roles/0/fillers/0/literal: enum: 'date' is not one of ['time', 'quantity', 'string', 'lang_string', 'boolean', 'iri', 'geo']"
+ },
+ {
+  "id": "MC99",
+  "description": "unknown entity type in a filler (R01 V46)",
+  "layer": "M(sem)",
+  "codes": [
+   "KHG-M005"
+  ],
+  "expected_layer": "M",
+  "expected_code": "KHG-M005",
+  "ok": true,
+  "first": "regulates.regulator: unknown entity type 'Protein'"
+ },
+ {
+  "id": "MC100",
+  "description": "complete: true on an optional role",
+  "layer": "M(json)",
+  "codes": [
+   "KHG-M014"
+  ],
+  "expected_layer": "M",
+  "expected_code": "KHG-M014",
+  "ok": true,
+  "first": "relations/0/roles/2/min: minimum: 0 is less than the minimum of 1"
+ },
+ {
+  "id": "MC101",
+  "description": "time model names a role that is not a time slot",
+  "layer": "M(sem)",
+  "codes": [
+   "KHG-M007"
+  ],
+  "expected_layer": "M",
+  "expected_code": "KHG-M007",
+  "ok": true,
+  "first": "position_held: time.start 'replaces' is not a time-slot role of the relation"
+ },
+ {
+  "id": "MC102",
+  "description": "user schema declares a relation in the reserved khg: namespace",
+  "layer": "M(sem)",
+  "codes": [
+   "KHG-M008"
+  ],
+  "expected_layer": "M",
+  "expected_code": "KHG-M008",
+  "ok": true,
+  "first": "'khg:regulates' uses the reserved khg: namespace"
+ },
+ {
+  "id": "MC103",
+  "description": "temporal key on a relation without an interval time model",
+  "layer": "M(sem)",
+  "codes": [
+   "KHG-M011"
+  ],
+  "expected_layer": "M",
+  "expected_code": "KHG-M011",
+  "ok": true,
+  "first": "born_in: temporal key needs time model 'interval'"
+ },
+ {
+  "id": "MC104",
+  "description": "candidate without run_id (R01 V47)",
+  "layer": "Q",
+  "codes": [
+   "KHG-Q001"
+  ],
+  "expected_layer": "Q",
+  "expected_code": "KHG-Q001",
+  "ok": true,
+  "first": "extraction: required: 'run_id' is a required property"
+ },
+ {
+  "id": "MC105",
+  "description": "candidate payload with status asserted",
+  "layer": "Q",
+  "codes": [
+   "KHG-Q002"
+  ],
+  "expected_layer": "Q",
+  "expected_code": "KHG-Q002",
+  "ok": true,
+  "first": "payload/status: const: 'candidate' was expected"
+ },
+ {
+  "id": "MC106",
+  "description": "unknown item_kind (R01 V48)",
+  "layer": "Q",
+  "codes": [
+   "KHG-Q003"
+  ],
+  "expected_layer": "Q",
+  "expected_code": "KHG-Q003",
+  "ok": true,
+  "first": "item_kind: enum: 'new_thing' is not one of ['new_fact', 'goal_binding', 'merge_proposal', 'supersession_proposal', 'retraction_"
+ },
+ {
+  "id": "MC107",
+  "description": "lint log entry without findings",
+  "layer": "Q",
+  "codes": [
+   "KHG-Q004"
+  ],
+  "expected_layer": "Q",
+  "expected_code": "KHG-Q004",
+  "ok": true,
+  "first": "(root): required: 'findings' is a required property"
+ },
+ {
+  "id": "MC108",
+  "description": "log entry whose state_before does not follow the fold (accepted -> pending) (R01 V48)",
+  "layer": "Q(fold)",
+  "codes": [
+   "KHG-Q005"
+  ],
+  "expected_layer": "Q",
+  "expected_code": "KHG-Q005",
+  "ok": true,
+  "first": "l-000004: state_before 'pending' but the fold gives 'accepted'"
+ }
+]

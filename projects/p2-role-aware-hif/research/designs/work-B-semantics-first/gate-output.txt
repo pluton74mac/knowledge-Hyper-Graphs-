@@ -1,0 +1,27 @@
+meta-schemas are themselves valid draft-07:
+  OK record
+  OK lang
+  OK profile
+schema document:
+  OK  p2-gate.schema.json vs khg-schema/1.0.0: jsonschema=0 errors, fastjsonschema=pass
+== fixture-directed
+  OK  C1 doc vs khg-record/1.0.0: jsonschema=0 errors, fastjsonschema=pass
+  OK  canonical C1 doc vs khg-record/1.0.0: jsonschema=0 errors, fastjsonschema=pass
+  OK  HIF vs vendored hif_schema_v0.1.0 (blob e2105bb): jsonschema=0 errors, fastjsonschema=pass
+  OK  HIF vs khg-hif/1.0.0 profile (allOf vendored): jsonschema=0 errors, fastjsonschema=pass
+   xgi class: DiHypergraph | stale: 0 unlabelled: 0
+  OK  HIF after XGI and HNX vs profile: jsonschema=0 errors, fastjsonschema=pass
+   chain C1->HIF->XGI->HIF->HNX->HIF->C1 canonical equality: True
+   XGI-only equal: True | HNX-only equal: True
+   records=35 bindings=49 incidences=49 nodes=41 edges=15 network-type=directed
+== fixture-undirected
+  OK  C1 doc vs khg-record/1.0.0: jsonschema=0 errors, fastjsonschema=pass
+  OK  canonical C1 doc vs khg-record/1.0.0: jsonschema=0 errors, fastjsonschema=pass
+  OK  HIF vs vendored hif_schema_v0.1.0 (blob e2105bb): jsonschema=0 errors, fastjsonschema=pass
+  OK  HIF vs khg-hif/1.0.0 profile (allOf vendored): jsonschema=0 errors, fastjsonschema=pass
+   xgi class: Hypergraph | stale: 0 unlabelled: 0
+  OK  HIF after XGI and HNX vs profile: jsonschema=0 errors, fastjsonschema=pass
+   chain C1->HIF->XGI->HIF->HNX->HIF->C1 canonical equality: True
+   XGI-only equal: True | HNX-only equal: True
+   records=6 bindings=7 incidences=7 nodes=6 edges=2 network-type=undirected
+ALL OK

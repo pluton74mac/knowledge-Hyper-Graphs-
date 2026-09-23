@@ -1,0 +1,227 @@
+{
+ "network-type": "directed",
+ "metadata": {
+  "created": "2026-09-19",
+  "description": "Three n-ary facts from a toy biomedical knowledge base. Each hyperedge is one fact; each incidence carries the role the entity plays in that fact. Directed: 'tail' incidences are the inputs/subjects of the relation, 'head' incidences are the outputs/objects.",
+  "hif-schema": "https://raw.githubusercontent.com/HIF-org/HIF-standard/b691a3d2ec32100c0229ebe1151e9afad015c356/schemas/hif_schema_v0.1.0.json",
+  "hif-schema-sha256": "639466b7a10de5a734d231d72422f54a5fce4084cb300869012510124c9b2196",
+  "kb-section": "kb/04-storage-and-formats",
+  "khg-profile": "1.0.0",
+  "khg-schema": "kb-sample/1.0.0",
+  "role-convention": "1.0.0",
+  "title": "Sample knowledge hypergraph in HIF (Hypergraph Interchange Format)"
+ },
+ "nodes": [
+  {
+   "node": "disease:T2DM",
+   "attrs": {
+    "types": [
+     "Disease"
+    ],
+    "label": "type 2 diabetes mellitus"
+   }
+  },
+  {
+   "node": "doc:guideline-2024",
+   "attrs": {
+    "types": [
+     "Document"
+    ],
+    "label": "Standards of Care 2024"
+   }
+  },
+  {
+   "node": "dose:500mg-bid",
+   "attrs": {
+    "types": [
+     "Dosage"
+    ],
+    "label": "500 mg twice daily"
+   }
+  },
+  {
+   "node": "drug:insulin",
+   "attrs": {
+    "types": [
+     "Drug"
+    ],
+    "label": "insulin"
+   }
+  },
+  {
+   "node": "drug:metformin",
+   "attrs": {
+    "types": [
+     "Drug"
+    ],
+    "label": "metformin"
+   }
+  },
+  {
+   "node": "effect:hypoglycemia",
+   "attrs": {
+    "types": [
+     "AdverseEffect"
+    ],
+    "label": "hypoglycaemia"
+   }
+  },
+  {
+   "node": "org:ADA",
+   "attrs": {
+    "types": [
+     "Organisation"
+    ],
+    "label": "American Diabetes Association"
+   }
+  },
+  {
+   "node": "pop:adults",
+   "attrs": {
+    "types": [
+     "Population"
+    ],
+    "label": "adults"
+   }
+  }
+ ],
+ "edges": [
+  {
+   "edge": "f1",
+   "attrs": {
+    "relation": "treats",
+    "status": "asserted",
+    "valid": {
+     "from": "2024-01-01"
+    },
+    "evidence": [
+     {
+      "id": "e1",
+      "type": "curated",
+      "source": "doc:guideline-2024",
+      "confidence": {
+       "value": 0.95,
+       "scale": "score",
+       "min": 0,
+       "max": 1
+      }
+     }
+    ]
+   }
+  },
+  {
+   "edge": "f2",
+   "attrs": {
+    "relation": "co-administration-causes",
+    "status": "asserted",
+    "evidence": [
+     {
+      "id": "e1",
+      "type": "curated",
+      "source": "doc:guideline-2024",
+      "confidence": {
+       "value": 0.8,
+       "scale": "score",
+       "min": 0,
+       "max": 1
+      }
+     }
+    ]
+   }
+  },
+  {
+   "edge": "f3",
+   "attrs": {
+    "relation": "publishes",
+    "status": "asserted",
+    "evidence": [
+     {
+      "id": "e1",
+      "type": "curated",
+      "source": "doc:guideline-2024",
+      "confidence": {
+       "value": 1.0,
+       "scale": "score",
+       "min": 0,
+       "max": 1
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "incidences": [
+  {
+   "edge": "f1",
+   "node": "disease:T2DM",
+   "direction": "head",
+   "attrs": {
+    "role": "condition"
+   }
+  },
+  {
+   "edge": "f1",
+   "node": "dose:500mg-bid",
+   "direction": "tail",
+   "attrs": {
+    "role": "dosage"
+   }
+  },
+  {
+   "edge": "f1",
+   "node": "pop:adults",
+   "direction": "tail",
+   "attrs": {
+    "role": "population"
+   }
+  },
+  {
+   "edge": "f1",
+   "node": "drug:metformin",
+   "direction": "tail",
+   "attrs": {
+    "role": "treatment"
+   }
+  },
+  {
+   "edge": "f2",
+   "node": "drug:insulin",
+   "direction": "tail",
+   "attrs": {
+    "role": "agent"
+   }
+  },
+  {
+   "edge": "f2",
+   "node": "drug:metformin",
+   "direction": "tail",
+   "attrs": {
+    "role": "agent"
+   }
+  },
+  {
+   "edge": "f2",
+   "node": "effect:hypoglycemia",
+   "direction": "head",
+   "attrs": {
+    "role": "effect"
+   }
+  },
+  {
+   "edge": "f3",
+   "node": "doc:guideline-2024",
+   "direction": "head",
+   "attrs": {
+    "role": "publication"
+   }
+  },
+  {
+   "edge": "f3",
+   "node": "org:ADA",
+   "direction": "tail",
+   "attrs": {
+    "role": "publisher"
+   }
+  }
+ ]
+}

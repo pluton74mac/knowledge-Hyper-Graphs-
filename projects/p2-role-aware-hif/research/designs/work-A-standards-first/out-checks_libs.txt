@@ -1,0 +1,11 @@
+A/B. round trips through the sketch loaders (offline):
+  xgi             exact=True roles=34/34 directions=34/34 incidence-attrs=34/34 records=34 -> 34 C1-equal=True idempotent=True
+  hnx             exact=True roles=34/34 directions=34/34 incidence-attrs=34/34 records=34 -> 34 C1-equal=True idempotent=True
+  chain xgi->hnx  exact=True roles=34/34 directions=34/34 incidence-attrs=34/34 records=34 -> 34 C1-equal=True idempotent=True
+  XGI object: DiHypergraph | f3 in/out: [['ex:HeLa', 'ex:TP53'], ['ex:TP53']] | f5 head set: ['ex:YYZ', 'ex:羽田']
+  HNX cells: 32 for 34 incidence records; cell (f5, ex:YYZ) role: stop | extras riding in that cell: 1
+C. determinism of the chain output bytes under PYTHONHASHSEED 0..3:
+   distinct outputs: 1 1ef20fedfb2ab534
+D. library-evidence preview (the libraries' own HIF functions on the same file):
+  xgi.read_hif/write_hif: roles=0/34 records=34 -> 33 directions=33/34 metadata=preserved
+  hnx.from_hif/to_hif: roles=32/34 records=34 -> 32 metadata=lost metadata_keys_lost=6 weights_added=32
