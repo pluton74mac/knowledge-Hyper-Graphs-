@@ -1,0 +1,123 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-LIFE-009",
+ "title": "a fully bound goal becomes asserted by a transition that drops the goal block",
+ "requires": [
+  "goals",
+  "key_constraint",
+  "literal_values",
+  "valid_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    {
+     "kind": "entity",
+     "id": "ex:LouisXVI",
+     "types": [
+      "Person"
+     ],
+     "label": "Louis XVI"
+    },
+    "@f:king-14",
+    {
+     "@": "g:who-1774",
+     "set_binding": {
+      "b1": {
+       "entity": "ex:LouisXVI"
+      }
+     },
+     "add_evidence": [
+      {
+       "id": "e1",
+       "type": "agent_bound",
+       "mode": "automatic",
+       "source": {
+        "doc_id": "doc:regnal-list"
+       },
+       "activity": {
+        "agent": "agent:history-desk"
+       },
+       "supports": [
+        "b1"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "apply",
+   "args": {
+    "event": {
+     "op": "transition",
+     "targets": [
+      "g:who-1774"
+     ],
+     "to": "asserted",
+     "evidence": [
+      {
+       "id": "e9",
+       "type": "curated",
+       "mode": "manual",
+       "source": {
+        "doc_id": "doc:scenario"
+       }
+      }
+     ]
+    }
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "g:who-1774",
+      2,
+      "versioned"
+     ]
+    ]
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "g:who-1774"
+   },
+   "then": {
+    "select": "goal",
+    "equals": null
+   }
+  },
+  {
+   "op": "find_by_key",
+   "args": {
+    "relation": "position_held",
+    "key": [
+     {
+      "role": "position",
+      "value": {
+       "entity": "ex:KingOfFrance"
+      }
+     }
+    ],
+    "where": {
+     "as_of": "+1780-01-01T00:00:00Z"
+    }
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "g:who-1774"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "C S-LIFE-002"
+ ]
+}

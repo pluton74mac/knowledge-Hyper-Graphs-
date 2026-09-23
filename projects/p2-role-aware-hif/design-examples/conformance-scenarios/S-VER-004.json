@@ -1,0 +1,41 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-VER-004",
+ "title": "a new version that rewrites earlier evidence is refused",
+ "requires": [],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    "@f:reg-1"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:reg-1",
+      "set_evidence": {
+       "e1": {
+        "source": {
+         "doc_id": "doc:other"
+        }
+       }
+      }
+     }
+    ]
+   },
+   "then": {
+    "error": "KHG-D013"
+   }
+  }
+ ],
+ "precedent": [
+  "B S013"
+ ]
+}

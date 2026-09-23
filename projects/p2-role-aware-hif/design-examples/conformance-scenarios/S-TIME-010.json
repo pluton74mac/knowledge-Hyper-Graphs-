@@ -1,0 +1,92 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-TIME-010",
+ "title": "precision 7 is an ordinal century: +1900/7 is 1801-1900",
+ "requires": [
+  "literal_values",
+  "valid_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    {
+     "@": "f:married-curie",
+     "set_binding": {
+      "b3": {
+       "literal": {
+        "datatype": "time",
+        "time": "+1900-00-00T00:00:00Z",
+        "precision": 7
+       }
+      }
+     },
+     "drop_bindings": [
+      "b4"
+     ]
+    }
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "get",
+   "args": {
+    "id": "f:married-curie"
+   },
+   "then": {
+    "select": "derived.valid_time.possible",
+    "equals": [
+     "+1801-01-01T00:00:00Z",
+     null
+    ]
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:married-curie"
+   },
+   "then": {
+    "select": "derived.valid_time.definite",
+    "equals": [
+     "+1901-01-01T00:00:00Z",
+     null
+    ]
+   }
+  },
+  {
+   "op": "incident",
+   "args": {
+    "node": "ex:Pierre_Curie",
+    "where": {
+     "as_of": "+1900-06-01T00:00:00Z"
+    }
+   },
+   "then": {
+    "select": "ids",
+    "equals": []
+   }
+  },
+  {
+   "op": "incident",
+   "args": {
+    "node": "ex:Pierre_Curie",
+    "where": {
+     "as_of": "+1901-06-01T00:00:00Z"
+    }
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:married-curie"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "critique CONS-01 (Wikidata Help:Dates, precision 7)"
+ ]
+}

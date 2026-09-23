@@ -1,0 +1,53 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-READ-017c",
+ "title": "timeless relations pass every as_of filter, in both modes (capability-limited fixture @fixture[core])",
+ "requires": [
+  "literal_values",
+  "nesting",
+  "valid_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "load": "@fixture[core]"
+  }
+ ],
+ "when": [
+  {
+   "op": "incident",
+   "args": {
+    "node": "ex:AirCanada",
+    "where": {
+     "as_of": "+1700-01-01T00:00:00Z"
+    }
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:loop-yyz"
+    ]
+   }
+  },
+  {
+   "op": "incident",
+   "args": {
+    "node": "ex:AirCanada",
+    "where": {
+     "as_of": "+1700-01-01T00:00:00Z",
+     "valid_mode": "possible"
+    }
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:loop-yyz"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "core variant of S-READ-017"
+ ]
+}

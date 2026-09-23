@@ -1,0 +1,46 @@
+{
+ "network-type": "undirected",
+ "metadata": {
+  "role-convention": "1.0.0"
+ },
+ "incidences": [
+  {
+   "edge": "cause-1",
+   "node": "metformin",
+   "direction": "tail",
+   "attrs": {
+    "role": "agent"
+   }
+  },
+  {
+   "edge": "cause-1",
+   "node": "insulin",
+   "direction": "tail",
+   "attrs": {
+    "role": "agent"
+   }
+  },
+  {
+   "edge": "cause-1",
+   "node": "hypoglycaemia",
+   "direction": "head",
+   "attrs": {
+    "role": "effect"
+   }
+  },
+  {
+   "edge": "marriage-1",
+   "node": "maria",
+   "attrs": {
+    "role": "spouse"
+   }
+  },
+  {
+   "edge": "marriage-1",
+   "node": "pierre",
+   "attrs": {
+    "role": "spouse"
+   }
+  }
+ ]
+}

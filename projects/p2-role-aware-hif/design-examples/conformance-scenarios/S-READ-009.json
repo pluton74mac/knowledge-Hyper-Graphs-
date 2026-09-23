@@ -1,0 +1,84 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-READ-009",
+ "title": "find exact needs the whole binding multiset",
+ "requires": [
+  "goals",
+  "literal_values",
+  "nesting",
+  "ordered_roles",
+  "special_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "load": "@fixture"
+  }
+ ],
+ "when": [
+  {
+   "op": "find",
+   "args": {
+    "relation": "co_administration_causes",
+    "match": "exact",
+    "pattern": [
+     {
+      "role": "agent",
+      "value": {
+       "entity": "ex:insulin"
+      }
+     },
+     {
+      "role": "agent",
+      "value": {
+       "entity": "ex:metformin"
+      }
+     }
+    ]
+   },
+   "then": {
+    "select": "ids",
+    "equals": []
+   }
+  },
+  {
+   "op": "find",
+   "args": {
+    "relation": "co_administration_causes",
+    "match": "exact",
+    "pattern": [
+     {
+      "role": "agent",
+      "value": {
+       "entity": "ex:insulin"
+      }
+     },
+     {
+      "role": "agent",
+      "value": {
+       "entity": "ex:metformin"
+      }
+     },
+     {
+      "role": "effect",
+      "value": {
+       "entity": "ex:hypoglycaemia"
+      }
+     }
+    ]
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:coadmin-1"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "A C2-10 passed",
+  "C S-FIND-002 passed",
+  "B S027"
+ ]
+}

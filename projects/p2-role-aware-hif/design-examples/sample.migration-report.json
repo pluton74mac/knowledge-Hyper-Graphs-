@@ -1,0 +1,45 @@
+{
+ "format": "khg-migration-report/1.0.0",
+ "from": "v0-sample",
+ "findings": [
+  {
+   "code": "KHG-F017",
+   "edge": "f1",
+   "message": "valid-from became a start_time binding"
+  },
+  {
+   "code": "KHG-F006",
+   "edge": "f1",
+   "message": "weight kept as extensions hif:weight"
+  },
+  {
+   "code": "KHG-F015",
+   "edge": "f1",
+   "message": "stored arity 4 checked and dropped"
+  },
+  {
+   "code": "KHG-F006",
+   "edge": "f2",
+   "message": "weight kept as extensions hif:weight"
+  },
+  {
+   "code": "KHG-F015",
+   "edge": "f2",
+   "message": "stored arity 3 checked and dropped"
+  },
+  {
+   "code": "KHG-F006",
+   "edge": "f3",
+   "message": "weight kept as extensions hif:weight"
+  },
+  {
+   "code": "KHG-F015",
+   "edge": "f3",
+   "message": "stored arity 2 checked and dropped"
+  },
+  {
+   "code": "KHG-F016",
+   "message": "metadata schema and conventions replaced by the declaration block"
+  }
+ ]
+}

@@ -1,0 +1,51 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-EXP-011",
+ "title": "a slice of claims alone keeps its fact reference as an external node and is not complete",
+ "requires": [
+  "goals",
+  "literal_values",
+  "nesting",
+  "ordered_roles",
+  "special_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "load": "@fixture"
+  }
+ ],
+ "when": [
+  {
+   "op": "export",
+   "args": {
+    "format": "hif",
+    "relations": [
+     "claims"
+    ]
+   },
+   "then": {
+    "hif_valid": true,
+    "select": "metadata.khg-complete",
+    "equals": false
+   }
+  },
+  {
+   "op": "export",
+   "args": {
+    "format": "hif",
+    "relations": [
+     "claims"
+    ]
+   },
+   "then": {
+    "select": "node._:ref:f:born-louis14-paris.attrs.khg-external",
+    "equals": true
+   }
+  }
+ ],
+ "precedent": [
+  "critique CONS-14, GL-17"
+ ]
+}

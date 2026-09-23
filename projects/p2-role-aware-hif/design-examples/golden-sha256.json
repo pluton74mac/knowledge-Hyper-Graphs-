@@ -1,0 +1,18 @@
+{
+ "format": "khg-golden/1.0.0",
+ "chain": "C1 -> HIF -> XGI -> HIF -> HyperNetX -> HIF -> C1",
+ "digests": {
+  "full": {
+   "after_hnx": "sha256:1bb3d9e683f6bed5b5de920d49d59561aae95ea3894d512be2040c24c1ba75d3",
+   "after_xgi": "sha256:1bb3d9e683f6bed5b5de920d49d59561aae95ea3894d512be2040c24c1ba75d3",
+   "c1": "sha256:c0f52a2c400b094340a7a30ca7d6fe87e02329ac82bc4600a2b53a9d0ac3c72c",
+   "hif": "sha256:1bb3d9e683f6bed5b5de920d49d59561aae95ea3894d512be2040c24c1ba75d3"
+  },
+  "slice": {
+   "after_hnx": "sha256:2ad268e14f9d9eccc06e26b01cee65a8d659fcffd751914a4f957f2cec6dbee8",
+   "after_xgi": "sha256:2ad268e14f9d9eccc06e26b01cee65a8d659fcffd751914a4f957f2cec6dbee8",
+   "c1": "sha256:1db6f18914f5a31d8475378ef1b6676fa7d56b7cc5a078f9238f89bc340b3edd",
+   "hif": "sha256:2ad268e14f9d9eccc06e26b01cee65a8d659fcffd751914a4f957f2cec6dbee8"
+  }
+ }
+}

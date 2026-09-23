@@ -1,0 +1,4384 @@
+{
+ "format": "khg-malformed-cases/1.0.0",
+ "rule": "a case passes when its first rejecting layer (the earliest code letter, in the input kind's pipeline order, among the error findings) is the listed layer and the listed code is among the error codes; patches are RFC 6902 against the named base in design-examples/ (queue and C4 patches address /lines/<n>); a schema_patch applies to fixture.relation-schema.json and the harness re-stamps the base's schema digest; expect_target pins what each indexed path points at in the base",
+ "pipelines": {
+  "json": "J",
+  "c1": "J V C S D",
+  "hif": "J V H R P D C S",
+  "relation-schema": "J V M",
+  "queue": "J V Q C S D",
+  "c4": "J V I"
+ },
+ "harness": {
+  "engine": "jsonschema (full report); fastjsonschema codes must be contained in jsonschema's",
+  "self_checks": [
+   "every patch applies",
+   "the input differs from its base",
+   "expect_target resolves",
+   "every unpatched base has no error finding"
+  ],
+  "context": {
+   "doc_texts": "fixture.doc-texts.json for bases; a case's doc_text only for itself",
+   "queue_base": "smoke-base.c1.json (the queue header's base)"
+  }
+ },
+ "coverage_exceptions": {
+  "KHG-D019": "S-PUT-006 (expect is a store call argument, not document content)"
+ },
+ "bases": [
+  "c4-items.jsonl",
+  "fixture.c1.json",
+  "fixture.directed-slice.hif.json",
+  "fixture.hif.json",
+  "fixture.history.c1.json",
+  "fixture.relation-schema.json",
+  "smoke-queue.khg-queue.jsonl"
+ ],
+ "count": 180,
+ "cases": [
+  {
+   "id": "MC001",
+   "description": "zero-byte file",
+   "layer": "J",
+   "code": "KHG-J001",
+   "kind": "json",
+   "input_text": "",
+   "source": "R02 case 34",
+   "reported": [
+    "KHG-J001"
+   ]
+  },
+  {
+   "id": "MC002",
+   "description": "truncated JSON document",
+   "layer": "J",
+   "code": "KHG-J001",
+   "kind": "json",
+   "input_text": "{\"incidences\": [",
+   "source": "R02 case 34 (variant)",
+   "reported": [
+    "KHG-J001"
+   ]
+  },
+  {
+   "id": "MC003",
+   "description": "UTF-8 byte-order mark before the document",
+   "layer": "J",
+   "code": "KHG-J002",
+   "kind": "json",
+   "input_text": "﻿{\"incidences\": []}",
+   "source": "RFC 8259 §8.1",
+   "reported": [
+    "KHG-J002"
+   ]
+  },
+  {
+   "id": "MC004",
+   "description": "duplicate key role inside one attrs object",
+   "layer": "J",
+   "code": "KHG-J003",
+   "kind": "json",
+   "input_text": "{\"incidences\": [{\"edge\": \"f:1\", \"node\": \"ex:a\", \"attrs\": {\"role\": \"x\", \"role\": \"y\"}}]}",
+   "source": "R02 case 36",
+   "reported": [
+    "KHG-J003"
+   ]
+  },
+  {
+   "id": "MC005",
+   "description": "NaN literal in attrs",
+   "layer": "J",
+   "code": "KHG-J004",
+   "kind": "json",
+   "input_text": "{\"incidences\": [{\"edge\": \"f:1\", \"node\": \"ex:a\", \"attrs\": {\"w\": NaN}}]}",
+   "source": "R02 case 35; R03 c22; R01 V19",
+   "reported": [
+    "KHG-J004"
+   ]
+  },
+  {
+   "id": "MC006",
+   "description": "lone surrogate escape in a label",
+   "layer": "J",
+   "code": "KHG-J005",
+   "kind": "json",
+   "input_text": "{\"incidences\": [], \"nodes\": [{\"node\": \"ex:a\", \"attrs\": {\"label\": \"\\ud800\"}}]}",
+   "source": "RFC 8259 §8.2",
+   "reported": [
+    "KHG-J005"
+   ]
+  },
+  {
+   "id": "MC007",
+   "description": "integer 2^53+1 (as a HIF id or a value)",
+   "layer": "J",
+   "code": "KHG-J006",
+   "kind": "json",
+   "input_text": "{\"incidences\": [{\"edge\": 9007199254740993, \"node\": 1}]}",
+   "source": "R02 case 22; R03 c23; A M05",
+   "reported": [
+    "KHG-J006"
+   ]
+  },
+  {
+   "id": "MC008",
+   "description": "top level (or one JSONL line) is an array, not an object",
+   "layer": "J",
+   "code": "KHG-J007",
+   "kind": "json",
+   "input_text": "[]",
+   "source": "C J-NOT-OBJECT",
+   "reported": [
+    "KHG-J007"
+   ]
+  },
+  {
+   "id": "MC009",
+   "description": "C1 header format khg-record/2.0.0 (unknown major)",
+   "layer": "V",
+   "code": "KHG-V001",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/header/format",
+     "value": "khg-record/2.0.0"
+    }
+   ],
+   "source": "R01 V41; A M90",
+   "reported": [
+    "KHG-V001"
+   ]
+  },
+  {
+   "id": "MC010",
+   "description": "HIF khg-profile khg-hif/1.9.0 (a minor newer than the reader)",
+   "layer": "V",
+   "code": "KHG-V001",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/metadata/khg-profile",
+     "value": "khg-hif/1.9.0"
+    }
+   ],
+   "source": "PLAN §7; B §11.2",
+   "reported": [
+    "KHG-V001"
+   ]
+  },
+  {
+   "id": "MC011",
+   "description": "no incidences key",
+   "layer": "H",
+   "code": "KHG-H001",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/incidences"
+    }
+   ],
+   "source": "R01 V01; R02 case 31",
+   "reported": [
+    "KHG-H001"
+   ]
+  },
+  {
+   "id": "MC012",
+   "description": "top-level version key",
+   "layer": "H",
+   "code": "KHG-H002",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/version",
+     "value": "1.0.0"
+    }
+   ],
+   "source": "R02 case 04",
+   "reported": [
+    "KHG-H002"
+   ]
+  },
+  {
+   "id": "MC013",
+   "description": "top-level roles vocabulary block",
+   "layer": "H",
+   "code": "KHG-H002",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/roles",
+     "value": {
+      "regulator": "regulator"
+     }
+    }
+   ],
+   "source": "R01 V02; R02 case 05",
+   "reported": [
+    "KHG-H002"
+   ]
+  },
+  {
+   "id": "MC014",
+   "description": "top-level $schema key",
+   "layer": "H",
+   "code": "KHG-H002",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/$schema",
+     "value": "https://json-schema.org/draft-07/schema"
+    }
+   ],
+   "source": "R02 case 06",
+   "reported": [
+    "KHG-H002"
+   ]
+  },
+  {
+   "id": "MC015",
+   "description": "record-level role on an incidence (outside attrs)",
+   "layer": "H",
+   "code": "KHG-H003",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/incidences/39/role",
+     "value": "regulator"
+    }
+   ],
+   "source": "R01 V03; R02 case 11",
+   "expect_target": {
+    "/incidences/39": [
+     "f:reg-1",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-H003"
+   ]
+  },
+  {
+   "id": "MC016",
+   "description": "record-level relation on an edge",
+   "layer": "H",
+   "code": "KHG-H003",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/edges/13/relation",
+     "value": "regulates"
+    }
+   ],
+   "source": "R02 case 13",
+   "expect_target": {
+    "/edges/13": "f:reg-1"
+   },
+   "reported": [
+    "KHG-H003"
+   ]
+  },
+  {
+   "id": "MC017",
+   "description": "record-level type on a node",
+   "layer": "H",
+   "code": "KHG-H003",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/nodes/12/type",
+     "value": "Gene"
+    }
+   ],
+   "source": "R02 case 14",
+   "expect_target": {
+    "/nodes/12": "ex:TP53"
+   },
+   "reported": [
+    "KHG-H003"
+   ]
+  },
+  {
+   "id": "MC018",
+   "description": "incidence attrs is a string",
+   "layer": "H",
+   "code": "KHG-H004",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/incidences/39/attrs",
+     "value": "regulator"
+    }
+   ],
+   "source": "R02 case 10",
+   "expect_target": {
+    "/incidences/39": [
+     "f:reg-1",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-H004"
+   ]
+  },
+  {
+   "id": "MC019",
+   "description": "direction 'treatment'",
+   "layer": "H",
+   "code": "KHG-H005",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/incidences/39/direction",
+     "value": "treatment"
+    }
+   ],
+   "source": "R01 V05; R02 case 12",
+   "expect_target": {
+    "/incidences/39": [
+     "f:reg-1",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-H005"
+   ]
+  },
+  {
+   "id": "MC020",
+   "description": "incidence without node",
+   "layer": "H",
+   "code": "KHG-H006",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/incidences/39/node"
+    }
+   ],
+   "source": "R01 V04",
+   "expect_target": {
+    "/incidences/39": [
+     "f:reg-1",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-H006"
+   ]
+  },
+  {
+   "id": "MC021",
+   "description": "node id of type float 1.5",
+   "layer": "H",
+   "code": "KHG-H007",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/nodes/12/node",
+     "value": 1.5
+    }
+   ],
+   "source": "R02 case 18",
+   "expect_target": {
+    "/nodes/12": "ex:TP53"
+   },
+   "reported": [
+    "KHG-H007"
+   ]
+  },
+  {
+   "id": "MC022",
+   "description": "node id of type boolean",
+   "layer": "H",
+   "code": "KHG-H007",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/nodes/12/node",
+     "value": true
+    }
+   ],
+   "source": "R02 case 19",
+   "expect_target": {
+    "/nodes/12": "ex:TP53"
+   },
+   "reported": [
+    "KHG-H007"
+   ]
+  },
+  {
+   "id": "MC023",
+   "description": "node id null",
+   "layer": "H",
+   "code": "KHG-H007",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/nodes/12/node",
+     "value": null
+    }
+   ],
+   "source": "R02 case 20",
+   "expect_target": {
+    "/nodes/12": "ex:TP53"
+   },
+   "reported": [
+    "KHG-H007"
+   ]
+  },
+  {
+   "id": "MC024",
+   "description": "network-type 'knowledge-hypergraph'",
+   "layer": "H",
+   "code": "KHG-H008",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/network-type",
+     "value": "knowledge-hypergraph"
+    }
+   ],
+   "source": "R02 case 26",
+   "reported": [
+    "KHG-H008"
+   ]
+  },
+  {
+   "id": "MC025",
+   "description": "incidences is an object, not an array",
+   "layer": "H",
+   "code": "KHG-H009",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/incidences",
+     "value": {}
+    }
+   ],
+   "source": "B H009",
+   "reported": [
+    "KHG-H009"
+   ]
+  },
+  {
+   "id": "MC026",
+   "description": "metadata without the role-convention declaration",
+   "layer": "R",
+   "code": "KHG-R003",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/metadata/role-convention"
+    }
+   ],
+   "source": "R01 V07; F15; critique UPSTREAM",
+   "reported": [
+    "KHG-R003"
+   ]
+  },
+  {
+   "id": "MC027",
+   "description": "an incidence of a role-carrying edge without a role",
+   "layer": "R",
+   "code": "KHG-R001",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/incidences/39/attrs/role"
+    }
+   ],
+   "source": "R01 V08",
+   "expect_target": {
+    "/incidences/39": [
+     "f:reg-1",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-R001"
+   ]
+  },
+  {
+   "id": "MC028",
+   "description": "list-valued role",
+   "layer": "R",
+   "code": "KHG-R001",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/incidences/39/attrs/role",
+     "value": [
+      "regulator",
+      "target"
+     ]
+    }
+   ],
+   "source": "R01 V09; R02 case 09",
+   "expect_target": {
+    "/incidences/39": [
+     "f:reg-1",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-R001"
+   ]
+  },
+  {
+   "id": "MC029",
+   "description": "empty role string",
+   "layer": "R",
+   "code": "KHG-R001",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/incidences/39/attrs/role",
+     "value": ""
+    }
+   ],
+   "source": "R01 V09",
+   "expect_target": {
+    "/incidences/39": [
+     "f:reg-1",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-R001"
+   ]
+  },
+  {
+   "id": "MC030",
+   "description": "an incidence record repeated exactly (same edge, node, role and role-position)",
+   "layer": "R",
+   "code": "KHG-R002",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/incidences/-",
+     "value": {
+      "edge": "f:reg-1",
+      "node": "ex:TP53",
+      "direction": "tail",
+      "attrs": {
+       "role": "regulator",
+       "khg-bid": "b2"
+      }
+     }
+    }
+   ],
+   "source": "R01 V10/V11 (as ruled)",
+   "reported": [
+    "KHG-R002"
+   ]
+  },
+  {
+   "id": "MC031",
+   "description": "role-position 0",
+   "layer": "R",
+   "code": "KHG-R004",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/incidences/42/attrs/role-position",
+     "value": 0
+    }
+   ],
+   "source": "rule 4 of role-convention 1.0.0",
+   "expect_target": {
+    "/incidences/42": [
+     "f:route-1",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-R004"
+   ]
+  },
+  {
+   "id": "MC032",
+   "description": "metadata without khg-profile (validated as khg-hif: no foreign fallback)",
+   "layer": "P",
+   "code": "KHG-P001",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/metadata/khg-profile"
+    }
+   ],
+   "source": "R01 V07; critique GL-02",
+   "reported": [
+    "KHG-P001"
+   ]
+  },
+  {
+   "id": "MC033",
+   "description": "metadata without khg-document-id",
+   "layer": "P",
+   "code": "KHG-P001",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/metadata/khg-document-id"
+    }
+   ],
+   "source": "§4.5",
+   "reported": [
+    "KHG-P001"
+   ]
+  },
+  {
+   "id": "MC034",
+   "description": "integer node id (valid HIF, outside the profile)",
+   "layer": "P",
+   "code": "KHG-P002",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/nodes/12/node",
+     "value": 53
+    },
+    {
+     "op": "replace",
+     "path": "/incidences/39/node",
+     "value": 53
+    }
+   ],
+   "source": "R02 cases 15-17; F10",
+   "expect_target": {
+    "/nodes/12": "ex:TP53",
+    "/incidences/39": [
+     "f:reg-1",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-P002"
+   ]
+  },
+  {
+   "id": "MC035",
+   "description": "empty-string id",
+   "layer": "P",
+   "code": "KHG-P003",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/nodes/12/node",
+     "value": ""
+    },
+    {
+     "op": "replace",
+     "path": "/incidences/39/node",
+     "value": ""
+    }
+   ],
+   "source": "R02 case 21",
+   "expect_target": {
+    "/nodes/12": "ex:TP53",
+    "/incidences/39": [
+     "f:reg-1",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-P003"
+   ]
+  },
+  {
+   "id": "MC036",
+   "description": "a _:ref: node id of 519 code points (its fact id has 513)",
+   "layer": "P",
+   "code": "KHG-P003",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/nodes/41/node",
+     "value": "_:ref:f:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    },
+    {
+     "op": "replace",
+     "path": "/nodes/41/attrs/khg-ref",
+     "value": "f:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    },
+    {
+     "op": "replace",
+     "path": "/incidences/10/node",
+     "value": "_:ref:f:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    }
+   ],
+   "source": "critique GL-16 (518 is the limit)",
+   "expect_target": {
+    "/nodes/41": "_:ref:f:born-louis14-paris",
+    "/incidences/10": [
+     "f:claim-1",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-P003"
+   ]
+  },
+  {
+   "id": "MC037",
+   "description": "incidence without khg-bid",
+   "layer": "P",
+   "code": "KHG-P005",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/incidences/39/attrs/khg-bid"
+    }
+   ],
+   "source": "§4.3",
+   "expect_target": {
+    "/incidences/39": [
+     "f:reg-1",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-P005"
+   ]
+  },
+  {
+   "id": "MC038",
+   "description": "legacy roles key next to role",
+   "layer": "P",
+   "code": "KHG-P014",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/incidences/39/attrs/roles",
+     "value": [
+      "regulator"
+     ]
+    }
+   ],
+   "source": "R01 V20",
+   "expect_target": {
+    "/incidences/39": [
+     "f:reg-1",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-P014"
+   ]
+  },
+  {
+   "id": "MC039",
+   "description": "network-type asc",
+   "layer": "P",
+   "code": "KHG-P007",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/network-type",
+     "value": "asc"
+    }
+   ],
+   "source": "R03 D8, c04",
+   "reported": [
+    "KHG-P007"
+   ]
+  },
+  {
+   "id": "MC040",
+   "description": "metadata.default_attrs",
+   "layer": "P",
+   "code": "KHG-P008",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/metadata/default_attrs",
+     "value": {
+      "incidences": {
+       "role": "member"
+      }
+     }
+    }
+   ],
+   "source": "R03 D7, c20, row 23",
+   "reported": [
+    "KHG-P008"
+   ]
+  },
+  {
+   "id": "MC041",
+   "description": "unknown khg-* metadata key",
+   "layer": "P",
+   "code": "KHG-P008",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/metadata/khg-colour",
+     "value": "blue"
+    }
+   ],
+   "source": "§4.5",
+   "reported": [
+    "KHG-P008"
+   ]
+  },
+  {
+   "id": "MC042",
+   "description": "hif-schema is the moving main URL (as in the KB sample)",
+   "layer": "P",
+   "code": "KHG-P009",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/metadata/hif-schema",
+     "value": "https://raw.githubusercontent.com/pszufe/HIF-standard/main/schemas/hif_schema.json"
+    }
+   ],
+   "source": "R01 PF-01; R02 §10 item 5",
+   "reported": [
+    "KHG-P009"
+   ]
+  },
+  {
+   "id": "MC043",
+   "description": "hif-schema-sha256 is not the vendored hash",
+   "layer": "P",
+   "code": "KHG-P009",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/metadata/hif-schema-sha256",
+     "value": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    }
+   ],
+   "source": "F2",
+   "reported": [
+    "KHG-P009"
+   ]
+  },
+  {
+   "id": "MC044",
+   "description": "khg-literal-nodes outside shared and per_binding",
+   "layer": "P",
+   "code": "KHG-P009",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/metadata/khg-literal-nodes",
+     "value": "hub"
+    }
+   ],
+   "source": "critique CONS-15",
+   "reported": [
+    "KHG-P009"
+   ]
+  },
+  {
+   "id": "MC045",
+   "description": "directed document, one incidence without direction",
+   "layer": "P",
+   "code": "KHG-P010",
+   "kind": "hif",
+   "base": "fixture.directed-slice.hif.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/incidences/32/direction"
+    }
+   ],
+   "source": "R01 V12; R02 case 23; R03 c14, D4",
+   "expect_target": {
+    "/incidences/32": [
+     "f:reg-1",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-P010"
+   ]
+  },
+  {
+   "id": "MC046",
+   "description": "directed slice written as undirected (every incidence has a direction)",
+   "layer": "P",
+   "code": "KHG-P011",
+   "kind": "hif",
+   "base": "fixture.directed-slice.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/network-type",
+     "value": "undirected"
+    }
+   ],
+   "source": "§4.2 direction rule",
+   "reported": [
+    "KHG-P011"
+   ]
+  },
+  {
+   "id": "MC047",
+   "description": "edge without relation",
+   "layer": "P",
+   "code": "KHG-P012",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/edges/13/attrs/relation"
+    }
+   ],
+   "source": "R01 V14",
+   "expect_target": {
+    "/edges/13": "f:reg-1"
+   },
+   "reported": [
+    "KHG-P012"
+   ]
+  },
+  {
+   "id": "MC048",
+   "description": "edge without khg-status",
+   "layer": "P",
+   "code": "KHG-P012",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/edges/13/attrs/khg-status"
+    }
+   ],
+   "source": "R01 V40 (as revised)",
+   "expect_target": {
+    "/edges/13": "f:reg-1"
+   },
+   "reported": [
+    "KHG-P012"
+   ]
+  },
+  {
+   "id": "MC049",
+   "description": "node without khg-kind",
+   "layer": "P",
+   "code": "KHG-P013",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/nodes/12/attrs/khg-kind"
+    }
+   ],
+   "source": "§4.3",
+   "expect_target": {
+    "/nodes/12": "ex:TP53"
+   },
+   "reported": [
+    "KHG-P013"
+   ]
+  },
+  {
+   "id": "MC050",
+   "description": "literal node without khg-literal",
+   "layer": "P",
+   "code": "KHG-P013",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/nodes/32/attrs/khg-literal"
+    }
+   ],
+   "source": "R01 C1-R68",
+   "expect_target": {
+    "/nodes/32": "_:lit:86e4637ee45af992a7467d24f2a93a64"
+   },
+   "reported": [
+    "KHG-P013"
+   ]
+  },
+  {
+   "id": "MC051",
+   "description": "unknown khg-* key in incidence attrs",
+   "layer": "P",
+   "code": "KHG-P014",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/incidences/39/attrs/khg-colour",
+     "value": "red"
+    }
+   ],
+   "source": "§4.3",
+   "expect_target": {
+    "/incidences/39": [
+     "f:reg-1",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-P014"
+   ]
+  },
+  {
+   "id": "MC052",
+   "description": "entity node id using the reserved _: prefix",
+   "layer": "P",
+   "code": "KHG-P004",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/nodes/12/node",
+     "value": "_:TP53"
+    },
+    {
+     "op": "replace",
+     "path": "/incidences/39/node",
+     "value": "_:TP53"
+    }
+   ],
+   "source": "R02 rec. 7",
+   "expect_target": {
+    "/nodes/12": "ex:TP53",
+    "/incidences/39": [
+     "f:reg-1",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-P004"
+   ]
+  },
+  {
+   "id": "MC053",
+   "description": "somevalue node whose id lacks the _:sv: prefix",
+   "layer": "P",
+   "code": "KHG-P004",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/nodes/44/node",
+     "value": "ex:unknown"
+    },
+    {
+     "op": "replace",
+     "path": "/incidences/2/node",
+     "value": "ex:unknown"
+    }
+   ],
+   "source": "§4.2",
+   "expect_target": {
+    "/nodes/44": "_:sv:b3d2979870a1d331fa6dd177274b85d9",
+    "/incidences/2": [
+     "f:born-scribe",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-P004"
+   ]
+  },
+  {
+   "id": "MC054",
+   "description": "two incidence records of one edge share a khg-bid",
+   "layer": "P",
+   "code": "KHG-P016",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/incidences/40/attrs/khg-bid",
+     "value": "b2"
+    }
+   ],
+   "source": "§4.3; B S025",
+   "expect_target": {
+    "/incidences/40": [
+     "f:reg-1",
+     "b3"
+    ]
+   },
+   "reported": [
+    "KHG-P016"
+   ]
+  },
+  {
+   "id": "MC055",
+   "description": "khg-external fact reference outside a slice",
+   "layer": "P",
+   "code": "KHG-P017",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/nodes/41/attrs/khg-external",
+     "value": true
+    }
+   ],
+   "source": "critique CONS-14",
+   "expect_target": {
+    "/nodes/41": "_:ref:f:born-louis14-paris"
+   },
+   "reported": [
+    "KHG-P017"
+   ]
+  },
+  {
+   "id": "MC056",
+   "description": "node declared twice",
+   "layer": "D",
+   "code": "KHG-D001",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/nodes/-",
+     "value": {
+      "node": "ex:TP53",
+      "weight": 3,
+      "attrs": {
+       "khg-kind": "entity",
+       "label": "TP53",
+       "khg-types": [
+        "Gene"
+       ]
+      }
+     }
+    }
+   ],
+   "source": "R01 V16; R03 c19, D5",
+   "reported": [
+    "KHG-D001"
+   ]
+  },
+  {
+   "id": "MC057",
+   "description": "edge declared twice",
+   "layer": "D",
+   "code": "KHG-D001",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/edges/-",
+     "value": {
+      "edge": "f:reg-1",
+      "weight": 0.5,
+      "attrs": {
+       "relation": "regulates",
+       "khg-status": "asserted",
+       "khg-rank": "normal",
+       "khg-visibility": "visible",
+       "khg-evidence": [
+        {
+         "id": "e1",
+         "type": "curated",
+         "mode": "manual",
+         "source": {
+          "doc_id": "doc:review-p53"
+         },
+         "supports": [
+          "b1",
+          "b2",
+          "b3"
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "source": "R01 V16",
+   "reported": [
+    "KHG-D001"
+   ]
+  },
+  {
+   "id": "MC058",
+   "description": "incidence names an undeclared node",
+   "layer": "D",
+   "code": "KHG-D002",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/incidences/39/node",
+     "value": "ex:MDM2"
+    }
+   ],
+   "source": "R01 V17; R02 case 28",
+   "expect_target": {
+    "/incidences/39": [
+     "f:reg-1",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-D002"
+   ]
+  },
+  {
+   "id": "MC059",
+   "description": "incidence names an undeclared edge",
+   "layer": "D",
+   "code": "KHG-D003",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/incidences/39/edge",
+     "value": "f:reg-9"
+    }
+   ],
+   "source": "R02 case 29",
+   "expect_target": {
+    "/incidences/39": [
+     "f:reg-1",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-D003"
+   ]
+  },
+  {
+   "id": "MC060",
+   "description": "literal node id does not match its value",
+   "layer": "D",
+   "code": "KHG-D005",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/nodes/32/attrs/khg-literal/amount",
+     "value": "+679942"
+    }
+   ],
+   "source": "R01 D-09",
+   "expect_target": {
+    "/nodes/32": "_:lit:86e4637ee45af992a7467d24f2a93a64"
+   },
+   "reported": [
+    "KHG-D005"
+   ]
+  },
+  {
+   "id": "MC061",
+   "description": "special node id does not match (record id, bid)",
+   "layer": "D",
+   "code": "KHG-D005",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/incidences/2/attrs/khg-bid",
+     "value": "b9"
+    }
+   ],
+   "source": "§4.2",
+   "expect_target": {
+    "/incidences/2": [
+     "f:born-scribe",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-D005"
+   ]
+  },
+  {
+   "id": "MC062",
+   "description": "khg-schema-sha256 does not match the relation-type schema",
+   "layer": "D",
+   "code": "KHG-D009",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/metadata/khg-schema-sha256",
+     "value": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    }
+   ],
+   "source": "R01 V41",
+   "reported": [
+    "KHG-D009"
+   ]
+  },
+  {
+   "id": "MC063",
+   "description": "incidence direction contradicts the role's declared direction (reported while decoding)",
+   "layer": "S",
+   "code": "KHG-S016",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/incidences/39/direction",
+     "value": "head"
+    }
+   ],
+   "source": "R01 V38; critique GL-02 (a step may emit another layer's code)",
+   "expect_target": {
+    "/incidences/39": [
+     "f:reg-1",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-S016"
+   ]
+  },
+  {
+   "id": "MC064",
+   "description": "fact-ref node pointing at a missing edge",
+   "layer": "D",
+   "code": "KHG-D002",
+   "kind": "hif",
+   "base": "fixture.hif.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/nodes/41/attrs/khg-ref",
+     "value": "f:born-louis14-lyon"
+    },
+    {
+     "op": "replace",
+     "path": "/nodes/41/node",
+     "value": "_:ref:f:born-louis14-lyon"
+    },
+    {
+     "op": "replace",
+     "path": "/incidences/10/node",
+     "value": "_:ref:f:born-louis14-lyon"
+    }
+   ],
+   "source": "R01 V18",
+   "expect_target": {
+    "/nodes/41": "_:ref:f:born-louis14-paris",
+    "/incidences/10": [
+     "f:claim-1",
+     "b2"
+    ]
+   },
+   "reported": [
+    "KHG-D002"
+   ]
+  },
+  {
+   "id": "MC065",
+   "description": "binding value with two kinds (entity and literal)",
+   "layer": "C",
+   "code": "KHG-C001",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/records/35/bindings/0/value/literal",
+     "value": {
+      "datatype": "string",
+      "value": "HeLa"
+     }
+    }
+   ],
+   "source": "R01 C1-R06",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-C001"
+   ]
+  },
+  {
+   "id": "MC066",
+   "description": "status outside the lifecycle enum",
+   "layer": "C",
+   "code": "KHG-C002",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/35/status",
+     "value": "believed"
+    }
+   ],
+   "source": "R01 V36",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-C002"
+   ]
+  },
+  {
+   "id": "MC067",
+   "description": "confidence as a bare number",
+   "layer": "C",
+   "code": "KHG-C003",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/28/confidence",
+     "value": 0.9
+    }
+   ],
+   "source": "R01 V32; C1-R49",
+   "expect_target": {
+    "/records/28": "f:coadmin-1"
+   },
+   "reported": [
+    "KHG-C003"
+   ]
+  },
+  {
+   "id": "MC068",
+   "description": "quantity without unit",
+   "layer": "C",
+   "code": "KHG-C004",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/records/33/bindings/2/value/literal/unit"
+    }
+   ],
+   "source": "R01 V26",
+   "expect_target": {
+    "/records/33": "f:pop-łódź-2019"
+   },
+   "reported": [
+    "KHG-C004"
+   ]
+  },
+  {
+   "id": "MC069",
+   "description": "time precision 15",
+   "layer": "C",
+   "code": "KHG-C004",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/30/bindings/4/value/literal/precision",
+     "value": 15
+    }
+   ],
+   "source": "R01 V26",
+   "expect_target": {
+    "/records/30": "f:king-14"
+   },
+   "reported": [
+    "KHG-C004"
+   ]
+  },
+  {
+   "id": "MC070",
+   "description": "calendar 'islamic'",
+   "layer": "C",
+   "code": "KHG-C004",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/27/bindings/2/value/literal/calendar",
+     "value": "islamic"
+    }
+   ],
+   "source": "graft U10",
+   "expect_target": {
+    "/records/27": "f:claim-1"
+   },
+   "reported": [
+    "KHG-C004"
+   ]
+  },
+  {
+   "id": "MC071",
+   "description": "unbound value in an asserted hyperedge",
+   "layer": "C",
+   "code": "KHG-C005",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/30/bindings/3/value",
+     "value": {
+      "unbound": {
+       "var": "who"
+      }
+     }
+    }
+   ],
+   "source": "R01 V34",
+   "expect_target": {
+    "/records/30": "f:king-14"
+   },
+   "reported": [
+    "KHG-C005"
+   ]
+  },
+  {
+   "id": "MC072",
+   "description": "status superseded without status_ref",
+   "layer": "C",
+   "code": "KHG-C006",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/records/24/status_ref"
+    }
+   ],
+   "source": "R01 V37; F8",
+   "expect_target": {
+    "/records/24": "f:born-skłodowska-kraków"
+   },
+   "reported": [
+    "KHG-C006"
+   ]
+  },
+  {
+   "id": "MC073",
+   "description": "status_ref on an asserted fact",
+   "layer": "C",
+   "code": "KHG-C006",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/records/35/status_ref",
+     "value": "m:sup-1"
+    }
+   ],
+   "source": "critique SEM-10",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-C006"
+   ]
+  },
+  {
+   "id": "MC074",
+   "description": "extracted evidence without selectors and activity",
+   "layer": "C",
+   "code": "KHG-C007",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/records/30/evidence/1/selectors"
+    },
+    {
+     "op": "remove",
+     "path": "/records/30/evidence/1/activity"
+    }
+   ],
+   "source": "R01 V47",
+   "expect_target": {
+    "/records/30": "f:king-14"
+   },
+   "reported": [
+    "KHG-C007"
+   ]
+  },
+  {
+   "id": "MC075",
+   "description": "position selector with a negative start",
+   "layer": "C",
+   "code": "KHG-C007",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/30/evidence/1/selectors/1/start",
+     "value": -1
+    }
+   ],
+   "source": "F11",
+   "expect_target": {
+    "/records/30": "f:king-14"
+   },
+   "reported": [
+    "KHG-C007"
+   ]
+  },
+  {
+   "id": "MC076",
+   "description": "selectors without doc_sha256",
+   "layer": "C",
+   "code": "KHG-C007",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/records/30/evidence/1/source/doc_sha256"
+    }
+   ],
+   "source": "F11; R04 O8",
+   "expect_target": {
+    "/records/30": "f:king-14"
+   },
+   "reported": [
+    "KHG-C007"
+   ]
+  },
+  {
+   "id": "MC077",
+   "description": "inferred evidence with an empty from and no model",
+   "layer": "C",
+   "code": "KHG-C007",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/records/35/evidence/-",
+     "value": {
+      "id": "e2",
+      "type": "inferred",
+      "mode": "automatic",
+      "source": {
+       "doc_id": "doc:x"
+      },
+      "inference": {
+       "rule": "transitivity",
+       "from": []
+      }
+     }
+    }
+   ],
+   "source": "critique CONS-29",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-C007"
+   ]
+  },
+  {
+   "id": "MC078",
+   "description": "rank deprecated without rank_reason",
+   "layer": "C",
+   "code": "KHG-C008",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/records/34/rank_reason"
+    }
+   ],
+   "source": "R04 M5",
+   "expect_target": {
+    "/records/34": "f:pop-łódź-2019-dep"
+   },
+   "reported": [
+    "KHG-C008"
+   ]
+  },
+  {
+   "id": "MC079",
+   "description": "record-level field outside the format (stored arity)",
+   "layer": "C",
+   "code": "KHG-C009",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/records/28/arity",
+     "value": 3
+    }
+   ],
+   "source": "R01 V15; A M41",
+   "expect_target": {
+    "/records/28": "f:coadmin-1"
+   },
+   "reported": [
+    "KHG-C009"
+   ]
+  },
+  {
+   "id": "MC080",
+   "description": "hyperedge without relation",
+   "layer": "C",
+   "code": "KHG-C010",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/records/35/relation"
+    }
+   ],
+   "source": "R01 V14",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-C010"
+   ]
+  },
+  {
+   "id": "MC081",
+   "description": "bid with a space",
+   "layer": "C",
+   "code": "KHG-C011",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/35/bindings/0/bid",
+     "value": "b 1"
+    }
+   ],
+   "source": "§2.1",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-C011"
+   ]
+  },
+  {
+   "id": "MC082",
+   "description": "reason on a non-lifecycle hyperedge",
+   "layer": "C",
+   "code": "KHG-C012",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/records/35/reason",
+     "value": "correction"
+    }
+   ],
+   "source": "§2.2",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-C012"
+   ]
+  },
+  {
+   "id": "MC083",
+   "description": "lifecycle record without reason",
+   "layer": "C",
+   "code": "KHG-C012",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/records/39/reason"
+    }
+   ],
+   "source": "R04 M5",
+   "expect_target": {
+    "/records/39": "m:sup-1"
+   },
+   "reported": [
+    "KHG-C012"
+   ]
+  },
+  {
+   "id": "MC084",
+   "description": "a goal block on an asserted fact",
+   "layer": "C",
+   "code": "KHG-C012",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/records/35/goal",
+     "value": {
+      "brief": "why?"
+     }
+    }
+   ],
+   "source": "critique SEM-18 (7)",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-C012"
+   ]
+  },
+  {
+   "id": "MC085",
+   "description": "relation not declared",
+   "layer": "S",
+   "code": "KHG-S001",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/35/relation",
+     "value": "inhibits"
+    }
+   ],
+   "source": "R01 V21",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-S001"
+   ]
+  },
+  {
+   "id": "MC086",
+   "description": "role not allowed for the relation",
+   "layer": "S",
+   "code": "KHG-S002",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/35/bindings/0/role",
+     "value": "tissue"
+    }
+   ],
+   "source": "R01 V22",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-S002"
+   ]
+  },
+  {
+   "id": "MC087",
+   "description": "required role missing on an asserted fact",
+   "layer": "S",
+   "code": "KHG-S003",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/records/30/bindings/2"
+    }
+   ],
+   "source": "R01 V23",
+   "expect_target": {
+    "/records/30": "f:king-14"
+   },
+   "reported": [
+    "KHG-S003",
+    "KHG-S022"
+   ]
+  },
+  {
+   "id": "MC088",
+   "description": "role bound more often than max",
+   "layer": "S",
+   "code": "KHG-S004",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/records/35/bindings/-",
+     "value": {
+      "bid": "b4",
+      "role": "context",
+      "value": {
+       "entity": "ex:TP53"
+      }
+     }
+    }
+   ],
+   "source": "R01 V24",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-S004",
+    "KHG-S005"
+   ]
+  },
+  {
+   "id": "MC089",
+   "description": "entity of the wrong type",
+   "layer": "S",
+   "code": "KHG-S005",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/35/bindings/0/value",
+     "value": {
+      "entity": "ex:insulin"
+     }
+    }
+   ],
+   "source": "R01 V25",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-S005"
+   ]
+  },
+  {
+   "id": "MC090",
+   "description": "literal where an entity is expected",
+   "layer": "S",
+   "code": "KHG-S005",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/35/bindings/0/value",
+     "value": {
+      "literal": {
+       "datatype": "string",
+       "value": "HeLa"
+      }
+     }
+    }
+   ],
+   "source": "R01 V25",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-S005"
+   ]
+  },
+  {
+   "id": "MC091",
+   "description": "fact reference in a role that takes no facts",
+   "layer": "S",
+   "code": "KHG-S005",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/35/bindings/0/value",
+     "value": {
+      "fact": "f:king-14"
+     }
+    }
+   ],
+   "source": "R01 V29 (nestable)",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-S005"
+   ]
+  },
+  {
+   "id": "MC092",
+   "description": "somevalue where the usage forbids it",
+   "layer": "S",
+   "code": "KHG-S005",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/27/bindings/0/value",
+     "value": {
+      "special": "somevalue"
+     }
+    }
+   ],
+   "source": "R01 C1-R08",
+   "expect_target": {
+    "/records/27": "f:claim-1"
+   },
+   "reported": [
+    "KHG-S005"
+   ]
+  },
+  {
+   "id": "MC093",
+   "description": "time literal with month 13",
+   "layer": "S",
+   "code": "KHG-S006",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/30/bindings/4/value/literal/time",
+     "value": "+1643-13-14T00:00:00Z"
+    }
+   ],
+   "source": "R01 V26",
+   "expect_target": {
+    "/records/30": "f:king-14"
+   },
+   "reported": [
+    "KHG-S006"
+   ]
+  },
+  {
+   "id": "MC094",
+   "description": "day set below year precision",
+   "layer": "S",
+   "code": "KHG-S006",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/33/bindings/1/value/literal/time",
+     "value": "+2019-00-05T00:00:00Z"
+    }
+   ],
+   "source": "R01 V26",
+   "expect_target": {
+    "/records/33": "f:pop-łódź-2019"
+   },
+   "reported": [
+    "KHG-S006"
+   ]
+  },
+  {
+   "id": "MC095",
+   "description": "29 February 1700 in the Gregorian calendar (valid only in the Julian)",
+   "layer": "S",
+   "code": "KHG-S006",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/30/bindings/4/value/literal/time",
+     "value": "+1700-02-29T00:00:00Z"
+    }
+   ],
+   "source": "graft U10",
+   "expect_target": {
+    "/records/30": "f:king-14"
+   },
+   "reported": [
+    "KHG-S006"
+   ]
+  },
+  {
+   "id": "MC096",
+   "description": "year 0 (historical numbering has none)",
+   "layer": "S",
+   "code": "KHG-S006",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/27/bindings/2/value/literal/time",
+     "value": "+0000-00-00T00:00:00Z"
+    }
+   ],
+   "source": "critique CONS-01 (Wikibase JSON)",
+   "expect_target": {
+    "/records/27": "f:claim-1"
+   },
+   "reported": [
+    "KHG-S006"
+   ]
+  },
+  {
+   "id": "MC097",
+   "description": "a date before 1583 without a calendar",
+   "layer": "S",
+   "code": "KHG-S006",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/32/bindings/3/value/literal",
+     "value": {
+      "datatype": "time",
+      "time": "+1500-01-01T00:00:00Z",
+      "precision": 11
+     }
+    }
+   ],
+   "source": "critique CONS-12 (Wikidata Help:Dates)",
+   "expect_target": {
+    "/records/32": "f:married-curie"
+   },
+   "reported": [
+    "KHG-S006"
+   ]
+  },
+  {
+   "id": "MC098",
+   "description": "hyperedge with no bindings",
+   "layer": "S",
+   "code": "KHG-S007",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/35/bindings",
+     "value": []
+    },
+    {
+     "op": "remove",
+     "path": "/records/35/evidence/0/supports"
+    }
+   ],
+   "source": "R01 V27",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-S007"
+   ]
+  },
+  {
+   "id": "MC099",
+   "description": "valid time starts after it ends",
+   "layer": "S",
+   "code": "KHG-S009",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/30/bindings/0/value/literal/time",
+     "value": "+1600-01-01T00:00:00Z"
+    }
+   ],
+   "source": "R01 V30",
+   "expect_target": {
+    "/records/30": "f:king-14"
+   },
+   "reported": [
+    "KHG-S009"
+   ]
+  },
+  {
+   "id": "MC100",
+   "description": "confidence scale not declared",
+   "layer": "S",
+   "code": "KHG-S010",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/28/evidence/0/confidence/scale",
+     "value": "llm-1-5"
+    }
+   ],
+   "source": "R01 V32",
+   "expect_target": {
+    "/records/28": "f:coadmin-1"
+   },
+   "reported": [
+    "KHG-S010"
+   ]
+  },
+  {
+   "id": "MC101",
+   "description": "confidence outside its scale",
+   "layer": "S",
+   "code": "KHG-S010",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/28/evidence/0/confidence/value",
+     "value": 11
+    }
+   ],
+   "source": "R01 V32",
+   "expect_target": {
+    "/records/28": "f:coadmin-1"
+   },
+   "reported": [
+    "KHG-S010"
+   ]
+  },
+  {
+   "id": "MC102",
+   "description": "asserted fact with no evidence",
+   "layer": "S",
+   "code": "KHG-S011",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/records/35/evidence"
+    }
+   ],
+   "source": "R01 V33",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-S011"
+   ]
+  },
+  {
+   "id": "MC103",
+   "description": "novalue and a concrete value in one role",
+   "layer": "S",
+   "code": "KHG-S013",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/records/26/bindings/-",
+     "value": {
+      "bid": "b3",
+      "role": "catalyst",
+      "value": {
+       "entity": "ex:R-hydrolysis-7"
+      }
+     }
+    }
+   ],
+   "source": "R01 V35",
+   "expect_target": {
+    "/records/26": "f:cat-7"
+   },
+   "reported": [
+    "KHG-S005",
+    "KHG-S013"
+   ]
+  },
+  {
+   "id": "MC104",
+   "description": "the same filler twice in an unordered role",
+   "layer": "S",
+   "code": "KHG-S014",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/28/bindings/0/value",
+     "value": {
+      "entity": "ex:metformin"
+     }
+    }
+   ],
+   "source": "R01 C1-R14",
+   "expect_target": {
+    "/records/28": "f:coadmin-1"
+   },
+   "reported": [
+    "KHG-S014"
+   ]
+  },
+  {
+   "id": "MC105",
+   "description": "ordered role with a gap in positions",
+   "layer": "S",
+   "code": "KHG-S015",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/36/bindings/3/position",
+     "value": 4
+    }
+   ],
+   "source": "R01 C1-R15",
+   "expect_target": {
+    "/records/36": "f:route-1"
+   },
+   "reported": [
+    "KHG-S015"
+   ]
+  },
+  {
+   "id": "MC106",
+   "description": "position on an unordered role",
+   "layer": "S",
+   "code": "KHG-S015",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/records/28/bindings/0/position",
+     "value": 1
+    }
+   ],
+   "source": "R01 C1-R15",
+   "expect_target": {
+    "/records/28": "f:coadmin-1"
+   },
+   "reported": [
+    "KHG-S015"
+   ]
+  },
+  {
+   "id": "MC107",
+   "description": "direction on a binding whose usage declares one",
+   "layer": "S",
+   "code": "KHG-S016",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/records/35/bindings/1/direction",
+     "value": "head"
+    }
+   ],
+   "source": "R01 V38",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-S016"
+   ]
+  },
+  {
+   "id": "MC108",
+   "description": "goal omits a required role instead of leaving it unbound",
+   "layer": "S",
+   "code": "KHG-S018",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/records/38/bindings/0"
+    }
+   ],
+   "source": "R01 C1-R72; P11",
+   "expect_target": {
+    "/records/38": "g:who-1774"
+   },
+   "reported": [
+    "KHG-S018"
+   ]
+  },
+  {
+   "id": "MC109",
+   "description": "one unbound variable used twice in a goal",
+   "layer": "S",
+   "code": "KHG-S019",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/38/bindings/1/value",
+     "value": {
+      "unbound": {
+       "var": "who"
+      }
+     }
+    }
+   ],
+   "source": "§2.4",
+   "expect_target": {
+    "/records/38": "g:who-1774"
+   },
+   "reported": [
+    "KHG-S019"
+   ]
+  },
+  {
+   "id": "MC110",
+   "description": "id not in Unicode NFC (decomposed e with acute)",
+   "layer": "S",
+   "code": "KHG-S020",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/35/id",
+     "value": "f:rég-1"
+    }
+   ],
+   "source": "R03 c13; F11",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-S020"
+   ]
+  },
+  {
+   "id": "MC111",
+   "description": "quote differs from text[start:end] (code points, NFC)",
+   "layer": "S",
+   "code": "KHG-S021",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/30/evidence/1/selectors/1/start",
+     "value": 1
+    },
+    {
+     "op": "replace",
+     "path": "/records/30/evidence/1/selectors/1/end",
+     "value": 42
+    }
+   ],
+   "doc_text": {
+    "doc:louis-bio": "Louis XIV succeeded his father Louis XIII as King of France on 14 May 1643."
+   },
+   "source": "F11; R04 M6",
+   "expect_target": {
+    "/records/30": "f:king-14"
+   },
+   "reported": [
+    "KHG-S021"
+   ]
+  },
+  {
+   "id": "MC112",
+   "description": "evidence supports an unknown bid",
+   "layer": "S",
+   "code": "KHG-S022",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/30/evidence/1/supports",
+     "value": [
+      "b1",
+      "b9"
+     ]
+    }
+   ],
+   "source": "R01 C1-R36",
+   "expect_target": {
+    "/records/30": "f:king-14"
+   },
+   "reported": [
+    "KHG-S022"
+   ]
+  },
+  {
+   "id": "MC113",
+   "description": "precision below the usage's precision_min",
+   "layer": "S",
+   "code": "KHG-S023",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/33/bindings/1/value/literal",
+     "value": {
+      "datatype": "time",
+      "time": "+2010-00-00T00:00:00Z",
+      "precision": 8,
+      "calendar": "gregorian"
+     }
+    }
+   ],
+   "source": "R04 M2",
+   "expect_target": {
+    "/records/33": "f:pop-łódź-2019"
+   },
+   "reported": [
+    "KHG-S023"
+   ]
+  },
+  {
+   "id": "MC114",
+   "description": "unit not allowed for the role",
+   "layer": "S",
+   "code": "KHG-S023",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/33/bindings/2/value/literal/unit",
+     "value": "wd:Q11573"
+    }
+   ],
+   "source": "R04 M2",
+   "expect_target": {
+    "/records/33": "f:pop-łódź-2019"
+   },
+   "reported": [
+    "KHG-S023"
+   ]
+  },
+  {
+   "id": "MC115",
+   "description": "must_differ violated where the schema says error",
+   "layer": "S",
+   "code": "KHG-S024",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": null,
+   "schema_patch": [
+    {
+     "op": "replace",
+     "path": "/relations/3/constraints/0/severity",
+     "value": "error"
+    }
+   ],
+   "source": "R01 C1-R34; R04 M1; critique GL-01",
+   "note": "the unpatched fixture reports it as a warning",
+   "reported": [
+    "KHG-S024"
+   ]
+  },
+  {
+   "id": "MC116",
+   "description": "the same bid twice in one hyperedge",
+   "layer": "S",
+   "code": "KHG-S025",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/35/bindings/2/bid",
+     "value": "b2"
+    }
+   ],
+   "source": "§2.1",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-S022",
+    "KHG-S025"
+   ]
+  },
+  {
+   "id": "MC117",
+   "description": "lifecycle reason outside the relation's reasons",
+   "layer": "S",
+   "code": "KHG-S026",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/39/reason",
+     "value": "update"
+    }
+   ],
+   "source": "F7; A M53",
+   "expect_target": {
+    "/records/39": "m:sup-1"
+   },
+   "reported": [
+    "KHG-S026"
+   ]
+  },
+  {
+   "id": "MC118",
+   "description": "nesting cycle (a claim about itself; the schema lets claims take claims)",
+   "layer": "D",
+   "code": "KHG-D008",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/27/bindings/0/value",
+     "value": {
+      "fact": "f:claim-1"
+     }
+    }
+   ],
+   "schema_patch": [
+    {
+     "op": "replace",
+     "path": "/relations/9/roles/1/fillers",
+     "value": [
+      {
+       "fact": [
+        "born_in",
+        "claims"
+       ]
+      }
+     ]
+    }
+   ],
+   "source": "R01 V28; critique GL-01, SEM-03",
+   "expect_target": {
+    "/records/27": "f:claim-1"
+   },
+   "reported": [
+    "KHG-D008"
+   ]
+  },
+  {
+   "id": "MC119",
+   "description": "status_ref points at a record of the wrong relation",
+   "layer": "D",
+   "code": "KHG-D010",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/24/status_ref",
+     "value": "f:king-14"
+    }
+   ],
+   "source": "R01 V37",
+   "expect_target": {
+    "/records/24": "f:born-skłodowska-kraków"
+   },
+   "reported": [
+    "KHG-D010"
+   ]
+  },
+  {
+   "id": "MC120",
+   "description": "status_ref names no record (dangling)",
+   "layer": "D",
+   "code": "KHG-D010",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/35/status",
+     "value": "disputed"
+    },
+    {
+     "op": "add",
+     "path": "/records/35/status_ref",
+     "value": "m:none"
+    }
+   ],
+   "source": "critique SEM-18 (6)",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-D010"
+   ]
+  },
+  {
+   "id": "MC121",
+   "description": "superseded fact not named by its supersession record",
+   "layer": "D",
+   "code": "KHG-D010",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/39/bindings/0/value",
+     "value": {
+      "fact": "f:born-scribe"
+     }
+    }
+   ],
+   "source": "F8",
+   "expect_target": {
+    "/records/39": "m:sup-1"
+   },
+   "reported": [
+    "KHG-D010",
+    "KHG-D011"
+   ]
+  },
+  {
+   "id": "MC122",
+   "description": "supersession cycle",
+   "layer": "D",
+   "code": "KHG-D012",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/records/-",
+     "value": {
+      "kind": "hyperedge",
+      "id": "m:sup-2",
+      "relation": "khg:supersedes",
+      "status": "asserted",
+      "reason": "correction",
+      "bindings": [
+       {
+        "bid": "b1",
+        "role": "khg:superseding",
+        "value": {
+         "fact": "f:born-skłodowska-kraków"
+        }
+       },
+       {
+        "bid": "b2",
+        "role": "khg:superseded",
+        "value": {
+         "fact": "f:born-skłodowska-warszawa"
+        }
+       }
+      ],
+      "evidence": [
+       {
+        "id": "e1",
+        "type": "curated",
+        "mode": "manual",
+        "source": {
+         "doc_id": "doc:x"
+        },
+        "supports": [
+         "b1",
+         "b2"
+        ]
+       }
+      ]
+     }
+    }
+   ],
+   "source": "R01 V37",
+   "reported": [
+    "KHG-D010",
+    "KHG-D012"
+   ]
+  },
+  {
+   "id": "MC123",
+   "description": "correction between facts of different relations",
+   "layer": "D",
+   "code": "KHG-D011",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/39/bindings/1/value",
+     "value": {
+      "fact": "f:king-14"
+     }
+    }
+   ],
+   "source": "R01 V37",
+   "expect_target": {
+    "/records/39": "m:sup-1"
+   },
+   "reported": [
+    "KHG-D011"
+   ]
+  },
+  {
+   "id": "MC124",
+   "description": "correction across key digests (the superseding fact is about someone else)",
+   "layer": "D",
+   "code": "KHG-D011",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/39/bindings/1/value",
+     "value": {
+      "fact": "f:born-scribe"
+     }
+    }
+   ],
+   "source": "critique SEM-18 (5); R01 V37 third clause",
+   "expect_target": {
+    "/records/39": "m:sup-1"
+   },
+   "reported": [
+    "KHG-D011"
+   ]
+  },
+  {
+   "id": "MC125",
+   "description": "reason duplicate between facts with different content keys",
+   "layer": "D",
+   "code": "KHG-D011",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/39/reason",
+     "value": "duplicate"
+    }
+   ],
+   "source": "critique SEM-18 (4), SEM-20",
+   "expect_target": {
+    "/records/39": "m:sup-1"
+   },
+   "reported": [
+    "KHG-D011"
+   ]
+  },
+  {
+   "id": "MC126",
+   "description": "two asserted facts, same key, overlapping definite valid time",
+   "layer": "D",
+   "code": "KHG-D016",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/30/bindings/4/value/literal/time",
+     "value": "+1640-01-01T00:00:00Z"
+    }
+   ],
+   "source": "R01 V42",
+   "expect_target": {
+    "/records/30": "f:king-14"
+   },
+   "reported": [
+    "KHG-D016"
+   ]
+  },
+  {
+   "id": "MC127",
+   "description": "two preferred facts on one non-temporal key",
+   "layer": "D",
+   "code": "KHG-D016",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/records/33/rank",
+     "value": "preferred"
+    },
+    {
+     "op": "replace",
+     "path": "/records/34/rank",
+     "value": "preferred"
+    },
+    {
+     "op": "remove",
+     "path": "/records/34/rank_reason"
+    }
+   ],
+   "source": "critique SEM-18 (1)",
+   "expect_target": {
+    "/records/33": "f:pop-łódź-2019",
+    "/records/34": "f:pop-łódź-2019-dep"
+   },
+   "reported": [
+    "KHG-D016"
+   ]
+  },
+  {
+   "id": "MC128",
+   "description": "a second asserted birthplace for one person",
+   "layer": "D",
+   "code": "KHG-D016",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/records/-",
+     "value": {
+      "kind": "hyperedge",
+      "id": "f:born-skłodowska-paris",
+      "relation": "born_in",
+      "status": "asserted",
+      "bindings": [
+       {
+        "bid": "b1",
+        "role": "person",
+        "value": {
+         "entity": "ex:Maria_Skłodowska"
+        }
+       },
+       {
+        "bid": "b2",
+        "role": "birthplace",
+        "value": {
+         "entity": "ex:Paris"
+        }
+       }
+      ],
+      "evidence": [
+       {
+        "id": "e1",
+        "type": "curated",
+        "mode": "manual",
+        "source": {
+         "doc_id": "doc:x"
+        },
+        "supports": [
+         "b1",
+         "b2"
+        ]
+       }
+      ]
+     }
+    }
+   ],
+   "source": "critique SEM-18 (2)",
+   "reported": [
+    "KHG-D016"
+   ]
+  },
+  {
+   "id": "MC129",
+   "description": "an open-ended holder (end novalue) overlapping its successor",
+   "layer": "D",
+   "code": "KHG-D016",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/29/bindings/0/value",
+     "value": {
+      "special": "novalue"
+     }
+    }
+   ],
+   "source": "critique SEM-18 (3), as ruled by §2.6",
+   "expect_target": {
+    "/records/29": "f:king-13"
+   },
+   "reported": [
+    "KHG-D016"
+   ]
+  },
+  {
+   "id": "MC130",
+   "description": "stored derived block disagrees with the bindings",
+   "layer": "D",
+   "code": "KHG-D015",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/records/35/derived",
+     "value": {
+      "arity": 4
+     }
+    }
+   ],
+   "source": "R01 V15",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-D015"
+   ]
+  },
+  {
+   "id": "MC131",
+   "description": "a candidate inside a store document",
+   "layer": "D",
+   "code": "KHG-D017",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/35/status",
+     "value": "candidate"
+    }
+   ],
+   "source": "F9; R01 D-18",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-D017"
+   ]
+  },
+  {
+   "id": "MC132",
+   "description": "entity referenced but not declared in a complete document",
+   "layer": "D",
+   "code": "KHG-D002",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/records/2"
+    }
+   ],
+   "source": "R01 V17",
+   "expect_target": {
+    "/records/2": "ex:HeLa"
+   },
+   "reported": [
+    "KHG-D002"
+   ]
+  },
+  {
+   "id": "MC133",
+   "description": "one id names both an entity and a hyperedge",
+   "layer": "D",
+   "code": "KHG-D007",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/35/id",
+     "value": "ex:TP53"
+    }
+   ],
+   "source": "§2.2",
+   "expect_target": {
+    "/records/35": "f:reg-1"
+   },
+   "reported": [
+    "KHG-D001",
+    "KHG-D002",
+    "KHG-D007"
+   ]
+  },
+  {
+   "id": "MC134",
+   "description": "header schema sha256 differs from the schema document",
+   "layer": "D",
+   "code": "KHG-D009",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/header/schema/sha256",
+     "value": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    }
+   ],
+   "source": "R01 V41",
+   "reported": [
+    "KHG-D009"
+   ]
+  },
+  {
+   "id": "MC135",
+   "description": "a value names an entity that has redirect_to",
+   "layer": "D",
+   "code": "KHG-D020",
+   "kind": "c1",
+   "base": "fixture.c1.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/records/9/redirect_to",
+     "value": "ex:Warszawa"
+    }
+   ],
+   "source": "critique SEM-16 (R01 I10)",
+   "expect_target": {
+    "/records/9": "ex:Paris"
+   },
+   "reported": [
+    "KHG-D020"
+   ]
+  },
+  {
+   "id": "MC136",
+   "description": "history: version 2 changes a core binding (not a refinement)",
+   "layer": "D",
+   "code": "KHG-D013",
+   "kind": "c1",
+   "base": "fixture.history.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/6/bindings/1/value",
+     "value": {
+      "entity": "ex:LouisXIV"
+     }
+    }
+   ],
+   "source": "R01 §6.4; A S031; judge probe (Bob for Alice); critique SEM-02",
+   "expect_target": {
+    "/records/6": [
+     "f:king-13",
+     2
+    ]
+   },
+   "reported": [
+    "KHG-D013"
+   ]
+  },
+  {
+   "id": "MC137",
+   "description": "history: version 2 rewrites earlier evidence",
+   "layer": "D",
+   "code": "KHG-D013",
+   "kind": "c1",
+   "base": "fixture.history.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/6/evidence/0/source/doc_id",
+     "value": "doc:other"
+    }
+   ],
+   "source": "B S013; critique SEM-02",
+   "expect_target": {
+    "/records/6": [
+     "f:king-13",
+     2
+    ]
+   },
+   "reported": [
+    "KHG-D013"
+   ]
+  },
+  {
+   "id": "MC138",
+   "description": "history: a retracted fact asserted again in a later version",
+   "layer": "D",
+   "code": "KHG-D014",
+   "kind": "c1",
+   "base": "fixture.history.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/header/as_at",
+     "value": "2026-10-01T00:00:06Z"
+    },
+    {
+     "op": "add",
+     "path": "/records/-",
+     "value": {
+      "kind": "hyperedge",
+      "id": "f:reg-1",
+      "relation": "regulates",
+      "status": "asserted",
+      "bindings": [
+       {
+        "bid": "b1",
+        "role": "context",
+        "value": {
+         "entity": "ex:HeLa"
+        }
+       },
+       {
+        "bid": "b2",
+        "role": "regulator",
+        "value": {
+         "entity": "ex:TP53"
+        }
+       },
+       {
+        "bid": "b3",
+        "role": "target",
+        "value": {
+         "entity": "ex:TP53"
+        }
+       }
+      ],
+      "evidence": [
+       {
+        "id": "e1",
+        "type": "curated",
+        "mode": "manual",
+        "source": {
+         "doc_id": "doc:review-p53"
+        },
+        "supports": [
+         "b1",
+         "b2",
+         "b3"
+        ]
+       }
+      ],
+      "version": 3,
+      "recorded_at": "2026-10-01T00:00:06Z",
+      "recorded_by": "p2-fixture",
+      "status_ref": "m:ret-1",
+      "rank": "normal",
+      "visibility": "visible"
+     }
+    },
+    {
+     "op": "remove",
+     "path": "/records/10/status_ref"
+    }
+   ],
+   "source": "B S014; A S030; critique SEM-02",
+   "reported": [
+    "KHG-D010",
+    "KHG-D014"
+   ]
+  },
+  {
+   "id": "MC139",
+   "description": "history: a version recorded before the previous version of its id",
+   "layer": "D",
+   "code": "KHG-D018",
+   "kind": "c1",
+   "base": "fixture.history.c1.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/records/6/recorded_at",
+     "value": "2026-10-01T00:00:01Z"
+    }
+   ],
+   "source": "A S032; C C-TX-ORDER; critique SEM-14",
+   "expect_target": {
+    "/records/6": [
+     "f:king-13",
+     2
+    ]
+   },
+   "reported": [
+    "KHG-D018"
+   ]
+  },
+  {
+   "id": "MC140",
+   "description": "relation with no roles",
+   "layer": "M",
+   "code": "KHG-M001",
+   "kind": "relation-schema",
+   "base": "fixture.relation-schema.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/relations/0/roles",
+     "value": []
+    }
+   ],
+   "source": "R01 V43",
+   "expect_target": {
+    "/relations/0": "regulates"
+   },
+   "reported": [
+    "KHG-M001"
+   ]
+  },
+  {
+   "id": "MC141",
+   "description": "a role used twice in one relation",
+   "layer": "M",
+   "code": "KHG-M002",
+   "kind": "relation-schema",
+   "base": "fixture.relation-schema.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/relations/0/roles/-",
+     "value": {
+      "role": "regulator",
+      "slot": "core",
+      "fillers": [
+       {
+        "entity": [
+         "Gene"
+        ]
+       }
+      ],
+      "min": 1,
+      "max": 1,
+      "direction": "tail"
+     }
+    }
+   ],
+   "source": "R01 V44",
+   "expect_target": {
+    "/relations/0": "regulates"
+   },
+   "reported": [
+    "KHG-M002"
+   ]
+  },
+  {
+   "id": "MC142",
+   "description": "key names a role the relation does not use",
+   "layer": "M",
+   "code": "KHG-M003",
+   "kind": "relation-schema",
+   "base": "fixture.relation-schema.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/relations/8/key/roles",
+     "value": [
+      "holder"
+     ]
+    }
+   ],
+   "source": "R01 V44",
+   "expect_target": {
+    "/relations/8": "born_in"
+   },
+   "reported": [
+    "KHG-M003"
+   ]
+  },
+  {
+   "id": "MC143",
+   "description": "key built on a time-slot role",
+   "layer": "M",
+   "code": "KHG-M003",
+   "kind": "relation-schema",
+   "base": "fixture.relation-schema.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/relations/4/key/roles",
+     "value": [
+      "start_time"
+     ]
+    }
+   ],
+   "source": "R04 O12",
+   "expect_target": {
+    "/relations/4": "position_held"
+   },
+   "reported": [
+    "KHG-M003"
+   ]
+  },
+  {
+   "id": "MC144",
+   "description": "schema version not semver",
+   "layer": "M",
+   "code": "KHG-M004",
+   "kind": "relation-schema",
+   "base": "fixture.relation-schema.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/version",
+     "value": "1.0"
+    }
+   ],
+   "source": "R01 V45",
+   "reported": [
+    "KHG-M004"
+   ]
+  },
+  {
+   "id": "MC145",
+   "description": "unknown entity type in a filler",
+   "layer": "M",
+   "code": "KHG-M005",
+   "kind": "relation-schema",
+   "base": "fixture.relation-schema.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/relations/0/roles/2/fillers/0/entity",
+     "value": [
+      "Tissue"
+     ]
+    }
+   ],
+   "source": "R01 V46",
+   "expect_target": {
+    "/relations/0": "regulates"
+   },
+   "reported": [
+    "KHG-M005"
+   ]
+  },
+  {
+   "id": "MC146",
+   "description": "unknown datatype",
+   "layer": "M",
+   "code": "KHG-M006",
+   "kind": "relation-schema",
+   "base": "fixture.relation-schema.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/relations/6/roles/1/fillers/0/literal",
+     "value": "float"
+    }
+   ],
+   "source": "R01 V46",
+   "expect_target": {
+    "/relations/6": "population"
+   },
+   "reported": [
+    "KHG-M006"
+   ]
+  },
+  {
+   "id": "MC147",
+   "description": "time model names a role that is not a time slot",
+   "layer": "M",
+   "code": "KHG-M007",
+   "kind": "relation-schema",
+   "base": "fixture.relation-schema.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/relations/4/time/start",
+     "value": "replaces"
+    }
+   ],
+   "source": "§3",
+   "expect_target": {
+    "/relations/4": "position_held"
+   },
+   "reported": [
+    "KHG-M007"
+   ]
+  },
+  {
+   "id": "MC148",
+   "description": "time model 'unstated' (the pre-revision name of timeless)",
+   "layer": "M",
+   "code": "KHG-M007",
+   "kind": "relation-schema",
+   "base": "fixture.relation-schema.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/relations/9/time",
+     "value": {
+      "model": "unstated"
+     }
+    }
+   ],
+   "source": "critique SEM-15",
+   "expect_target": {
+    "/relations/9": "claims"
+   },
+   "reported": [
+    "KHG-M007"
+   ]
+  },
+  {
+   "id": "MC149",
+   "description": "user schema declares a relation in the reserved khg: namespace",
+   "layer": "M",
+   "code": "KHG-M008",
+   "kind": "relation-schema",
+   "base": "fixture.relation-schema.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/relations/0/id",
+     "value": "khg:regulates"
+    }
+   ],
+   "source": "§3",
+   "expect_target": {
+    "/relations/0": "regulates"
+   },
+   "reported": [
+    "KHG-M008"
+   ]
+  },
+  {
+   "id": "MC150",
+   "description": "usage of a role missing from the global vocabulary",
+   "layer": "M",
+   "code": "KHG-M009",
+   "kind": "relation-schema",
+   "base": "fixture.relation-schema.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/relations/0/roles/2/role",
+     "value": "tissue"
+    }
+   ],
+   "source": "F4",
+   "expect_target": {
+    "/relations/0": "regulates"
+   },
+   "reported": [
+    "KHG-M009"
+   ]
+  },
+  {
+   "id": "MC151",
+   "description": "max < min",
+   "layer": "M",
+   "code": "KHG-M010",
+   "kind": "relation-schema",
+   "base": "fixture.relation-schema.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/relations/1/roles/0/max",
+     "value": 1
+    }
+   ],
+   "source": "§3",
+   "expect_target": {
+    "/relations/1": "co_administration_causes"
+   },
+   "reported": [
+    "KHG-M010"
+   ]
+  },
+  {
+   "id": "MC152",
+   "description": "temporal key on a relation without an interval time model",
+   "layer": "M",
+   "code": "KHG-M011",
+   "kind": "relation-schema",
+   "base": "fixture.relation-schema.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/relations/8/key/temporal",
+     "value": true
+    }
+   ],
+   "source": "§2.5",
+   "expect_target": {
+    "/relations/8": "born_in"
+   },
+   "reported": [
+    "KHG-M011"
+   ]
+  },
+  {
+   "id": "MC153",
+   "description": "primary names a non-core role",
+   "layer": "M",
+   "code": "KHG-M012",
+   "kind": "relation-schema",
+   "base": "fixture.relation-schema.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/relations/4/primary/object",
+     "value": "replaces"
+    }
+   ],
+   "source": "R01 V44",
+   "expect_target": {
+    "/relations/4": "position_held"
+   },
+   "reported": [
+    "KHG-M012"
+   ]
+  },
+  {
+   "id": "MC154",
+   "description": "duplicate relation id",
+   "layer": "M",
+   "code": "KHG-M013",
+   "kind": "relation-schema",
+   "base": "fixture.relation-schema.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/relations/-",
+     "value": {
+      "id": "born_in",
+      "mappings": {
+       "wikidata": "P19"
+      },
+      "time": {
+       "model": "invariant"
+      },
+      "key": {
+       "roles": [
+        "person"
+       ],
+       "temporal": false,
+       "on_collision": "dispute"
+      },
+      "roles": [
+       {
+        "role": "person",
+        "slot": "core",
+        "fillers": [
+         {
+          "entity": [
+           "Person"
+          ]
+         }
+        ],
+        "min": 1,
+        "max": 1,
+        "direction": "tail"
+       },
+       {
+        "role": "birthplace",
+        "slot": "core",
+        "fillers": [
+         {
+          "entity": [
+           "Place"
+          ]
+         }
+        ],
+        "min": 1,
+        "max": 1,
+        "direction": "head"
+       }
+      ]
+     }
+    }
+   ],
+   "source": "§3",
+   "reported": [
+    "KHG-M013"
+   ]
+  },
+  {
+   "id": "MC155",
+   "description": "complete on an optional role",
+   "layer": "M",
+   "code": "KHG-M014",
+   "kind": "relation-schema",
+   "base": "fixture.relation-schema.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/relations/0/roles/2/complete",
+     "value": true
+    }
+   ],
+   "source": "§2.4",
+   "expect_target": {
+    "/relations/0": "regulates"
+   },
+   "reported": [
+    "KHG-M014"
+   ]
+  },
+  {
+   "id": "MC156",
+   "description": "constraint severity 'violation' (the enum is error and warning)",
+   "layer": "M",
+   "code": "KHG-M015",
+   "kind": "relation-schema",
+   "base": "fixture.relation-schema.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/relations/3/constraints/0/severity",
+     "value": "violation"
+    }
+   ],
+   "source": "critique GL-01 (old MC107)",
+   "expect_target": {
+    "/relations/3": "flies_between"
+   },
+   "reported": [
+    "KHG-M015"
+   ]
+  },
+  {
+   "id": "MC157",
+   "description": "entity-type parents cycle",
+   "layer": "M",
+   "code": "KHG-M016",
+   "kind": "relation-schema",
+   "base": "fixture.relation-schema.json",
+   "patch": [
+    {
+     "op": "add",
+     "path": "/entity_types/0/parents",
+     "value": [
+      "Person"
+     ]
+    }
+   ],
+   "source": "§3",
+   "note": "entity type Agent gets parent Person, whose parent is Agent",
+   "expect_target": {
+    "/entity_types/0": "Agent"
+   },
+   "reported": [
+    "KHG-M016"
+   ]
+  },
+  {
+   "id": "MC158",
+   "description": "on_collision supersede on a temporal key",
+   "layer": "M",
+   "code": "KHG-M017",
+   "kind": "relation-schema",
+   "base": "fixture.relation-schema.json",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/relations/4/key/on_collision",
+     "value": "supersede"
+    }
+   ],
+   "source": "critique SEM-04",
+   "expect_target": {
+    "/relations/4": "position_held"
+   },
+   "reported": [
+    "KHG-M017"
+   ]
+  },
+  {
+   "id": "MC159",
+   "description": "hyperedge item without run.run_id",
+   "layer": "Q",
+   "code": "KHG-Q001",
+   "kind": "queue",
+   "base": "smoke-queue.khg-queue.jsonl",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/lines/1/run/run_id"
+    }
+   ],
+   "source": "R01 V47",
+   "expect_target": {
+    "/lines/1": [
+     "queue-item",
+     "q:p2-smoke.000001"
+    ]
+   },
+   "reported": [
+    "KHG-Q001"
+   ]
+  },
+  {
+   "id": "MC160",
+   "description": "run without order_id",
+   "layer": "Q",
+   "code": "KHG-Q001",
+   "kind": "queue",
+   "base": "smoke-queue.khg-queue.jsonl",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/lines/1/run/order_id"
+    }
+   ],
+   "source": "PLAN §4 (P9 3 runs x 2 orders)",
+   "expect_target": {
+    "/lines/1": [
+     "queue-item",
+     "q:p2-smoke.000001"
+    ]
+   },
+   "reported": [
+    "KHG-Q001"
+   ]
+  },
+  {
+   "id": "MC161",
+   "description": "candidate payload without evidence",
+   "layer": "Q",
+   "code": "KHG-Q001",
+   "kind": "queue",
+   "base": "smoke-queue.khg-queue.jsonl",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/lines/1/payload/evidence"
+    }
+   ],
+   "source": "R01 V47",
+   "expect_target": {
+    "/lines/1": [
+     "queue-item",
+     "q:p2-smoke.000001"
+    ]
+   },
+   "reported": [
+    "KHG-Q001"
+   ]
+  },
+  {
+   "id": "MC162",
+   "description": "candidate payload with status asserted",
+   "layer": "Q",
+   "code": "KHG-Q002",
+   "kind": "queue",
+   "base": "smoke-queue.khg-queue.jsonl",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/lines/1/payload/status",
+     "value": "asserted"
+    }
+   ],
+   "source": "F9",
+   "expect_target": {
+    "/lines/1": [
+     "queue-item",
+     "q:p2-smoke.000001"
+    ]
+   },
+   "reported": [
+    "KHG-Q002"
+   ]
+  },
+  {
+   "id": "MC163",
+   "description": "candidate payload id outside cand:<queue_id>.<seq>",
+   "layer": "Q",
+   "code": "KHG-Q002",
+   "kind": "queue",
+   "base": "smoke-queue.khg-queue.jsonl",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/lines/1/payload/id",
+     "value": "f:king-14"
+    }
+   ],
+   "source": "C Q03",
+   "expect_target": {
+    "/lines/1": [
+     "queue-item",
+     "q:p2-smoke.000001"
+    ]
+   },
+   "reported": [
+    "KHG-Q002"
+   ]
+  },
+  {
+   "id": "MC164",
+   "description": "unknown item_kind",
+   "layer": "Q",
+   "code": "KHG-Q003",
+   "kind": "queue",
+   "base": "smoke-queue.khg-queue.jsonl",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/lines/1/item_kind",
+     "value": "binding"
+    }
+   ],
+   "source": "R01 V48",
+   "expect_target": {
+    "/lines/1": [
+     "queue-item",
+     "q:p2-smoke.000001"
+    ]
+   },
+   "reported": [
+    "KHG-Q003",
+    "KHG-Q007"
+   ]
+  },
+  {
+   "id": "MC165",
+   "description": "log action outside the v1 vocabulary (merge comes in 1.1)",
+   "layer": "Q",
+   "code": "KHG-Q003",
+   "kind": "queue",
+   "base": "smoke-queue.khg-queue.jsonl",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/lines/3/action",
+     "value": "merge"
+    }
+   ],
+   "source": "R01 V48; critique SCOPE-F13",
+   "expect_target": {
+    "/lines/3": [
+     "log-entry",
+     "l:p2-smoke.000002"
+    ]
+   },
+   "reported": [
+    "KHG-Q003"
+   ]
+  },
+  {
+   "id": "MC166",
+   "description": "lint entry without findings",
+   "layer": "Q",
+   "code": "KHG-Q004",
+   "kind": "queue",
+   "base": "smoke-queue.khg-queue.jsonl",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/lines/2/findings"
+    }
+   ],
+   "source": "R04 M7",
+   "expect_target": {
+    "/lines/2": [
+     "log-entry",
+     "l:p2-smoke.000001"
+    ]
+   },
+   "reported": [
+    "KHG-Q004"
+   ]
+  },
+  {
+   "id": "MC167",
+   "description": "state_before does not follow the fold (accept from pending)",
+   "layer": "Q",
+   "code": "KHG-Q005",
+   "kind": "queue",
+   "base": "smoke-queue.khg-queue.jsonl",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/lines/3/state_before",
+     "value": "pending"
+    }
+   ],
+   "source": "R01 V48; C3-R05",
+   "expect_target": {
+    "/lines/3": [
+     "log-entry",
+     "l:p2-smoke.000002"
+    ]
+   },
+   "reported": [
+    "KHG-Q005"
+   ]
+  },
+  {
+   "id": "MC168",
+   "description": "replay recomputes a different decision_hash",
+   "layer": "Q",
+   "code": "KHG-Q006",
+   "kind": "queue",
+   "base": "smoke-queue.khg-queue.jsonl",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/lines/3/decision_hash",
+     "value": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    }
+   ],
+   "source": "R01 V49; C3-R11",
+   "expect_target": {
+    "/lines/3": [
+     "log-entry",
+     "l:p2-smoke.000002"
+    ]
+   },
+   "reported": [
+    "KHG-Q006"
+   ]
+  },
+  {
+   "id": "MC169",
+   "description": "log entry names a missing item",
+   "layer": "Q",
+   "code": "KHG-Q007",
+   "kind": "queue",
+   "base": "smoke-queue.khg-queue.jsonl",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/lines/3/target",
+     "value": "q:p2-smoke.000009"
+    }
+   ],
+   "source": "R01 V48",
+   "expect_target": {
+    "/lines/3": [
+     "log-entry",
+     "l:p2-smoke.000002"
+    ]
+   },
+   "reported": [
+    "KHG-Q007"
+   ]
+  },
+  {
+   "id": "MC170",
+   "description": "queue file without its header line",
+   "layer": "Q",
+   "code": "KHG-Q008",
+   "kind": "queue",
+   "base": "smoke-queue.khg-queue.jsonl",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/lines/0"
+    }
+   ],
+   "source": "C3-R12",
+   "expect_target": {
+    "/lines/0": [
+     "queue-header",
+     null
+    ]
+   },
+   "reported": [
+    "KHG-Q008"
+   ]
+  },
+  {
+   "id": "MC171",
+   "description": "extracted evidence points at another document than the item",
+   "layer": "Q",
+   "code": "KHG-Q009",
+   "kind": "queue",
+   "base": "smoke-queue.khg-queue.jsonl",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/lines/1/doc/doc_sha256",
+     "value": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+    }
+   ],
+   "source": "C Q-DOC-HASH",
+   "expect_target": {
+    "/lines/1": [
+     "queue-item",
+     "q:p2-smoke.000001"
+    ]
+   },
+   "reported": [
+    "KHG-Q009"
+   ]
+  },
+  {
+   "id": "MC172",
+   "description": "item keys disagree with the payload",
+   "layer": "Q",
+   "code": "KHG-Q010",
+   "kind": "queue",
+   "base": "smoke-queue.khg-queue.jsonl",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/lines/1/keys/core_key",
+     "value": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+    }
+   ],
+   "source": "A M85; C3-R04",
+   "expect_target": {
+    "/lines/1": [
+     "queue-item",
+     "q:p2-smoke.000001"
+    ]
+   },
+   "reported": [
+    "KHG-Q010"
+   ]
+  },
+  {
+   "id": "MC173",
+   "description": "an evidence event_hash disagrees with recomputation from the payload",
+   "layer": "Q",
+   "code": "KHG-Q010",
+   "kind": "queue",
+   "base": "smoke-queue.khg-queue.jsonl",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/lines/1/payload/evidence/1/event_hash",
+     "value": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+    }
+   ],
+   "source": "critique SEM-12 (was a D015 case)",
+   "expect_target": {
+    "/lines/1": [
+     "queue-item",
+     "q:p2-smoke.000001"
+    ]
+   },
+   "reported": [
+    "KHG-Q010"
+   ]
+  },
+  {
+   "id": "MC174",
+   "description": "a payload entity that neither item.entities nor the base resolves",
+   "layer": "Q",
+   "code": "KHG-Q011",
+   "kind": "queue",
+   "base": "smoke-queue.khg-queue.jsonl",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/lines/1/payload/bindings/3/value",
+     "value": {
+      "entity": "ex:LouisXII"
+     }
+    }
+   ],
+   "source": "critique CONS-10",
+   "expect_target": {
+    "/lines/1": [
+     "queue-item",
+     "q:p2-smoke.000001"
+    ]
+   },
+   "reported": [
+    "KHG-Q010",
+    "KHG-Q011"
+   ]
+  },
+  {
+   "id": "MC175",
+   "description": "the header's base does not match the base supplied for replay",
+   "layer": "Q",
+   "code": "KHG-Q012",
+   "kind": "queue",
+   "base": "smoke-queue.khg-queue.jsonl",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/lines/0/base/sha256",
+     "value": "sha256:5555555555555555555555555555555555555555555555555555555555555555"
+    }
+   ],
+   "source": "critique G3-ACCEPT-REPLAY",
+   "expect_target": {
+    "/lines/0": [
+     "queue-header",
+     null
+    ]
+   },
+   "reported": [
+    "KHG-Q011",
+    "KHG-Q012"
+   ]
+  },
+  {
+   "id": "MC176",
+   "description": "unknown C4 item kind",
+   "layer": "I",
+   "code": "KHG-I001",
+   "kind": "c4",
+   "base": "c4-items.jsonl",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/lines/3/kind",
+     "value": "c4-trivia-question"
+    }
+   ],
+   "source": "§9",
+   "expect_target": {
+    "/lines/3": [
+     "c4-retrieval-question",
+     "rq:king-1700"
+    ]
+   },
+   "reported": [
+    "KHG-I001"
+   ]
+  },
+  {
+   "id": "MC177",
+   "description": "retrieval question without its read (where)",
+   "layer": "I",
+   "code": "KHG-I002",
+   "kind": "c4",
+   "base": "c4-items.jsonl",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/lines/3/where"
+    }
+   ],
+   "source": "critique CONS-04",
+   "expect_target": {
+    "/lines/3": [
+     "c4-retrieval-question",
+     "rq:king-1700"
+    ]
+   },
+   "reported": [
+    "KHG-I002"
+   ]
+  },
+  {
+   "id": "MC178",
+   "description": "extraction gold with a role the relation does not allow",
+   "layer": "I",
+   "code": "KHG-I003",
+   "kind": "c4",
+   "base": "c4-items.jsonl",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/lines/1/gold/0/bindings/3/role",
+     "value": "successor"
+    }
+   ],
+   "source": "critique CONS-02",
+   "expect_target": {
+    "/lines/1": [
+     "c4-extraction-doc",
+     "c4:ext-louis-bio"
+    ]
+   },
+   "reported": [
+    "KHG-I003"
+   ]
+  },
+  {
+   "id": "MC179",
+   "description": "memory question without stale_values",
+   "layer": "I",
+   "code": "KHG-I004",
+   "kind": "c4",
+   "base": "c4-items.jsonl",
+   "patch": [
+    {
+     "op": "remove",
+     "path": "/lines/6/stale_values"
+    }
+   ],
+   "source": "R05 §5.5 item 1; D-C5-15",
+   "expect_target": {
+    "/lines/6": [
+     "c4-memory-question",
+     "mq:king-1700"
+    ]
+   },
+   "reported": [
+    "KHG-I004"
+   ]
+  },
+  {
+   "id": "MC180",
+   "description": "memory question whose gold disagrees with derive_memory_gold",
+   "layer": "I",
+   "code": "KHG-I005",
+   "kind": "c4",
+   "base": "c4-items.jsonl",
+   "patch": [
+    {
+     "op": "replace",
+     "path": "/lines/6/answer/values",
+     "value": [
+      {
+       "entity": "ex:LouisXIII"
+      }
+     ]
+    }
+   ],
+   "source": "critique SEM-07, CONS-03",
+   "expect_target": {
+    "/lines/6": [
+     "c4-memory-question",
+     "mq:king-1700"
+    ]
+   },
+   "reported": [
+    "KHG-I005"
+   ]
+  }
+ ]
+}

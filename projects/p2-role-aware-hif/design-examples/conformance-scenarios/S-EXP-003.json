@@ -1,0 +1,41 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-EXP-003",
+ "title": "the HIF export validates and equals fixture.hif.json",
+ "requires": [
+  "goals",
+  "literal_values",
+  "nesting",
+  "ordered_roles",
+  "special_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "load": "@fixture"
+  }
+ ],
+ "when": [
+  {
+   "op": "export",
+   "args": {
+    "format": "hif"
+   },
+   "then": {
+    "hif_valid": true,
+    "equals_file": "fixture.hif.json",
+    "ignore": [
+     "khg-version",
+     "khg-recorded-at",
+     "khg-recorded-by"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "B S061",
+  "A C2-23",
+  "C S-EXP-004"
+ ]
+}

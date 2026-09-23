@@ -1,0 +1,69 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-KEY-009",
+ "title": "a year-precision handover is a succession, not a collision; the possible overlap is a warning",
+ "requires": [
+  "atomic_writes",
+  "key_constraint",
+  "literal_values",
+  "valid_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:king-13",
+      "set_binding": {
+       "b4": {
+        "literal": {
+         "datatype": "time",
+         "time": "+1643-00-00T00:00:00Z",
+         "precision": 9
+        }
+       }
+      }
+     },
+     {
+      "@": "f:king-14",
+      "set_binding": {
+       "b3": {
+        "literal": {
+         "datatype": "time",
+         "time": "+1643-00-00T00:00:00Z",
+         "precision": 9
+        }
+       }
+      }
+     }
+    ]
+   },
+   "then": {
+    "select": "receipt.warnings",
+    "equals": [
+     {
+      "code": "KHG-L008",
+      "ids": [
+       "f:king-13",
+       "f:king-14"
+      ]
+     }
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "B identity case X1",
+  "C S-KEY-003"
+ ]
+}

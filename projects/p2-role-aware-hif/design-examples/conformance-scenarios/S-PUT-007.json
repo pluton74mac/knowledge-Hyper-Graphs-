@@ -1,0 +1,71 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-PUT-007",
+ "title": "unbound is accepted in a goal and refused elsewhere",
+ "requires": [
+  "goals",
+  "literal_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     "@g:who-1774"
+    ]
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "g:who-1774",
+      1,
+      "created"
+     ]
+    ]
+   }
+  },
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "g:who-1774",
+      "set": {
+       "id": "f:who-bad",
+       "status": "asserted"
+      },
+      "drop": [
+       "goal"
+      ],
+      "add_evidence": [
+       {
+        "id": "e9",
+        "type": "curated",
+        "mode": "manual",
+        "source": {
+         "doc_id": "doc:scenario"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "then": {
+    "error": "KHG-C005"
+   }
+  }
+ ],
+ "precedent": [
+  "C S-PUT-004 passed"
+ ]
+}

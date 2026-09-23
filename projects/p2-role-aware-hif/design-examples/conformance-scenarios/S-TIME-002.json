@@ -1,0 +1,110 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-TIME-002",
+ "title": "as_at before a supersession sees the older belief; so does the walk",
+ "requires": [
+  "atomic_writes",
+  "transaction_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities"
+   ],
+   "at": "2026-10-01T00:00:01Z"
+  },
+  {
+   "put": [
+    {
+     "@": "f:born-skłodowska-kraków",
+     "set": {
+      "status": "asserted"
+     },
+     "drop": [
+      "status_ref"
+     ]
+    }
+   ],
+   "at": "2026-10-01T00:00:02Z"
+  },
+  {
+   "apply": {
+    "op": "supersede",
+    "id": "m:sup-1",
+    "superseded": [
+     "f:born-skłodowska-kraków"
+    ],
+    "records": [
+     "@f:born-skłodowska-warszawa"
+    ],
+    "reason": "correction",
+    "note": "birthplace is Warsaw, per the curated biography",
+    "evidence": [
+     {
+      "id": "e9",
+      "type": "curated",
+      "mode": "manual",
+      "source": {
+       "doc_id": "doc:scenario"
+      }
+     }
+    ]
+   },
+   "at": "2026-10-01T00:00:03Z"
+  }
+ ],
+ "when": [
+  {
+   "op": "get",
+   "args": {
+    "id": "f:born-skłodowska-kraków",
+    "as_at": "2026-10-01T00:00:02Z"
+   },
+   "then": {
+    "select": "status",
+    "equals": "asserted"
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:born-skłodowska-kraków"
+   },
+   "then": {
+    "select": "status",
+    "equals": "superseded"
+   }
+  },
+  {
+   "op": "supersession_walk",
+   "args": {
+    "id": "f:born-skłodowska-kraków"
+   },
+   "then": {
+    "select": "terminal.ids",
+    "equals": [
+     "f:born-skłodowska-warszawa"
+    ]
+   }
+  },
+  {
+   "op": "supersession_walk",
+   "args": {
+    "id": "f:born-skłodowska-kraków",
+    "as_at": "2026-10-01T00:00:02Z"
+   },
+   "then": {
+    "select": "terminal.ids",
+    "equals": [
+     "f:born-skłodowska-kraków"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "B C2-S031 passed",
+  "C S-SUP-004"
+ ]
+}

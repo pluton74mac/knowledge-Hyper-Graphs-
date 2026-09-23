@@ -61,6 +61,16 @@ structural lint, store and export.
 
 - 2026-09-23: started. Defaults agreed with the owner: MIT for code, CC BY 4.0 for prose; one shared
   package for all contracts (working name `khg-contracts`); work lands through pull requests.
+- 2026-09-23: research done: five reports in [research/](research/). Neither library's own HIF reader or writer
+  keeps roles intact (XGI drops them; HyperNetX drops a repeated pair and cannot re-read its own directed output).
+  Loaders that build the library objects directly round-trip exactly and offline.
+- 2026-09-23: design done: three independent designs ([research/designs/](research/designs/)), three judges
+  (B, semantics-first, chosen as base), synthesis, a four-lens critique (8 blockers, 57 majors; 87 findings
+  applied, 13 rejected with reasons) and revision into [DESIGN.md](DESIGN.md). Every example in
+  [design-examples/](design-examples/) is generated and checked by the synthesis prototype; a rebuild on
+  2026-09-23 was byte-identical and every check passed (G1 chain, hash-seed determinism, 180 malformed cases,
+  114 store scenarios, smoke replay). Director's rulings on conformance, publishing and deprecation reasons are
+  in DESIGN.md §14.
 
 ## Results and findings
 

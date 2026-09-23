@@ -1,0 +1,50 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-EXP-006",
+ "title": "a directed slice exports as a directed HIF file",
+ "requires": [
+  "goals",
+  "literal_values",
+  "nesting",
+  "ordered_roles",
+  "special_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "load": "@fixture"
+  }
+ ],
+ "when": [
+  {
+   "op": "export",
+   "args": {
+    "format": "hif",
+    "relations": [
+     "born_in",
+     "catalysed_by",
+     "claims",
+     "co_administration_causes",
+     "flight_route",
+     "population",
+     "position_held",
+     "regulates",
+     "station_profile"
+    ]
+   },
+   "then": {
+    "hif_valid": true,
+    "equals_file": "fixture.directed-slice.hif.json",
+    "ignore": [
+     "khg-version",
+     "khg-recorded-at",
+     "khg-recorded-by"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "C §4.3 E12 (directed slice)"
+ ]
+}

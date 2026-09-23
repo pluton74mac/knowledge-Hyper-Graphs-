@@ -1,0 +1,73 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-VER-007",
+ "title": "a somevalue binding refined to a value keeps its bid",
+ "requires": [
+  "special_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    "@f:born-scribe"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:born-scribe",
+      "set_binding": {
+       "b2": {
+        "entity": "ex:Paris"
+       }
+      },
+      "add_evidence": [
+       {
+        "id": "e9",
+        "type": "curated",
+        "mode": "manual",
+        "source": {
+         "doc_id": "doc:scenario"
+        },
+        "supports": [
+         "b2"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "f:born-scribe",
+      2,
+      "versioned"
+     ]
+    ]
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:born-scribe"
+   },
+   "then": {
+    "select": "binding.b2.value",
+    "equals": {
+     "entity": "ex:Paris"
+    }
+   }
+  }
+ ],
+ "precedent": [
+  "B §2.16 (R01 I12)"
+ ]
+}

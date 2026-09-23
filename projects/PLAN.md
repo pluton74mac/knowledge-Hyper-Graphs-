@@ -120,6 +120,11 @@ update. What the owner builds with what was learned is a separate matter, decide
 | C4 | Corpus: gold facts, split, question sets | P3a | Corpus version with changelog; each project records the version it was scored on |
 | C5 | Scorers: extraction, retrieval, memory, completion | P2, question sets from P3a | With C1 |
 
+An implementation of C2 passes its conformance test when no applicable scenario fails; a scenario is
+inapplicable only through a capability flag the implementation declares absent, and each such scenario is
+reported as a fidelity loss. The contracts are specified in
+[p2-role-aware-hif/DESIGN.md](p2-role-aware-hif/DESIGN.md).
+
 Contracts are versioned, not frozen. A change ships with its migration and reruns the gate of every
 consumer. Each project records the contract versions it consumed.
 

@@ -1,0 +1,39 @@
+{
+ "network-type": "undirected",
+ "metadata": {
+  "role-convention": "1.0.0"
+ },
+ "incidences": [
+  {
+   "edge": "route-1",
+   "node": "AC",
+   "attrs": {
+    "role": "carrier"
+   }
+  },
+  {
+   "edge": "route-1",
+   "node": "YYZ",
+   "attrs": {
+    "role": "stop",
+    "role-position": 1
+   }
+  },
+  {
+   "edge": "route-1",
+   "node": "YUL",
+   "attrs": {
+    "role": "stop",
+    "role-position": 2
+   }
+  },
+  {
+   "edge": "route-1",
+   "node": "YYZ",
+   "attrs": {
+    "role": "stop",
+    "role-position": 3
+   }
+  }
+ ]
+}

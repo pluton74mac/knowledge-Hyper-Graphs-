@@ -1,0 +1,122 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-LIFE-014",
+ "title": "a new version of a superseding fact must keep the correction's key digest",
+ "requires": [
+  "atomic_writes",
+  "key_constraint",
+  "literal_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    {
+     "@": "f:pop-łódź-2019",
+     "set": {
+      "id": "f:pop-a"
+     }
+    }
+   ]
+  },
+  {
+   "apply": {
+    "op": "supersede",
+    "id": "m:sup-p",
+    "superseded": [
+     "f:pop-a"
+    ],
+    "records": [
+     {
+      "@": "f:pop-łódź-2019",
+      "set": {
+       "id": "f:pop-b"
+      },
+      "set_binding": {
+       "b2": {
+        "literal": {
+         "datatype": "quantity",
+         "amount": "+680000",
+         "unit": "1"
+        }
+       }
+      }
+     }
+    ],
+    "reason": "correction",
+    "evidence": [
+     {
+      "id": "e9",
+      "type": "curated",
+      "mode": "manual",
+      "source": {
+       "doc_id": "doc:scenario"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:pop-łódź-2019",
+      "set": {
+       "id": "f:pop-b"
+      },
+      "set_binding": {
+       "b2": {
+        "literal": {
+         "datatype": "quantity",
+         "amount": "+680000",
+         "unit": "1"
+        }
+       },
+       "b3": {
+        "literal": {
+         "datatype": "time",
+         "time": "+2019-06-30T00:00:00Z",
+         "precision": 11
+        }
+       }
+      },
+      "add_evidence": [
+       {
+        "id": "e9",
+        "type": "curated",
+        "mode": "manual",
+        "source": {
+         "doc_id": "doc:scenario"
+        },
+        "supports": [
+         "b3"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "then": {
+    "error": "KHG-D011"
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:pop-b"
+   },
+   "then": {
+    "select": "version",
+    "equals": 1
+   }
+  }
+ ],
+ "precedent": [
+  "critique SEM-11 (put runs D011 on new versions of superseding facts)"
+ ]
+}
