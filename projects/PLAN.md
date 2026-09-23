@@ -137,7 +137,7 @@ consumer. Each project records the contract versions it consumed.
 
 | Id | Project | Phase | Kind | Gate | Base updated | Publication | Contracts consumed |
 |---|---|---|---|---|---|---|---|
-| P2 | Role-aware HIF and shared contracts | 0 | capability | not started | | | |
+| P2 | Role-aware HIF and shared contracts | 0 | capability | in progress | | | |
 | P3a | Clean n-ary corpus | 0 | capability (data) | not started | | | |
 | P1 | Format and store bake-off | 1 | finding | not started | | | |
 | P3b | Completion replication | 1 | finding | not started | | | |
