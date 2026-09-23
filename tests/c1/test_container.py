@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import os
+import stat
 import struct
 
 import pytest
@@ -127,6 +129,35 @@ def test_write_normalises_records(tmp_path):
     out = tmp_path / "x.khg.jsonl"
     record.write_container(raw, out)
     assert out.read_bytes() == JSONL_BYTES
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX file modes")
+@pytest.mark.parametrize("umask, mode", [(0o022, 0o644), (0o027, 0o640)], ids=["umask-022", "umask-027"])
+def test_the_written_file_gets_the_mode_the_umask_allows(tmp_path, umask, mode):
+    """S7: as for the CLI's files and ``Queue.create``'s; the temporary file is not mkstemp's, whose mode is 0600."""
+    out = tmp_path / "x.khg.jsonl"
+    old = os.umask(umask)
+    try:
+        record.write_container(C1, out)
+    finally:
+        os.umask(old)
+    assert stat.S_IMODE(out.stat().st_mode) == mode
+    assert out.read_bytes() == JSONL_BYTES
+    assert [p.name for p in tmp_path.iterdir()] == ["x.khg.jsonl"]
+
+
+def test_a_failed_rename_keeps_the_old_file_and_leaves_no_temporary_file(tmp_path, monkeypatch):
+    out = tmp_path / "x.khg.jsonl"
+    out.write_text("old\n", encoding="utf-8")
+
+    def refuse(src, dst):
+        raise OSError(28, "No space left on device")
+
+    monkeypatch.setattr(os, "replace", refuse)
+    with pytest.raises(OSError):
+        record.write_container(C1, out)
+    assert out.read_text(encoding="utf-8") == "old\n"
+    assert [p.name for p in tmp_path.iterdir()] == ["x.khg.jsonl"]
 
 
 def test_a_history_container_round_trips_in_version_order(tmp_path):

@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import copy
 import json
+import os
+import stat
 
 import pytest
 
@@ -175,6 +177,37 @@ def test_write_report_writes_the_json_text(tmp_path):
     conformance.write_report(report, path)
     assert path.read_text(encoding="utf-8") == conformance.to_json(report)
     assert json.loads(path.read_text(encoding="utf-8"))["summary"]["passed"] == 9
+    assert [p.name for p in tmp_path.iterdir()] == ["earl.json"]
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX file modes")
+@pytest.mark.parametrize("umask, mode", [(0o022, 0o644), (0o027, 0o640)], ids=["umask-022", "umask-027"])
+def test_the_written_report_gets_the_mode_the_umask_allows(tmp_path, umask, mode):
+    """S7: as for ``khg-conformance --report``; the temporary file is not mkstemp's, whose mode is 0600."""
+    report = conformance.run(memory_factory, only="S-EXP-001")
+    path = tmp_path / "earl.json"
+    old = os.umask(umask)
+    try:
+        conformance.write_report(report, path)
+    finally:
+        os.umask(old)
+    assert stat.S_IMODE(path.stat().st_mode) == mode
+    assert path.read_text(encoding="utf-8") == conformance.to_json(report)
+    assert [p.name for p in tmp_path.iterdir()] == ["earl.json"]
+
+
+def test_a_failed_report_write_keeps_the_old_file_and_leaves_no_temporary_file(tmp_path, monkeypatch):
+    report = conformance.run(memory_factory, only="S-EXP-001")
+    path = tmp_path / "earl.json"
+    path.write_text("old\n", encoding="utf-8")
+
+    def refuse(src, dst):
+        raise OSError(28, "No space left on device")
+
+    monkeypatch.setattr(os, "replace", refuse)
+    with pytest.raises(OSError):
+        conformance.write_report(report, path)
+    assert path.read_text(encoding="utf-8") == "old\n"
     assert [p.name for p in tmp_path.iterdir()] == ["earl.json"]
 
 

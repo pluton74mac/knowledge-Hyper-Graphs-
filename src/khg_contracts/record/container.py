@@ -9,9 +9,10 @@
 """
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import os
-import tempfile
+import secrets
 from typing import Any, Iterator, Mapping
 
 from .. import jsonio
@@ -111,20 +112,23 @@ def check_container(container: Any) -> list[dict[str, str]]:
 def write_container(container: Mapping[str, Any], path: Any, *, format: str | None = None) -> None:
     """Write a container in canonical order after the V and C checks (``ValidationError`` with V001 or C codes;
     nothing is written then). ``format`` is ``"jsonl"`` or ``"json"``; by default the suffix decides (``.json``
-    gives JSON, anything else JSONL). The file is replaced atomically."""
+    gives JSON, anything else JSONL). The file is replaced atomically and gets the permissions the umask allows."""
     findings = check_container(container)
     if any(f["severity"] == "error" for f in findings):
         raise ValidationError.from_findings(findings)
     text = serialize(container, format=format or ("json" if _name(path).endswith(".json") else "jsonl"))
     target = os.fspath(path)
-    fd, tmp = tempfile.mkstemp(dir=os.path.dirname(target) or ".", prefix=".khg-", suffix=".tmp")
+    # open(..., "x"), not tempfile.mkstemp, whose mode 0600 would survive the rename (as in cli._write_file)
+    tmp = os.path.join(os.path.dirname(target) or ".", f".khg-{secrets.token_hex(8)}.tmp")
+    fh = open(tmp, "x", encoding="utf-8", newline="\n")
     try:
-        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as fh:
+        with fh:
             fh.write(text)
         os.replace(tmp, target)
-    finally:
-        if os.path.exists(tmp):
+    except BaseException:
+        with contextlib.suppress(OSError):
             os.remove(tmp)
+        raise
 
 
 def container_sha256(container: Mapping[str, Any]) -> str:

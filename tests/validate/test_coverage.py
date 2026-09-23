@@ -4,8 +4,7 @@
 - Every such code is detected: at least one of its cases passes the G2 rule (its first rejecting layer is the listed
   layer and its code is among the error codes). Reserved codes are skipped (never emitted), and so are the lint and
   migration layers L and F, which the store receipts and the migration test cover.
-- A code whose cases all depend on a layer module that is still a stub is a strict xfail naming the step that owns
-  the module; it turns into a plain test when the owner sets ``IMPLEMENTED = True``.
+- Every layer module is implemented (W11a landed the last one, layer I), so no code is an xfail any more.
 - No case or base yields a code that is reserved, planned or unregistered, and the layers of W4 never reject a
   case before the layer that the case is for.
 """
@@ -24,14 +23,6 @@ KIND = {"json": "hif", "c1": "container", "hif": "hif", "relation-schema": "sche
 CHECKED = [c.code for c in REG.codes(status="active") if c.layer not in ("L", "F")]
 
 
-def module_for(case):
-    """The layer module a case depends on (the conftest's ``Malformed.module_for``)."""
-    kind = KIND[case["kind"]]
-    if kind == "hif" and case["layer"] in ("C", "S", "D"):
-        return "d_decode"
-    return next(n for n in layers.PIPELINES[kind] if layers.spec(n).letter == case["layer"])
-
-
 def _params():
     out = []
     for code in CHECKED:
@@ -39,13 +30,6 @@ def _params():
         marks = []
         if code in EXCEPTIONS:
             marks = [pytest.mark.skip(reason=f"{code} is a coverage exception: {EXCEPTIONS[code]}")]
-        else:
-            modules = sorted({module_for(c) for c in cases})
-            if modules and not any(layers.implemented(m) for m in modules):
-                owners = " and ".join(f"{m} ({layers.spec(m).owner})" for m in modules)
-                what = ("layer module {} is a stub until its owner step fills it" if len(modules) == 1 else
-                        "layer modules {} are stubs until their owner steps fill them")
-                marks = [pytest.mark.xfail(strict=True, reason=f"{code}: {what.format(owners)}")]
         out.append(pytest.param(code, [c["id"] for c in cases], marks=marks, id=code))
     return out
 
@@ -72,13 +56,10 @@ def test_every_active_code_is_detected(code, case_ids, malformed):
     assert passing, f"{code}: none of {case_ids} is rejected first at its layer with its code"
 
 
-def test_the_stub_modules_name_their_owner_steps():
-    stubs = {s.name: s.owner for s in layers.LAYERS if not layers.implemented(s.name)}
-    assert set(stubs) <= {"h", "r", "p", "d_decode", "d_container", "q", "i"}
-    assert all(stubs[m] == {"h": "W6", "r": "W6", "p": "W6", "d_decode": "W6", "d_container": "W5", "q": "W9",
-                            "i": "W11a"}[m] for m in stubs)
-    for name in stubs:
-        assert f"TODO({stubs[name]})" in (layers.module(name).__doc__ or "")
+def test_no_layer_module_is_a_stub_any_more():
+    """Every owner step (W4, W5, W6, W9, W11a) has filled its layer module: none is a stub or names a TODO."""
+    assert all(layers.implemented(s.name) for s in layers.LAYERS)
+    assert not any("TODO(" in (layers.module(s.name).__doc__ or "") for s in layers.LAYERS)
 
 
 @pytest.mark.parametrize("case_id", [c["id"] for c in CASES])

@@ -7,9 +7,10 @@ to the EARL and Dublin Core vocabularies. The report is deterministic: no dates,
 """
 from __future__ import annotations
 
+import contextlib
 import json
 import os
-import tempfile
+import secrets
 from typing import Any, Iterable, Mapping
 
 from ... import __version__
@@ -74,13 +75,18 @@ def to_json(report: Mapping[str, Any]) -> str:
 
 
 def write_report(report: Mapping[str, Any], path: Any) -> None:
-    """Write ``to_json(report)`` to ``path`` (UTF-8), replacing the file atomically."""
+    """Write ``to_json(report)`` to ``path`` (UTF-8), replacing the file atomically; the file gets the permissions
+    the umask allows."""
+    text = to_json(report)
     target = os.fspath(path)
-    fd, tmp = tempfile.mkstemp(dir=os.path.dirname(target) or ".", prefix=".khg-", suffix=".tmp")
+    # open(..., "x"), not tempfile.mkstemp, whose mode 0600 would survive the rename (as in cli._write_file)
+    tmp = os.path.join(os.path.dirname(target) or ".", f".khg-{secrets.token_hex(8)}.tmp")
+    fh = open(tmp, "x", encoding="utf-8", newline="\n")
     try:
-        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as fh:
-            fh.write(to_json(report))
+        with fh:
+            fh.write(text)
         os.replace(tmp, target)
-    finally:
-        if os.path.exists(tmp):
+    except BaseException:
+        with contextlib.suppress(OSError):
             os.remove(tmp)
+        raise
