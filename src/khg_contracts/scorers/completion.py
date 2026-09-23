@@ -152,7 +152,8 @@ def build_queries(facts: Iterable[Mapping[str, Any]], schema: Any, *, slots: tup
     ``universe``: ``entities_of_type`` names the target usage's entity types; ``seen_in_position`` lists the
     entities seen in the target's position among ``facts`` (for a ``primary`` subject or object: every entity seen
     as a subject or object, as StarE's WD50K universe; else the entities seen in that role). A fact target lists the
-    facts of the relations its usage admits, and a literal target the literals seen in its role."""
+    facts of the relations its usage admits, and the target itself, whose fact may lie in another split; a literal
+    target lists the literals seen in its role."""
     s = as_schema(schema)
     slots = tuple(slots)
     if not slots or any(x not in QUERY_SLOTS for x in slots):
@@ -202,7 +203,9 @@ def build_queries(facts: Iterable[Mapping[str, Any]], schema: Any, *, slots: tup
                 cu = {"kind": "list", "ids": sorted(pool)}
             elif kind == "fact":
                 rels = {x for f in usage["fillers"] if "fact" in f for x in f["fact"]}
-                cu = {"kind": "list", "ids": sorted(i for x in rels for i in fact_ids.get(x, ()))}
+                # the target itself is a candidate even when its fact is not among ``facts`` (another split)
+                pool = {i for x in rels for i in fact_ids.get(x, ())} | {b["value"]["fact"]}
+                cu = {"kind": "list", "ids": sorted(pool)}
             else:
                 cu = {"kind": "list", "ids": sorted(literals_role.get(b["role"], set()))}
             qid = _bid_id("cq:", r["id"], b["bid"])
