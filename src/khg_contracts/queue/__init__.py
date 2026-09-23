@@ -4,7 +4,8 @@ A queue file is append-only JSONL, one per (run, order): line 1 is the ``queue-h
 optional ``base`` container), then ``queue-item`` and ``log-entry`` lines. An item's state is a fold over its log;
 items are never edited. Ids are scoped by the queue: ``q:``, ``l:`` and ``cand:<queue_id>.<seq>``.
 
-- ``Queue.create``, ``Queue.open``; ``submit``, ``accept``, ``reject``, ``flag``, ``verdict``, ``withdraw``;
+- ``Queue.create(path, *, queue_id, schema, base=None, created_at=None)``, ``Queue.open(path, *, schema,
+  base=None)``; ``submit``, ``accept``, ``reject``, ``flag``, ``verdict``, ``withdraw``;
 - ``make_candidate(record, *, queue_id, seq, schema)``;
 - ``Linter(schema, *, store=None, entities=None, doc_texts=None).lint(queue, qid, *, at=None)``: the structural
   rule set;

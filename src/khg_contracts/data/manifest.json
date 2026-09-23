@@ -148,6 +148,7 @@
   "schemas/khg-c4-items-0.1.0.schema.json": "sha256:8870412de1849c520d016404f6df519cdb4913b88dcd164aeee9ed2d5c967a98",
   "schemas/khg-c5-io-1.0.0.schema.json": "sha256:a51da48facfdf88dbf9f4043b409e37d89e545db33314c8c73e46ea641e9cd3d",
   "schemas/khg-hif-1.0.0.schema.json": "sha256:b866b3cdf388967bf08439b3074cb73b435dbd51a17cfc1fd8df9f08700892b0",
+  "schemas/khg-queue-1.0.0.schema.json": "sha256:da7be40aa704ba3e1f64289397b8685865afc9c4c24b396bb08ee81e2db444f6",
   "schemas/khg-record-1.0.0.schema.json": "sha256:ae5f7d1c948b4df06d0345d0c63869bde242dda2ee7ce7c93b2ef1a6019f6a73",
   "schemas/khg-relation-schema-1.0.0.schema.json": "sha256:1fdc7e86cbd0bb53e78e3c1a8119f3a1ad41b7403e541090459d1727e68feec6"
  }

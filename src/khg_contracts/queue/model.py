@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import re
 from types import MappingProxyType
-from typing import Mapping
+from typing import Any, Dict, Mapping
 
 __all__ = [
     "ACTIONS",
@@ -22,6 +22,7 @@ __all__ = [
     "LINE_KINDS",
     "LINTER",
     "LINT_STATES",
+    "LogEntry",
     "MODES",
     "MOVES",
     "OPEN_STATES",
@@ -44,6 +45,10 @@ __all__ = [
     "qid",
     "seq_of",
 ]
+
+#: A log entry as a queue line holds it (what ``Queue.accept``, ``reject``, ``flag``, ``verdict``, ``withdraw`` and
+#: ``Linter.lint`` return).
+LogEntry = Dict[str, Any]
 
 FORMAT = "khg-queue/1.0.0"
 RECORD_FORMAT = "khg-record/1.0.0"

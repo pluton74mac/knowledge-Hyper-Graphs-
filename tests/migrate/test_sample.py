@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import importlib
 import json
 import os
 import subprocess
@@ -32,6 +33,8 @@ REPORT_EDGES = ["f1", "f1", "f1", "f2", "f2", "f3", "f3", None]
 SCHEMA_SHA256 = "sha256:69f63208d33e09c742a90b1bf4ede076cfe158a5939f7f4f4d47e40c21da7fc5"
 WEIGHTS = {"f1": 0.95, "f2": 0.8, "f3": 1.0}
 ARITIES = {"f1": 4, "f2": 3, "f3": 2}
+#: The hash seeds of G1 assertion 7 (§1.2): PYTHONHASHSEED 0-3 and unset (None).
+SEEDS = ("0", "1", "2", "3", None)
 
 
 def _hyperedges(container: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -208,6 +211,18 @@ def test_the_container_round_trips_through_hif(migrated, schema, outputs):
     assert compare_containers(migrated.container, back, ignore=()) == []
 
 
+@pytest.mark.parametrize("suffix", [".khg.json", ".khg.jsonl"])
+def test_the_container_is_written_and_read_back_as_the_golden(migrated, goldens, golden_files, tmp_path, suffix):
+    """``record.write_container`` (V and C checks, canonical layout) keeps the golden's content; only the text
+    layout of the committed golden differs."""
+    path = tmp_path / f"sample{suffix}"
+    record.write_container(migrated.container, path)
+    assert record.read_container(path) == goldens["container"]
+    written = path.read_bytes()
+    assert written != data.read_bytes(golden_files["container"])
+    assert written.count(b"\n") == (1 if suffix == ".khg.jsonl" else 5) + len(goldens["container"]["records"])
+
+
 # ------------------------------------------------------------------------------------------------ the call
 
 
@@ -216,6 +231,10 @@ def test_the_api_names(migrated):
     assert isinstance(migrated, tuple) and migrated._fields == ("schema", "container", "report")
     module = sys.modules["khg_contracts.migrate.v0_sample_to_v1"]  # §10.1: migrate/v0_sample_to_v1.py
     assert module.v0_sample_to_v1 is migrate.v0_sample_to_v1
+    assert importlib.import_module("khg_contracts.migrate.v0_sample_to_v1") is module
+    import khg_contracts.migrate.v0_sample_to_v1 as by_name  # the package attribute: the function, not the module
+
+    assert by_name is migrate.v0_sample_to_v1
     assert issubclass(ValidationError, ValueError)
 
 
@@ -281,7 +300,7 @@ def test_the_result_does_not_depend_on_the_hash_seed(migrated, v0_path):
             "from khg_contracts import jsonio, migrate\n"
             "m = migrate.v0_sample_to_v1(sys.argv[1])\n"
             "print('sha256:' + hashlib.sha256(jsonio.canonical(list(m)).encode('utf-8')).hexdigest())\n")
-    assert set(_children(code, v0_path, ("0", "1", "2"))) == {_digest(migrated)}
+    assert _children(code, v0_path, SEEDS) == [_digest(migrated)] * len(SEEDS)
 
 
 # ------------------------------------------------------------------------------------------------ the KB's files
@@ -430,10 +449,13 @@ print(json.dumps([d(list(m)), d(h0), d(h1), d(h2), d(hif.from_hif(h2, s))]))
 
 
 @pytest.mark.libs
-def test_g1_hash_seed_children_agree_with_this_process(chain, migrated, v0_path):
+def test_g1_hash_seed_children_agree_with_this_process(chain, migrated, goldens, v0_path):
+    """G1 assertion 7 on the migrated sample: five children, each printing the digest of every intermediate
+    document (the migration's three results, the three HIFs and the final container), agree with this process."""
     def digest(doc: Any) -> str:
         return "sha256:" + hashlib.sha256(jsonio.canonical(doc).encode("utf-8")).hexdigest()
 
     want = [_digest(migrated), digest(chain.h0), digest(chain.h1), digest(chain.h2), digest(chain.back)]
-    for stdout in _children(_CHAIN_CHILD, v0_path, ("0", "3", None)):
-        assert json.loads(stdout) == want
+    assert want[1] == digest(goldens["hif"])  # the chain starts from the golden HIF
+    outputs = _children(_CHAIN_CHILD, v0_path, SEEDS)
+    assert [json.loads(stdout) for stdout in outputs] == [want] * len(SEEDS)

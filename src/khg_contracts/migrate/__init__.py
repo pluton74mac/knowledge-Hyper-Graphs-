@@ -8,7 +8,8 @@
 - ``dumps`` and ``LAYOUT`` write the outputs in the layout of the committed goldens (``data/sample/``).
 
 The function is also the name of its module, ``migrate/v0_sample_to_v1.py`` (§10.1): ``migrate.v0_sample_to_v1``
-is the function, and ``importlib.import_module("khg_contracts.migrate.v0_sample_to_v1")`` gives the module.
+is the function, and so is ``import khg_contracts.migrate.v0_sample_to_v1 as m`` (it reads the package attribute).
+``importlib.import_module("khg_contracts.migrate.v0_sample_to_v1")`` gives the module.
 """
 from __future__ import annotations
 

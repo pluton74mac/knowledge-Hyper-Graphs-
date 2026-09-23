@@ -22,7 +22,7 @@ from typing import Any, Mapping
 
 from ..errors import make_finding
 from .lines import line_findings
-from .model import ACTIONS, ITEM_KINDS, LID_PATTERN, MOVES, QID_PATTERN, STATES, seq_of
+from .model import ACTIONS, ITEM_KINDS, LID_PATTERN, MOVES, QID_PATTERN, QUEUE_ID_PATTERN, STATES, seq_of
 
 __all__ = ["Fold", "check"]
 
@@ -54,9 +54,9 @@ class Fold:
 
     @property
     def queue_id(self) -> str | None:
-        """The header's ``queue_id``, when it is a string."""
+        """The header's ``queue_id`` when it is a valid queue id (the schema reports any other)."""
         qid = self.header.get("queue_id") if self.header is not None else None
-        return qid if isinstance(qid, str) else None
+        return qid if isinstance(qid, str) and re.fullmatch(QUEUE_ID_PATTERN, qid) else None
 
     # ------------------------------------------------------------------------------------------ feeding
 
@@ -84,13 +84,19 @@ class Fold:
             return found
         return []
 
+    def _out_of_scope(self, value: str, prefix: str, pattern: str) -> bool:
+        """True when ``value`` is a well-formed id (the schema reports any other) not scoped by this queue; never
+        without a valid ``queue_id`` (the schema reports the header then)."""
+        return self.queue_id is not None and seq_of(value, prefix, self.queue_id) is None and \
+            re.fullmatch(pattern, value) is not None
+
     def _judge_item(self, line: Mapping[str, Any], n: int) -> tuple[list[Finding], bool]:
         qid = line.get("qid")
         if line.get("item_kind") not in ITEM_KINDS or not isinstance(qid, str):
             return [], False
         if qid in self.items:
             return [_f("KHG-Q008", f"/lines/{n}/qid", f"qid {qid} is used twice (line {self.item_line[qid]})")], False
-        if seq_of(qid, "q", self.queue_id) is None and re.fullmatch(QID_PATTERN, qid):
+        if self._out_of_scope(qid, "q", QID_PATTERN):
             return [_f("KHG-Q008", f"/lines/{n}/qid", f"{qid} is not q:{self.queue_id}.<seq>")], True
         return [], True
 
@@ -115,8 +121,9 @@ class Fold:
         entry_id = line.get("lid")
         if isinstance(entry_id, str):
             if entry_id in self.lids:
-                return [_f("KHG-Q008", f"{p}/lid", f"lid {entry_id} is used twice (line {self.lids[entry_id]})")], "skip"
-            if seq_of(entry_id, "l", self.queue_id) is None and re.fullmatch(LID_PATTERN, entry_id):
+                twice = f"lid {entry_id} is used twice (line {self.lids[entry_id]})"
+                return [_f("KHG-Q008", f"{p}/lid", twice)], "skip"
+            if self._out_of_scope(entry_id, "l", LID_PATTERN):
                 out.append(_f("KHG-Q008", f"{p}/lid", f"{entry_id} is not l:{self.queue_id}.<seq>"))
         target = line.get("target")
         if not isinstance(target, str) or target not in self.items:

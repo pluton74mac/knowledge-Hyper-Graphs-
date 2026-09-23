@@ -8,10 +8,10 @@ On one hyperedge item (paths are relative to the item line):
   inferred evidence that differs from ``khg-event/1`` over that content key (with the relation-type schema);
 - Q011 an entity value that ``item.entities`` and the other sources given do not resolve.
 
-On a verdict entry: Q008 an ``evidence_id`` the payload lacks, or a binding tuple (role, position, value identity)
-that is not a binding of the payload; Q010 a ``core_key`` or ``event_hash`` other than the item's. The header checks
-D009 (the schema pin) and Q012 (the base against the header's pin) serve ``Queue.open``, the linter and ``replay``.
-What a payload cannot be read for is left to layers C and S.
+On a verdict entry: Q008 an ``evidence_id`` the payload lacks or whose evidence has no ``event_hash``, or a binding
+tuple (role, position, value identity) that is not a binding of the payload; Q010 a ``core_key`` or ``event_hash``
+other than the item's. The header checks D009 (the schema pin) and Q012 (the base against the header's pin) serve
+``Queue.open``, the linter and ``replay``. What a payload cannot be read for is left to layers C and S.
 """
 from __future__ import annotations
 
@@ -24,8 +24,8 @@ from ..record import EVENT_TYPES, container_sha256, content_key, core_key, event
 from ..schema import Schema
 from .model import CAND_PATTERN, SHA256_PATTERN, seq_of
 
-__all__ = ["KEY_FIELDS", "base_findings", "cand_findings", "item_findings", "item_keys", "keys_or_none",
-           "pin_findings", "verdict_findings"]
+__all__ = ["KEY_FIELDS", "base_findings", "cand_findings", "item_core_key", "item_findings", "item_keys",
+           "keys_or_none", "pin_findings", "verdict_findings"]
 
 KEY_FIELDS = ("content_key", "core_key", "key_digest")
 _UNREADABLE = (KHGError, ValueError, TypeError, KeyError, AttributeError)
@@ -156,15 +156,32 @@ def _entity_findings(item: Mapping[str, Any], payload: Mapping[str, Any], entiti
 
 
 def _content_tuple(b: Mapping[str, Any]) -> str | None:
+    """A binding's (role, position, value identity), the element ``content_key`` hashes, as canonical text; None
+    for a value that cannot be read."""
+    value = b.get("value")
+    if not isinstance(value, Mapping):
+        return None
     try:
-        return jsonio.canonical([b.get("role"), b.get("position"), value_identity(b.get("value"))])
+        return jsonio.canonical([b.get("role"), b.get("position"), value_identity(value)])
     except _UNREADABLE:
         return None
 
 
+def item_core_key(item: Mapping[str, Any], schema: Schema | None) -> str | None:
+    """The item's ``core_key``: the stored ``keys.core_key`` (what ``queue_items`` attaches verdicts by), else the
+    payload's, recomputed with ``schema``."""
+    keys = item.get("keys")
+    if isinstance(keys, Mapping) and _sha(keys.get("core_key")):
+        return keys["core_key"]
+    return (keys_or_none(item.get("payload"), schema) or {}).get("core_key")
+
+
 def verdict_findings(entry: Mapping[str, Any], item: Mapping[str, Any], *, schema: Schema | None,
                      path: str = "") -> list[Finding]:
-    """Q008 and Q010 on a verdict entry about ``item`` (paths are relative to the entry)."""
+    """Q008 and Q010 on a verdict entry about ``item`` (paths are relative to the entry): Q008 for an
+    ``evidence_id`` the payload lacks or whose evidence has no ``event_hash`` (verdicts judge extracted and inferred
+    evidence), and for a binding tuple that is not a binding of the payload; Q010 for a ``core_key`` or
+    ``event_hash`` other than the item's and the evidence's."""
     v = entry.get("verdict")
     payload = item.get("payload")
     if not isinstance(v, Mapping) or not isinstance(payload, Mapping):
@@ -175,9 +192,11 @@ def verdict_findings(entry: Mapping[str, Any], item: Mapping[str, Any], *, schem
     ev = next((e for e in evidence if e.get("id") == v.get("evidence_id")), None)
     if isinstance(v.get("evidence_id"), str) and ev is None:
         out.append(_f("KHG-Q008", f"{p}/evidence_id", f"the payload has no evidence {v['evidence_id']!r}"))
-    want = (keys_or_none(payload, schema) or {}).get("core_key")
-    if want is None and isinstance(item.get("keys"), Mapping) and _sha(item["keys"].get("core_key")):
-        want = item["keys"]["core_key"]
+    elif ev is not None and ev.get("type") not in EVENT_TYPES:
+        out.append(_f("KHG-Q008", f"{p}/evidence_id", f"evidence {ev.get('id')!r} is {ev.get('type')!r}: a verdict "
+                                                      f"judges extracted or inferred evidence"))
+        ev = None
+    want = item_core_key(item, schema)
     if _sha(v.get("core_key")) and want is not None and v["core_key"] != want:
         out.append(_f("KHG-Q010", f"{p}/core_key", "the verdict's core_key is not the item's"))
     if ev is not None and _sha(v.get("event_hash")) and v["event_hash"] != ev.get("event_hash"):

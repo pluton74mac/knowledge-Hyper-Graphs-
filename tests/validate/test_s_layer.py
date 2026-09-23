@@ -276,22 +276,32 @@ def test_latest_records_picks_the_highest_version():
 # ------------------------------------------------------------------------------------------------ queue payloads
 
 
+def _step(report, name):
+    """The findings of one step of a run. W9: layer Q now checks the payloads these tests change (their stale keys
+    and the replayed accept), so the assertions about layer S read the S step only."""
+    return dict(report.steps)[name]
+
+
 def test_queue_payloads_are_candidates_resolved_through_item_entities_then_the_base():
     lines = data.load_jsonl("fixture/smoke-queue.khg-queue.jsonl")
     base = data.load_json("fixture/smoke-base.c1.json")
     item = next(n for n, x in enumerate(lines) if x["kind"] == "queue-item")
     drop(lines[item]["payload"], "position")
-    report = run(lines, kind="queue", schema=SCHEMA, bases=[base])
-    assert report.ok and [(f["code"], f["severity"]) for f in report.findings] == [("KHG-S003", "warning")]
-    assert report.findings[0]["path"] == f"/lines/{item}/payload"
+    found = _step(run(lines, kind="queue", schema=SCHEMA, bases=[base]), "s")
+    assert [(f["code"], f["severity"]) for f in found] == [("KHG-S003", "warning")]
+    assert found[0]["path"] == f"/lines/{item}/payload"
     lines[item]["entities"] = [{"kind": "entity", "id": "ex:LouisXIII", "types": ["Place"], "label": "L"}]
-    report = run(lines, kind="queue", schema=SCHEMA, bases=[base])
-    assert [(f["code"], f["path"]) for f in report.errors] == [("KHG-S005", f"/lines/{item}/payload/bindings/2")]
+    found = _step(run(lines, kind="queue", schema=SCHEMA, bases=[base]), "s")
+    assert [(f["code"], f["path"]) for f in found if f["severity"] == "error"] == \
+        [("KHG-S005", f"/lines/{item}/payload/bindings/2")]
     base_bad = copy.deepcopy(base)
     next(r for r in base_bad["records"] if r["id"] == "ex:LouisXIV")["types"] = ["Place"]
     lines[item]["entities"] = []
-    assert run(lines, kind="queue", schema=SCHEMA, bases=[base]).ok
-    assert run(lines, kind="queue", schema=SCHEMA, bases=[base_bad]).ok  # its sha256 is not the header's: unused
+    for bases in ([base], [base_bad]):
+        assert [f for f in _step(run(lines, kind="queue", schema=SCHEMA, bases=bases), "s")
+                if f["severity"] == "error"] == []
+    report = run(lines, kind="queue", schema=SCHEMA, bases=[base_bad])  # its sha256 is not the header's: unused
+    assert "KHG-Q012" in [f["code"] for f in _step(report, "q")]
 
 
 def test_queue_payloads_go_through_layer_c_as_hyperedges():
@@ -299,8 +309,8 @@ def test_queue_payloads_go_through_layer_c_as_hyperedges():
     item = next(n for n, x in enumerate(lines) if x["kind"] == "queue-item")
     lines[item]["payload"]["rank"] = "top"
     report = run(lines, kind="queue", schema=SCHEMA)
-    assert [(f["code"], f["path"]) for f in report.errors] == [("KHG-C002", f"/lines/{item}/payload/rank")]
-    assert run(lines, kind="queue").errors[0]["code"] == "KHG-C002"
+    assert [(f["code"], f["path"]) for f in _step(report, "c")] == [("KHG-C002", f"/lines/{item}/payload/rank")]
+    assert _step(run(lines, kind="queue"), "c")[0]["code"] == "KHG-C002"
     assert ("KHG-D009", "/lines/0/schema") in [(f["code"], f["path"]) for f in run(lines, kind="queue").errors]
 
 
