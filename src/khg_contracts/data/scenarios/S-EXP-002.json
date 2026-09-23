@@ -1,0 +1,89 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-EXP-002",
+ "title": "the fixture rebuilt through put and one supersede event exports equal to it (given its header)",
+ "requires": [
+  "atomic_writes",
+  "goals",
+  "literal_values",
+  "nesting",
+  "ordered_roles",
+  "special_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities"
+   ]
+  },
+  {
+   "put": [
+    "@f:born-louis14-paris",
+    "@f:born-scribe",
+    "@f:cat-7",
+    "@f:claim-1",
+    "@f:coadmin-1",
+    "@f:king-13",
+    "@f:king-14",
+    "@f:loop-yyz",
+    "@f:married-curie",
+    "@f:pop-łódź-2019",
+    "@f:pop-łódź-2019-dep",
+    "@f:reg-1",
+    "@f:route-1",
+    "@f:station-東京",
+    "@g:who-1774"
+   ]
+  },
+  {
+   "put": [
+    {
+     "@": "f:born-skłodowska-kraków",
+     "set": {
+      "status": "asserted"
+     },
+     "drop": [
+      "status_ref"
+     ]
+    }
+   ]
+  },
+  {
+   "apply": {
+    "op": "supersede",
+    "id": "m:sup-1",
+    "superseded": [
+     "f:born-skłodowska-kraków"
+    ],
+    "records": [
+     "@f:born-skłodowska-warszawa"
+    ],
+    "reason": "correction",
+    "note": "birthplace is Warsaw, per the curated biography",
+    "evidence": "@m:sup-1.evidence"
+   }
+  }
+ ],
+ "when": [
+  {
+   "op": "export",
+   "args": {
+    "format": "khg-json",
+    "header": "@fixture.header"
+   },
+   "then": {
+    "container_equals": "@fixture",
+    "ignore": [
+     "version",
+     "recorded_at",
+     "recorded_by"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "C S-EXP-001 passed"
+ ]
+}

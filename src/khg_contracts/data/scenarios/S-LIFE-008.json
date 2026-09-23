@@ -1,0 +1,84 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-LIFE-008",
+ "title": "binding a goal slot is a new version with the same bid",
+ "requires": [
+  "goals",
+  "literal_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    {
+     "kind": "entity",
+     "id": "ex:LouisXVI",
+     "types": [
+      "Person"
+     ],
+     "label": "Louis XVI"
+    },
+    "@g:who-1774"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "g:who-1774",
+      "set_binding": {
+       "b1": {
+        "entity": "ex:LouisXVI"
+       }
+      },
+      "add_evidence": [
+       {
+        "id": "e1",
+        "type": "agent_bound",
+        "mode": "automatic",
+        "source": {
+         "doc_id": "doc:regnal-list"
+        },
+        "activity": {
+         "agent": "agent:history-desk"
+        },
+        "supports": [
+         "b1"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "g:who-1774",
+      2,
+      "versioned"
+     ]
+    ]
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "g:who-1774"
+   },
+   "then": {
+    "select": "derived.n_unbound",
+    "equals": 0
+   }
+  }
+ ],
+ "precedent": [
+  "A C2-19 passed",
+  "B S070"
+ ]
+}

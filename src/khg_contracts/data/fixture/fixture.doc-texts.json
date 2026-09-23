@@ -1,0 +1,21 @@
+{
+ "format": "khg-doc-texts/1.0.0",
+ "texts": {
+  "doc:coadmin-note": {
+   "text": "Metformin taken together with insulin can cause hypoglycaemia.",
+   "sha256": "sha256:242a3e2542b83f98e5adfa478e9d7ef5aa909708f7e184e88f51e5b09ff17368"
+  },
+  "doc:curie-wrong": {
+   "text": "Maria Skłodowska was born in Kraków.",
+   "sha256": "sha256:685ed4266cfa7fb0429dee59b9feaa3cefde8894ac6556dce24e1894504a7a0d"
+  },
+  "doc:louis-bio": {
+   "text": "Louis XIV succeeded his father Louis XIII as King of France on 14 May 1643.",
+   "sha256": "sha256:56940b729460cb9a75d5d63ab1f907a502fef80530b4aabff2cd8e9c28a44b2f"
+  },
+  "doc:route-note": {
+   "text": "Note by 𠮷田: Air Canada flies Toronto → Montréal → Toronto every day.",
+   "sha256": "sha256:8b395a98af191e8344b7feeb58aa893408f6ff9ae0cb4a2eb91add710f7e94c4"
+  }
+ }
+}

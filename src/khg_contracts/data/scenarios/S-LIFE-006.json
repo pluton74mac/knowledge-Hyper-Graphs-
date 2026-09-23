@@ -1,0 +1,97 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-LIFE-006",
+ "title": "retraction writes khg:retracts; a retracted fact does not come back",
+ "requires": [
+  "atomic_writes"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    "@f:reg-1"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "apply",
+   "args": {
+    "event": {
+     "op": "transition",
+     "targets": [
+      "f:reg-1"
+     ],
+     "to": "retracted",
+     "id": "m:ret-1",
+     "reason": "withdrawn",
+     "evidence": [
+      {
+       "id": "e9",
+       "type": "curated",
+       "mode": "manual",
+       "source": {
+        "doc_id": "doc:scenario"
+       }
+      }
+     ]
+    }
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "f:reg-1",
+      2,
+      "versioned"
+     ],
+     [
+      "m:ret-1",
+      1,
+      "created"
+     ]
+    ]
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:reg-1"
+   },
+   "then": {
+    "select": "status_ref",
+    "equals": "m:ret-1"
+   }
+  },
+  {
+   "op": "apply",
+   "args": {
+    "event": {
+     "op": "transition",
+     "targets": [
+      "f:reg-1"
+     ],
+     "to": "asserted",
+     "evidence": [
+      {
+       "id": "e9",
+       "type": "curated",
+       "mode": "manual",
+       "source": {
+        "doc_id": "doc:scenario"
+       }
+      }
+     ]
+    }
+   },
+   "then": {
+    "error": "KHG-D014"
+   }
+  }
+ ],
+ "precedent": [
+  "A C2-16 passed"
+ ]
+}

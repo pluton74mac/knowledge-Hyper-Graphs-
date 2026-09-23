@@ -1,0 +1,121 @@
+# CI of the khg-contracts package (projects/p2-role-aware-hif/DESIGN.md §10.6).
+# Every test run is offline: tests/conftest.py blocks sockets for the whole session.
+name: khg-contracts
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  core-3-10:
+    name: core-3.10
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install the core package with the dev extra
+        run: python -m pip install ".[dev]"
+      - name: Every test (loader, evidence and G1 tests skip without the libraries; import hygiene is checked)
+        run: python -m pytest -q
+
+  gate-3-11:
+    name: gate-3.11
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install with every extra
+        run: python -m pip install ".[xgi,hnx,fast,dev]"
+      - name: Everything but the evidence test, G1-G3 included (G1 spawns its own hash-seed children)
+        run: python -m pytest -q -m "not evidence"
+
+  core-3-13:
+    name: core-3.13
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install the core package with the dev extra
+        run: python -m pip install ".[dev]"
+      - name: The core tests (the library tests skip)
+        run: python -m pytest -q
+
+  wheel:
+    name: wheel
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Build the sdist and the wheel
+        run: |
+          python -m pip install --upgrade build
+          python -m build --outdir dist .
+      - name: Install the wheel into a clean venv
+        run: |
+          python -m venv "$RUNNER_TEMP/wheel-venv"
+          "$RUNNER_TEMP/wheel-venv/bin/python" -m pip install dist/*.whl
+      - name: Package-data hashes (against data/manifest.json)
+        working-directory: ${{ runner.temp }}
+        run: '"$RUNNER_TEMP/wheel-venv/bin/python" -m khg_contracts.data --check'
+      - name: khg-validate on the packaged fixture
+        working-directory: ${{ runner.temp }}
+        run: |
+          PY="$RUNNER_TEMP/wheel-venv/bin/python"
+          FIXTURE=$("$PY" -c "import khg_contracts.data as d; print(d.path('fixture/fixture.c1.json'))")
+          SCHEMA=$("$PY" -c "import khg_contracts.data as d; print(d.path('fixture/fixture.relation-schema.json'))")
+          "$RUNNER_TEMP/wheel-venv/bin/khg-validate" "$FIXTURE" --kind container --schema "$SCHEMA"
+      - name: khg-conformance on MemoryStore
+        working-directory: ${{ runner.temp }}
+        run: '"$RUNNER_TEMP/wheel-venv/bin/khg-conformance" --factory khg_contracts.store:memory_factory --report "$RUNNER_TEMP/earl.json"'
+
+  examples:
+    name: examples
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install the package
+        run: python -m pip install .
+      - name: Write design-examples/ from the packaged data (and the test-only files under tests/)
+        run: python -m khg_contracts.examples out/ --tests tests
+      - name: Byte-compare with the committed design-examples/
+        run: diff -r out/ projects/p2-role-aware-hif/design-examples/
+
+  evidence:
+    name: evidence
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install with the library extras
+        run: python -m pip install ".[xgi,hnx,dev]"
+      - name: The upstream evidence test, offline
+        run: python -m pytest -q -m evidence

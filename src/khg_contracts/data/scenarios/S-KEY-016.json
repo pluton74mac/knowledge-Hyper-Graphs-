@@ -1,0 +1,114 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-KEY-016",
+ "title": "a refining claim on the same key is a merge: it becomes a new version of the stored fact",
+ "requires": [
+  "key_constraint",
+  "literal_values",
+  "valid_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    {
+     "@": "f:king-14",
+     "drop_bindings": [
+      "b4"
+     ],
+     "set_evidence": {
+      "e1": {
+       "supports": [
+        "b1",
+        "b2",
+        "b3"
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:king-14",
+      "set": {
+       "id": "f:king-14b"
+      }
+     }
+    ]
+   },
+   "then": {
+    "error": "KHG-D016",
+    "info": {
+     "collisions": [
+      {
+       "record": "f:king-14b",
+       "policy": "close_older",
+       "conflicts": [
+        {
+         "id": "f:king-14",
+         "in_batch": false,
+         "shape": "same_start",
+         "class": "refines",
+         "action": "merge"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:king-14",
+      "set_evidence": {
+       "e1": {
+        "supports": [
+         "b1",
+         "b2",
+         "b3"
+        ]
+       }
+      },
+      "add_evidence": [
+       {
+        "id": "e9",
+        "type": "curated",
+        "mode": "manual",
+        "source": {
+         "doc_id": "doc:scenario"
+        },
+        "supports": [
+         "b4"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "f:king-14",
+      2,
+      "versioned"
+     ]
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "critique SEM-05 (R01 case 1, C3-R10)"
+ ]
+}

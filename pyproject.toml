@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "khg-contracts"
+dynamic = ["version"]
+description = "The shared contracts of the knowledge-hypergraph programme: the C1 record format, role-aware HIF, the C2 store interface, the C3 queue and the C5 scorers."
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE", "src/khg_contracts/data/schemas/HIF-LICENSE.txt"]
+authors = [{ name = "pluton74mac" }]
+keywords = ["hypergraph", "knowledge hypergraph", "HIF", "n-ary relations", "JSON Schema"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+dependencies = [
+    "jsonschema>=4.18,<5",
+    "fastjsonschema>=2.21,<3",
+]
+
+[project.optional-dependencies]
+xgi = ["xgi==0.10.2"]
+hnx = ["hypernetx==2.4.3", "pandas>=2.2,<3"]
+fast = ["scipy>=1.10"]
+dev = ["pytest>=8", "build>=1.2"]
+
+[project.scripts]
+khg-validate = "khg_contracts.cli:validate_main"
+khg-convert = "khg_contracts.cli:convert_main"
+khg-migrate = "khg_contracts.cli:migrate_main"
+khg-conformance = "khg_contracts.cli:conformance_main"
+
+[project.urls]
+Repository = "https://github.com/pluton74mac/knowledge-Hyper-Graphs-"
+Design = "https://github.com/pluton74mac/knowledge-Hyper-Graphs-/blob/main/projects/p2-role-aware-hif/DESIGN.md"
+
+[tool.hatch.version]
+path = "src/khg_contracts/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/khg_contracts"]
+
+[tool.hatch.build.targets.sdist]
+include = ["/src", "/tests", "/LICENSE", "/pyproject.toml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["--import-mode=importlib", "--strict-markers"]

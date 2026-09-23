@@ -1,0 +1,39 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-PUT-005",
+ "title": "put reports the validator's code",
+ "requires": [
+  "literal_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:king-14",
+      "drop_bindings": [
+       "b2"
+      ]
+     }
+    ]
+   },
+   "then": {
+    "error": "KHG-S003"
+   }
+  }
+ ],
+ "precedent": [
+  "B S005",
+  "C S-PUT-005"
+ ]
+}

@@ -1,0 +1,97 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-READ-010",
+ "title": "find by a time literal: precision takes part in equality; the calendar does not",
+ "requires": [
+  "goals",
+  "literal_values",
+  "nesting",
+  "ordered_roles",
+  "special_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "load": "@fixture"
+  }
+ ],
+ "when": [
+  {
+   "op": "find",
+   "args": {
+    "relation": "population",
+    "pattern": [
+     {
+      "role": "point_in_time",
+      "value": {
+       "literal": {
+        "datatype": "time",
+        "time": "+2019-00-00T00:00:00Z",
+        "precision": 9
+       }
+      }
+     }
+    ]
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:pop-łódź-2019"
+    ]
+   }
+  },
+  {
+   "op": "find",
+   "args": {
+    "relation": "population",
+    "pattern": [
+     {
+      "role": "point_in_time",
+      "value": {
+       "literal": {
+        "datatype": "time",
+        "time": "+2019-01-01T00:00:00Z",
+        "precision": 11
+       }
+      }
+     }
+    ]
+   },
+   "then": {
+    "select": "ids",
+    "equals": []
+   }
+  },
+  {
+   "op": "find",
+   "args": {
+    "relation": "married",
+    "pattern": [
+     {
+      "role": "start_time",
+      "value": {
+       "literal": {
+        "datatype": "time",
+        "time": "+1895-07-14T00:00:00Z",
+        "precision": 11,
+        "calendar": "julian"
+       }
+      }
+     }
+    ]
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:married-curie"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "C S-FIND-003 passed",
+  "B S028",
+  "critique CONS-12 (Julian 1895-07-14 is Gregorian 1895-07-26)"
+ ]
+}

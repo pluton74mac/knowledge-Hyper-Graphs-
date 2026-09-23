@@ -1,0 +1,133 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-LIFE-003",
+ "title": "the walk branches on conflation",
+ "requires": [
+  "atomic_writes"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    {
+     "kind": "entity",
+     "id": "ex:lactic_acidosis",
+     "types": [
+      "Outcome"
+     ],
+     "label": "lactic acidosis"
+    },
+    {
+     "@": "f:coadmin-1",
+     "set": {
+      "id": "f:coadmin-0"
+     },
+     "drop": [
+      "confidence"
+     ]
+    }
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "apply",
+   "args": {
+    "event": {
+     "op": "supersede",
+     "id": "m:sup-9",
+     "superseded": [
+      "f:coadmin-0"
+     ],
+     "records": [
+      "@f:coadmin-1",
+      {
+       "@": "f:coadmin-1",
+       "set": {
+        "id": "f:coadmin-2",
+        "evidence": [
+         {
+          "id": "e9",
+          "type": "curated",
+          "mode": "manual",
+          "source": {
+           "doc_id": "doc:scenario"
+          },
+          "supports": [
+           "b1",
+           "b2",
+           "b3"
+          ]
+         }
+        ]
+       },
+       "drop": [
+        "confidence"
+       ],
+       "set_binding": {
+        "b3": {
+         "entity": "ex:lactic_acidosis"
+        }
+       }
+      }
+     ],
+     "reason": "conflation",
+     "evidence": [
+      {
+       "id": "e9",
+       "type": "curated",
+       "mode": "manual",
+       "source": {
+        "doc_id": "doc:scenario"
+       }
+      }
+     ]
+    }
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "f:coadmin-0",
+      2,
+      "versioned"
+     ],
+     [
+      "f:coadmin-1",
+      1,
+      "created"
+     ],
+     [
+      "f:coadmin-2",
+      1,
+      "created"
+     ],
+     [
+      "m:sup-9",
+      1,
+      "created"
+     ]
+    ]
+   }
+  },
+  {
+   "op": "supersession_walk",
+   "args": {
+    "id": "f:coadmin-0"
+   },
+   "then": {
+    "select": "terminal.ids",
+    "equals": [
+     "f:coadmin-1",
+     "f:coadmin-2"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "B S050",
+  "C S-SUP-002"
+ ]
+}

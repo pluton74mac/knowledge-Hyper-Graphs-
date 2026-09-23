@@ -1,0 +1,32 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-PUT-001",
+ "title": "put then get returns the record",
+ "requires": [],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    "@f:reg-1"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "get",
+   "args": {
+    "id": "f:reg-1"
+   },
+   "then": {
+    "select": "canonical",
+    "equals": "@f:reg-1"
+   }
+  }
+ ],
+ "precedent": [
+  "A C2-01 passed",
+  "B S001"
+ ]
+}

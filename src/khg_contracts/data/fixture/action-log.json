@@ -1,0 +1,16 @@
+{
+ "kind": "log-entry",
+ "lid": "l:p2-smoke.000002",
+ "parent": "l:p2-smoke.000001",
+ "target": "q:p2-smoke.000001",
+ "action": "accept",
+ "state_before": "linted",
+ "state_after": "accepted",
+ "actor": {"type": "person", "id": "curator:smoke"},
+ "mode": "manual",
+ "at": "2026-10-01T00:00:07Z",
+ "reason": "the regnal list and the biography sentence support every binding",
+ "before": [],
+ "after": [{"id": "f:king-14", "version": 1}],
+ "decision_hash": "sha256:518db0f4a88cffe427846b412c99d755945c35816fc3c5e83d31c2ea30807f29"
+}

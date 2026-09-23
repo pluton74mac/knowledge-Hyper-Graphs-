@@ -1,0 +1,64 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-VER-002",
+ "title": "add_evidence makes a new version with the same content",
+ "requires": [],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    "@f:reg-1"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "apply",
+   "args": {
+    "event": {
+     "op": "add_evidence",
+     "target": "f:reg-1",
+     "evidence": [
+      {
+       "id": "e9",
+       "type": "curated",
+       "mode": "manual",
+       "source": {
+        "doc_id": "doc:scenario"
+       }
+      }
+     ]
+    }
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "f:reg-1",
+      2,
+      "versioned"
+     ]
+    ]
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:reg-1"
+   },
+   "then": {
+    "select": "evidence.ids",
+    "equals": [
+     "e1",
+     "e9"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "B S011",
+  "C S-LIFE-003"
+ ]
+}

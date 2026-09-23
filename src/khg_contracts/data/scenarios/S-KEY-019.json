@@ -1,0 +1,63 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-KEY-019",
+ "title": "key literals compare exactly: 2019 at year precision and 30 June 2019 are different keys",
+ "requires": [
+  "key_constraint",
+  "literal_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    "@f:pop-łódź-2019"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:pop-łódź-2019",
+      "set": {
+       "id": "f:pop-łódź-2019-q2"
+      },
+      "set_binding": {
+       "b3": {
+        "literal": {
+         "datatype": "time",
+         "time": "+2019-06-30T00:00:00Z",
+         "precision": 11
+        }
+       },
+       "b2": {
+        "literal": {
+         "datatype": "quantity",
+         "amount": "+682000",
+         "unit": "1"
+        }
+       }
+      }
+     }
+    ]
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "f:pop-łódź-2019-q2",
+      1,
+      "created"
+     ]
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "critique SEM-13"
+ ]
+}

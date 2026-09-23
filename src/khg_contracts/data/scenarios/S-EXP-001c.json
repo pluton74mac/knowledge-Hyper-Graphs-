@@ -1,0 +1,35 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-EXP-001c",
+ "title": "load then export khg-json gives the fixture back, header included (capability-limited fixture @fixture[core])",
+ "requires": [
+  "literal_values",
+  "nesting"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "load": "@fixture[core]"
+  }
+ ],
+ "when": [
+  {
+   "op": "export",
+   "args": {
+    "format": "khg-json"
+   },
+   "then": {
+    "container_equals": "@fixture[core]",
+    "ignore": [
+     "version",
+     "recorded_at",
+     "recorded_by"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "core variant of S-EXP-001"
+ ]
+}

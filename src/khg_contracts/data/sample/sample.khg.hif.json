@@ -1,0 +1,32 @@
+{
+ "network-type": "directed",
+ "metadata": {"role-convention": "1.0.0", "hif-schema": "https://raw.githubusercontent.com/HIF-org/HIF-standard/b691a3d2ec32100c0229ebe1151e9afad015c356/schemas/hif_schema_v0.1.0.json", "hif-schema-sha256": "sha256:639466b7a10de5a734d231d72422f54a5fce4084cb300869012510124c9b2196", "khg-profile": "khg-hif/1.0.0", "khg-record": "khg-record/1.0.0", "khg-schema": "kb-sample/1.0.0", "khg-schema-sha256": "sha256:69f63208d33e09c742a90b1bf4ede076cfe158a5939f7f4f4d47e40c21da7fc5", "khg-document-id": "kb-sample", "khg-literal-nodes": "shared", "khg-complete": true, "title": "Sample knowledge hypergraph in HIF (Hypergraph Interchange Format)", "description": "Three n-ary facts from a toy biomedical knowledge base. Each hyperedge is one fact; each incidence carries the role the entity plays in that fact. Directed: 'tail' incidences are the inputs/subjects of the relation, 'head' incidences are the outputs/objects.", "created": "2026-09-19", "kb-section": "kb/04-storage-and-formats"},
+ "nodes": [
+  {"node": "disease:T2DM", "attrs": {"khg-kind": "entity", "label": "type 2 diabetes mellitus", "khg-types": ["Disease"]}},
+  {"node": "doc:guideline-2024", "attrs": {"khg-kind": "entity", "label": "Standards of Care 2024", "khg-types": ["Document"]}},
+  {"node": "dose:500mg-bid", "attrs": {"khg-kind": "entity", "label": "500 mg twice daily", "khg-types": ["Dosage"]}},
+  {"node": "drug:insulin", "attrs": {"khg-kind": "entity", "label": "insulin", "khg-types": ["Drug"]}},
+  {"node": "drug:metformin", "attrs": {"khg-kind": "entity", "label": "metformin", "khg-types": ["Drug"]}},
+  {"node": "effect:hypoglycemia", "attrs": {"khg-kind": "entity", "label": "hypoglycaemia", "khg-types": ["AdverseEffect"]}},
+  {"node": "org:ADA", "attrs": {"khg-kind": "entity", "label": "American Diabetes Association", "khg-types": ["Organisation"]}},
+  {"node": "pop:adults", "attrs": {"khg-kind": "entity", "label": "adults", "khg-types": ["Population"]}},
+  {"node": "_:lit:2f9719a413686b60dcadcb80025c48e9", "attrs": {"khg-kind": "literal", "label": "+2024-01-01T00:00:00Z/11", "khg-literal": {"datatype": "time", "time": "+2024-01-01T00:00:00Z", "precision": 11, "calendar": "gregorian"}}}
+ ],
+ "edges": [
+  {"edge": "f1", "weight": 0.95, "attrs": {"relation": "treats", "khg-status": "asserted", "khg-rank": "normal", "khg-visibility": "visible", "khg-evidence": [{"id": "e1", "type": "imported", "mode": "automatic", "source": {"doc_id": "doc:guideline-2024"}, "supports": ["b1", "b2", "b3", "b4", "b5"]}]}},
+  {"edge": "f2", "weight": 0.8, "attrs": {"relation": "co-administration-causes", "khg-status": "asserted", "khg-rank": "normal", "khg-visibility": "visible", "khg-evidence": [{"id": "e1", "type": "imported", "mode": "automatic", "source": {"doc_id": "doc:guideline-2024"}, "supports": ["b1", "b2", "b3"]}]}},
+  {"edge": "f3", "weight": 1.0, "attrs": {"relation": "publishes", "khg-status": "asserted", "khg-rank": "normal", "khg-visibility": "visible", "khg-evidence": [{"id": "e1", "type": "imported", "mode": "automatic", "source": {"doc_id": "doc:guideline-2024"}, "supports": ["b1", "b2"]}]}}
+ ],
+ "incidences": [
+  {"edge": "f1", "node": "disease:T2DM", "direction": "head", "attrs": {"role": "condition", "khg-bid": "b1"}},
+  {"edge": "f1", "node": "dose:500mg-bid", "direction": "tail", "attrs": {"role": "dosage", "khg-bid": "b2"}},
+  {"edge": "f1", "node": "pop:adults", "direction": "tail", "attrs": {"role": "population", "khg-bid": "b3"}},
+  {"edge": "f1", "node": "_:lit:2f9719a413686b60dcadcb80025c48e9", "direction": "tail", "attrs": {"role": "start_time", "khg-bid": "b4"}},
+  {"edge": "f1", "node": "drug:metformin", "direction": "tail", "attrs": {"role": "treatment", "khg-bid": "b5"}},
+  {"edge": "f2", "node": "drug:insulin", "direction": "tail", "attrs": {"role": "agent", "khg-bid": "b1"}},
+  {"edge": "f2", "node": "drug:metformin", "direction": "tail", "attrs": {"role": "agent", "khg-bid": "b2"}},
+  {"edge": "f2", "node": "effect:hypoglycemia", "direction": "head", "attrs": {"role": "effect", "khg-bid": "b3"}},
+  {"edge": "f3", "node": "doc:guideline-2024", "direction": "head", "attrs": {"role": "publication", "khg-bid": "b1"}},
+  {"edge": "f3", "node": "org:ADA", "direction": "tail", "attrs": {"role": "publisher", "khg-bid": "b2"}}
+ ]
+}

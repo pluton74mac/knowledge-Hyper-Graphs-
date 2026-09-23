@@ -1,0 +1,57 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-KEY-013",
+ "title": "two undated facts on one temporal key: no collision, a possible-overlap warning",
+ "requires": [
+  "key_constraint",
+  "literal_values",
+  "valid_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    {
+     "@": "f:king-14",
+     "drop_bindings": [
+      "b3",
+      "b4"
+     ]
+    }
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:king-13",
+      "drop_bindings": [
+       "b3",
+       "b4"
+      ]
+     }
+    ]
+   },
+   "then": {
+    "select": "receipt.warnings",
+    "equals": [
+     {
+      "code": "KHG-L008",
+      "ids": [
+       "f:king-13",
+       "f:king-14"
+      ]
+     }
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "critique CONS-11"
+ ]
+}

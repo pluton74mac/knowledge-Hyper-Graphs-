@@ -1,0 +1,73 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-KEY-014",
+ "title": "same start (R01 case 3b): close_older does not apply, the action is dispute",
+ "requires": [
+  "key_constraint",
+  "literal_values",
+  "valid_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    {
+     "@": "f:king-13",
+     "set_binding": {
+      "b3": {
+       "literal": {
+        "datatype": "time",
+        "time": "+1643-05-14T00:00:00Z",
+        "precision": 11
+       }
+      }
+     },
+     "drop_bindings": [
+      "b4"
+     ]
+    }
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:king-14",
+      "drop_bindings": [
+       "b4"
+      ]
+     }
+    ]
+   },
+   "then": {
+    "error": "KHG-D016",
+    "info": {
+     "collisions": [
+      {
+       "record": "f:king-14",
+       "policy": "close_older",
+       "conflicts": [
+        {
+         "id": "f:king-13",
+         "in_batch": false,
+         "shape": "same_start",
+         "class": "distinct",
+         "action": "dispute"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "precedent": [
+  "critique SEM-04 (3b)",
+  "B identity table 3b"
+ ]
+}

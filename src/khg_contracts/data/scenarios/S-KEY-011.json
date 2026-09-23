@@ -1,0 +1,75 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-KEY-011",
+ "title": "a special value in a key role gives no key digest and never collides",
+ "requires": [
+  "atomic_writes",
+  "key_constraint",
+  "special_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:born-scribe",
+      "set": {
+       "id": "f:born-x1"
+      },
+      "set_binding": {
+       "b1": {
+        "special": "somevalue"
+       },
+       "b2": {
+        "entity": "ex:Paris"
+       }
+      }
+     },
+     {
+      "@": "f:born-scribe",
+      "set": {
+       "id": "f:born-x2"
+      },
+      "set_binding": {
+       "b1": {
+        "special": "somevalue"
+       },
+       "b2": {
+        "entity": "ex:Kraków"
+       }
+      }
+     }
+    ]
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "f:born-x1",
+      1,
+      "created"
+     ],
+     [
+      "f:born-x2",
+      1,
+      "created"
+     ]
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "B §2.17",
+  "judge re-run: C's digest made two somevalue keys collide"
+ ]
+}

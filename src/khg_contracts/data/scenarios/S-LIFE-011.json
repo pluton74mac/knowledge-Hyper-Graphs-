@@ -1,0 +1,46 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-LIFE-011",
+ "title": "an asserted fact cannot become a goal",
+ "requires": [],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    "@f:reg-1"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "apply",
+   "args": {
+    "event": {
+     "op": "transition",
+     "targets": [
+      "f:reg-1"
+     ],
+     "to": "goal",
+     "evidence": [
+      {
+       "id": "e9",
+       "type": "curated",
+       "mode": "manual",
+       "source": {
+        "doc_id": "doc:scenario"
+       }
+      }
+     ]
+    }
+   },
+   "then": {
+    "error": "KHG-D014"
+   }
+  }
+ ],
+ "precedent": [
+  "C S-LIFE-001 passed"
+ ]
+}

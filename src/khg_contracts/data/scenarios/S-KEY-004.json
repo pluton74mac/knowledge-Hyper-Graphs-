@@ -1,0 +1,92 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-KEY-004",
+ "title": "one preferred fact may stand beside normal ones on a key",
+ "requires": [
+  "atomic_writes",
+  "key_constraint",
+  "literal_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:pop-łódź-2019",
+      "set": {
+       "rank": "preferred"
+      }
+     },
+     {
+      "@": "f:pop-łódź-2019-dep",
+      "set": {
+       "rank": "normal"
+      },
+      "drop": [
+       "rank_reason"
+      ]
+     }
+    ]
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "f:pop-łódź-2019",
+      1,
+      "created"
+     ],
+     [
+      "f:pop-łódź-2019-dep",
+      1,
+      "created"
+     ]
+    ]
+   }
+  },
+  {
+   "op": "find_by_key",
+   "args": {
+    "relation": "population",
+    "key": [
+     {
+      "role": "place",
+      "value": {
+       "entity": "ex:Łódź"
+      }
+     },
+     {
+      "role": "point_in_time",
+      "value": {
+       "literal": {
+        "datatype": "time",
+        "time": "+2019-00-00T00:00:00Z",
+        "precision": 9
+       }
+      }
+     }
+    ]
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:pop-łódź-2019",
+     "f:pop-łódź-2019-dep"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "B S043 (Wikidata single-best-value)"
+ ]
+}

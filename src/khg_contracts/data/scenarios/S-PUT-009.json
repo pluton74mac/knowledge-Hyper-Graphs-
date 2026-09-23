@@ -1,0 +1,31 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-PUT-009",
+ "title": "a reference to an entity the store does not hold is refused",
+ "requires": [],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@ex:TP53"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     "@f:reg-1"
+    ]
+   },
+   "then": {
+    "error": "KHG-D002"
+   }
+  }
+ ],
+ "precedent": [
+  "C S-PUT-007"
+ ]
+}

@@ -1,0 +1,110 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-TIME-012",
+ "title": "a BCE Julian date: historical year -44 is astronomical -43, and Julian 15 March is Gregorian 13 March",
+ "requires": [
+  "literal_values",
+  "valid_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    {
+     "kind": "entity",
+     "id": "ex:Caesar",
+     "types": [
+      "Person"
+     ],
+     "label": "Gaius Julius Caesar"
+    },
+    {
+     "kind": "entity",
+     "id": "ex:Dictator",
+     "types": [
+      "Position"
+     ],
+     "label": "Roman dictator"
+    },
+    {
+     "@": "f:king-13",
+     "set": {
+      "id": "f:caesar-dictator"
+     },
+     "set_binding": {
+      "b1": {
+       "entity": "ex:Caesar"
+      },
+      "b2": {
+       "entity": "ex:Dictator"
+      },
+      "b3": {
+       "literal": {
+        "datatype": "time",
+        "time": "-0049-00-00T00:00:00Z",
+        "precision": 9,
+        "calendar": "julian"
+       }
+      },
+      "b4": {
+       "literal": {
+        "datatype": "time",
+        "time": "-0044-03-15T00:00:00Z",
+        "precision": 11,
+        "calendar": "julian"
+       }
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "get",
+   "args": {
+    "id": "f:caesar-dictator"
+   },
+   "then": {
+    "select": "derived.valid_time.possible",
+    "equals": [
+     "-0049-12-30T00:00:00Z",
+     "-0043-03-14T00:00:00Z"
+    ]
+   }
+  },
+  {
+   "op": "incident",
+   "args": {
+    "node": "ex:Caesar",
+    "where": {
+     "as_of": "-0043-03-12T00:00:00Z"
+    }
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:caesar-dictator"
+    ]
+   }
+  },
+  {
+   "op": "incident",
+   "args": {
+    "node": "ex:Caesar",
+    "where": {
+     "as_of": "-0043-03-13T12:00:00Z"
+    }
+   },
+   "then": {
+    "select": "ids",
+    "equals": []
+   }
+  }
+ ],
+ "precedent": [
+  "critique CONS-01 (Wikibase: BCE years use historical numbering)"
+ ]
+}

@@ -1,0 +1,79 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-TIME-001",
+ "title": "as_of filters by valid time; an ended fact stays asserted",
+ "requires": [
+  "goals",
+  "literal_values",
+  "nesting",
+  "ordered_roles",
+  "special_values",
+  "valid_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "load": "@fixture"
+  }
+ ],
+ "when": [
+  {
+   "op": "incident",
+   "args": {
+    "node": "ex:KingOfFrance",
+    "where": {
+     "as_of": "+1620-01-01T00:00:00Z"
+    }
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:king-13"
+    ]
+   }
+  },
+  {
+   "op": "incident",
+   "args": {
+    "node": "ex:KingOfFrance",
+    "where": {
+     "as_of": "+1700-01-01T00:00:00Z"
+    }
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:king-14"
+    ]
+   }
+  },
+  {
+   "op": "incident",
+   "args": {
+    "node": "ex:KingOfFrance",
+    "where": {
+     "as_of": "+1720-01-01T00:00:00Z"
+    }
+   },
+   "then": {
+    "select": "ids",
+    "equals": []
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:king-13"
+   },
+   "then": {
+    "select": "status",
+    "equals": "asserted"
+   }
+  }
+ ],
+ "precedent": [
+  "A C2-08 passed",
+  "C S-INC-005"
+ ]
+}
