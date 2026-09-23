@@ -11,11 +11,13 @@ the projections (``project``). The names of DESIGN §10.2:
 - ``project.position_map``, ``positional``, ``hyper_relational``, ``role_value_set``, ``rdf_relation_instance``,
   ``from_rdf_relation_instance``, ``incidence_rows``, ``from_incidence_rows``.
 
-The lifecycle rules, the key invariant and ``KeyCollision`` build on these (``store``, ``validate``).
+Two submodules hold the rules the store and the validator share: ``lifecycle`` (the four axes, the transition table,
+the version rule, the lifecycle pointers, supersessions and nesting cycles) and ``keys`` (the key invariant, L008 and
+the ``KeyCollision`` info).
 """
 from __future__ import annotations
 
-from . import project
+from . import keys, lifecycle, project
 from ._common import SPECIALS, VALUE_KINDS, value_kind
 from .canonical import (KIND_ORDER, STORE_FIELDS, binding_sort_key, canonical_container, decision_view, normalize,
                         record_sort_key)
@@ -82,6 +84,8 @@ __all__ = [
     "iter_jsonl",
     "julian_day_number",
     "key_digest",
+    "keys",
+    "lifecycle",
     "literal_binding_node_id",
     "literal_identity",
     "literal_label",

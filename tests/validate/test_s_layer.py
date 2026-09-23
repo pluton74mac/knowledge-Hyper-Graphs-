@@ -261,7 +261,8 @@ def test_the_callers_schema_wins_over_an_embedded_one():
     embedded = copy.deepcopy(SCHEMA_DOC)
     embedded["relations"] = [r for r in embedded["relations"] if r["id"] != "regulates"]
     doc["records"].insert(0, embedded)
-    assert [f["code"] for f in run(doc, kind="container").errors] == ["KHG-S001"]
+    # W5: the embedded schema no longer matches the header's pin either (D009 from layer D)
+    assert [f["code"] for f in run(doc, kind="container").errors] == ["KHG-S001", "KHG-D009"]
     assert run(doc, kind="container", schema=SCHEMA).ok
 
 
@@ -334,6 +335,6 @@ def test_a_hif_run_uses_the_inlined_schema_document(monkeypatch):
 
     monkeypatch.setattr(layers.module("d_decode"), "run", decode)
     report = run(hif, kind="hif")
-    assert report.ok and [f["code"] for f in report.findings] == ["KHG-S024"]
+    assert report.ok and [f["code"] for f in report.findings] == ["KHG-S024", "KHG-L008"]  # the designed warnings
     del hif["metadata"]["khg-schema-document"]
     assert [(f["code"], f["path"]) for f in run(hif, kind="hif").errors] == [("KHG-D009", "/metadata/khg-schema")]

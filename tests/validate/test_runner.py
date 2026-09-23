@@ -134,7 +134,7 @@ def test_tuples_and_other_mappings_are_read_as_json():
     doc["records"][0] = OrderedDict(doc["records"][0])
     doc["records"][0]["types"] = tuple(doc["records"][0]["types"])
     report = run(doc, kind="container", schema=SCHEMA)
-    assert report.ok and [f["code"] for f in report.findings] == ["KHG-S024"]
+    assert report.ok and [f["code"] for f in report.findings] == ["KHG-S024", "KHG-L008"]  # the designed warnings
     assert isinstance(doc["records"][0]["types"], tuple)  # the caller's object is not changed
 
 
@@ -151,7 +151,7 @@ def test_a_text_with_several_values_is_read_as_jsonl():
     lines = data.read_bytes("fixture/fixture.c1.jsonl")
     report = run(lines, schema=SCHEMA)
     assert report.kind == "container" and report.ok
-    assert [f["code"] for f in report.findings] == ["KHG-S024"]
+    assert [f["code"] for f in report.findings] == ["KHG-S024", "KHG-L008"]  # the designed warnings
     bad = lines.replace(b'"status":"asserted"', b'"status":asserted', 1)
     found = validate(bad, schema=SCHEMA)["findings"]
     assert [f["code"] for f in found] == ["KHG-J001"] and found[0]["path"].startswith("/lines/")
@@ -187,7 +187,7 @@ def test_auto_picks_the_kind_of_an_object():
     assert run(data.load_jsonl("fixture/smoke-queue.khg-queue.jsonl"), schema=SCHEMA).kind == "queue"
     lines = [FIXTURE["header"], *FIXTURE["records"]]
     report = run(lines, schema=SCHEMA)
-    assert report.kind == "container" and [f["path"] for f in report.findings] == ["/records/31"]
+    assert report.kind == "container" and [f["path"] for f in report.findings] == ["/records/31", "/records/29"]
 
 
 @pytest.mark.parametrize("obj", [{"a": 1}, {"kind": "claim"}, [{"kind": "line"}], {"records": []}])

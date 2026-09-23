@@ -4,6 +4,8 @@
 layers of the same run. The keys in use:
 
 - ``"c1"``: the C1 container that layers C, S and D check in a HIF run, set by decoding (``d_decode``);
+- ``"hif_layers"``: in a HIF run, layer letter (H, R, P) -> True when that layer reported no error, set by those
+  layers through ``d_decode.note``; decoding runs only when all three passed;
 - ``"schema"``: the relation-type schema of the run, set by ``Context.relation_schema``;
 - ``"entities"``, ``"facts"``: the latest entity and hyperedge records of the container by id, set by layer S;
 - ``"queue_base"``: the verified base container of a queue, set by ``Context.queue_base``.

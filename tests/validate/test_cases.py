@@ -117,8 +117,8 @@ def test_the_c1_bases_have_no_error_and_only_the_designed_warning(rel, engine, m
     found = [(f["code"], f["severity"], f["path"]) for f in result["findings"]]
     if "history" in rel or "smoke" in rel:
         assert found == []
-    else:
-        assert found == [("KHG-S024", "warning", "/records/31")]  # must_differ on f:loop-yyz (§1.4)
+    else:  # the two designed warnings (§1.4): must_differ on f:loop-yyz; W5: the same-day king handover (L008)
+        assert found == [("KHG-S024", "warning", "/records/31"), ("KHG-L008", "warning", "/records/29")]
 
 
 def test_the_sample_container_is_valid_under_its_own_schema():
@@ -136,4 +136,9 @@ def test_the_other_bases_pass_the_w4_layers(engine, malformed):
         obj = base["lines"] if kind in ("queue", "item") else base
         report = run(obj, kind=kind, schema=None if kind == "schema" else malformed.schema,
                      doc_texts=malformed.doc_texts, bases=[malformed.smoke_base], engine=engine)
-        assert (report.ok, report.findings, report.skipped) == (True, [], []), name
+        assert (report.ok, report.skipped) == (True, []), name
+        # W6: a HIF run decodes the file and checks it, so the only findings are the designed warnings (§1.4):
+        # S024 (must_differ on f:loop-yyz, not in the slice) and L008 (f:king-13 and f:king-14, in both files)
+        designed = {"fixture.hif.json": {"KHG-S024", "KHG-L008"},
+                    "fixture.directed-slice.hif.json": {"KHG-L008"}}.get(name, set())
+        assert {f["code"] for f in report.findings} == designed and not report.errors, name  # S4: exact
