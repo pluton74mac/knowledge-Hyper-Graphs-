@@ -1,0 +1,1567 @@
+{
+ "case": "c04-asc",
+ "description": "the sample declared as an abstract simplicial complex (network-type asc), direction removed",
+ "input": "lib-cases/c04-asc.hif.json",
+ "lib": "xgi",
+ "lib_version": "0.10.2",
+ "load": {
+  "api": "xgi.read_hif(path)",
+  "ok": true,
+  "error": null,
+  "warnings": [],
+  "class": "SimplicialComplex"
+ },
+ "placement": {
+  "class": "SimplicialComplex",
+  "num_nodes": 8,
+  "num_edges": 16,
+  "net_attr (H._net_attr)": {},
+  "node_attrs (H.nodes[n])": {
+   "str:drug:metformin": {
+    "type": "Drug",
+    "label": "metformin"
+   },
+   "str:disease:T2DM": {
+    "type": "Disease",
+    "label": "type 2 diabetes mellitus"
+   },
+   "str:dose:500mg-bid": {
+    "type": "Dosage",
+    "label": "500 mg twice daily"
+   },
+   "str:pop:adults": {
+    "type": "Population",
+    "label": "adults"
+   },
+   "str:drug:insulin": {
+    "type": "Drug",
+    "label": "insulin"
+   },
+   "str:effect:hypoglycemia": {
+    "type": "AdverseEffect",
+    "label": "hypoglycaemia"
+   },
+   "str:org:ADA": {
+    "type": "Organisation",
+    "label": "American Diabetes Association"
+   },
+   "str:doc:guideline-2024": {
+    "type": "Document",
+    "label": "Standards of Care 2024"
+   }
+  },
+  "edge_attrs (H.edges[e])": {
+   "str:f1": {
+    "relation": "treats",
+    "arity": 4,
+    "source": "doc:guideline-2024",
+    "valid-from": "2024-01-01"
+   },
+   "str:f2": {
+    "relation": "co-administration-causes",
+    "arity": 3,
+    "source": "doc:guideline-2024"
+   },
+   "str:f3": {
+    "relation": "publishes",
+    "arity": 2,
+    "source": "doc:guideline-2024"
+   },
+   "int:0": {},
+   "int:1": {},
+   "int:2": {},
+   "int:3": {},
+   "int:4": {},
+   "int:5": {},
+   "int:6": {},
+   "int:7": {},
+   "int:8": {},
+   "int:9": {},
+   "int:10": {},
+   "int:11": {},
+   "int:12": {}
+  },
+  "edge_members": {
+   "str:f1": {
+    "members": [
+     "str:disease:T2DM",
+     "str:dose:500mg-bid",
+     "str:drug:metformin",
+     "str:pop:adults"
+    ]
+   },
+   "str:f2": {
+    "members": [
+     "str:drug:insulin",
+     "str:drug:metformin",
+     "str:effect:hypoglycemia"
+    ]
+   },
+   "str:f3": {
+    "members": [
+     "str:doc:guideline-2024",
+     "str:org:ADA"
+    ]
+   },
+   "int:0": {
+    "members": [
+     "str:disease:T2DM",
+     "str:dose:500mg-bid"
+    ]
+   },
+   "int:1": {
+    "members": [
+     "str:drug:insulin",
+     "str:effect:hypoglycemia"
+    ]
+   },
+   "int:2": {
+    "members": [
+     "str:disease:T2DM",
+     "str:drug:metformin"
+    ]
+   },
+   "int:3": {
+    "members": [
+     "str:disease:T2DM",
+     "str:pop:adults"
+    ]
+   },
+   "int:4": {
+    "members": [
+     "str:dose:500mg-bid",
+     "str:drug:metformin",
+     "str:pop:adults"
+    ]
+   },
+   "int:5": {
+    "members": [
+     "str:dose:500mg-bid",
+     "str:drug:metformin"
+    ]
+   },
+   "int:6": {
+    "members": [
+     "str:drug:metformin",
+     "str:effect:hypoglycemia"
+    ]
+   },
+   "int:7": {
+    "members": [
+     "str:drug:metformin",
+     "str:pop:adults"
+    ]
+   },
+   "int:8": {
+    "members": [
+     "str:drug:insulin",
+     "str:drug:metformin"
+    ]
+   },
+   "int:9": {
+    "members": [
+     "str:dose:500mg-bid",
+     "str:pop:adults"
+    ]
+   },
+   "int:10": {
+    "members": [
+     "str:disease:T2DM",
+     "str:dose:500mg-bid",
+     "str:drug:metformin"
+    ]
+   },
+   "int:11": {
+    "members": [
+     "str:disease:T2DM",
+     "str:dose:500mg-bid",
+     "str:pop:adults"
+    ]
+   },
+   "int:12": {
+    "members": [
+     "str:disease:T2DM",
+     "str:drug:metformin",
+     "str:pop:adults"
+    ]
+   }
+  },
+  "role_strings_in_object_state": {
+   "agent": [],
+   "condition": [],
+   "dosage": [],
+   "effect": [],
+   "population": [],
+   "publication": [],
+   "publisher": [],
+   "treatment": []
+  },
+  "record_weight_values_in_object_state": [],
+  "record_weight_values_searched": [
+   0.8,
+   0.95
+  ]
+ },
+ "field_locations": {
+  "incidence.attrs (role)": "found for 0/8 role strings",
+  "incidence.direction": "n/a",
+  "record-level weight values": "0/2 found",
+  "network-type": "class SimplicialComplex",
+  "metadata": "H._net_attr: missing ['conventions', 'created', 'description', 'kb-section', 'schema', 'title']"
+ },
+ "export": {
+  "api": "xgi.write_hif(H, path)",
+  "ok": true,
+  "error": null,
+  "warnings": [],
+  "output": "out/xgi/c04-asc.out.hif.json",
+  "strict_json": true,
+  "schema_errors": [],
+  "top_level_keys": [
+   "edges",
+   "incidences",
+   "metadata",
+   "network-type",
+   "nodes"
+  ],
+  "n_node_records": 8,
+  "n_edge_records": 3,
+  "to_hif_dict_equals_file": true
+ },
+ "diff": {
+  "top": {
+   "network-type": {
+    "in": "asc",
+    "out": "asc",
+    "status": "preserved"
+   },
+   "metadata": {
+    "keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "keys_added": [],
+    "keys_changed": [],
+    "status": "lost"
+   },
+   "other_top_level_keys_out": []
+  },
+  "incidences": {
+   "str:f1 | str:drug:metformin": {
+    "edge": "str:f1",
+    "node": "str:drug:metformin",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "treatment"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "treatment"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   },
+   "str:f1 | str:disease:T2DM": {
+    "edge": "str:f1",
+    "node": "str:disease:T2DM",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "condition"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "condition"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   },
+   "str:f1 | str:dose:500mg-bid": {
+    "edge": "str:f1",
+    "node": "str:dose:500mg-bid",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "dosage"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "dosage"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   },
+   "str:f1 | str:pop:adults": {
+    "edge": "str:f1",
+    "node": "str:pop:adults",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "population"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "population"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   },
+   "str:f2 | str:drug:metformin": {
+    "edge": "str:f2",
+    "node": "str:drug:metformin",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "agent"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "agent"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   },
+   "str:f2 | str:drug:insulin": {
+    "edge": "str:f2",
+    "node": "str:drug:insulin",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "agent"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "agent"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   },
+   "str:f2 | str:effect:hypoglycemia": {
+    "edge": "str:f2",
+    "node": "str:effect:hypoglycemia",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "effect"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "effect"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   },
+   "str:f3 | str:org:ADA": {
+    "edge": "str:f3",
+    "node": "str:org:ADA",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "publisher"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "publisher"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   },
+   "str:f3 | str:doc:guideline-2024": {
+    "edge": "str:f3",
+    "node": "str:doc:guideline-2024",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "publication"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "publication"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   },
+   "int:0 | str:disease:T2DM": {
+    "edge": "int:0",
+    "node": "str:disease:T2DM",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:0 | str:dose:500mg-bid": {
+    "edge": "int:0",
+    "node": "str:dose:500mg-bid",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:1 | str:effect:hypoglycemia": {
+    "edge": "int:1",
+    "node": "str:effect:hypoglycemia",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:1 | str:drug:insulin": {
+    "edge": "int:1",
+    "node": "str:drug:insulin",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:2 | str:drug:metformin": {
+    "edge": "int:2",
+    "node": "str:drug:metformin",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:2 | str:disease:T2DM": {
+    "edge": "int:2",
+    "node": "str:disease:T2DM",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:3 | str:disease:T2DM": {
+    "edge": "int:3",
+    "node": "str:disease:T2DM",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:3 | str:pop:adults": {
+    "edge": "int:3",
+    "node": "str:pop:adults",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:4 | str:drug:metformin": {
+    "edge": "int:4",
+    "node": "str:drug:metformin",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:4 | str:pop:adults": {
+    "edge": "int:4",
+    "node": "str:pop:adults",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:4 | str:dose:500mg-bid": {
+    "edge": "int:4",
+    "node": "str:dose:500mg-bid",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:5 | str:drug:metformin": {
+    "edge": "int:5",
+    "node": "str:drug:metformin",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:5 | str:dose:500mg-bid": {
+    "edge": "int:5",
+    "node": "str:dose:500mg-bid",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:6 | str:drug:metformin": {
+    "edge": "int:6",
+    "node": "str:drug:metformin",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:6 | str:effect:hypoglycemia": {
+    "edge": "int:6",
+    "node": "str:effect:hypoglycemia",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:7 | str:drug:metformin": {
+    "edge": "int:7",
+    "node": "str:drug:metformin",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:7 | str:pop:adults": {
+    "edge": "int:7",
+    "node": "str:pop:adults",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:8 | str:drug:metformin": {
+    "edge": "int:8",
+    "node": "str:drug:metformin",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:8 | str:drug:insulin": {
+    "edge": "int:8",
+    "node": "str:drug:insulin",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:9 | str:pop:adults": {
+    "edge": "int:9",
+    "node": "str:pop:adults",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:9 | str:dose:500mg-bid": {
+    "edge": "int:9",
+    "node": "str:dose:500mg-bid",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:10 | str:drug:metformin": {
+    "edge": "int:10",
+    "node": "str:drug:metformin",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:10 | str:disease:T2DM": {
+    "edge": "int:10",
+    "node": "str:disease:T2DM",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:10 | str:dose:500mg-bid": {
+    "edge": "int:10",
+    "node": "str:dose:500mg-bid",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:11 | str:disease:T2DM": {
+    "edge": "int:11",
+    "node": "str:disease:T2DM",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:11 | str:pop:adults": {
+    "edge": "int:11",
+    "node": "str:pop:adults",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:11 | str:dose:500mg-bid": {
+    "edge": "int:11",
+    "node": "str:dose:500mg-bid",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:12 | str:drug:metformin": {
+    "edge": "int:12",
+    "node": "str:drug:metformin",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:12 | str:disease:T2DM": {
+    "edge": "int:12",
+    "node": "str:disease:T2DM",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:12 | str:pop:adults": {
+    "edge": "int:12",
+    "node": "str:pop:adults",
+    "count_in": 0,
+    "count_out": 1,
+    "status": "new",
+    "roles_in": [],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [],
+    "weights_out": [
+     "<absent>"
+    ]
+   }
+  },
+  "nodes": {
+   "str:drug:metformin": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved",
+    "attrs_in": [
+     {
+      "type": "Drug",
+      "label": "metformin"
+     }
+    ],
+    "attrs_out": [
+     {
+      "type": "Drug",
+      "label": "metformin"
+     }
+    ]
+   },
+   "str:disease:T2DM": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved",
+    "attrs_in": [
+     {
+      "type": "Disease",
+      "label": "type 2 diabetes mellitus"
+     }
+    ],
+    "attrs_out": [
+     {
+      "type": "Disease",
+      "label": "type 2 diabetes mellitus"
+     }
+    ]
+   },
+   "str:dose:500mg-bid": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved",
+    "attrs_in": [
+     {
+      "type": "Dosage",
+      "label": "500 mg twice daily"
+     }
+    ],
+    "attrs_out": [
+     {
+      "type": "Dosage",
+      "label": "500 mg twice daily"
+     }
+    ]
+   },
+   "str:pop:adults": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved",
+    "attrs_in": [
+     {
+      "type": "Population",
+      "label": "adults"
+     }
+    ],
+    "attrs_out": [
+     {
+      "type": "Population",
+      "label": "adults"
+     }
+    ]
+   },
+   "str:drug:insulin": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved",
+    "attrs_in": [
+     {
+      "type": "Drug",
+      "label": "insulin"
+     }
+    ],
+    "attrs_out": [
+     {
+      "type": "Drug",
+      "label": "insulin"
+     }
+    ]
+   },
+   "str:effect:hypoglycemia": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved",
+    "attrs_in": [
+     {
+      "type": "AdverseEffect",
+      "label": "hypoglycaemia"
+     }
+    ],
+    "attrs_out": [
+     {
+      "type": "AdverseEffect",
+      "label": "hypoglycaemia"
+     }
+    ]
+   },
+   "str:org:ADA": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved",
+    "attrs_in": [
+     {
+      "type": "Organisation",
+      "label": "American Diabetes Association"
+     }
+    ],
+    "attrs_out": [
+     {
+      "type": "Organisation",
+      "label": "American Diabetes Association"
+     }
+    ]
+   },
+   "str:doc:guideline-2024": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved",
+    "attrs_in": [
+     {
+      "type": "Document",
+      "label": "Standards of Care 2024"
+     }
+    ],
+    "attrs_out": [
+     {
+      "type": "Document",
+      "label": "Standards of Care 2024"
+     }
+    ]
+   }
+  },
+  "edges": {
+   "str:f1": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "lost",
+    "attrs_in": [
+     {
+      "relation": "treats",
+      "arity": 4,
+      "source": "doc:guideline-2024",
+      "valid-from": "2024-01-01"
+     }
+    ],
+    "attrs_out": [
+     {
+      "relation": "treats",
+      "arity": 4,
+      "source": "doc:guideline-2024",
+      "valid-from": "2024-01-01"
+     }
+    ],
+    "weights_in": [
+     0.95
+    ],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "str:f2": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "lost",
+    "attrs_in": [
+     {
+      "relation": "co-administration-causes",
+      "arity": 3,
+      "source": "doc:guideline-2024"
+     }
+    ],
+    "attrs_out": [
+     {
+      "relation": "co-administration-causes",
+      "arity": 3,
+      "source": "doc:guideline-2024"
+     }
+    ],
+    "weights_in": [
+     0.8
+    ],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "str:f3": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "lost",
+    "attrs_in": [
+     {
+      "relation": "publishes",
+      "arity": 2,
+      "source": "doc:guideline-2024"
+     }
+    ],
+    "attrs_out": [
+     {
+      "relation": "publishes",
+      "arity": 2,
+      "source": "doc:guideline-2024"
+     }
+    ],
+    "weights_in": [
+     1.0
+    ],
+    "weights_out": [
+     "<absent>"
+    ]
+   },
+   "int:8": {
+    "declared_in": 0,
+    "declared_out": 0,
+    "present_out": true,
+    "status": "new"
+   },
+   "int:1": {
+    "declared_in": 0,
+    "declared_out": 0,
+    "present_out": true,
+    "status": "new"
+   },
+   "int:10": {
+    "declared_in": 0,
+    "declared_out": 0,
+    "present_out": true,
+    "status": "new"
+   },
+   "int:6": {
+    "declared_in": 0,
+    "declared_out": 0,
+    "present_out": true,
+    "status": "new"
+   },
+   "int:7": {
+    "declared_in": 0,
+    "declared_out": 0,
+    "present_out": true,
+    "status": "new"
+   },
+   "int:0": {
+    "declared_in": 0,
+    "declared_out": 0,
+    "present_out": true,
+    "status": "new"
+   },
+   "int:2": {
+    "declared_in": 0,
+    "declared_out": 0,
+    "present_out": true,
+    "status": "new"
+   },
+   "int:5": {
+    "declared_in": 0,
+    "declared_out": 0,
+    "present_out": true,
+    "status": "new"
+   },
+   "int:11": {
+    "declared_in": 0,
+    "declared_out": 0,
+    "present_out": true,
+    "status": "new"
+   },
+   "int:12": {
+    "declared_in": 0,
+    "declared_out": 0,
+    "present_out": true,
+    "status": "new"
+   },
+   "int:4": {
+    "declared_in": 0,
+    "declared_out": 0,
+    "present_out": true,
+    "status": "new"
+   },
+   "int:3": {
+    "declared_in": 0,
+    "declared_out": 0,
+    "present_out": true,
+    "status": "new"
+   },
+   "int:9": {
+    "declared_in": 0,
+    "declared_out": 0,
+    "present_out": true,
+    "status": "new"
+   }
+  },
+  "id_type_changes": [],
+  "summary": {
+   "incidence_records": "9 -> 39",
+   "role_records_kept": "0/9",
+   "direction_records_kept": "0/0",
+   "incidence_weight_records_kept": "0/0",
+   "incidence_attrs_records_kept": "0/9",
+   "pairs_lost": 0,
+   "pairs_new": 30,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 0,
+   "nodes": {
+    "declared_in": 8,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 3,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {
+     "str:f1": "lost",
+     "str:f2": "lost",
+     "str:f3": "lost"
+    },
+    "new_out": [
+     "int:0",
+     "int:1",
+     "int:10",
+     "int:11",
+     "int:12",
+     "int:2",
+     "int:3",
+     "int:4",
+     "int:5",
+     "int:6",
+     "int:7",
+     "int:8",
+     "int:9"
+    ]
+   },
+   "network_type": "preserved (asc -> asc)",
+   "metadata": "lost",
+   "metadata_keys_lost": [
+    "conventions",
+    "created",
+    "description",
+    "kb-section",
+    "schema",
+    "title"
+   ],
+   "metadata_keys_added": [],
+   "id_type_changes": 0
+  }
+ },
+ "gen2": {
+  "load_error": null,
+  "export_error": null,
+  "idempotent (gen1 == gen2 structurally)": true,
+  "diff_gen1_gen2_summary": {
+   "incidence_records": "39 -> 39",
+   "role_records_kept": "0/0",
+   "direction_records_kept": "0/0",
+   "incidence_weight_records_kept": "0/0",
+   "incidence_attrs_records_kept": "0/0",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 0,
+   "nodes": {
+    "declared_in": 8,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 3,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "network_type": "preserved (asc -> asc)",
+   "metadata": "preserved",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [],
+   "id_type_changes": 0
+  }
+ }
+}

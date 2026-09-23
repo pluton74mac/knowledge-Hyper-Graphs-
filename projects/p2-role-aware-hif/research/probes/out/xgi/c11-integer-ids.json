@@ -1,0 +1,430 @@
+{
+ "case": "c11-integer-ids",
+ "description": "integer node and edge ids; edge id 0 equals node id 0",
+ "input": "lib-cases/c11-integer-ids.hif.json",
+ "lib": "xgi",
+ "lib_version": "0.10.2",
+ "load": {
+  "api": "xgi.read_hif(path)",
+  "ok": true,
+  "error": null,
+  "warnings": [],
+  "class": "DiHypergraph"
+ },
+ "placement": {
+  "class": "DiHypergraph",
+  "num_nodes": 4,
+  "num_edges": 2,
+  "net_attr (H._net_attr)": {},
+  "node_attrs (H.nodes[n])": {
+   "int:0": {
+    "label": "n0"
+   },
+   "int:1": {
+    "label": "n1"
+   },
+   "int:2": {
+    "label": "n2"
+   },
+   "int:3": {
+    "label": "n3"
+   }
+  },
+  "edge_attrs (H.edges[e])": {
+   "int:0": {
+    "relation": "r0"
+   },
+   "int:1": {
+    "relation": "r1"
+   }
+  },
+  "edge_members": {
+   "int:0": {
+    "tail": [
+     "int:0"
+    ],
+    "head": [
+     "int:1"
+    ]
+   },
+   "int:1": {
+    "tail": [
+     "int:2"
+    ],
+    "head": [
+     "int:3"
+    ]
+   }
+  },
+  "role_strings_in_object_state": {
+   "agent": [],
+   "patient": []
+  },
+  "record_weight_values_in_object_state": [],
+  "record_weight_values_searched": []
+ },
+ "field_locations": {
+  "incidence.attrs (role)": "found for 0/2 role strings",
+  "incidence.direction": "DiHypergraph edge 'in' (tail) / 'out' (head) member sets",
+  "record-level weight values": "n/a",
+  "network-type": "class DiHypergraph",
+  "metadata": "n/a"
+ },
+ "export": {
+  "api": "xgi.write_hif(H, path)",
+  "ok": true,
+  "error": null,
+  "warnings": [],
+  "output": "out/xgi/c11-integer-ids.out.hif.json",
+  "strict_json": true,
+  "schema_errors": [],
+  "top_level_keys": [
+   "edges",
+   "incidences",
+   "metadata",
+   "network-type",
+   "nodes"
+  ],
+  "n_node_records": 4,
+  "n_edge_records": 2,
+  "to_hif_dict_equals_file": true
+ },
+ "diff": {
+  "top": {
+   "network-type": {
+    "in": "directed",
+    "out": "directed",
+    "status": "preserved"
+   },
+   "metadata": {
+    "keys_lost": [],
+    "keys_added": [],
+    "keys_changed": [],
+    "status": "preserved"
+   },
+   "other_top_level_keys_out": []
+  },
+  "incidences": {
+   "int:0 | int:0": {
+    "edge": "int:0",
+    "node": "int:0",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "agent"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "tail"
+    ],
+    "directions_out": [
+     "tail"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "agent"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   },
+   "int:0 | int:1": {
+    "edge": "int:0",
+    "node": "int:1",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "patient"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "head"
+    ],
+    "directions_out": [
+     "head"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "patient"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   },
+   "int:1 | int:2": {
+    "edge": "int:1",
+    "node": "int:2",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "agent"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "tail"
+    ],
+    "directions_out": [
+     "tail"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "agent"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   },
+   "int:1 | int:3": {
+    "edge": "int:1",
+    "node": "int:3",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "patient"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "head"
+    ],
+    "directions_out": [
+     "head"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "patient"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   }
+  },
+  "nodes": {
+   "int:0": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved",
+    "attrs_in": [
+     {
+      "label": "n0"
+     }
+    ],
+    "attrs_out": [
+     {
+      "label": "n0"
+     }
+    ]
+   },
+   "int:1": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved",
+    "attrs_in": [
+     {
+      "label": "n1"
+     }
+    ],
+    "attrs_out": [
+     {
+      "label": "n1"
+     }
+    ]
+   },
+   "int:2": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved",
+    "attrs_in": [
+     {
+      "label": "n2"
+     }
+    ],
+    "attrs_out": [
+     {
+      "label": "n2"
+     }
+    ]
+   },
+   "int:3": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved",
+    "attrs_in": [
+     {
+      "label": "n3"
+     }
+    ],
+    "attrs_out": [
+     {
+      "label": "n3"
+     }
+    ]
+   }
+  },
+  "edges": {
+   "int:0": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved",
+    "attrs_in": [
+     {
+      "relation": "r0"
+     }
+    ],
+    "attrs_out": [
+     {
+      "relation": "r0"
+     }
+    ]
+   },
+   "int:1": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved",
+    "attrs_in": [
+     {
+      "relation": "r1"
+     }
+    ],
+    "attrs_out": [
+     {
+      "relation": "r1"
+     }
+    ]
+   }
+  },
+  "id_type_changes": [],
+  "summary": {
+   "incidence_records": "4 -> 4",
+   "role_records_kept": "0/4",
+   "direction_records_kept": "4/4",
+   "incidence_weight_records_kept": "0/0",
+   "incidence_attrs_records_kept": "0/4",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 0,
+   "nodes": {
+    "declared_in": 4,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 2,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "network_type": "preserved (directed -> directed)",
+   "metadata": "preserved",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [],
+   "id_type_changes": 0
+  }
+ },
+ "gen2": {
+  "load_error": null,
+  "export_error": null,
+  "idempotent (gen1 == gen2 structurally)": true,
+  "diff_gen1_gen2_summary": {
+   "incidence_records": "4 -> 4",
+   "role_records_kept": "0/0",
+   "direction_records_kept": "4/4",
+   "incidence_weight_records_kept": "0/0",
+   "incidence_attrs_records_kept": "0/0",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 0,
+   "nodes": {
+    "declared_in": 4,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 2,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "network_type": "preserved (directed -> directed)",
+   "metadata": "preserved",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [],
+   "id_type_changes": 0
+  }
+ }
+}

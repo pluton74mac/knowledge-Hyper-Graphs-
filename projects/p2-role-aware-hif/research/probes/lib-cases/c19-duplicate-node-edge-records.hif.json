@@ -1,0 +1,50 @@
+{
+ "network-type": "undirected",
+ "nodes": [
+  {
+   "node": "n1",
+   "attrs": {
+    "label": "first",
+    "a": 1
+   }
+  },
+  {
+   "node": "n1",
+   "attrs": {
+    "label": "second",
+    "b": 2
+   }
+  }
+ ],
+ "edges": [
+  {
+   "edge": "e1",
+   "attrs": {
+    "relation": "r-first"
+   }
+  },
+  {
+   "edge": "e1",
+   "attrs": {
+    "relation": "r-second",
+    "c": 3
+   }
+  }
+ ],
+ "incidences": [
+  {
+   "edge": "e1",
+   "node": "n1",
+   "attrs": {
+    "role": "subject"
+   }
+  },
+  {
+   "edge": "e1",
+   "node": "n2",
+   "attrs": {
+    "role": "object"
+   }
+  }
+ ]
+}

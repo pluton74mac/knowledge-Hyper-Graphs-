@@ -1,0 +1,29 @@
+{
+  "metadata": {},
+  "network-type": "directed",
+  "edges": [
+    {
+      "attrs": {
+        "relation": "compared-in-trial"
+      },
+      "edge": "t1"
+    }
+  ],
+  "incidences": [
+    {
+      "edge": "t1",
+      "node": "drug:metformin",
+      "direction": "tail"
+    },
+    {
+      "edge": "t1",
+      "node": "drug:insulin",
+      "direction": "tail"
+    },
+    {
+      "edge": "t1",
+      "node": "outcome:HbA1c",
+      "direction": "head"
+    }
+  ]
+}

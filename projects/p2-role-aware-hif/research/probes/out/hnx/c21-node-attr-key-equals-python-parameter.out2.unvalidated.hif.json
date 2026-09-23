@@ -1,0 +1,65 @@
+{
+ "edges": [
+  {
+   "edge": "f1",
+   "weight": 1,
+   "attrs": {
+    "relation": "treats"
+   }
+  }
+ ],
+ "nodes": [
+  {
+   "node": "drug:metformin",
+   "weight": 1,
+   "attrs": {
+    "type": "Drug"
+   }
+  },
+  {
+   "node": "disease:T2DM",
+   "weight": 1,
+   "attrs": {
+    "type": "Disease"
+   }
+  }
+ ],
+ "incidences": [
+  {
+   "edge": "f1",
+   "node": "drug:metformin",
+   "weight": 1,
+   "direction": "nil",
+   "attrs": {
+    "role": "treatment"
+   }
+  },
+  {
+   "edge": "f1",
+   "node": "disease:T2DM",
+   "weight": 1,
+   "direction": "nil",
+   "attrs": {
+    "role": "condition"
+   }
+  }
+ ],
+ "network-type": "directed",
+ "metadata": {
+  "default_attrs": {
+   "nodes": {
+    "weight": 1,
+    "attrs": {}
+   },
+   "edges": {
+    "weight": 1,
+    "attrs": {}
+   },
+   "incidences": {
+    "weight": 1,
+    "direction": null,
+    "attrs": {}
+   }
+  }
+ }
+}

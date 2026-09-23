@@ -1,0 +1,2794 @@
+{
+ "cases": [
+  {
+   "case": "../../../../../schemas/sample.hif.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'tail', 'attrs': {'role': 'treatment'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/01-baseline-role-in-incidence-attrs.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'tail', 'attrs': {'role': 'treatment'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/02-same-edge-node-pair-twice-different-roles.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f2', 'node': 'gene:lexA', 'direction': 'tail', 'attrs': {'role': 'regulator'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/03-node-id-equals-edge-id-nesting.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'tail', 'attrs': {'role': 'treatment'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/04-top-level-version-key.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'tail', 'attrs': {'role': 'treatment'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): Additional properties are not allowed ('version' was unexpected)"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): Additional properties are not allowed ('version' was unexpected)"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): Additional properties are not allowed ('version' was unexpected)"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): Additional properties are not allowed ('version' was unexpected)"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): Additional properties are not allowed ('version' was unexpected)"
+    }
+   }
+  },
+  {
+   "case": "cases/05-top-level-roles-vocabulary.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'tail', 'attrs': {'role': 'treatment'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): Additional properties are not allowed ('roles' was unexpected)"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): Additional properties are not allowed ('roles' was unexpected)"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): Additional properties are not allowed ('roles' was unexpected)"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): Additional properties are not allowed ('roles' was unexpected)"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): Additional properties are not allowed ('roles' was unexpected)"
+    }
+   }
+  },
+  {
+   "case": "cases/06-top-level-dollar-schema-key.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'tail', 'attrs': {'role': 'treatment'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): Additional properties are not allowed ('$schema' was unexpected)"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): Additional properties are not allowed ('$schema' was unexpected)"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): Additional properties are not allowed ('$schema' was unexpected)"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): Additional properties are not allowed ('$schema' was unexpected)"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): Additional properties are not allowed ('$schema' was unexpected)"
+    }
+   }
+  },
+  {
+   "case": "cases/07-metadata-version-declaration.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'tail', 'attrs': {'role': 'treatment'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/08-metadata-roles-vocabulary.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'tail', 'attrs': {'role': 'treatment'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/09-incidence-attrs-varied-shapes.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'tail', 'attrs': {'role': ['treatment', 'agent'], 'khg:role': 'treatment', 'provenance': {'d"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/10-incidence-attrs-not-object.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'tail', 'attrs': 'treatment'} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/attrs: 'treatment' is not of type 'object'"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/attrs: 'treatment' is not of type 'object'"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/attrs: 'treatment' is not of type 'object'"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/attrs: 'treatment' is not of type 'object'"
+    }
+   }
+  },
+  {
+   "case": "cases/11-incidence-record-level-role-key.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'tail', 'role': 'treatment'} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: Additional properties are not allowed ('role' was unexpected)"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: Additional properties are not allowed ('role' was unexpected)"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: Additional properties are not allowed ('role' was unexpected)"
+    }
+   }
+  },
+  {
+   "case": "cases/12-direction-value-used-as-role.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'treatment', 'attrs': {'role': 'treatment'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/direction: 'treatment' is not one of ['head', 'tail']"
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/direction: 'treatment' is not one of ['head', 'tail']"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/direction: 'treatment' is not one of ['head', 'tail']"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/direction: 'treatment' is not one of ['head', 'tail']"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/direction: 'treatment' is not one of ['head', 'tail']"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/direction: 'treatment' is not one of ['head', 'tail']"
+    }
+   }
+  },
+  {
+   "case": "cases/13-edge-record-level-relation-key.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'tail', 'attrs': {'role': 'treatment'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "edges/0: Additional properties are not allowed ('relation' was unexpected)"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "edges/0: Additional properties are not allowed ('relation' was unexpected)"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "edges/0: Additional properties are not allowed ('relation' was unexpected)"
+    }
+   }
+  },
+  {
+   "case": "cases/14-node-record-level-type-key.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'tail', 'attrs': {'role': 'treatment'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "nodes/0: Additional properties are not allowed ('type' was unexpected)"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "nodes/0: Additional properties are not allowed ('type' was unexpected)"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "nodes/0: Additional properties are not allowed ('type' was unexpected)"
+    }
+   }
+  },
+  {
+   "case": "cases/15-integer-ids.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 10, 'node': 1, 'direction': 'tail', 'attrs': {'role': 'treatment'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/16-mixed-id-types.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 10, 'node': 1, 'attrs': {'role': 'member'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/17-integral-float-id.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 1.0, 'node': 2.0, 'attrs': {'role': 'member'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/18-non-integral-float-id.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 1, 'node': 1.5} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/node: 1.5 is not of type 'string', 'integer'"
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/node: 1.5 is not of type 'string', 'integer'"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/node: 1.5 is not of type 'string', 'integer'"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/node: 1.5 is not of type 'string', 'integer'"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/node: 1.5 is not of type 'string', 'integer'"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/node: 1.5 is not of type 'string', 'integer'"
+    }
+   }
+  },
+  {
+   "case": "cases/19-boolean-id.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 1, 'node': True} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/node: True is not of type 'string', 'integer'"
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/node: True is not of type 'string', 'integer'"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/node: True is not of type 'string', 'integer'"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/node: True is not of type 'string', 'integer'"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/node: True is not of type 'string', 'integer'"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/node: True is not of type 'string', 'integer'"
+    }
+   }
+  },
+  {
+   "case": "cases/20-null-id.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 1, 'node': None} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/node: None is not of type 'string', 'integer'"
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/node: None is not of type 'string', 'integer'"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/node: None is not of type 'string', 'integer'"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/node: None is not of type 'string', 'integer'"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/node: None is not of type 'string', 'integer'"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/node: None is not of type 'string', 'integer'"
+    }
+   }
+  },
+  {
+   "case": "cases/21-empty-string-id.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': '', 'node': ''} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/22-integer-id-beyond-2e53.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 9007199254740993, 'node': 9007199254740993} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/23-directed-network-missing-direction.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'attrs': {'role': 'treatment'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/24-undirected-network-with-direction.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'tail', 'attrs': {'role': 'treatment'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/25-no-network-type-with-direction.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'tail', 'attrs': {'role': 'treatment'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/26-network-type-not-in-enum.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'tail', 'attrs': {'role': 'treatment'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "network-type: 'knowledge-hypergraph' is not one of ['undirected', 'directed', 'asc']"
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "network-type: 'knowledge-hypergraph' is not one of ['undirected', 'directed', 'asc']"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "network-type: 'knowledge-hypergraph' is not one of ['undirected', 'directed', 'asc']"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "network-type: 'knowledge-hypergraph' is not one of ['undirected', 'directed', 'asc']"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "network-type: 'knowledge-hypergraph' is not one of ['undirected', 'directed', 'asc']"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "network-type: 'knowledge-hypergraph' is not one of ['undirected', 'directed', 'asc']"
+    }
+   }
+  },
+  {
+   "case": "cases/27-edge-declared-without-incidences.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'tail', 'attrs': {'role': 'treatment'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/28-incidence-undeclared-node.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'tail', 'attrs': {'role': 'treatment'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/29-incidence-undeclared-edge.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'tail', 'attrs': {'role': 'treatment'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/30-weight-on-all-record-kinds.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'tail', 'attrs': {'role': 'treatment'}, 'weight': 0.5} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/31-empty-object.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): 'incidences' is a required property"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): 'incidences' is a required property"
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): 'incidences' is a required property"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): 'incidences' is a required property"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): 'incidences' is a required property"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): 'incidences' is a required property"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): 'incidences' is a required property"
+    }
+   }
+  },
+  {
+   "case": "cases/32-minimal-empty-incidences.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/33-metadata-dollar-schema-key.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'direction': 'tail', 'attrs': {'role': 'treatment'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/34-empty-file-zero-bytes.json",
+   "strict_json_problem": "not JSON",
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "parse-error",
+     "fastjsonschema": "parse-error",
+     "detail": "JSON parse error: Expecting value: line 1 column 1 (char 0)"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "parse-error",
+     "fastjsonschema": "parse-error",
+     "detail": "JSON parse error: Expecting value: line 1 column 1 (char 0)"
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "parse-error",
+     "fastjsonschema": "parse-error",
+     "detail": "JSON parse error: Expecting value: line 1 column 1 (char 0)"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "parse-error",
+     "fastjsonschema": "parse-error",
+     "detail": "JSON parse error: Expecting value: line 1 column 1 (char 0)"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "parse-error",
+     "fastjsonschema": "parse-error",
+     "detail": "JSON parse error: Expecting value: line 1 column 1 (char 0)"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "parse-error",
+     "fastjsonschema": "parse-error",
+     "detail": "JSON parse error: Expecting value: line 1 column 1 (char 0)"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "parse-error",
+     "fastjsonschema": "parse-error",
+     "detail": "JSON parse error: Expecting value: line 1 column 1 (char 0)"
+    }
+   }
+  },
+  {
+   "case": "cases/35-nan-literal-in-attrs.json",
+   "strict_json_problem": "non-standard JSON constant NaN",
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'weight': nan, 'attrs': {'role': 'treatment', 'score': nan}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "cases/36-duplicate-json-key-in-attrs.json",
+   "strict_json_problem": "duplicate object key 'role'",
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'f1', 'node': 'drug:metformin', 'attrs': {'role': 'agent'}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  }
+ ],
+ "upstream_calibration": [
+  {
+   "case": "HIF-compliant/duplicated_nodes_edges.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'e1', 'node': 'n1'} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "HIF-compliant/empty_arrays.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "HIF-compliant/empty_hypergraph.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "HIF-compliant/metadata_with_deeply_nested_attributes.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 1, 'node': 2} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "HIF-compliant/metadata_with_nested_attributes.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 10, 'node': 20} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "HIF-compliant/missing_direction.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 1, 'node': 2} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "HIF-compliant/single_edge.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "HIF-compliant/single_edge_with_attrs.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "HIF-compliant/single_incidence.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'abcd', 'node': 42} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "HIF-compliant/single_incidence_with_attrs.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'abcd', 'node': 42, 'attrs': {'role': 'PI', 'age': 42}} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "HIF-compliant/single_incidence_with_weights.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'abcd', 'node': 42, 'weight': -2} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "HIF-compliant/single_node.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "HIF-compliant/single_node_with_attrs.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "HIF-compliant/valid_incidence_head.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 1, 'node': 2, 'direction': 'head'} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "HIF-compliant/valid_incidence_tail.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 1, 'node': 2, 'direction': 'tail'} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    }
+   }
+  },
+  {
+   "case": "HIF-non-compliant/bad_edge_field.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "edges/0: Additional properties are not allowed ('test' was unexpected)"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "edges/0: Additional properties are not allowed ('test' was unexpected)"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "edges/0: Additional properties are not allowed ('test' was unexpected)"
+    }
+   }
+  },
+  {
+   "case": "HIF-non-compliant/bad_edge_without_id.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "edges/0: 'edge' is a required property"
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "edges/0: 'edge' is a required property"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "edges/0: 'edge' is a required property"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "edges/0: 'edge' is a required property"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "edges/0: 'edge' is a required property"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "edges/0: 'edge' is a required property"
+    }
+   }
+  },
+  {
+   "case": "HIF-non-compliant/bad_incidence_field.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'abcd', 'node': 42, 'test': 'this is a bad entry!'} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: Additional properties are not allowed ('test' was unexpected)"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: Additional properties are not allowed ('test' was unexpected)"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: Additional properties are not allowed ('test' was unexpected)"
+    }
+   }
+  },
+  {
+   "case": "HIF-non-compliant/bad_network_type.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "network-type: 'badnt' is not one of ['undirected', 'directed', 'asc']"
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "network-type: 'badnt' is not one of ['undirected', 'directed', 'asc']"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "network-type: 'badnt' is not one of ['undirected', 'directed', 'asc']"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "network-type: 'badnt' is not one of ['undirected', 'directed', 'asc']"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "network-type: 'badnt' is not one of ['undirected', 'directed', 'asc']"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "network-type: 'badnt' is not one of ['undirected', 'directed', 'asc']"
+    }
+   }
+  },
+  {
+   "case": "HIF-non-compliant/bad_node_field.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "nodes/0: Additional properties are not allowed ('test' was unexpected)"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "nodes/0: Additional properties are not allowed ('test' was unexpected)"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "nodes/0: Additional properties are not allowed ('test' was unexpected)"
+    }
+   }
+  },
+  {
+   "case": "HIF-non-compliant/bad_node_float.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 1, 'node': 2} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "nodes/0/node: 1.23 is not of type 'string', 'integer'"
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "nodes/0/node: 1.23 is not of type 'string', 'integer'"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "nodes/0/node: 1.23 is not of type 'string', 'integer'"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "nodes/0/node: 1.23 is not of type 'string', 'integer'"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "nodes/0/node: 1.23 is not of type 'string', 'integer'"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "nodes/0/node: 1.23 is not of type 'string', 'integer'"
+    }
+   }
+  },
+  {
+   "case": "HIF-non-compliant/bad_node_without_id.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "nodes/0: 'node' is a required property"
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "nodes/0: 'node' is a required property"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "nodes/0: 'node' is a required property"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "nodes/0: 'node' is a required property"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "nodes/0: 'node' is a required property"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "nodes/0: 'node' is a required property"
+    }
+   }
+  },
+  {
+   "case": "HIF-non-compliant/bad_top_level_field.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): Additional properties are not allowed ('test' was unexpected)"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): Additional properties are not allowed ('test' was unexpected)"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): Additional properties are not allowed ('test' was unexpected)"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): Additional properties are not allowed ('test' was unexpected)"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): Additional properties are not allowed ('test' was unexpected)"
+    }
+   }
+  },
+  {
+   "case": "HIF-non-compliant/empty.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): 'incidences' is a required property"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): 'incidences' is a required property"
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): 'incidences' is a required property"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): 'incidences' is a required property"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): 'incidences' is a required property"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): 'incidences' is a required property"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "(root): 'incidences' is a required property"
+    }
+   }
+  },
+  {
+   "case": "HIF-non-compliant/extra_fields_with_direction.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 1, 'node': 2, 'direction': 'head', 'extra_field': 'value'} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "valid",
+     "fastjsonschema": "valid",
+     "detail": ""
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: Additional properties are not allowed ('extra_field' was unexpected)"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: Additional properties are not allowed ('extra_field' was unexpected)"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: Additional properties are not allowed ('extra_field' was unexpected)"
+    }
+   }
+  },
+  {
+   "case": "HIF-non-compliant/invalid_direction_value.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 1, 'node': 2, 'direction': 'invalid_value'} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/direction: 'invalid_value' is not one of ['head', 'tail']"
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/direction: 'invalid_value' is not one of ['head', 'tail']"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/direction: 'invalid_value' is not one of ['head', 'tail']"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/direction: 'invalid_value' is not one of ['head', 'tail']"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/direction: 'invalid_value' is not one of ['head', 'tail']"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/direction: 'invalid_value' is not one of ['head', 'tail']"
+    }
+   }
+  },
+  {
+   "case": "HIF-non-compliant/metadata_as_list.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "metadata: [0, 1, 2] is not of type 'object'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "metadata: [0, 1, 2] is not of type 'object'"
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "metadata: [0, 1, 2] is not of type 'object'"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "metadata: [0, 1, 2] is not of type 'object'"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "metadata: [0, 1, 2] is not of type 'object'"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "metadata: [0, 1, 2] is not of type 'object'"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "metadata: [0, 1, 2] is not of type 'object'"
+    }
+   }
+  },
+  {
+   "case": "HIF-non-compliant/missing_required_field_incidence.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 1} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: 'node' is a required property"
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: 'node' is a required property"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: 'node' is a required property"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: 'node' is a required property"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: 'node' is a required property"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: 'node' is a required property"
+    }
+   }
+  },
+  {
+   "case": "HIF-non-compliant/missing_required_fields_with_direction.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'direction': 'head'} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: 'edge' is a required property"
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: 'edge' is a required property"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: 'edge' is a required property"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: 'edge' is a required property"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: 'edge' is a required property"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: 'edge' is a required property"
+    }
+   }
+  },
+  {
+   "case": "HIF-non-compliant/single_incidence_with_direction_not_in_enum.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 1, 'node': 2, 'direction': 'side'} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/direction: 'side' is not one of ['head', 'tail']"
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/direction: 'side' is not one of ['head', 'tail']"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/direction: 'side' is not one of ['head', 'tail']"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/direction: 'side' is not one of ['head', 'tail']"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/direction: 'side' is not one of ['head', 'tail']"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/direction: 'side' is not one of ['head', 'tail']"
+    }
+   }
+  },
+  {
+   "case": "HIF-non-compliant/single_incidence_with_weight_as_string.json",
+   "strict_json_problem": null,
+   "by_schema": {
+    "S0 2024-08-05 c58b153": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0: {'edge': 'abcd', 'node': 42, 'weight': 'hello'} is not of type 'array'"
+    },
+    "S1 2024-08-13 e5c868b": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/weight: 'hello' is not of type 'number'"
+    },
+    "S2 2024-08-21 53a8a93": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/weight: 'hello' is not of type 'number'"
+    },
+    "S3 2024-09-26 7aefda6": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/weight: 'hello' is not of type 'number'"
+    },
+    "S4 2024-10-03 de5f89f": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/weight: 'hello' is not of type 'number'"
+    },
+    "v0.1.0 (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/weight: 'hello' is not of type 'number'"
+    },
+    "latest (HEAD b691a3d)": {
+     "jsonschema": "invalid",
+     "fastjsonschema": "invalid",
+     "detail": "incidences/0/weight: 'hello' is not of type 'number'"
+    }
+   }
+  }
+ ]
+}

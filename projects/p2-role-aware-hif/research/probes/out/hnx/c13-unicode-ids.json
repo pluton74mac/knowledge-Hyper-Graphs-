@@ -1,0 +1,715 @@
+{
+ "case": "c13-unicode-ids",
+ "description": "non-ASCII node, edge and role strings; NFC and NFD spellings of 'e-acute' as two distinct nodes",
+ "input": "lib-cases/c13-unicode-ids.hif.json",
+ "lib": "hypernetx",
+ "lib_version": "2.4.3",
+ "load": {
+  "api": "hnx.from_hif(filename=path)",
+  "ok": true,
+  "returned": "Hypergraph",
+  "error": null,
+  "warnings": [
+   "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/lib-cases/c13-unicode-ids.hif.json' mode='r' encoding='utf-8'> (hif.py:147)"
+  ],
+  "seconds": 0.267
+ },
+ "placement": {
+  "class": "Hypergraph",
+  "H.name": null,
+  "incidence_columns (H.incidences.to_dataframe)": [
+   "weight",
+   "direction",
+   "misc_properties"
+  ],
+  "incidence_index_names": [
+   "edges",
+   "nodes"
+  ],
+  "incidences": {
+   "str:事实-1 | str:药物:二甲双胍": {
+    "weight": 1,
+    "direction": "tail",
+    "misc_properties": {
+     "role": "治疗"
+    }
+   },
+   "str:事实-1 | str:maladie:diabète type 2": {
+    "weight": 1,
+    "direction": "head",
+    "misc_properties": {
+     "role": "état"
+    }
+   },
+   "str:事实-1 | str:🧪 sample #42": {
+    "weight": 1,
+    "direction": "tail",
+    "misc_properties": {
+     "role": "échantillon"
+    }
+   },
+   "str:事实-1 | str:é": {
+    "weight": 1,
+    "direction": "tail",
+    "misc_properties": {
+     "role": "nfc"
+    }
+   },
+   "str:事实-1 | str:é": {
+    "weight": 1,
+    "direction": "tail",
+    "misc_properties": {
+     "role": "nfd"
+    }
+   }
+  },
+  "cell_accessors": {
+   "str:事实-1 | str:药物:二甲双胍": {
+    "H.get_cell_properties(e, n)": {
+     "role": "治疗",
+     "weight": 1,
+     "direction": "tail"
+    },
+    "H.get_cell_properties(e, n, 'role')": "治疗"
+   },
+   "str:事实-1 | str:maladie:diabète type 2": {
+    "H.get_cell_properties(e, n)": {
+     "role": "état",
+     "weight": 1,
+     "direction": "head"
+    },
+    "H.get_cell_properties(e, n, 'role')": "état"
+   },
+   "str:事实-1 | str:🧪 sample #42": {
+    "H.get_cell_properties(e, n)": {
+     "role": "échantillon",
+     "weight": 1,
+     "direction": "tail"
+    },
+    "H.get_cell_properties(e, n, 'role')": "échantillon"
+   },
+   "str:事实-1 | str:é": {
+    "H.get_cell_properties(e, n)": {
+     "role": "nfc",
+     "weight": 1,
+     "direction": "tail"
+    },
+    "H.get_cell_properties(e, n, 'role')": "nfc"
+   },
+   "str:事实-1 | str:é": {
+    "H.get_cell_properties(e, n)": {
+     "role": "nfd",
+     "weight": 1,
+     "direction": "tail"
+    },
+    "H.get_cell_properties(e, n, 'role')": "nfd"
+   }
+  },
+  "node_columns": [
+   "weight",
+   "misc_properties"
+  ],
+  "nodes": {
+   "str:maladie:diabète type 2": {
+    "weight": 1,
+    "misc_properties": {}
+   },
+   "str:🧪 sample #42": {
+    "weight": 1,
+    "misc_properties": {}
+   },
+   "str:é": {
+    "weight": 1,
+    "misc_properties": {
+     "form": "NFC"
+    }
+   },
+   "str:é": {
+    "weight": 1,
+    "misc_properties": {
+     "form": "NFD"
+    }
+   },
+   "str:药物:二甲双胍": {
+    "weight": 1,
+    "misc_properties": {
+     "label": "métformine"
+    }
+   }
+  },
+  "edge_columns": [
+   "weight",
+   "misc_properties"
+  ],
+  "edges": {
+   "str:事实-1": {
+    "weight": 1,
+    "misc_properties": {
+     "relation": "traite"
+    }
+   }
+  },
+  "node_ids_in_property_store_but_not_in_H.nodes": [],
+  "edge_ids_in_property_store_but_not_in_H.edges": [],
+  "role_strings_found_at": {
+   "nfc": [
+    "._E._property_store._data['misc_properties'][3]['role']",
+    "._dataframe['misc_properties'][3]['role']"
+   ],
+   "nfd": [
+    "._E._property_store._data['misc_properties'][4]['role']",
+    "._dataframe['misc_properties'][4]['role']"
+   ],
+   "échantillon": [
+    "._E._property_store._data['misc_properties'][2]['role']",
+    "._dataframe['misc_properties'][2]['role']"
+   ],
+   "état": [
+    "._E._property_store._data['misc_properties'][1]['role']",
+    "._dataframe['misc_properties'][1]['role']"
+   ],
+   "治疗": [
+    "._E._property_store._data['misc_properties'][0]['role']",
+    "._dataframe['misc_properties'][0]['role']"
+   ]
+  },
+  "metadata_string_values_found_at": {},
+  "constructor_args_kept_on_object": [
+   "aggregate_by",
+   "cell_weight_col",
+   "default_cell_weight",
+   "default_edge_weight",
+   "default_node_weight",
+   "default_weight",
+   "df",
+   "edfp",
+   "edge_col",
+   "edge_properties",
+   "edge_property_type",
+   "edge_propertystore",
+   "edge_weight_prop_col",
+   "incidence_propertystore",
+   "incidence_store",
+   "kwargs",
+   "misc_cell_properties_col",
+   "misc_edge_properties_col",
+   "misc_node_properties_col",
+   "misc_properties_col",
+   "name",
+   "ndfp",
+   "node_col",
+   "node_properties",
+   "node_property_type",
+   "node_propertystore",
+   "node_weight_prop_col",
+   "properties",
+   "self",
+   "setsystem",
+   "setsystem_type",
+   "type_dict",
+   "weight_prop_col"
+  ]
+ },
+ "field_locations": {
+  "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 5/5 role strings",
+  "incidence.direction": "cell property column 'direction'",
+  "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+  "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+  "network-type": "not read (hif.py from_hif never looks at it)",
+  "metadata": "n/a"
+ },
+ "export": {
+  "api": "hnx.to_hif(H, filename=..., network_type='directed')",
+  "ok": true,
+  "returned": "dict",
+  "error": null,
+  "warnings": [
+   "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/c13-unicode-ids.out.hif.json' mode='w' encoding='utf-8'> (hif.py:110)"
+  ],
+  "file_written": "out/hnx/c13-unicode-ids.out.hif.json",
+  "strict_json": true,
+  "schema_errors (jsonschema)": []
+ },
+ "export_default_call": {
+  "api": "hnx.to_hif(H, filename=..., network_type='undirected')",
+  "ok": true,
+  "returned": "dict",
+  "error": null,
+  "warnings": [
+   "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/c13-unicode-ids.out-default.hif.json' mode='w' encoding='utf-8' (hif.py:110)"
+  ],
+  "file_written": "out/hnx/c13-unicode-ids.out-default.hif.json",
+  "strict_json": true,
+  "schema_errors (jsonschema)": [],
+  "network-type written": "undirected"
+ },
+ "diff": {
+  "top": {
+   "network-type": {
+    "in": "directed",
+    "out": "directed",
+    "status": "preserved"
+   },
+   "metadata": {
+    "keys_lost": [],
+    "keys_added": [
+     "default_attrs"
+    ],
+    "keys_changed": [],
+    "status": "altered"
+   },
+   "other_top_level_keys_out": []
+  },
+  "incidences": {
+   "str:事实-1 | str:药物:二甲双胍": {
+    "edge": "str:事实-1",
+    "node": "str:药物:二甲双胍",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "preserved",
+    "direction": "preserved",
+    "weight": "added",
+    "attrs": "preserved",
+    "status": "present",
+    "roles_in": [
+     "治疗"
+    ],
+    "roles_out": [
+     "治疗"
+    ],
+    "directions_in": [
+     "tail"
+    ],
+    "directions_out": [
+     "tail"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ],
+    "attrs_in": [
+     {
+      "role": "治疗"
+     }
+    ],
+    "attrs_out": [
+     {
+      "role": "治疗"
+     }
+    ]
+   },
+   "str:事实-1 | str:maladie:diabète type 2": {
+    "edge": "str:事实-1",
+    "node": "str:maladie:diabète type 2",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "preserved",
+    "direction": "preserved",
+    "weight": "added",
+    "attrs": "preserved",
+    "status": "present",
+    "roles_in": [
+     "état"
+    ],
+    "roles_out": [
+     "état"
+    ],
+    "directions_in": [
+     "head"
+    ],
+    "directions_out": [
+     "head"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ],
+    "attrs_in": [
+     {
+      "role": "état"
+     }
+    ],
+    "attrs_out": [
+     {
+      "role": "état"
+     }
+    ]
+   },
+   "str:事实-1 | str:🧪 sample #42": {
+    "edge": "str:事实-1",
+    "node": "str:🧪 sample #42",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "preserved",
+    "direction": "preserved",
+    "weight": "added",
+    "attrs": "preserved",
+    "status": "present",
+    "roles_in": [
+     "échantillon"
+    ],
+    "roles_out": [
+     "échantillon"
+    ],
+    "directions_in": [
+     "tail"
+    ],
+    "directions_out": [
+     "tail"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ],
+    "attrs_in": [
+     {
+      "role": "échantillon"
+     }
+    ],
+    "attrs_out": [
+     {
+      "role": "échantillon"
+     }
+    ]
+   },
+   "str:事实-1 | str:é": {
+    "edge": "str:事实-1",
+    "node": "str:é",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "preserved",
+    "direction": "preserved",
+    "weight": "added",
+    "attrs": "preserved",
+    "status": "present",
+    "roles_in": [
+     "nfc"
+    ],
+    "roles_out": [
+     "nfc"
+    ],
+    "directions_in": [
+     "tail"
+    ],
+    "directions_out": [
+     "tail"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ],
+    "attrs_in": [
+     {
+      "role": "nfc"
+     }
+    ],
+    "attrs_out": [
+     {
+      "role": "nfc"
+     }
+    ]
+   },
+   "str:事实-1 | str:é": {
+    "edge": "str:事实-1",
+    "node": "str:é",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "preserved",
+    "direction": "preserved",
+    "weight": "added",
+    "attrs": "preserved",
+    "status": "present",
+    "roles_in": [
+     "nfd"
+    ],
+    "roles_out": [
+     "nfd"
+    ],
+    "directions_in": [
+     "tail"
+    ],
+    "directions_out": [
+     "tail"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ],
+    "attrs_in": [
+     {
+      "role": "nfd"
+     }
+    ],
+    "attrs_out": [
+     {
+      "role": "nfd"
+     }
+    ]
+   }
+  },
+  "nodes": {
+   "str:药物:二甲双胍": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "added",
+    "attrs_in": [
+     {
+      "label": "métformine"
+     }
+    ],
+    "attrs_out": [
+     {
+      "label": "métformine"
+     }
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ]
+   },
+   "str:é": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "added",
+    "attrs_in": [
+     {
+      "form": "NFC"
+     }
+    ],
+    "attrs_out": [
+     {
+      "form": "NFC"
+     }
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ]
+   },
+   "str:é": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "added",
+    "attrs_in": [
+     {
+      "form": "NFD"
+     }
+    ],
+    "attrs_out": [
+     {
+      "form": "NFD"
+     }
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ]
+   },
+   "str:🧪 sample #42": {
+    "declared_in": 0,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "added",
+    "weights_in": [],
+    "weights_out": [
+     1
+    ]
+   },
+   "str:maladie:diabète type 2": {
+    "declared_in": 0,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "added",
+    "weights_in": [],
+    "weights_out": [
+     1
+    ]
+   }
+  },
+  "edges": {
+   "str:事实-1": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "added",
+    "attrs_in": [
+     {
+      "relation": "traite"
+     }
+    ],
+    "attrs_out": [
+     {
+      "relation": "traite"
+     }
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ]
+   }
+  },
+  "id_type_changes": [],
+  "summary": {
+   "incidence_records": "5 -> 5",
+   "role_records_kept": "5/5",
+   "direction_records_kept": "5/5",
+   "incidence_weight_records_kept": "0/0",
+   "incidence_attrs_records_kept": "5/5",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 5,
+   "nodes": {
+    "declared_in": 3,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {
+     "str:药物:二甲双胍": "added",
+     "str:é": "added",
+     "str:é": "added",
+     "str:🧪 sample #42": "added",
+     "str:maladie:diabète type 2": "added"
+    },
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 1,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {
+     "str:事实-1": "added"
+    },
+    "new_out": []
+   },
+   "network_type": "preserved (directed -> directed)",
+   "metadata": "altered",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [
+    "default_attrs"
+   ],
+   "id_type_changes": 0
+  }
+ },
+ "gen2": {
+  "load_error": null,
+  "load_returned": "Hypergraph",
+  "export": {
+   "api": "hnx.to_hif(H, filename=..., network_type='directed')",
+   "ok": false,
+   "returned": "NoneType",
+   "error": null,
+   "warnings": [],
+   "unvalidated_error": null,
+   "unvalidated_output": "out/hnx/c13-unicode-ids.out2.unvalidated.hif.json",
+   "why_invalid (jsonschema on unvalidated output)": [
+    "incidences/0/direction: 'nil' is not one of ['head', 'tail']",
+    "incidences/1/direction: 'nil' is not one of ['head', 'tail']",
+    "incidences/2/direction: 'nil' is not one of ['head', 'tail']",
+    "incidences/3/direction: 'nil' is not one of ['head', 'tail']",
+    "incidences/4/direction: 'nil' is not one of ['head', 'tail']"
+   ]
+  },
+  "diff_gen1_gen2_summary": {
+   "incidence_records": "5 -> 5",
+   "role_records_kept": "5/5",
+   "direction_records_kept": "0/5",
+   "incidence_weight_records_kept": "5/5",
+   "incidence_attrs_records_kept": "5/5",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 0,
+   "nodes": {
+    "declared_in": 5,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 1,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "network_type": "preserved (directed -> directed)",
+   "metadata": "preserved",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [],
+   "id_type_changes": 0
+  },
+  "diff_input_gen2_summary": {
+   "incidence_records": "5 -> 5",
+   "role_records_kept": "5/5",
+   "direction_records_kept": "0/5",
+   "incidence_weight_records_kept": "0/0",
+   "incidence_attrs_records_kept": "5/5",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 5,
+   "nodes": {
+    "declared_in": 3,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {
+     "str:药物:二甲双胍": "added",
+     "str:é": "added",
+     "str:é": "added",
+     "str:🧪 sample #42": "added",
+     "str:maladie:diabète type 2": "added"
+    },
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 1,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {
+     "str:事实-1": "added"
+    },
+    "new_out": []
+   },
+   "network_type": "preserved (directed -> directed)",
+   "metadata": "altered",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [
+    "default_attrs"
+   ],
+   "id_type_changes": 0
+  },
+  "gen2_incidence_columns": [
+   "weight",
+   "direction",
+   "misc_properties"
+  ]
+ }
+}

@@ -1,0 +1,37 @@
+{
+ "network-type": "directed",
+ "edges": [
+  {
+   "edge": "r1",
+   "attrs": {
+    "relation": "regulates"
+   }
+  }
+ ],
+ "incidences": [
+  {
+   "edge": "r1",
+   "node": "gene:TP53",
+   "direction": "tail",
+   "attrs": {
+    "role": "regulator"
+   }
+  },
+  {
+   "edge": "r1",
+   "node": "gene:TP53",
+   "direction": "head",
+   "attrs": {
+    "role": "target"
+   }
+  },
+  {
+   "edge": "r1",
+   "node": "cell:HeLa",
+   "direction": "tail",
+   "attrs": {
+    "role": "context"
+   }
+  }
+ ]
+}

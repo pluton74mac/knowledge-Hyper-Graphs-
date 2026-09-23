@@ -1,0 +1,293 @@
+{
+ "case": "c19-duplicate-node-edge-records",
+ "description": "node n1 and edge e1 each declared twice with different attrs (upstream calls this HIF-compliant)",
+ "input": "lib-cases/c19-duplicate-node-edge-records.hif.json",
+ "lib": "xgi",
+ "lib_version": "0.10.2",
+ "load": {
+  "api": "xgi.read_hif(path)",
+  "ok": true,
+  "error": null,
+  "warnings": [],
+  "class": "Hypergraph"
+ },
+ "placement": {
+  "class": "Hypergraph",
+  "num_nodes": 2,
+  "num_edges": 1,
+  "net_attr (H._net_attr)": {},
+  "node_attrs (H.nodes[n])": {
+   "str:n1": {
+    "label": "second",
+    "a": 1,
+    "b": 2
+   },
+   "str:n2": {}
+  },
+  "edge_attrs (H.edges[e])": {
+   "str:e1": {
+    "relation": "r-second",
+    "c": 3
+   }
+  },
+  "edge_members": {
+   "str:e1": {
+    "members": [
+     "str:n1",
+     "str:n2"
+    ]
+   }
+  },
+  "role_strings_in_object_state": {
+   "object": [],
+   "subject": []
+  },
+  "record_weight_values_in_object_state": [],
+  "record_weight_values_searched": []
+ },
+ "field_locations": {
+  "incidence.attrs (role)": "found for 0/2 role strings",
+  "incidence.direction": "n/a",
+  "record-level weight values": "n/a",
+  "network-type": "class Hypergraph",
+  "metadata": "n/a"
+ },
+ "export": {
+  "api": "xgi.write_hif(H, path)",
+  "ok": true,
+  "error": null,
+  "warnings": [],
+  "output": "out/xgi/c19-duplicate-node-edge-records.out.hif.json",
+  "strict_json": true,
+  "schema_errors": [],
+  "top_level_keys": [
+   "edges",
+   "incidences",
+   "metadata",
+   "network-type",
+   "nodes"
+  ],
+  "n_node_records": 1,
+  "n_edge_records": 1,
+  "to_hif_dict_equals_file": true
+ },
+ "diff": {
+  "top": {
+   "network-type": {
+    "in": "undirected",
+    "out": "undirected",
+    "status": "preserved"
+   },
+   "metadata": {
+    "keys_lost": [],
+    "keys_added": [],
+    "keys_changed": [],
+    "status": "preserved"
+   },
+   "other_top_level_keys_out": []
+  },
+  "incidences": {
+   "str:e1 | str:n1": {
+    "edge": "str:e1",
+    "node": "str:n1",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "subject"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "subject"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   },
+   "str:e1 | str:n2": {
+    "edge": "str:e1",
+    "node": "str:n2",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "object"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "object"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   }
+  },
+  "nodes": {
+   "str:n1": {
+    "declared_in": 2,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "merged: later declarations update earlier ones",
+    "weight": "preserved",
+    "attrs_in": [
+     {
+      "label": "first",
+      "a": 1
+     },
+     {
+      "label": "second",
+      "b": 2
+     }
+    ],
+    "attrs_out": [
+     {
+      "label": "second",
+      "a": 1,
+      "b": 2
+     }
+    ]
+   },
+   "str:n2": {
+    "declared_in": 0,
+    "declared_out": 0,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved"
+   }
+  },
+  "edges": {
+   "str:e1": {
+    "declared_in": 2,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "merged: later declarations update earlier ones",
+    "weight": "preserved",
+    "attrs_in": [
+     {
+      "relation": "r-first"
+     },
+     {
+      "relation": "r-second",
+      "c": 3
+     }
+    ],
+    "attrs_out": [
+     {
+      "relation": "r-second",
+      "c": 3
+     }
+    ]
+   }
+  },
+  "id_type_changes": [],
+  "summary": {
+   "incidence_records": "2 -> 2",
+   "role_records_kept": "0/2",
+   "direction_records_kept": "0/0",
+   "incidence_weight_records_kept": "0/0",
+   "incidence_attrs_records_kept": "0/2",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 0,
+   "nodes": {
+    "declared_in": 1,
+    "missing_out": [],
+    "attrs_not_preserved": {
+     "str:n1": "merged: later declarations update earlier ones"
+    },
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 1,
+    "missing_out": [],
+    "attrs_not_preserved": {
+     "str:e1": "merged: later declarations update earlier ones"
+    },
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "network_type": "preserved (undirected -> undirected)",
+   "metadata": "preserved",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [],
+   "id_type_changes": 0
+  }
+ },
+ "gen2": {
+  "load_error": null,
+  "export_error": null,
+  "idempotent (gen1 == gen2 structurally)": true,
+  "diff_gen1_gen2_summary": {
+   "incidence_records": "2 -> 2",
+   "role_records_kept": "0/0",
+   "direction_records_kept": "0/0",
+   "incidence_weight_records_kept": "0/0",
+   "incidence_attrs_records_kept": "0/0",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 0,
+   "nodes": {
+    "declared_in": 1,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 1,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "network_type": "preserved (undirected -> undirected)",
+   "metadata": "preserved",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [],
+   "id_type_changes": 0
+  }
+ }
+}

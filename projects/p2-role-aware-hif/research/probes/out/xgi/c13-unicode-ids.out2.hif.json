@@ -1,0 +1,59 @@
+{
+  "metadata": {},
+  "network-type": "directed",
+  "nodes": [
+    {
+      "attrs": {
+        "label": "m\u00e9tformine"
+      },
+      "node": "\u836f\u7269:\u4e8c\u7532\u53cc\u80cd"
+    },
+    {
+      "attrs": {
+        "form": "NFC"
+      },
+      "node": "\u00e9"
+    },
+    {
+      "attrs": {
+        "form": "NFD"
+      },
+      "node": "e\u0301"
+    }
+  ],
+  "edges": [
+    {
+      "attrs": {
+        "relation": "traite"
+      },
+      "edge": "\u4e8b\u5b9e-1"
+    }
+  ],
+  "incidences": [
+    {
+      "edge": "\u4e8b\u5b9e-1",
+      "node": "\u836f\u7269:\u4e8c\u7532\u53cc\u80cd",
+      "direction": "tail"
+    },
+    {
+      "edge": "\u4e8b\u5b9e-1",
+      "node": "\u00e9",
+      "direction": "tail"
+    },
+    {
+      "edge": "\u4e8b\u5b9e-1",
+      "node": "\ud83e\uddea sample #42",
+      "direction": "tail"
+    },
+    {
+      "edge": "\u4e8b\u5b9e-1",
+      "node": "e\u0301",
+      "direction": "tail"
+    },
+    {
+      "edge": "\u4e8b\u5b9e-1",
+      "node": "maladie:diab\u00e8te type 2",
+      "direction": "head"
+    }
+  ]
+}

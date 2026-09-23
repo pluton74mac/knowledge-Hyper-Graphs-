@@ -1,0 +1,320 @@
+{
+ "case": "c05-two-roles-same-direction",
+ "description": "one node plays two roles in one directed edge, both on the tail: two incidence records for the same (edge, node) pair with different roles and different incidence weights",
+ "input": "lib-cases/c05-two-roles-same-direction.hif.json",
+ "lib": "xgi",
+ "lib_version": "0.10.2",
+ "load": {
+  "api": "xgi.read_hif(path)",
+  "ok": true,
+  "error": null,
+  "warnings": [],
+  "class": "DiHypergraph"
+ },
+ "placement": {
+  "class": "DiHypergraph",
+  "num_nodes": 3,
+  "num_edges": 1,
+  "net_attr (H._net_attr)": {},
+  "node_attrs (H.nodes[n])": {
+   "str:drug:metformin": {},
+   "str:drug:insulin": {},
+   "str:outcome:HbA1c": {}
+  },
+  "edge_attrs (H.edges[e])": {
+   "str:t1": {
+    "relation": "compared-in-trial"
+   }
+  },
+  "edge_members": {
+   "str:t1": {
+    "tail": [
+     "str:drug:insulin",
+     "str:drug:metformin"
+    ],
+    "head": [
+     "str:outcome:HbA1c"
+    ]
+   }
+  },
+  "role_strings_in_object_state": {
+   "background-therapy": [],
+   "comparator": [],
+   "intervention": [],
+   "outcome": []
+  },
+  "record_weight_values_in_object_state": [],
+  "record_weight_values_searched": [
+   0.3,
+   0.7
+  ]
+ },
+ "field_locations": {
+  "incidence.attrs (role)": "found for 0/4 role strings",
+  "incidence.direction": "DiHypergraph edge 'in' (tail) / 'out' (head) member sets",
+  "record-level weight values": "0/2 found",
+  "network-type": "class DiHypergraph",
+  "metadata": "n/a"
+ },
+ "export": {
+  "api": "xgi.write_hif(H, path)",
+  "ok": true,
+  "error": null,
+  "warnings": [],
+  "output": "out/xgi/c05-two-roles-same-direction.out.hif.json",
+  "strict_json": true,
+  "schema_errors": [],
+  "top_level_keys": [
+   "edges",
+   "incidences",
+   "metadata",
+   "network-type"
+  ],
+  "n_node_records": 0,
+  "n_edge_records": 1,
+  "to_hif_dict_equals_file": true
+ },
+ "diff": {
+  "top": {
+   "network-type": {
+    "in": "directed",
+    "out": "directed",
+    "status": "preserved"
+   },
+   "metadata": {
+    "keys_lost": [],
+    "keys_added": [],
+    "keys_changed": [],
+    "status": "preserved"
+   },
+   "other_top_level_keys_out": []
+  },
+  "incidences": {
+   "str:t1 | str:drug:metformin": {
+    "edge": "str:t1",
+    "node": "str:drug:metformin",
+    "count_in": 2,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "partial",
+    "weight": "lost",
+    "attrs": "lost",
+    "status": "count-changed",
+    "roles_in": [
+     "intervention",
+     "background-therapy"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "tail",
+     "tail"
+    ],
+    "directions_out": [
+     "tail"
+    ],
+    "weights_in": [
+     0.7,
+     0.3
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "intervention"
+     },
+     {
+      "role": "background-therapy"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   },
+   "str:t1 | str:drug:insulin": {
+    "edge": "str:t1",
+    "node": "str:drug:insulin",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "comparator"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "tail"
+    ],
+    "directions_out": [
+     "tail"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "comparator"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   },
+   "str:t1 | str:outcome:HbA1c": {
+    "edge": "str:t1",
+    "node": "str:outcome:HbA1c",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "outcome"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "head"
+    ],
+    "directions_out": [
+     "head"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "outcome"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   }
+  },
+  "nodes": {
+   "str:drug:metformin": {
+    "declared_in": 1,
+    "declared_out": 0,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved"
+   },
+   "str:drug:insulin": {
+    "declared_in": 1,
+    "declared_out": 0,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved"
+   },
+   "str:outcome:HbA1c": {
+    "declared_in": 1,
+    "declared_out": 0,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved"
+   }
+  },
+  "edges": {
+   "str:t1": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved",
+    "attrs_in": [
+     {
+      "relation": "compared-in-trial"
+     }
+    ],
+    "attrs_out": [
+     {
+      "relation": "compared-in-trial"
+     }
+    ]
+   }
+  },
+  "id_type_changes": [],
+  "summary": {
+   "incidence_records": "4 -> 3",
+   "role_records_kept": "0/4",
+   "direction_records_kept": "3/4",
+   "incidence_weight_records_kept": "0/2",
+   "incidence_attrs_records_kept": "0/4",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 1,
+   "weights_added_on_incidences": 0,
+   "nodes": {
+    "declared_in": 3,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 1,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "network_type": "preserved (directed -> directed)",
+   "metadata": "preserved",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [],
+   "id_type_changes": 0
+  }
+ },
+ "gen2": {
+  "load_error": null,
+  "export_error": null,
+  "idempotent (gen1 == gen2 structurally)": true,
+  "diff_gen1_gen2_summary": {
+   "incidence_records": "3 -> 3",
+   "role_records_kept": "0/0",
+   "direction_records_kept": "3/3",
+   "incidence_weight_records_kept": "0/0",
+   "incidence_attrs_records_kept": "0/0",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 0,
+   "nodes": {
+    "declared_in": 0,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 1,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "network_type": "preserved (directed -> directed)",
+   "metadata": "preserved",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [],
+   "id_type_changes": 0
+  }
+ }
+}

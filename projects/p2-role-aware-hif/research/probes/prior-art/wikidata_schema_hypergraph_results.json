@@ -1,0 +1,1605 @@
+{
+ "fetched_utc": "2026-09-23T07:48:48+00:00",
+ "properties": {
+  "P39": {
+   "label": "position held",
+   "modified": "2026-09-04T09:59:01Z",
+   "has_allowed_qualifiers_constraint": true,
+   "novalue": false,
+   "n_allowed": 104
+  },
+  "P26": {
+   "label": "spouse",
+   "modified": "2026-09-22T08:02:46Z",
+   "has_allowed_qualifiers_constraint": true,
+   "novalue": false,
+   "n_allowed": 38
+  },
+  "P1082": {
+   "label": "population",
+   "modified": "2026-08-26T06:23:10Z",
+   "has_allowed_qualifiers_constraint": true,
+   "novalue": false,
+   "n_allowed": 22
+  },
+  "P166": {
+   "label": "award received",
+   "modified": "2026-09-21T23:06:03Z",
+   "has_allowed_qualifiers_constraint": true,
+   "novalue": false,
+   "n_allowed": 73
+  },
+  "P69": {
+   "label": "educated at",
+   "modified": "2026-09-10T02:55:56Z",
+   "has_allowed_qualifiers_constraint": true,
+   "novalue": false,
+   "n_allowed": 57
+  },
+  "P108": {
+   "label": "employer",
+   "modified": "2026-09-22T07:36:39Z",
+   "has_allowed_qualifiers_constraint": true,
+   "novalue": false,
+   "n_allowed": 55
+  },
+  "P54": {
+   "label": "member of sports team",
+   "modified": "2026-08-28T20:38:53Z",
+   "has_allowed_qualifiers_constraint": true,
+   "novalue": false,
+   "n_allowed": 31
+  },
+  "P463": {
+   "label": "member of",
+   "modified": "2026-09-12T10:07:39Z",
+   "has_allowed_qualifiers_constraint": true,
+   "novalue": false,
+   "n_allowed": 55
+  },
+  "P1411": {
+   "label": "nominated for",
+   "modified": "2026-09-03T15:50:13Z",
+   "has_allowed_qualifiers_constraint": true,
+   "novalue": false,
+   "n_allowed": 37
+  },
+  "P6": {
+   "label": "head of government",
+   "modified": "2026-09-13T20:52:44Z",
+   "has_allowed_qualifiers_constraint": true,
+   "novalue": false,
+   "n_allowed": 26
+  },
+  "P35": {
+   "label": "head of state",
+   "modified": "2026-08-19T11:07:46Z",
+   "has_allowed_qualifiers_constraint": true,
+   "novalue": false,
+   "n_allowed": 25
+  },
+  "P1435": {
+   "label": "heritage designation",
+   "modified": "2026-08-29T08:14:27Z",
+   "has_allowed_qualifiers_constraint": true,
+   "novalue": false,
+   "n_allowed": 51
+  },
+  "P2046": {
+   "label": "area",
+   "modified": "2026-08-21T16:18:34Z",
+   "has_allowed_qualifiers_constraint": true,
+   "novalue": false,
+   "n_allowed": 20
+  },
+  "P1128": {
+   "label": "employees",
+   "modified": "2026-09-13T18:39:23Z",
+   "has_allowed_qualifiers_constraint": true,
+   "novalue": false,
+   "n_allowed": 13
+  },
+  "P2139": {
+   "label": "total revenue",
+   "modified": "2026-09-18T08:23:40Z",
+   "has_allowed_qualifiers_constraint": false,
+   "novalue": false,
+   "n_allowed": 0
+  },
+  "P361": {
+   "label": "part of",
+   "modified": "2026-09-12T17:59:58Z",
+   "has_allowed_qualifiers_constraint": false,
+   "novalue": false,
+   "n_allowed": 0
+  },
+  "P793": {
+   "label": "significant event",
+   "modified": "2026-08-26T20:46:30Z",
+   "has_allowed_qualifiers_constraint": false,
+   "novalue": false,
+   "n_allowed": 0
+  },
+  "P106": {
+   "label": "occupation",
+   "modified": "2026-09-22T00:34:30Z",
+   "has_allowed_qualifiers_constraint": true,
+   "novalue": false,
+   "n_allowed": 80
+  },
+  "P27": {
+   "label": "country of citizenship",
+   "modified": "2026-09-14T09:05:59Z",
+   "has_allowed_qualifiers_constraint": true,
+   "novalue": false,
+   "n_allowed": 26
+  },
+  "P1448": {
+   "label": "official name",
+   "modified": "2026-09-18T19:06:59Z",
+   "has_allowed_qualifiers_constraint": true,
+   "novalue": false,
+   "n_allowed": 69
+  }
+ },
+ "allowed_qualifiers": {
+  "P39": [
+   "P1001",
+   "P101",
+   "P102",
+   "P1027",
+   "P1065",
+   "P10663",
+   "P108",
+   "P1111",
+   "P12413",
+   "P12506",
+   "P1264",
+   "P1268",
+   "P12912",
+   "P12913",
+   "P131",
+   "P1310",
+   "P1317",
+   "P1319",
+   "P1326",
+   "P1344",
+   "P1365",
+   "P1366",
+   "P138",
+   "P13883",
+   "P13884",
+   "P1393",
+   "P1416",
+   "P14186",
+   "P1444",
+   "P1448",
+   "P1478",
+   "P1480",
+   "P1534",
+   "P1542",
+   "P1545",
+   "P155",
+   "P1552",
+   "P156",
+   "P1598",
+   "P1706",
+   "P1734",
+   "P180",
+   "P1810",
+   "P1830",
+   "P1875",
+   "P1932",
+   "P2047",
+   "P2097",
+   "P2210",
+   "P2241",
+   "P2389",
+   "P2650",
+   "P2715",
+   "P276",
+   "P2868",
+   "P2937",
+   "P2960",
+   "P361",
+   "P3680",
+   "P3831",
+   "P3919",
+   "P41",
+   "P410",
+   "P4100",
+   "P4241",
+   "P4353",
+   "P459",
+   "P4626",
+   "P463",
+   "P4649",
+   "P5054",
+   "P5096",
+   "P5102",
+   "P518",
+   "P530",
+   "P531",
+   "P54",
+   "P541",
+   "P580",
+   "P582",
+   "P5832",
+   "P585",
+   "P6001",
+   "P611",
+   "P6149",
+   "P708",
+   "P742",
+   "P7452",
+   "P748",
+   "P7528",
+   "P7604",
+   "P768",
+   "P7779",
+   "P793",
+   "P800",
+   "P805",
+   "P825",
+   "P828",
+   "P8554",
+   "P8555",
+   "P937",
+   "P94",
+   "P9570",
+   "P9680"
+  ],
+  "P26": [
+   "P1039",
+   "P10663",
+   "P12506",
+   "P1264",
+   "P1310",
+   "P1319",
+   "P1326",
+   "P13589",
+   "P13883",
+   "P13884",
+   "P1480",
+   "P1534",
+   "P1545",
+   "P1559",
+   "P1810",
+   "P1932",
+   "P1971",
+   "P2047",
+   "P2241",
+   "P2562",
+   "P2842",
+   "P2868",
+   "P3629",
+   "P3680",
+   "P3831",
+   "P5102",
+   "P518",
+   "P580",
+   "P582",
+   "P585",
+   "P6375",
+   "P710",
+   "P7452",
+   "P7528",
+   "P805",
+   "P828",
+   "P8554",
+   "P8555"
+  ],
+  "P1082": [
+   "P1011",
+   "P1012",
+   "P1013",
+   "P10663",
+   "P1107",
+   "P11279",
+   "P1480",
+   "P1538",
+   "P1539",
+   "P1540",
+   "P172",
+   "P1810",
+   "P2241",
+   "P3680",
+   "P459",
+   "P5102",
+   "P518",
+   "P585",
+   "P6343",
+   "P6344",
+   "P7452",
+   "P805"
+  ],
+  "P166": [
+   "P1001",
+   "P101",
+   "P1027",
+   "P1065",
+   "P1114",
+   "P118",
+   "P1269",
+   "P12912",
+   "P1310",
+   "P1319",
+   "P1326",
+   "P1346",
+   "P1351",
+   "P1352",
+   "P13713",
+   "P1416",
+   "P14360",
+   "P1448",
+   "P1476",
+   "P1480",
+   "P1534",
+   "P1545",
+   "P155",
+   "P1552",
+   "P156",
+   "P1618",
+   "P1686",
+   "P1706",
+   "P175",
+   "P18",
+   "P1810",
+   "P1932",
+   "P2096",
+   "P2121",
+   "P2241",
+   "P2553",
+   "P2598",
+   "P2699",
+   "P27",
+   "P276",
+   "P2868",
+   "P2960",
+   "P3342",
+   "P361",
+   "P3629",
+   "P366",
+   "P3680",
+   "P3831",
+   "P400",
+   "P4353",
+   "P444",
+   "P453",
+   "P4566",
+   "P4633",
+   "P5102",
+   "P512",
+   "P577",
+   "P580",
+   "P582",
+   "P585",
+   "P5997",
+   "P6208",
+   "P6375",
+   "P6949",
+   "P7452",
+   "P793",
+   "P805",
+   "P823",
+   "P8264",
+   "P828",
+   "P8554",
+   "P8555",
+   "P937"
+  ],
+  "P69": [
+   "P101",
+   "P1013",
+   "P1026",
+   "P1066",
+   "P10663",
+   "P11814",
+   "P12506",
+   "P131",
+   "P1310",
+   "P1317",
+   "P1319",
+   "P1326",
+   "P1416",
+   "P1480",
+   "P1534",
+   "P1552",
+   "P166",
+   "P1810",
+   "P184",
+   "P1932",
+   "P2047",
+   "P2241",
+   "P2650",
+   "P276",
+   "P2868",
+   "P3323",
+   "P355",
+   "P3680",
+   "P3831",
+   "P39",
+   "P4241",
+   "P459",
+   "P4626",
+   "P4649",
+   "P5021",
+   "P5102",
+   "P512",
+   "P5168",
+   "P518",
+   "P528",
+   "P580",
+   "P582",
+   "P585",
+   "P6424",
+   "P7174",
+   "P7374",
+   "P7452",
+   "P805",
+   "P811",
+   "P812",
+   "P8258",
+   "P828",
+   "P8324",
+   "P8338",
+   "P8554",
+   "P8555",
+   "P937"
+  ],
+  "P108": [
+   "P101",
+   "P106",
+   "P1065",
+   "P10663",
+   "P12506",
+   "P1264",
+   "P1269",
+   "P1310",
+   "P1317",
+   "P1319",
+   "P1326",
+   "P1365",
+   "P1366",
+   "P13883",
+   "P13884",
+   "P1416",
+   "P1480",
+   "P1534",
+   "P1552",
+   "P1810",
+   "P1875",
+   "P1932",
+   "P199",
+   "P2047",
+   "P2210",
+   "P2241",
+   "P276",
+   "P2868",
+   "P2960",
+   "P355",
+   "P361",
+   "P3680",
+   "P3831",
+   "P39",
+   "P4241",
+   "P4550",
+   "P459",
+   "P4626",
+   "P4649",
+   "P5102",
+   "P5168",
+   "P531",
+   "P580",
+   "P582",
+   "P585",
+   "P6424",
+   "P7452",
+   "P748",
+   "P7604",
+   "P805",
+   "P828",
+   "P8338",
+   "P8554",
+   "P8555",
+   "P937"
+  ],
+  "P54": [
+   "P10663",
+   "P1129",
+   "P118",
+   "P1319",
+   "P1326",
+   "P1350",
+   "P1351",
+   "P1359",
+   "P1534",
+   "P1545",
+   "P1618",
+   "P1642",
+   "P1643",
+   "P1810",
+   "P2094",
+   "P2241",
+   "P2868",
+   "P3438",
+   "P3450",
+   "P39",
+   "P413",
+   "P518",
+   "P580",
+   "P582",
+   "P585",
+   "P641",
+   "P7452",
+   "P813",
+   "P8554",
+   "P8555",
+   "P9140"
+  ],
+  "P463": [
+   "P1001",
+   "P10663",
+   "P11327",
+   "P12413",
+   "P12506",
+   "P1264",
+   "P1268",
+   "P1310",
+   "P1317",
+   "P1319",
+   "P1326",
+   "P1352",
+   "P1365",
+   "P1366",
+   "P13883",
+   "P13884",
+   "P1416",
+   "P14186",
+   "P1449",
+   "P1454",
+   "P1480",
+   "P1534",
+   "P1545",
+   "P1706",
+   "P1810",
+   "P1932",
+   "P2031",
+   "P2241",
+   "P2541",
+   "P2715",
+   "P2868",
+   "P3629",
+   "P3680",
+   "P3831",
+   "P39",
+   "P4241",
+   "P459",
+   "P4626",
+   "P4649",
+   "P5102",
+   "P528",
+   "P580",
+   "P582",
+   "P585",
+   "P6208",
+   "P742",
+   "P7452",
+   "P748",
+   "P749",
+   "P7528",
+   "P805",
+   "P8554",
+   "P8555",
+   "P9680",
+   "P973"
+  ],
+  "P1411": [
+   "P1027",
+   "P1065",
+   "P1132",
+   "P1319",
+   "P1326",
+   "P1346",
+   "P1352",
+   "P1358",
+   "P1476",
+   "P1480",
+   "P1545",
+   "P155",
+   "P1552",
+   "P156",
+   "P1686",
+   "P1706",
+   "P1810",
+   "P1932",
+   "P2241",
+   "P2453",
+   "P2553",
+   "P2868",
+   "P2960",
+   "P3740",
+   "P4353",
+   "P453",
+   "P4633",
+   "P518",
+   "P585",
+   "P6208",
+   "P674",
+   "P6949",
+   "P7452",
+   "P793",
+   "P805",
+   "P8554",
+   "P8555"
+  ],
+  "P6": [
+   "P102",
+   "P10663",
+   "P1319",
+   "P1326",
+   "P1365",
+   "P1366",
+   "P13883",
+   "P13884",
+   "P1534",
+   "P1545",
+   "P2241",
+   "P2715",
+   "P2868",
+   "P3415",
+   "P3416",
+   "P39",
+   "P4353",
+   "P459",
+   "P580",
+   "P582",
+   "P585",
+   "P7452",
+   "P748",
+   "P805",
+   "P8554",
+   "P8555"
+  ],
+  "P35": [
+   "P10663",
+   "P1319",
+   "P1326",
+   "P13589",
+   "P1365",
+   "P1366",
+   "P13883",
+   "P13884",
+   "P1393",
+   "P1534",
+   "P1545",
+   "P1706",
+   "P2241",
+   "P2868",
+   "P3831",
+   "P39",
+   "P459",
+   "P4895",
+   "P580",
+   "P582",
+   "P7452",
+   "P7528",
+   "P805",
+   "P8554",
+   "P8555"
+  ],
+  "P1435": [
+   "P1001",
+   "P1011",
+   "P1012",
+   "P1013",
+   "P1031",
+   "P1216",
+   "P12506",
+   "P131",
+   "P1319",
+   "P1326",
+   "P1365",
+   "P1366",
+   "P13957",
+   "P1448",
+   "P1459",
+   "P1480",
+   "P1534",
+   "P1706",
+   "P1810",
+   "P1932",
+   "P217",
+   "P2241",
+   "P2561",
+   "P2614",
+   "P2868",
+   "P361",
+   "P3680",
+   "P381",
+   "P4353",
+   "P457",
+   "P5017",
+   "P5102",
+   "P518",
+   "P527",
+   "P528",
+   "P580",
+   "P582",
+   "P585",
+   "P5997",
+   "P6208",
+   "P6949",
+   "P709",
+   "P7452",
+   "P757",
+   "P7588",
+   "P790",
+   "P8039",
+   "P805",
+   "P8554",
+   "P8555",
+   "P9994"
+  ],
+  "P2046": [
+   "P1011",
+   "P1012",
+   "P13044",
+   "P1319",
+   "P1326",
+   "P1480",
+   "P1534",
+   "P1810",
+   "P2241",
+   "P4241",
+   "P459",
+   "P5102",
+   "P518",
+   "P580",
+   "P5816",
+   "P582",
+   "P585",
+   "P7452",
+   "P8554",
+   "P8555"
+  ],
+  "P1128": [
+   "P1011",
+   "P1013",
+   "P11279",
+   "P1480",
+   "P1539",
+   "P1540",
+   "P2241",
+   "P3831",
+   "P459",
+   "P5102",
+   "P518",
+   "P585",
+   "P7452"
+  ],
+  "P106": [
+   "P1001",
+   "P101",
+   "P1013",
+   "P102",
+   "P1056",
+   "P10663",
+   "P108",
+   "P121",
+   "P1264",
+   "P1268",
+   "P12912",
+   "P12913",
+   "P12992",
+   "P1303",
+   "P13044",
+   "P131",
+   "P1310",
+   "P1319",
+   "P1326",
+   "P1344",
+   "P136",
+   "P1365",
+   "P1366",
+   "P13883",
+   "P13884",
+   "P1416",
+   "P1480",
+   "P1534",
+   "P1552",
+   "P1810",
+   "P1932",
+   "P1995",
+   "P2210",
+   "P2241",
+   "P2283",
+   "P2389",
+   "P2541",
+   "P2650",
+   "P276",
+   "P2868",
+   "P3438",
+   "P3629",
+   "P3680",
+   "P3831",
+   "P3919",
+   "P400",
+   "P4100",
+   "P4241",
+   "P425",
+   "P453",
+   "P463",
+   "P5096",
+   "P5102",
+   "P531",
+   "P580",
+   "P582",
+   "P5832",
+   "P585",
+   "P6001",
+   "P607",
+   "P611",
+   "P708",
+   "P7163",
+   "P742",
+   "P7452",
+   "P748",
+   "P7528",
+   "P7604",
+   "P767",
+   "P768",
+   "P7779",
+   "P793",
+   "P800",
+   "P805",
+   "P825",
+   "P8554",
+   "P8555",
+   "P921",
+   "P937",
+   "P945"
+  ],
+  "P27": [
+   "P10663",
+   "P1264",
+   "P1310",
+   "P1319",
+   "P1326",
+   "P1480",
+   "P1534",
+   "P1545",
+   "P2241",
+   "P3629",
+   "P3680",
+   "P3831",
+   "P3842",
+   "P5102",
+   "P518",
+   "P580",
+   "P582",
+   "P6885",
+   "P7452",
+   "P7528",
+   "P805",
+   "P813",
+   "P828",
+   "P8554",
+   "P8555",
+   "P945"
+  ],
+  "P1448": [
+   "P1001",
+   "P1013",
+   "P10663",
+   "P10694",
+   "P12506",
+   "P1264",
+   "P1269",
+   "P1310",
+   "P1319",
+   "P1326",
+   "P137",
+   "P138",
+   "P1449",
+   "P1480",
+   "P1534",
+   "P1535",
+   "P1545",
+   "P1552",
+   "P1721",
+   "P1813",
+   "P1814",
+   "P1932",
+   "P1942",
+   "P2001",
+   "P2125",
+   "P2183",
+   "P2241",
+   "P2378",
+   "P2440",
+   "P2441",
+   "P2521",
+   "P2567",
+   "P276",
+   "P282",
+   "P2868",
+   "P3321",
+   "P3680",
+   "P3831",
+   "P3938",
+   "P407",
+   "P4187",
+   "P4239",
+   "P443",
+   "P459",
+   "P4626",
+   "P4649",
+   "P4970",
+   "P5102",
+   "P5139",
+   "P518",
+   "P580",
+   "P582",
+   "P585",
+   "P625",
+   "P6254",
+   "P7008",
+   "P7018",
+   "P7452",
+   "P7588",
+   "P790",
+   "P805",
+   "P828",
+   "P8554",
+   "P8555",
+   "P859",
+   "P898",
+   "P8991",
+   "P9311",
+   "P9989"
+  ]
+ },
+ "properties_used_both_as_main_and_as_allowed_qualifier": [
+  "P106",
+  "P108",
+  "P1448",
+  "P166",
+  "P27",
+  "P39",
+  "P463",
+  "P54"
+ ],
+ "results": {
+  "all qualifiers | A_generic": {
+   "hyperedges": 17,
+   "vertices": 275,
+   "alpha_acyclic": false,
+   "beta_acyclic": false,
+   "gyo_residue_edges": 17,
+   "gyo_residue_vertices": 126,
+   "top_shared_attributes": [
+    [
+     "P2241",
+     17
+    ],
+    [
+     "value",
+     17
+    ],
+    [
+     "P7452",
+     17
+    ],
+    [
+     "subject",
+     17
+    ],
+    [
+     "P1319",
+     15
+    ],
+    [
+     "P8554",
+     15
+    ],
+    [
+     "P8555",
+     15
+    ],
+    [
+     "P1326",
+     15
+    ]
+   ]
+  },
+  "all qualifiers | B_typed": {
+   "hyperedges": 17,
+   "vertices": 291,
+   "alpha_acyclic": false,
+   "beta_acyclic": false,
+   "gyo_residue_edges": 17,
+   "gyo_residue_vertices": 125,
+   "top_shared_attributes": [
+    [
+     "P2241",
+     17
+    ],
+    [
+     "P7452",
+     17
+    ],
+    [
+     "subject",
+     17
+    ],
+    [
+     "P1319",
+     15
+    ],
+    [
+     "P8554",
+     15
+    ],
+    [
+     "P8555",
+     15
+    ],
+    [
+     "P1326",
+     15
+    ],
+    [
+     "P585",
+     15
+    ]
+   ]
+  },
+  "all qualifiers | C_local": {
+   "hyperedges": 17,
+   "vertices": 307,
+   "alpha_acyclic": false,
+   "beta_acyclic": false,
+   "gyo_residue_edges": 17,
+   "gyo_residue_vertices": 124,
+   "top_shared_attributes": [
+    [
+     "P2241",
+     17
+    ],
+    [
+     "P7452",
+     17
+    ],
+    [
+     "P1319",
+     15
+    ],
+    [
+     "P8554",
+     15
+    ],
+    [
+     "P8555",
+     15
+    ],
+    [
+     "P1326",
+     15
+    ],
+    [
+     "P585",
+     15
+    ],
+    [
+     "P582",
+     14
+    ]
+   ]
+  },
+  "all qualifiers | D_rel_local": {
+   "hyperedges": 17,
+   "vertices": 816,
+   "alpha_acyclic": true,
+   "beta_acyclic": true,
+   "gyo_residue_edges": 0,
+   "gyo_residue_vertices": 0,
+   "top_shared_attributes": [
+    [
+     "P39:P1393",
+     1
+    ],
+    [
+     "P39:P1317",
+     1
+    ],
+    [
+     "P39:P2047",
+     1
+    ],
+    [
+     "P39:P1027",
+     1
+    ],
+    [
+     "P39:P7779",
+     1
+    ],
+    [
+     "P39:P1111",
+     1
+    ],
+    [
+     "P39:P611",
+     1
+    ],
+    [
+     "P39:P518",
+     1
+    ]
+   ]
+  },
+  "all qualifiers | E_role_is_property": {
+   "hyperedges": 17,
+   "vertices": 283,
+   "alpha_acyclic": false,
+   "beta_acyclic": false,
+   "gyo_residue_edges": 16,
+   "gyo_residue_vertices": 129,
+   "top_shared_attributes": [
+    [
+     "P2241",
+     17
+    ],
+    [
+     "P7452",
+     17
+    ],
+    [
+     "subject",
+     17
+    ],
+    [
+     "P1319",
+     15
+    ],
+    [
+     "P8554",
+     15
+    ],
+    [
+     "P8555",
+     15
+    ],
+    [
+     "P1326",
+     15
+    ],
+    [
+     "P585",
+     15
+    ]
+   ]
+  },
+  "without statement-metadata qualifiers | A_generic": {
+   "hyperedges": 17,
+   "vertices": 266,
+   "alpha_acyclic": false,
+   "beta_acyclic": false,
+   "gyo_residue_edges": 17,
+   "gyo_residue_vertices": 117,
+   "top_shared_attributes": [
+    [
+     "value",
+     17
+    ],
+    [
+     "subject",
+     17
+    ],
+    [
+     "P1319",
+     15
+    ],
+    [
+     "P8554",
+     15
+    ],
+    [
+     "P8555",
+     15
+    ],
+    [
+     "P1326",
+     15
+    ],
+    [
+     "P585",
+     15
+    ],
+    [
+     "P582",
+     14
+    ]
+   ]
+  },
+  "without statement-metadata qualifiers | B_typed": {
+   "hyperedges": 17,
+   "vertices": 282,
+   "alpha_acyclic": false,
+   "beta_acyclic": false,
+   "gyo_residue_edges": 17,
+   "gyo_residue_vertices": 116,
+   "top_shared_attributes": [
+    [
+     "subject",
+     17
+    ],
+    [
+     "P1319",
+     15
+    ],
+    [
+     "P8554",
+     15
+    ],
+    [
+     "P8555",
+     15
+    ],
+    [
+     "P1326",
+     15
+    ],
+    [
+     "P585",
+     15
+    ],
+    [
+     "P582",
+     14
+    ],
+    [
+     "P580",
+     14
+    ]
+   ]
+  },
+  "without statement-metadata qualifiers | C_local": {
+   "hyperedges": 17,
+   "vertices": 298,
+   "alpha_acyclic": false,
+   "beta_acyclic": false,
+   "gyo_residue_edges": 17,
+   "gyo_residue_vertices": 115,
+   "top_shared_attributes": [
+    [
+     "P1319",
+     15
+    ],
+    [
+     "P8554",
+     15
+    ],
+    [
+     "P8555",
+     15
+    ],
+    [
+     "P1326",
+     15
+    ],
+    [
+     "P585",
+     15
+    ],
+    [
+     "P582",
+     14
+    ],
+    [
+     "P580",
+     14
+    ],
+    [
+     "P1534",
+     14
+    ]
+   ]
+  },
+  "without statement-metadata qualifiers | D_rel_local": {
+   "hyperedges": 17,
+   "vertices": 699,
+   "alpha_acyclic": true,
+   "beta_acyclic": true,
+   "gyo_residue_edges": 0,
+   "gyo_residue_vertices": 0,
+   "top_shared_attributes": [
+    [
+     "P39:P1393",
+     1
+    ],
+    [
+     "P39:P1317",
+     1
+    ],
+    [
+     "P39:P2047",
+     1
+    ],
+    [
+     "P39:P1027",
+     1
+    ],
+    [
+     "P39:P7779",
+     1
+    ],
+    [
+     "P39:P1111",
+     1
+    ],
+    [
+     "P39:P611",
+     1
+    ],
+    [
+     "P39:P518",
+     1
+    ]
+   ]
+  },
+  "without statement-metadata qualifiers | E_role_is_property": {
+   "hyperedges": 17,
+   "vertices": 274,
+   "alpha_acyclic": false,
+   "beta_acyclic": false,
+   "gyo_residue_edges": 16,
+   "gyo_residue_vertices": 120,
+   "top_shared_attributes": [
+    [
+     "subject",
+     17
+    ],
+    [
+     "P1319",
+     15
+    ],
+    [
+     "P8554",
+     15
+    ],
+    [
+     "P8555",
+     15
+    ],
+    [
+     "P1326",
+     15
+    ],
+    [
+     "P585",
+     15
+    ],
+    [
+     "P582",
+     14
+    ],
+    [
+     "P580",
+     14
+    ]
+   ]
+  },
+  "without statement-metadata and temporal qualifiers | A_generic": {
+   "hyperedges": 17,
+   "vertices": 254,
+   "alpha_acyclic": false,
+   "beta_acyclic": false,
+   "gyo_residue_edges": 17,
+   "gyo_residue_vertices": 105,
+   "top_shared_attributes": [
+    [
+     "value",
+     17
+    ],
+    [
+     "subject",
+     17
+    ],
+    [
+     "P2868",
+     13
+    ],
+    [
+     "P10663",
+     12
+    ],
+    [
+     "P3831",
+     11
+    ],
+    [
+     "P518",
+     11
+    ],
+    [
+     "P459",
+     10
+    ],
+    [
+     "P1545",
+     10
+    ]
+   ]
+  },
+  "without statement-metadata and temporal qualifiers | B_typed": {
+   "hyperedges": 17,
+   "vertices": 270,
+   "alpha_acyclic": false,
+   "beta_acyclic": false,
+   "gyo_residue_edges": 17,
+   "gyo_residue_vertices": 104,
+   "top_shared_attributes": [
+    [
+     "subject",
+     17
+    ],
+    [
+     "P2868",
+     13
+    ],
+    [
+     "P10663",
+     12
+    ],
+    [
+     "P3831",
+     11
+    ],
+    [
+     "P518",
+     11
+    ],
+    [
+     "P459",
+     10
+    ],
+    [
+     "P1545",
+     10
+    ],
+    [
+     "P1365",
+     7
+    ]
+   ]
+  },
+  "without statement-metadata and temporal qualifiers | C_local": {
+   "hyperedges": 17,
+   "vertices": 286,
+   "alpha_acyclic": false,
+   "beta_acyclic": false,
+   "gyo_residue_edges": 17,
+   "gyo_residue_vertices": 103,
+   "top_shared_attributes": [
+    [
+     "P2868",
+     13
+    ],
+    [
+     "P10663",
+     12
+    ],
+    [
+     "P3831",
+     11
+    ],
+    [
+     "P518",
+     11
+    ],
+    [
+     "P459",
+     10
+    ],
+    [
+     "P1545",
+     10
+    ],
+    [
+     "P1365",
+     7
+    ],
+    [
+     "P1366",
+     7
+    ]
+   ]
+  },
+  "without statement-metadata and temporal qualifiers | D_rel_local": {
+   "hyperedges": 17,
+   "vertices": 554,
+   "alpha_acyclic": true,
+   "beta_acyclic": true,
+   "gyo_residue_edges": 0,
+   "gyo_residue_vertices": 0,
+   "top_shared_attributes": [
+    [
+     "P39:P1393",
+     1
+    ],
+    [
+     "P39:P1317",
+     1
+    ],
+    [
+     "P39:P2047",
+     1
+    ],
+    [
+     "P39:P1027",
+     1
+    ],
+    [
+     "P39:P7779",
+     1
+    ],
+    [
+     "P39:P1111",
+     1
+    ],
+    [
+     "P39:P611",
+     1
+    ],
+    [
+     "P39:P518",
+     1
+    ]
+   ]
+  },
+  "without statement-metadata and temporal qualifiers | E_role_is_property": {
+   "hyperedges": 17,
+   "vertices": 262,
+   "alpha_acyclic": false,
+   "beta_acyclic": false,
+   "gyo_residue_edges": 16,
+   "gyo_residue_vertices": 108,
+   "top_shared_attributes": [
+    [
+     "subject",
+     17
+    ],
+    [
+     "P2868",
+     13
+    ],
+    [
+     "P10663",
+     12
+    ],
+    [
+     "P3831",
+     11
+    ],
+    [
+     "P518",
+     11
+    ],
+    [
+     "P459",
+     10
+    ],
+    [
+     "P1545",
+     10
+    ],
+    [
+     "P1365",
+     7
+    ]
+   ]
+  }
+ }
+}

@@ -1,0 +1,49 @@
+{
+  "network-type": "directed",
+  "metadata": {
+    "title": "P2 probe: one role-labelled n-ary fact"
+  },
+  "nodes": [
+    {
+      "node": "drug:metformin"
+    },
+    {
+      "node": "disease:T2DM"
+    },
+    {
+      "node": "dose:500mg-bid"
+    }
+  ],
+  "edges": [
+    {
+      "edge": "f1",
+      "attrs": {
+        "relation": "treats"
+      }
+    }
+  ],
+  "incidences": [
+    {
+      "edge": "f1",
+      "node": "drug:metformin",
+      "direction": "tail",
+      "role": "treatment"
+    },
+    {
+      "edge": "f1",
+      "node": "disease:T2DM",
+      "direction": "head",
+      "attrs": {
+        "role": "condition"
+      }
+    },
+    {
+      "edge": "f1",
+      "node": "dose:500mg-bid",
+      "direction": "tail",
+      "attrs": {
+        "role": "dosage"
+      }
+    }
+  ]
+}

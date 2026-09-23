@@ -1,0 +1,70 @@
+{
+  "metadata": {
+    "title": "Sample knowledge hypergraph in HIF (Hypergraph Interchange Format)",
+    "description": "Three n-ary facts from a toy biomedical knowledge base. Each hyperedge is one fact; each incidence carries the role the entity plays in that fact. Directed: 'tail' incidences are the inputs/subjects of the relation, 'head' incidences are the outputs/objects.",
+    "schema": "https://raw.githubusercontent.com/pszufe/HIF-standard/main/schemas/hif_schema.json",
+    "created": "2026-09-19",
+    "kb-section": "kb/04-storage-and-formats",
+    "conventions": {
+      "edge.attrs.relation": "the relation (predicate) type of the n-ary fact",
+      "incidence.attrs.role": "the role the node plays in the fact (qualifier-style roles allowed)",
+      "edge.attrs.source": "provenance pointer for the fact",
+      "edge.attrs.valid-from": "ISO-8601 date the fact became valid"
+    }
+  },
+  "network-type": "undirected",
+  "nodes": [
+    {
+      "attrs": {
+        "type": "Drug",
+        "label": "metformin"
+      },
+      "node": "drug:metformin"
+    },
+    {
+      "attrs": {
+        "type": "Drug",
+        "label": "insulin"
+      },
+      "node": "drug:insulin"
+    },
+    {
+      "attrs": {
+        "type": "AdverseEffect",
+        "label": "hypoglycaemia"
+      },
+      "node": "effect:hypoglycemia"
+    },
+    {
+      "attrs": {
+        "type": "Disease",
+        "label": "type 2 diabetes mellitus"
+      },
+      "node": "disease:T2DM"
+    }
+  ],
+  "edges": [
+    {
+      "attrs": {
+        "relation": "co-administration-causes",
+        "arity": 3,
+        "source": "doc:guideline-2024"
+      },
+      "edge": "f2"
+    }
+  ],
+  "incidences": [
+    {
+      "edge": "f2",
+      "node": "drug:metformin"
+    },
+    {
+      "edge": "f2",
+      "node": "effect:hypoglycemia"
+    },
+    {
+      "edge": "f2",
+      "node": "drug:insulin"
+    }
+  ]
+}

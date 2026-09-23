@@ -1,0 +1,84 @@
+{
+ "env": {
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "jsonschema": "4.26.0",
+  "pandas": "2.3.3",
+  "numpy": "2.4.6",
+  "fastjsonschema": "2.22.2",
+  "requests": "2.34.2",
+  "xgi": "0.10.2",
+  "hypernetx": "2.4.3"
+ },
+ "schema": "hif-schema/hif_schema.json",
+ "cases": {
+  "04-top-level-version-key.json": {
+   "first_schema_error": "(root): Additional properties are not allowed ('version' was unexpected)",
+   "xgi.read_hif": "loaded as DiHypergraph",
+   "hnx.from_hif": "returned None"
+  },
+  "05-top-level-roles-vocabulary.json": {
+   "first_schema_error": "(root): Additional properties are not allowed ('roles' was unexpected)",
+   "xgi.read_hif": "loaded as DiHypergraph",
+   "hnx.from_hif": "returned None"
+  },
+  "06-top-level-dollar-schema-key.json": {
+   "first_schema_error": "(root): Additional properties are not allowed ('$schema' was unexpected)",
+   "xgi.read_hif": "loaded as DiHypergraph",
+   "hnx.from_hif": "returned None"
+  },
+  "10-incidence-attrs-not-object.json": {
+   "first_schema_error": "incidences/0/attrs: 'treatment' is not of type 'object'",
+   "xgi.read_hif": "loaded as DiHypergraph",
+   "hnx.from_hif": "returned None"
+  },
+  "11-incidence-record-level-role-key.json": {
+   "first_schema_error": "incidences/0: Additional properties are not allowed ('role' was unexpected)",
+   "xgi.read_hif": "loaded as DiHypergraph",
+   "hnx.from_hif": "returned None"
+  },
+  "12-direction-value-used-as-role.json": {
+   "first_schema_error": "incidences/0/direction: 'treatment' is not one of ['head', 'tail']",
+   "xgi.read_hif": "loaded as DiHypergraph",
+   "hnx.from_hif": "returned None"
+  },
+  "13-edge-record-level-relation-key.json": {
+   "first_schema_error": "edges/0: Additional properties are not allowed ('relation' was unexpected)",
+   "xgi.read_hif": "loaded as DiHypergraph",
+   "hnx.from_hif": "returned None"
+  },
+  "14-node-record-level-type-key.json": {
+   "first_schema_error": "nodes/0: Additional properties are not allowed ('type' was unexpected)",
+   "xgi.read_hif": "loaded as DiHypergraph",
+   "hnx.from_hif": "returned None"
+  },
+  "18-non-integral-float-id.json": {
+   "first_schema_error": "incidences/0/node: 1.5 is not of type 'string', 'integer'",
+   "xgi.read_hif": "loaded as Hypergraph",
+   "hnx.from_hif": "returned None"
+  },
+  "19-boolean-id.json": {
+   "first_schema_error": "incidences/0/node: True is not of type 'string', 'integer'",
+   "xgi.read_hif": "loaded as Hypergraph",
+   "hnx.from_hif": "returned None"
+  },
+  "20-null-id.json": {
+   "first_schema_error": "incidences/0/node: None is not of type 'string', 'integer'",
+   "xgi.read_hif": "raised XGIError: None cannot be a node or edge @ xgi/utils/utilities.py:47",
+   "hnx.from_hif": "returned None"
+  },
+  "26-network-type-not-in-enum.json": {
+   "first_schema_error": "network-type: 'knowledge-hypergraph' is not one of ['undirected', 'directed', 'asc']",
+   "xgi.read_hif": "raised UnboundLocalError: cannot access local variable 'H' where it is not associated with a value @ xgi/convert/hif_dict.py:148",
+   "hnx.from_hif": "returned None"
+  },
+  "31-empty-object.json": {
+   "first_schema_error": "(root): 'incidences' is a required property",
+   "xgi.read_hif": "raised KeyError: 'incidences' @ xgi/convert/hif_dict.py:150",
+   "hnx.from_hif": "returned None"
+  },
+  "34-empty-file-zero-bytes.json": {
+   "parse": "not JSON: Expecting value: line 1 column 1 (char 0)"
+  }
+ }
+}

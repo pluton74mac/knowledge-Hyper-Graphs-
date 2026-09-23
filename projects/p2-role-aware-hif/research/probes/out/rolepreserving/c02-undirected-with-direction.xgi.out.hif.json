@@ -1,0 +1,178 @@
+{
+ "network-type": "undirected",
+ "metadata": {
+  "title": "Sample knowledge hypergraph in HIF (Hypergraph Interchange Format)",
+  "description": "Three n-ary facts from a toy biomedical knowledge base. Each hyperedge is one fact; each incidence carries the role the entity plays in that fact. Directed: 'tail' incidences are the inputs/subjects of the relation, 'head' incidences are the outputs/objects.",
+  "schema": "https://raw.githubusercontent.com/pszufe/HIF-standard/main/schemas/hif_schema.json",
+  "created": "2026-09-19",
+  "kb-section": "kb/04-storage-and-formats",
+  "conventions": {
+   "edge.attrs.relation": "the relation (predicate) type of the n-ary fact",
+   "incidence.attrs.role": "the role the node plays in the fact (qualifier-style roles allowed)",
+   "edge.attrs.source": "provenance pointer for the fact",
+   "edge.attrs.valid-from": "ISO-8601 date the fact became valid"
+  }
+ },
+ "nodes": [
+  {
+   "node": "drug:metformin",
+   "attrs": {
+    "type": "Drug",
+    "label": "metformin"
+   }
+  },
+  {
+   "node": "disease:T2DM",
+   "attrs": {
+    "type": "Disease",
+    "label": "type 2 diabetes mellitus"
+   }
+  },
+  {
+   "node": "dose:500mg-bid",
+   "attrs": {
+    "type": "Dosage",
+    "label": "500 mg twice daily"
+   }
+  },
+  {
+   "node": "pop:adults",
+   "attrs": {
+    "type": "Population",
+    "label": "adults"
+   }
+  },
+  {
+   "node": "drug:insulin",
+   "attrs": {
+    "type": "Drug",
+    "label": "insulin"
+   }
+  },
+  {
+   "node": "effect:hypoglycemia",
+   "attrs": {
+    "type": "AdverseEffect",
+    "label": "hypoglycaemia"
+   }
+  },
+  {
+   "node": "org:ADA",
+   "attrs": {
+    "type": "Organisation",
+    "label": "American Diabetes Association"
+   }
+  },
+  {
+   "node": "doc:guideline-2024",
+   "attrs": {
+    "type": "Document",
+    "label": "Standards of Care 2024"
+   }
+  }
+ ],
+ "edges": [
+  {
+   "edge": "f1",
+   "weight": 0.95,
+   "attrs": {
+    "relation": "treats",
+    "arity": 4,
+    "source": "doc:guideline-2024",
+    "valid-from": "2024-01-01"
+   }
+  },
+  {
+   "edge": "f2",
+   "weight": 0.8,
+   "attrs": {
+    "relation": "co-administration-causes",
+    "arity": 3,
+    "source": "doc:guideline-2024"
+   }
+  },
+  {
+   "edge": "f3",
+   "weight": 1.0,
+   "attrs": {
+    "relation": "publishes",
+    "arity": 2,
+    "source": "doc:guideline-2024"
+   }
+  }
+ ],
+ "incidences": [
+  {
+   "edge": "f1",
+   "node": "drug:metformin",
+   "direction": "tail",
+   "attrs": {
+    "role": "treatment"
+   }
+  },
+  {
+   "edge": "f1",
+   "node": "disease:T2DM",
+   "direction": "head",
+   "attrs": {
+    "role": "condition"
+   }
+  },
+  {
+   "edge": "f1",
+   "node": "dose:500mg-bid",
+   "direction": "tail",
+   "attrs": {
+    "role": "dosage"
+   }
+  },
+  {
+   "edge": "f1",
+   "node": "pop:adults",
+   "direction": "tail",
+   "attrs": {
+    "role": "population"
+   }
+  },
+  {
+   "edge": "f2",
+   "node": "drug:metformin",
+   "direction": "tail",
+   "attrs": {
+    "role": "agent"
+   }
+  },
+  {
+   "edge": "f2",
+   "node": "drug:insulin",
+   "direction": "tail",
+   "attrs": {
+    "role": "agent"
+   }
+  },
+  {
+   "edge": "f2",
+   "node": "effect:hypoglycemia",
+   "direction": "head",
+   "attrs": {
+    "role": "effect"
+   }
+  },
+  {
+   "edge": "f3",
+   "node": "org:ADA",
+   "direction": "tail",
+   "attrs": {
+    "role": "publisher"
+   }
+  },
+  {
+   "edge": "f3",
+   "node": "doc:guideline-2024",
+   "direction": "head",
+   "attrs": {
+    "role": "publication"
+   }
+  }
+ ]
+}

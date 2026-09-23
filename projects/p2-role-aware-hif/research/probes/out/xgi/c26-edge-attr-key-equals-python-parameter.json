@@ -1,0 +1,25 @@
+{
+ "case": "c26-edge-attr-key-equals-python-parameter",
+ "description": "an empty edge whose attrs contain the keys 'members' and 'idx' (XGI add_edge parameter names)",
+ "input": "lib-cases/c26-edge-attr-key-equals-python-parameter.hif.json",
+ "lib": "xgi",
+ "lib_version": "0.10.2",
+ "load": {
+  "api": "xgi.read_hif(path)",
+  "ok": false,
+  "error": {
+   "type": "TypeError",
+   "message": "DiHypergraph.add_edge() got multiple values for argument 'members'",
+   "raised_at": "xgi/convert/hif_dict.py:184 in from_hif_dict: H.add_edge(_empty_edge(network_type), e, **attr)",
+   "library_frame": "xgi/convert/hif_dict.py:184 in from_hif_dict: H.add_edge(_empty_edge(network_type), e, **attr)"
+  },
+  "warnings": [],
+  "class": null,
+  "from_hif_dict_error": {
+   "type": "TypeError",
+   "message": "DiHypergraph.add_edge() got multiple values for argument 'members'",
+   "raised_at": "xgi/convert/hif_dict.py:184 in from_hif_dict: H.add_edge(_empty_edge(network_type), e, **attr)",
+   "library_frame": "xgi/convert/hif_dict.py:184 in from_hif_dict: H.add_edge(_empty_edge(network_type), e, **attr)"
+  }
+ }
+}

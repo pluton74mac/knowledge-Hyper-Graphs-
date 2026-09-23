@@ -1,0 +1,460 @@
+{
+ "case": "c19-duplicate-node-edge-records",
+ "description": "node n1 and edge e1 each declared twice with different attrs (upstream calls this HIF-compliant)",
+ "input": "lib-cases/c19-duplicate-node-edge-records.hif.json",
+ "lib": "hypernetx",
+ "lib_version": "2.4.3",
+ "load": {
+  "api": "hnx.from_hif(filename=path)",
+  "ok": true,
+  "returned": "Hypergraph",
+  "error": null,
+  "warnings": [
+   "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/lib-cases/c19-duplicate-node-edge-records.hif.json' mode='r' encoding=' (hif.py:147)"
+  ],
+  "seconds": 0.333
+ },
+ "placement": {
+  "class": "Hypergraph",
+  "H.name": null,
+  "incidence_columns (H.incidences.to_dataframe)": [
+   "weight",
+   "misc_properties"
+  ],
+  "incidence_index_names": [
+   "edges",
+   "nodes"
+  ],
+  "incidences": {
+   "str:e1 | str:n1": {
+    "weight": 1,
+    "misc_properties": {
+     "role": "subject"
+    }
+   },
+   "str:e1 | str:n2": {
+    "weight": 1,
+    "misc_properties": {
+     "role": "object"
+    }
+   }
+  },
+  "cell_accessors": {
+   "str:e1 | str:n1": {
+    "H.get_cell_properties(e, n)": {
+     "role": "subject",
+     "weight": 1
+    },
+    "H.get_cell_properties(e, n, 'role')": "subject"
+   },
+   "str:e1 | str:n2": {
+    "H.get_cell_properties(e, n)": {
+     "role": "object",
+     "weight": 1
+    },
+    "H.get_cell_properties(e, n, 'role')": "object"
+   }
+  },
+  "node_columns": [
+   "weight",
+   "misc_properties"
+  ],
+  "nodes": {
+   "str:n2": {
+    "weight": 1,
+    "misc_properties": {}
+   },
+   "str:n1": {
+    "weight": 1,
+    "misc_properties": {
+     "label": "first",
+     "a": 1
+    }
+   }
+  },
+  "edge_columns": [
+   "weight",
+   "misc_properties"
+  ],
+  "edges": {
+   "str:e1": {
+    "weight": 1,
+    "misc_properties": {
+     "relation": "r-first"
+    }
+   }
+  },
+  "node_ids_in_property_store_but_not_in_H.nodes": [],
+  "edge_ids_in_property_store_but_not_in_H.edges": [],
+  "role_strings_found_at": {
+   "object": [
+    "._E._property_store._data['misc_properties'][1]['role']",
+    "._dataframe['misc_properties'][1]['role']"
+   ],
+   "subject": [
+    "._E._property_store._data['misc_properties'][0]['role']",
+    "._dataframe['misc_properties'][0]['role']"
+   ]
+  },
+  "metadata_string_values_found_at": {},
+  "constructor_args_kept_on_object": [
+   "aggregate_by",
+   "cell_weight_col",
+   "default_cell_weight",
+   "default_edge_weight",
+   "default_node_weight",
+   "default_weight",
+   "df",
+   "edfp",
+   "edge_col",
+   "edge_properties",
+   "edge_property_type",
+   "edge_propertystore",
+   "edge_weight_prop_col",
+   "incidence_propertystore",
+   "incidence_store",
+   "kwargs",
+   "misc_cell_properties_col",
+   "misc_edge_properties_col",
+   "misc_node_properties_col",
+   "misc_properties_col",
+   "name",
+   "ndfp",
+   "node_col",
+   "node_properties",
+   "node_property_type",
+   "node_propertystore",
+   "node_weight_prop_col",
+   "properties",
+   "self",
+   "setsystem",
+   "setsystem_type",
+   "type_dict",
+   "weight_prop_col"
+  ]
+ },
+ "field_locations": {
+  "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 2/2 role strings",
+  "incidence.direction": "n/a",
+  "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+  "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+  "network-type": "not read (hif.py from_hif never looks at it)",
+  "metadata": "n/a"
+ },
+ "export": {
+  "api": "hnx.to_hif(H, filename=..., network_type='undirected')",
+  "ok": true,
+  "returned": "dict",
+  "error": null,
+  "warnings": [
+   "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/c19-duplicate-node-edge-records.out.hif.json' mode='w' encoding (hif.py:110)"
+  ],
+  "file_written": "out/hnx/c19-duplicate-node-edge-records.out.hif.json",
+  "strict_json": true,
+  "schema_errors (jsonschema)": []
+ },
+ "diff": {
+  "top": {
+   "network-type": {
+    "in": "undirected",
+    "out": "undirected",
+    "status": "preserved"
+   },
+   "metadata": {
+    "keys_lost": [],
+    "keys_added": [
+     "default_attrs"
+    ],
+    "keys_changed": [],
+    "status": "altered"
+   },
+   "other_top_level_keys_out": []
+  },
+  "incidences": {
+   "str:e1 | str:n1": {
+    "edge": "str:e1",
+    "node": "str:n1",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "preserved",
+    "direction": "preserved",
+    "weight": "added",
+    "attrs": "preserved",
+    "status": "present",
+    "roles_in": [
+     "subject"
+    ],
+    "roles_out": [
+     "subject"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ],
+    "attrs_in": [
+     {
+      "role": "subject"
+     }
+    ],
+    "attrs_out": [
+     {
+      "role": "subject"
+     }
+    ]
+   },
+   "str:e1 | str:n2": {
+    "edge": "str:e1",
+    "node": "str:n2",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "preserved",
+    "direction": "preserved",
+    "weight": "added",
+    "attrs": "preserved",
+    "status": "present",
+    "roles_in": [
+     "object"
+    ],
+    "roles_out": [
+     "object"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ],
+    "attrs_in": [
+     {
+      "role": "object"
+     }
+    ],
+    "attrs_out": [
+     {
+      "role": "object"
+     }
+    ]
+   }
+  },
+  "nodes": {
+   "str:n1": {
+    "declared_in": 2,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "first declaration kept",
+    "weight": "added",
+    "attrs_in": [
+     {
+      "label": "first",
+      "a": 1
+     },
+     {
+      "label": "second",
+      "b": 2
+     }
+    ],
+    "attrs_out": [
+     {
+      "label": "first",
+      "a": 1
+     }
+    ],
+    "weights_in": [
+     "<absent>",
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ]
+   },
+   "str:n2": {
+    "declared_in": 0,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "added",
+    "weights_in": [],
+    "weights_out": [
+     1
+    ]
+   }
+  },
+  "edges": {
+   "str:e1": {
+    "declared_in": 2,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "first declaration kept",
+    "weight": "added",
+    "attrs_in": [
+     {
+      "relation": "r-first"
+     },
+     {
+      "relation": "r-second",
+      "c": 3
+     }
+    ],
+    "attrs_out": [
+     {
+      "relation": "r-first"
+     }
+    ],
+    "weights_in": [
+     "<absent>",
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ]
+   }
+  },
+  "id_type_changes": [],
+  "summary": {
+   "incidence_records": "2 -> 2",
+   "role_records_kept": "2/2",
+   "direction_records_kept": "0/0",
+   "incidence_weight_records_kept": "0/0",
+   "incidence_attrs_records_kept": "2/2",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 2,
+   "nodes": {
+    "declared_in": 1,
+    "missing_out": [],
+    "attrs_not_preserved": {
+     "str:n1": "first declaration kept"
+    },
+    "weight_not_preserved": {
+     "str:n1": "added",
+     "str:n2": "added"
+    },
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 1,
+    "missing_out": [],
+    "attrs_not_preserved": {
+     "str:e1": "first declaration kept"
+    },
+    "weight_not_preserved": {
+     "str:e1": "added"
+    },
+    "new_out": []
+   },
+   "network_type": "preserved (undirected -> undirected)",
+   "metadata": "altered",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [
+    "default_attrs"
+   ],
+   "id_type_changes": 0
+  }
+ },
+ "gen2": {
+  "load_error": null,
+  "load_returned": "Hypergraph",
+  "export": {
+   "api": "hnx.to_hif(H, filename=..., network_type='undirected')",
+   "ok": true,
+   "returned": "dict",
+   "error": null,
+   "warnings": [
+    "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/c19-duplicate-node-edge-records.out2.hif.json' mode='w' encodin (hif.py:110)"
+   ],
+   "file_written": "out/hnx/c19-duplicate-node-edge-records.out2.hif.json",
+   "strict_json": true,
+   "schema_errors (jsonschema)": []
+  },
+  "diff_gen1_gen2_summary": {
+   "incidence_records": "2 -> 2",
+   "role_records_kept": "2/2",
+   "direction_records_kept": "0/0",
+   "incidence_weight_records_kept": "2/2",
+   "incidence_attrs_records_kept": "2/2",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 0,
+   "nodes": {
+    "declared_in": 2,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 1,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "network_type": "preserved (undirected -> undirected)",
+   "metadata": "preserved",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [],
+   "id_type_changes": 0
+  },
+  "diff_input_gen2_summary": {
+   "incidence_records": "2 -> 2",
+   "role_records_kept": "2/2",
+   "direction_records_kept": "0/0",
+   "incidence_weight_records_kept": "0/0",
+   "incidence_attrs_records_kept": "2/2",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 2,
+   "nodes": {
+    "declared_in": 1,
+    "missing_out": [],
+    "attrs_not_preserved": {
+     "str:n1": "first declaration kept"
+    },
+    "weight_not_preserved": {
+     "str:n1": "added",
+     "str:n2": "added"
+    },
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 1,
+    "missing_out": [],
+    "attrs_not_preserved": {
+     "str:e1": "first declaration kept"
+    },
+    "weight_not_preserved": {
+     "str:e1": "added"
+    },
+    "new_out": []
+   },
+   "network_type": "preserved (undirected -> undirected)",
+   "metadata": "altered",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [
+    "default_attrs"
+   ],
+   "id_type_changes": 0
+  },
+  "gen2_incidence_columns": [
+   "weight",
+   "misc_properties"
+  ]
+ }
+}

@@ -1,0 +1,25 @@
+{
+ "case": "c14-directed-missing-direction",
+ "description": "network-type directed but one incidence has no direction field (schema-valid)",
+ "input": "lib-cases/c14-directed-missing-direction.hif.json",
+ "lib": "xgi",
+ "lib_version": "0.10.2",
+ "load": {
+  "api": "xgi.read_hif(path)",
+  "ok": false,
+  "error": {
+   "type": "KeyError",
+   "message": "'direction'",
+   "raised_at": "xgi/convert/hif_dict.py:155 in from_hif_dict: d = record[\"direction\"]",
+   "library_frame": "xgi/convert/hif_dict.py:155 in from_hif_dict: d = record[\"direction\"]"
+  },
+  "warnings": [],
+  "class": null,
+  "from_hif_dict_error": {
+   "type": "KeyError",
+   "message": "'direction'",
+   "raised_at": "xgi/convert/hif_dict.py:155 in from_hif_dict: d = record[\"direction\"]",
+   "library_frame": "xgi/convert/hif_dict.py:155 in from_hif_dict: d = record[\"direction\"]"
+  }
+ }
+}

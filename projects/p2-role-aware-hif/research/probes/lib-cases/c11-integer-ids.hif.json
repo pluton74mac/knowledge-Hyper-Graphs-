@@ -1,0 +1,77 @@
+{
+ "network-type": "directed",
+ "nodes": [
+  {
+   "node": 0,
+   "attrs": {
+    "label": "n0"
+   }
+  },
+  {
+   "node": 1,
+   "attrs": {
+    "label": "n1"
+   }
+  },
+  {
+   "node": 2,
+   "attrs": {
+    "label": "n2"
+   }
+  },
+  {
+   "node": 3,
+   "attrs": {
+    "label": "n3"
+   }
+  }
+ ],
+ "edges": [
+  {
+   "edge": 0,
+   "attrs": {
+    "relation": "r0"
+   }
+  },
+  {
+   "edge": 1,
+   "attrs": {
+    "relation": "r1"
+   }
+  }
+ ],
+ "incidences": [
+  {
+   "edge": 0,
+   "node": 0,
+   "direction": "tail",
+   "attrs": {
+    "role": "agent"
+   }
+  },
+  {
+   "edge": 0,
+   "node": 1,
+   "direction": "head",
+   "attrs": {
+    "role": "patient"
+   }
+  },
+  {
+   "edge": 1,
+   "node": 2,
+   "direction": "tail",
+   "attrs": {
+    "role": "agent"
+   }
+  },
+  {
+   "edge": 1,
+   "node": 3,
+   "direction": "head",
+   "attrs": {
+    "role": "patient"
+   }
+  }
+ ]
+}

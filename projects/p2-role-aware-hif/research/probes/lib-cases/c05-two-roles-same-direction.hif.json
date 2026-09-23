@@ -1,0 +1,58 @@
+{
+ "network-type": "directed",
+ "nodes": [
+  {
+   "node": "drug:metformin"
+  },
+  {
+   "node": "drug:insulin"
+  },
+  {
+   "node": "outcome:HbA1c"
+  }
+ ],
+ "edges": [
+  {
+   "edge": "t1",
+   "attrs": {
+    "relation": "compared-in-trial"
+   }
+  }
+ ],
+ "incidences": [
+  {
+   "edge": "t1",
+   "node": "drug:metformin",
+   "direction": "tail",
+   "weight": 0.7,
+   "attrs": {
+    "role": "intervention"
+   }
+  },
+  {
+   "edge": "t1",
+   "node": "drug:metformin",
+   "direction": "tail",
+   "weight": 0.3,
+   "attrs": {
+    "role": "background-therapy"
+   }
+  },
+  {
+   "edge": "t1",
+   "node": "drug:insulin",
+   "direction": "tail",
+   "attrs": {
+    "role": "comparator"
+   }
+  },
+  {
+   "edge": "t1",
+   "node": "outcome:HbA1c",
+   "direction": "head",
+   "attrs": {
+    "role": "outcome"
+   }
+  }
+ ]
+}

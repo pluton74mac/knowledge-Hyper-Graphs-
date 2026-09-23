@@ -1,0 +1,100 @@
+{
+ "edges": [
+  {
+   "edge": "f1",
+   "weight": 1,
+   "attrs": {
+    "relation": "treats"
+   }
+  },
+  {
+   "edge": "m1",
+   "weight": 1,
+   "attrs": {
+    "relation": "asserts"
+   }
+  }
+ ],
+ "nodes": [
+  {
+   "node": "drug:metformin",
+   "weight": 1,
+   "attrs": {}
+  },
+  {
+   "node": "disease:T2DM",
+   "weight": 1,
+   "attrs": {}
+  },
+  {
+   "node": "org:ADA",
+   "weight": 1,
+   "attrs": {
+    "type": "Organisation"
+   }
+  },
+  {
+   "node": "f1",
+   "weight": 1,
+   "attrs": {
+    "type": "Statement"
+   }
+  }
+ ],
+ "incidences": [
+  {
+   "edge": "f1",
+   "node": "drug:metformin",
+   "weight": 1,
+   "direction": "nil",
+   "attrs": {
+    "role": "treatment"
+   }
+  },
+  {
+   "edge": "f1",
+   "node": "disease:T2DM",
+   "weight": 1,
+   "direction": "nil",
+   "attrs": {
+    "role": "condition"
+   }
+  },
+  {
+   "edge": "m1",
+   "node": "org:ADA",
+   "weight": 1,
+   "direction": "nil",
+   "attrs": {
+    "role": "asserter"
+   }
+  },
+  {
+   "edge": "m1",
+   "node": "f1",
+   "weight": 1,
+   "direction": "nil",
+   "attrs": {
+    "role": "statement"
+   }
+  }
+ ],
+ "network-type": "directed",
+ "metadata": {
+  "default_attrs": {
+   "nodes": {
+    "weight": 1,
+    "attrs": {}
+   },
+   "edges": {
+    "weight": 1,
+    "attrs": {}
+   },
+   "incidences": {
+    "weight": 1,
+    "direction": null,
+    "attrs": {}
+   }
+  }
+ }
+}

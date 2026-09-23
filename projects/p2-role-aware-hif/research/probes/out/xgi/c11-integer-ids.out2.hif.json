@@ -1,0 +1,66 @@
+{
+  "metadata": {},
+  "network-type": "directed",
+  "nodes": [
+    {
+      "attrs": {
+        "label": "n0"
+      },
+      "node": 0
+    },
+    {
+      "attrs": {
+        "label": "n1"
+      },
+      "node": 1
+    },
+    {
+      "attrs": {
+        "label": "n2"
+      },
+      "node": 2
+    },
+    {
+      "attrs": {
+        "label": "n3"
+      },
+      "node": 3
+    }
+  ],
+  "edges": [
+    {
+      "attrs": {
+        "relation": "r0"
+      },
+      "edge": 0
+    },
+    {
+      "attrs": {
+        "relation": "r1"
+      },
+      "edge": 1
+    }
+  ],
+  "incidences": [
+    {
+      "edge": 0,
+      "node": 0,
+      "direction": "tail"
+    },
+    {
+      "edge": 0,
+      "node": 1,
+      "direction": "head"
+    },
+    {
+      "edge": 1,
+      "node": 2,
+      "direction": "tail"
+    },
+    {
+      "edge": 1,
+      "node": 3,
+      "direction": "head"
+    }
+  ]
+}

@@ -1,0 +1,1707 @@
+{
+ "env": {
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "jsonschema": "4.26.0",
+  "pandas": "2.3.3",
+  "numpy": "2.4.6",
+  "fastjsonschema": "2.22.2",
+  "requests": "2.34.2",
+  "xgi": "0.10.2",
+  "preferred_encoding": "utf-8",
+  "source_sha256": {
+   "xgi/convert/hif_dict.py": "9fd3aa04e38b6e3db3ff040f5e63c8370702958794e3448fa9c0e927d5301ad3",
+   "xgi/readwrite/hif.py": "cd82a90ad217aab590b40f07aaef0f0abf83fd74d932f198af055abb3e05243c",
+   "xgi/core/hypergraph.py": "52dd3bddc0728bac9cc0e9167e45f3f686e0cfda8f36883c81917889caa46f42",
+   "xgi/core/dihypergraph.py": "54193092f8242a754dbccd3633d9110ee0ed7150fca00d546f9281a90817475f",
+   "xgi/core/globalviews.py": "ea757fb377d1a18542a253fc74676f158db8c916f5a226f5a5521884fcabc661",
+   "xgi/utils/utilities.py": "38d27a665336c9c914af21f7ca23fdf2b814efb5f22058a32ec9ae64c4af1279",
+   "xgi/convert/bipartite_edges.py": "bce270b6532e9648114775271c078527d1c0b6a784adb4cf88339f0aa4ea6593",
+   "xgi/convert/higher_order_network.py": "e6217ee1cd4111c16b75067a3548099114422422f5771e16225ef75015cadaa4"
+  }
+ },
+ "ops": [
+  {
+   "op": "Hypergraph.copy()",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "class": "Hypergraph",
+   "num_nodes": 8,
+   "num_edges": 3,
+   "node_attrs": {
+    "compared": 8,
+    "identical": 8,
+    "changed": {},
+    "missing_ids": []
+   },
+   "edge_attrs": {
+    "compared": 3,
+    "identical": 3,
+    "changed": {},
+    "missing_ids": []
+   },
+   "net_attrs_identical": true,
+   "new_node_ids": [],
+   "new_edge_ids": [],
+   "members_of_surviving_edges": {
+    "str:f1": "same",
+    "str:f2": "same",
+    "str:f3": "same"
+   },
+   "write_hif_ok": true,
+   "write_hif_error": null,
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "xgi.subhypergraph(H, nodes=[metformin, T2DM, insulin, hypoglycemia])",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "class": "Hypergraph",
+   "num_nodes": 4,
+   "num_edges": 1,
+   "node_attrs": {
+    "compared": 4,
+    "identical": 4,
+    "changed": {},
+    "missing_ids": [
+     "str:dose:500mg-bid",
+     "str:pop:adults",
+     "str:org:ADA",
+     "str:doc:guideline-2024"
+    ]
+   },
+   "edge_attrs": {
+    "compared": 1,
+    "identical": 1,
+    "changed": {},
+    "missing_ids": [
+     "str:f1",
+     "str:f3"
+    ]
+   },
+   "net_attrs_identical": true,
+   "new_node_ids": [],
+   "new_edge_ids": [],
+   "members_of_surviving_edges": {
+    "str:f2": "same"
+   },
+   "write_hif_ok": true,
+   "write_hif_error": null,
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 3",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 6,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [
+      "str:doc:guideline-2024",
+      "str:dose:500mg-bid",
+      "str:org:ADA",
+      "str:pop:adults"
+     ],
+     "attrs_not_preserved": {
+      "str:dose:500mg-bid": "lost",
+      "str:pop:adults": "lost",
+      "str:org:ADA": "lost",
+      "str:doc:guideline-2024": "lost"
+     },
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [
+      "str:f1",
+      "str:f3"
+     ],
+     "attrs_not_preserved": {
+      "str:f1": "lost",
+      "str:f3": "lost"
+     },
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "xgi.subhypergraph(H, edges=[f1, f3])",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "class": "Hypergraph",
+   "num_nodes": 8,
+   "num_edges": 2,
+   "node_attrs": {
+    "compared": 8,
+    "identical": 8,
+    "changed": {},
+    "missing_ids": []
+   },
+   "edge_attrs": {
+    "compared": 2,
+    "identical": 2,
+    "changed": {},
+    "missing_ids": [
+     "str:f2"
+    ]
+   },
+   "net_attrs_identical": true,
+   "new_node_ids": [],
+   "new_edge_ids": [],
+   "members_of_surviving_edges": {
+    "str:f1": "same",
+    "str:f3": "same"
+   },
+   "write_hif_ok": true,
+   "write_hif_error": null,
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 6",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 3,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [
+      "str:f2"
+     ],
+     "attrs_not_preserved": {
+      "str:f2": "lost"
+     },
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "Hypergraph.add_edge(members, idx='f4', relation=...)",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "class": "Hypergraph",
+   "num_nodes": 8,
+   "num_edges": 4,
+   "node_attrs": {
+    "compared": 8,
+    "identical": 8,
+    "changed": {},
+    "missing_ids": []
+   },
+   "edge_attrs": {
+    "compared": 3,
+    "identical": 3,
+    "changed": {},
+    "missing_ids": []
+   },
+   "net_attrs_identical": true,
+   "new_node_ids": [],
+   "new_edge_ids": [
+    "str:f4"
+   ],
+   "members_of_surviving_edges": {
+    "str:f1": "same",
+    "str:f2": "same",
+    "str:f3": "same"
+   },
+   "write_hif_ok": true,
+   "write_hif_error": null,
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 11",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 0,
+    "pairs_new": 2,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": [
+      "str:f4"
+     ]
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "Hypergraph.add_node_to_edge('f1', 'pop:children')",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "class": "Hypergraph",
+   "num_nodes": 9,
+   "num_edges": 3,
+   "node_attrs": {
+    "compared": 8,
+    "identical": 8,
+    "changed": {},
+    "missing_ids": []
+   },
+   "edge_attrs": {
+    "compared": 3,
+    "identical": 3,
+    "changed": {},
+    "missing_ids": []
+   },
+   "net_attrs_identical": true,
+   "new_node_ids": [
+    "str:pop:children"
+   ],
+   "new_edge_ids": [],
+   "members_of_surviving_edges": {
+    "str:f1": {
+     "before": {
+      "members": [
+       "str:disease:T2DM",
+       "str:dose:500mg-bid",
+       "str:drug:metformin",
+       "str:pop:adults"
+      ]
+     },
+     "after": {
+      "members": [
+       "str:disease:T2DM",
+       "str:dose:500mg-bid",
+       "str:drug:metformin",
+       "str:pop:adults",
+       "str:pop:children"
+      ]
+     }
+    },
+    "str:f2": "same",
+    "str:f3": "same"
+   },
+   "write_hif_ok": true,
+   "write_hif_error": null,
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 10",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 0,
+    "pairs_new": 1,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": [
+      "str:pop:children"
+     ]
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "Hypergraph.remove_node('dose:500mg-bid') (weak)",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "class": "Hypergraph",
+   "num_nodes": 7,
+   "num_edges": 3,
+   "node_attrs": {
+    "compared": 7,
+    "identical": 7,
+    "changed": {},
+    "missing_ids": [
+     "str:dose:500mg-bid"
+    ]
+   },
+   "edge_attrs": {
+    "compared": 3,
+    "identical": 3,
+    "changed": {},
+    "missing_ids": []
+   },
+   "net_attrs_identical": true,
+   "new_node_ids": [],
+   "new_edge_ids": [],
+   "members_of_surviving_edges": {
+    "str:f1": {
+     "before": {
+      "members": [
+       "str:disease:T2DM",
+       "str:dose:500mg-bid",
+       "str:drug:metformin",
+       "str:pop:adults"
+      ]
+     },
+     "after": {
+      "members": [
+       "str:disease:T2DM",
+       "str:drug:metformin",
+       "str:pop:adults"
+      ]
+     }
+    },
+    "str:f2": "same",
+    "str:f3": "same"
+   },
+   "write_hif_ok": true,
+   "write_hif_error": null,
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 8",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 1,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [
+      "str:dose:500mg-bid"
+     ],
+     "attrs_not_preserved": {
+      "str:dose:500mg-bid": "lost"
+     },
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "Hypergraph.remove_node('drug:metformin', strong=True)",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "class": "Hypergraph",
+   "num_nodes": 7,
+   "num_edges": 1,
+   "node_attrs": {
+    "compared": 7,
+    "identical": 7,
+    "changed": {},
+    "missing_ids": [
+     "str:drug:metformin"
+    ]
+   },
+   "edge_attrs": {
+    "compared": 1,
+    "identical": 1,
+    "changed": {},
+    "missing_ids": [
+     "str:f1",
+     "str:f2"
+    ]
+   },
+   "net_attrs_identical": true,
+   "new_node_ids": [],
+   "new_edge_ids": [],
+   "members_of_surviving_edges": {
+    "str:f3": "same"
+   },
+   "write_hif_ok": true,
+   "write_hif_error": null,
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 2",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 7,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [
+      "str:drug:metformin"
+     ],
+     "attrs_not_preserved": {
+      "str:drug:metformin": "lost"
+     },
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [
+      "str:f1",
+      "str:f2"
+     ],
+     "attrs_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost"
+     },
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "Hypergraph.dual()",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "class": "Hypergraph",
+   "num_nodes": 3,
+   "num_edges": 8,
+   "node_attrs": {
+    "compared": 0,
+    "identical": 0,
+    "changed": {},
+    "missing_ids": [
+     "str:drug:metformin",
+     "str:disease:T2DM",
+     "str:dose:500mg-bid",
+     "str:pop:adults",
+     "str:drug:insulin",
+     "str:effect:hypoglycemia",
+     "str:org:ADA",
+     "str:doc:guideline-2024"
+    ]
+   },
+   "edge_attrs": {
+    "compared": 0,
+    "identical": 0,
+    "changed": {},
+    "missing_ids": [
+     "str:f1",
+     "str:f2",
+     "str:f3"
+    ]
+   },
+   "net_attrs_identical": true,
+   "new_node_ids": [
+    "str:f1",
+    "str:f2",
+    "str:f3"
+   ],
+   "new_edge_ids": [
+    "str:disease:T2DM",
+    "str:doc:guideline-2024",
+    "str:dose:500mg-bid",
+    "str:drug:insulin",
+    "str:drug:metformin",
+    "str:effect:hypoglycemia",
+    "str:org:ADA",
+    "str:pop:adults"
+   ],
+   "members_of_surviving_edges": {},
+   "write_hif_ok": true,
+   "write_hif_error": null,
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 9,
+    "pairs_new": 9,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [
+      "str:disease:T2DM",
+      "str:doc:guideline-2024",
+      "str:dose:500mg-bid",
+      "str:drug:insulin",
+      "str:drug:metformin",
+      "str:effect:hypoglycemia",
+      "str:org:ADA",
+      "str:pop:adults"
+     ],
+     "attrs_not_preserved": {
+      "str:drug:metformin": "lost",
+      "str:disease:T2DM": "lost",
+      "str:dose:500mg-bid": "lost",
+      "str:pop:adults": "lost",
+      "str:drug:insulin": "lost",
+      "str:effect:hypoglycemia": "lost",
+      "str:org:ADA": "lost",
+      "str:doc:guideline-2024": "lost"
+     },
+     "weight_not_preserved": {},
+     "new_out": [
+      "str:f1",
+      "str:f2",
+      "str:f3"
+     ]
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [
+      "str:f1",
+      "str:f2",
+      "str:f3"
+     ],
+     "attrs_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": [
+      "str:disease:T2DM",
+      "str:doc:guideline-2024",
+      "str:dose:500mg-bid",
+      "str:drug:insulin",
+      "str:drug:metformin",
+      "str:effect:hypoglycemia",
+      "str:org:ADA",
+      "str:pop:adults"
+     ]
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "Hypergraph.merge_duplicate_edges() after adding a copy of f1",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "class": "Hypergraph",
+   "num_nodes": 8,
+   "num_edges": 3,
+   "node_attrs": {
+    "compared": 8,
+    "identical": 8,
+    "changed": {},
+    "missing_ids": []
+   },
+   "edge_attrs": {
+    "compared": 3,
+    "identical": 3,
+    "changed": {},
+    "missing_ids": []
+   },
+   "net_attrs_identical": true,
+   "new_node_ids": [],
+   "new_edge_ids": [],
+   "members_of_surviving_edges": {
+    "str:f2": "same",
+    "str:f3": "same",
+    "str:f1": "same"
+   },
+   "write_hif_ok": true,
+   "write_hif_error": null,
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "edge_ids_after": [
+    "str:f1",
+    "str:f2",
+    "str:f3"
+   ],
+   "attrs_of_surviving_f1": {
+    "relation": "treats",
+    "arity": 4,
+    "source": "doc:guideline-2024",
+    "valid-from": "2024-01-01"
+   }
+  },
+  {
+   "op": "Hypergraph.cleanup(in_place=False) (defaults)",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "class": "Hypergraph",
+   "num_nodes": 6,
+   "num_edges": 2,
+   "node_attrs": {
+    "compared": 0,
+    "identical": 0,
+    "changed": {},
+    "missing_ids": [
+     "str:drug:metformin",
+     "str:disease:T2DM",
+     "str:dose:500mg-bid",
+     "str:pop:adults",
+     "str:drug:insulin",
+     "str:effect:hypoglycemia",
+     "str:org:ADA",
+     "str:doc:guideline-2024"
+    ]
+   },
+   "edge_attrs": {
+    "compared": 0,
+    "identical": 0,
+    "changed": {},
+    "missing_ids": [
+     "str:f1",
+     "str:f2",
+     "str:f3"
+    ]
+   },
+   "net_attrs_identical": true,
+   "new_node_ids": [
+    "int:0",
+    "int:1",
+    "int:2",
+    "int:3",
+    "int:4",
+    "int:5"
+   ],
+   "new_edge_ids": [
+    "int:0",
+    "int:1"
+   ],
+   "members_of_surviving_edges": {},
+   "write_hif_ok": true,
+   "write_hif_error": null,
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 7",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 9,
+    "pairs_new": 7,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [
+      "str:disease:T2DM",
+      "str:doc:guideline-2024",
+      "str:dose:500mg-bid",
+      "str:drug:insulin",
+      "str:drug:metformin",
+      "str:effect:hypoglycemia",
+      "str:org:ADA",
+      "str:pop:adults"
+     ],
+     "attrs_not_preserved": {
+      "str:drug:metformin": "lost",
+      "str:disease:T2DM": "lost",
+      "str:dose:500mg-bid": "lost",
+      "str:pop:adults": "lost",
+      "str:drug:insulin": "lost",
+      "str:effect:hypoglycemia": "lost",
+      "str:org:ADA": "lost",
+      "str:doc:guideline-2024": "lost"
+     },
+     "weight_not_preserved": {},
+     "new_out": [
+      "int:0",
+      "int:1",
+      "int:2",
+      "int:3",
+      "int:4",
+      "int:5"
+     ]
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [
+      "str:f1",
+      "str:f2",
+      "str:f3"
+     ],
+     "attrs_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": [
+      "int:0",
+      "int:1"
+     ]
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "xgi.convert_labels_to_integers(H)",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "class": "Hypergraph",
+   "num_nodes": 8,
+   "num_edges": 3,
+   "node_attrs": {
+    "compared": 0,
+    "identical": 0,
+    "changed": {},
+    "missing_ids": [
+     "str:drug:metformin",
+     "str:disease:T2DM",
+     "str:dose:500mg-bid",
+     "str:pop:adults",
+     "str:drug:insulin",
+     "str:effect:hypoglycemia",
+     "str:org:ADA",
+     "str:doc:guideline-2024"
+    ]
+   },
+   "edge_attrs": {
+    "compared": 0,
+    "identical": 0,
+    "changed": {},
+    "missing_ids": [
+     "str:f1",
+     "str:f2",
+     "str:f3"
+    ]
+   },
+   "net_attrs_identical": true,
+   "new_node_ids": [
+    "int:0",
+    "int:1",
+    "int:2",
+    "int:3",
+    "int:4",
+    "int:5",
+    "int:6",
+    "int:7"
+   ],
+   "new_edge_ids": [
+    "int:0",
+    "int:1",
+    "int:2"
+   ],
+   "members_of_surviving_edges": {},
+   "write_hif_ok": true,
+   "write_hif_error": null,
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 9,
+    "pairs_new": 9,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [
+      "str:disease:T2DM",
+      "str:doc:guideline-2024",
+      "str:dose:500mg-bid",
+      "str:drug:insulin",
+      "str:drug:metformin",
+      "str:effect:hypoglycemia",
+      "str:org:ADA",
+      "str:pop:adults"
+     ],
+     "attrs_not_preserved": {
+      "str:drug:metformin": "lost",
+      "str:disease:T2DM": "lost",
+      "str:dose:500mg-bid": "lost",
+      "str:pop:adults": "lost",
+      "str:drug:insulin": "lost",
+      "str:effect:hypoglycemia": "lost",
+      "str:org:ADA": "lost",
+      "str:doc:guideline-2024": "lost"
+     },
+     "weight_not_preserved": {},
+     "new_out": [
+      "int:0",
+      "int:1",
+      "int:2",
+      "int:3",
+      "int:4",
+      "int:5",
+      "int:6",
+      "int:7"
+     ]
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [
+      "str:f1",
+      "str:f2",
+      "str:f3"
+     ],
+     "attrs_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": [
+      "int:0",
+      "int:1",
+      "int:2"
+     ]
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "node_label_attr_before_after": {
+    "drug:metformin": "metformin",
+    "disease:T2DM": "type 2 diabetes mellitus",
+    "dose:500mg-bid": "500 mg twice daily"
+   }
+  },
+  {
+   "op": "H << H2 (Hypergraph.__lshift__)",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "class": "Hypergraph",
+   "num_nodes": 9,
+   "num_edges": 4,
+   "node_attrs": {
+    "compared": 8,
+    "identical": 8,
+    "changed": {},
+    "missing_ids": []
+   },
+   "edge_attrs": {
+    "compared": 0,
+    "identical": 0,
+    "changed": {},
+    "missing_ids": [
+     "str:f1",
+     "str:f2",
+     "str:f3"
+    ]
+   },
+   "net_attrs_identical": true,
+   "new_node_ids": [
+    "str:effect:lactic-acidosis"
+   ],
+   "new_edge_ids": [
+    "int:0",
+    "int:1",
+    "int:2",
+    "int:3"
+   ],
+   "members_of_surviving_edges": {},
+   "write_hif_ok": true,
+   "write_hif_error": null,
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 11",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 9,
+    "pairs_new": 11,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": [
+      "str:effect:lactic-acidosis"
+     ]
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [
+      "str:f1",
+      "str:f2",
+      "str:f3"
+     ],
+     "attrs_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": [
+      "int:0",
+      "int:1",
+      "int:2",
+      "int:3"
+     ]
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "DiHypergraph.copy()",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "class": "DiHypergraph",
+   "num_nodes": 8,
+   "num_edges": 3,
+   "node_attrs": {
+    "compared": 8,
+    "identical": 8,
+    "changed": {},
+    "missing_ids": []
+   },
+   "edge_attrs": {
+    "compared": 3,
+    "identical": 3,
+    "changed": {},
+    "missing_ids": []
+   },
+   "net_attrs_identical": true,
+   "new_node_ids": [],
+   "new_edge_ids": [],
+   "members_of_surviving_edges": {
+    "str:f1": "same",
+    "str:f2": "same",
+    "str:f3": "same"
+   },
+   "write_hif_ok": true,
+   "write_hif_error": null,
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "9/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "xgi.subhypergraph(DH, nodes=[metformin, T2DM]) (no edge is a subset)",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "class": "DiHypergraph",
+   "num_nodes": 2,
+   "num_edges": 0,
+   "node_attrs": {
+    "compared": 2,
+    "identical": 2,
+    "changed": {},
+    "missing_ids": [
+     "str:dose:500mg-bid",
+     "str:pop:adults",
+     "str:drug:insulin",
+     "str:effect:hypoglycemia",
+     "str:org:ADA",
+     "str:doc:guideline-2024"
+    ]
+   },
+   "edge_attrs": {
+    "compared": 0,
+    "identical": 0,
+    "changed": {},
+    "missing_ids": [
+     "str:f1",
+     "str:f2",
+     "str:f3"
+    ]
+   },
+   "net_attrs_identical": true,
+   "new_node_ids": [],
+   "new_edge_ids": [],
+   "members_of_surviving_edges": {},
+   "write_hif_ok": true,
+   "write_hif_error": null,
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 0",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "0/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 9,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [
+      "str:doc:guideline-2024",
+      "str:dose:500mg-bid",
+      "str:drug:insulin",
+      "str:effect:hypoglycemia",
+      "str:org:ADA",
+      "str:pop:adults"
+     ],
+     "attrs_not_preserved": {
+      "str:dose:500mg-bid": "lost",
+      "str:pop:adults": "lost",
+      "str:drug:insulin": "lost",
+      "str:effect:hypoglycemia": "lost",
+      "str:org:ADA": "lost",
+      "str:doc:guideline-2024": "lost"
+     },
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [
+      "str:f1",
+      "str:f2",
+      "str:f3"
+     ],
+     "attrs_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "xgi.subhypergraph(DH, nodes=[org:ADA, doc:guideline-2024]) (f3 is a subset)",
+   "ok": false,
+   "error": {
+    "type": "XGIError",
+    "message": "Invalid ebunch format",
+    "raised_at": "xgi/core/dihypergraph.py:767 in add_edges_from: raise XGIError(\"Invalid ebunch format\") from e",
+    "library_frame": "xgi/core/dihypergraph.py:767 in add_edges_from: raise XGIError(\"Invalid ebunch format\") from e"
+   },
+   "warnings": []
+  },
+  {
+   "op": "DiHypergraph.add_edge((tail, head), idx='f4', relation=...)",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "class": "DiHypergraph",
+   "num_nodes": 8,
+   "num_edges": 4,
+   "node_attrs": {
+    "compared": 8,
+    "identical": 8,
+    "changed": {},
+    "missing_ids": []
+   },
+   "edge_attrs": {
+    "compared": 3,
+    "identical": 3,
+    "changed": {},
+    "missing_ids": []
+   },
+   "net_attrs_identical": true,
+   "new_node_ids": [],
+   "new_edge_ids": [
+    "str:f4"
+   ],
+   "members_of_surviving_edges": {
+    "str:f1": "same",
+    "str:f2": "same",
+    "str:f3": "same"
+   },
+   "write_hif_ok": true,
+   "write_hif_error": null,
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 11",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "9/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 0,
+    "pairs_new": 2,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": [
+      "str:f4"
+     ]
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "DiHypergraph.remove_node('dose:500mg-bid') (weak)",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "class": "DiHypergraph",
+   "num_nodes": 7,
+   "num_edges": 3,
+   "node_attrs": {
+    "compared": 7,
+    "identical": 7,
+    "changed": {},
+    "missing_ids": [
+     "str:dose:500mg-bid"
+    ]
+   },
+   "edge_attrs": {
+    "compared": 3,
+    "identical": 3,
+    "changed": {},
+    "missing_ids": []
+   },
+   "net_attrs_identical": true,
+   "new_node_ids": [],
+   "new_edge_ids": [],
+   "members_of_surviving_edges": {
+    "str:f1": {
+     "before": {
+      "tail": [
+       "str:dose:500mg-bid",
+       "str:drug:metformin",
+       "str:pop:adults"
+      ],
+      "head": [
+       "str:disease:T2DM"
+      ]
+     },
+     "after": {
+      "tail": [
+       "str:drug:metformin",
+       "str:pop:adults"
+      ],
+      "head": [
+       "str:disease:T2DM"
+      ]
+     }
+    },
+    "str:f2": "same",
+    "str:f3": "same"
+   },
+   "write_hif_ok": true,
+   "write_hif_error": null,
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 8",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "8/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 1,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [
+      "str:dose:500mg-bid"
+     ],
+     "attrs_not_preserved": {
+      "str:dose:500mg-bid": "lost"
+     },
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "DiHypergraph.dual()",
+   "ok": false,
+   "error": {
+    "type": "AttributeError",
+    "message": "dual is not a method of DiHypergraph or a recognized DiNodeStat or DiEdgeStat",
+    "raised_at": "xgi/core/dihypergraph.py:257 in __getattr__: raise AttributeError(",
+    "library_frame": "xgi/core/dihypergraph.py:257 in __getattr__: raise AttributeError("
+   },
+   "warnings": []
+  },
+  {
+   "op": "xgi.convert_labels_to_integers(DH)",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "class": "DiHypergraph",
+   "num_nodes": 8,
+   "num_edges": 3,
+   "node_attrs": {
+    "compared": 0,
+    "identical": 0,
+    "changed": {},
+    "missing_ids": [
+     "str:drug:metformin",
+     "str:disease:T2DM",
+     "str:dose:500mg-bid",
+     "str:pop:adults",
+     "str:drug:insulin",
+     "str:effect:hypoglycemia",
+     "str:org:ADA",
+     "str:doc:guideline-2024"
+    ]
+   },
+   "edge_attrs": {
+    "compared": 0,
+    "identical": 0,
+    "changed": {},
+    "missing_ids": [
+     "str:f1",
+     "str:f2",
+     "str:f3"
+    ]
+   },
+   "net_attrs_identical": true,
+   "new_node_ids": [
+    "int:0",
+    "int:1",
+    "int:2",
+    "int:3",
+    "int:4",
+    "int:5",
+    "int:6",
+    "int:7"
+   ],
+   "new_edge_ids": [
+    "int:0",
+    "int:1",
+    "int:2"
+   ],
+   "members_of_surviving_edges": {},
+   "write_hif_ok": true,
+   "write_hif_error": null,
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "0/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 9,
+    "pairs_new": 9,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [
+      "str:disease:T2DM",
+      "str:doc:guideline-2024",
+      "str:dose:500mg-bid",
+      "str:drug:insulin",
+      "str:drug:metformin",
+      "str:effect:hypoglycemia",
+      "str:org:ADA",
+      "str:pop:adults"
+     ],
+     "attrs_not_preserved": {
+      "str:drug:metformin": "lost",
+      "str:disease:T2DM": "lost",
+      "str:dose:500mg-bid": "lost",
+      "str:pop:adults": "lost",
+      "str:drug:insulin": "lost",
+      "str:effect:hypoglycemia": "lost",
+      "str:org:ADA": "lost",
+      "str:doc:guideline-2024": "lost"
+     },
+     "weight_not_preserved": {},
+     "new_out": [
+      "int:0",
+      "int:1",
+      "int:2",
+      "int:3",
+      "int:4",
+      "int:5",
+      "int:6",
+      "int:7"
+     ]
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [
+      "str:f1",
+      "str:f2",
+      "str:f3"
+     ],
+     "attrs_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": [
+      "int:0",
+      "int:1",
+      "int:2"
+     ]
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "xgi.Hypergraph(DH) (to undirected)",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "class": "Hypergraph",
+   "num_nodes": 8,
+   "num_edges": 3,
+   "node_attrs": {
+    "compared": 8,
+    "identical": 8,
+    "changed": {},
+    "missing_ids": []
+   },
+   "edge_attrs": {
+    "compared": 3,
+    "identical": 3,
+    "changed": {},
+    "missing_ids": []
+   },
+   "net_attrs_identical": true,
+   "new_node_ids": [],
+   "new_edge_ids": [],
+   "members_of_surviving_edges": {
+    "str:f1": {
+     "before": {
+      "tail": [
+       "str:dose:500mg-bid",
+       "str:drug:metformin",
+       "str:pop:adults"
+      ],
+      "head": [
+       "str:disease:T2DM"
+      ]
+     },
+     "after": {
+      "members": [
+       "str:disease:T2DM",
+       "str:dose:500mg-bid",
+       "str:drug:metformin",
+       "str:pop:adults"
+      ]
+     }
+    },
+    "str:f2": {
+     "before": {
+      "tail": [
+       "str:drug:insulin",
+       "str:drug:metformin"
+      ],
+      "head": [
+       "str:effect:hypoglycemia"
+      ]
+     },
+     "after": {
+      "members": [
+       "str:drug:insulin",
+       "str:drug:metformin",
+       "str:effect:hypoglycemia"
+      ]
+     }
+    },
+    "str:f3": {
+     "before": {
+      "tail": [
+       "str:org:ADA"
+      ],
+      "head": [
+       "str:doc:guideline-2024"
+      ]
+     },
+     "after": {
+      "members": [
+       "str:doc:guideline-2024",
+       "str:org:ADA"
+      ]
+     }
+    }
+   },
+   "write_hif_ok": true,
+   "write_hif_error": null,
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "0/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": []
+    },
+    "network_type": "altered (directed -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "read_hif(asc file): metadata and subfaces",
+   "class": "SimplicialComplex",
+   "net_attr": {},
+   "metadata_keys_in_file": [
+    "conventions",
+    "created",
+    "description",
+    "kb-section",
+    "schema",
+    "title"
+   ],
+   "num_edges_in_file": 3,
+   "num_edges_loaded": 16,
+   "edges_with_attrs_loaded": 3
+  }
+ ]
+}

@@ -1,0 +1,5 @@
+{
+  "incidences": [
+    {"edge": "f1", "node": "drug:metformin", "weight": NaN, "attrs": {"role": "treatment", "score": NaN}}
+  ]
+}

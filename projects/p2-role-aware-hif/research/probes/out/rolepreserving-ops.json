@@ -1,0 +1,722 @@
+{
+ "env": {
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "jsonschema": "4.26.0",
+  "pandas": "2.3.3",
+  "numpy": "2.4.6",
+  "fastjsonschema": "2.22.2",
+  "requests": "2.34.2",
+  "xgi": "0.10.2",
+  "hypernetx": "2.4.3"
+ },
+ "ops": {
+  "xgi": [
+   {
+    "case": "c00-sample-directed",
+    "op": "copy()",
+    "A: side table (sketch)": {
+     "input_role_records": 9,
+     "output_role_records": 9,
+     "kept": 9,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 0
+    },
+    "B: records in edge attrs": {
+     "input_role_records": 9,
+     "output_role_records": 9,
+     "kept": 9,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 0
+    }
+   },
+   {
+    "case": "c00-sample-directed",
+    "op": "remove_node('pop:adults') weak",
+    "A: side table (sketch)": {
+     "input_role_records": 9,
+     "output_role_records": 8,
+     "kept": 8,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 1
+    },
+    "B: records in edge attrs": {
+     "input_role_records": 9,
+     "output_role_records": 8,
+     "kept": 8,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 1
+    }
+   },
+   {
+    "case": "c00-sample-directed",
+    "op": "remove_node('drug:metformin', strong=True)",
+    "A: side table (sketch)": {
+     "input_role_records": 9,
+     "output_role_records": 2,
+     "kept": 2,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 7
+    },
+    "B: records in edge attrs": {
+     "input_role_records": 9,
+     "output_role_records": 2,
+     "kept": 2,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 0
+    }
+   },
+   {
+    "case": "c00-sample-directed",
+    "op": "add_edge(new edge)",
+    "A: side table (sketch)": {
+     "input_role_records": 9,
+     "output_role_records": 9,
+     "kept": 9,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 2,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 0
+    },
+    "B: records in edge attrs": {
+     "input_role_records": 9,
+     "output_role_records": 9,
+     "kept": 9,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 2,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 0
+    }
+   },
+   {
+    "case": "c00-sample-directed",
+    "op": "convert_labels_to_integers() [ids mapped back via the 'label' attr]",
+    "A: side table (sketch)": {
+     "input_role_records": 9,
+     "output_role_records": 0,
+     "kept": 0,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 9,
+     "id_mapping_applied": true,
+     "stale_records_dropped": 9
+    },
+    "B: records in edge attrs": {
+     "input_role_records": 9,
+     "output_role_records": 0,
+     "kept": 0,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 9,
+     "id_mapping_applied": true,
+     "stale_records_dropped": 9
+    }
+   },
+   {
+    "case": "c01-sample-undirected",
+    "op": "copy()",
+    "A: side table (sketch)": {
+     "input_role_records": 9,
+     "output_role_records": 9,
+     "kept": 9,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 0
+    },
+    "B: records in edge attrs": {
+     "input_role_records": 9,
+     "output_role_records": 9,
+     "kept": 9,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 0
+    }
+   },
+   {
+    "case": "c01-sample-undirected",
+    "op": "remove_node('pop:adults') weak",
+    "A: side table (sketch)": {
+     "input_role_records": 9,
+     "output_role_records": 8,
+     "kept": 8,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 1
+    },
+    "B: records in edge attrs": {
+     "input_role_records": 9,
+     "output_role_records": 8,
+     "kept": 8,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 1
+    }
+   },
+   {
+    "case": "c01-sample-undirected",
+    "op": "remove_node('drug:metformin', strong=True)",
+    "A: side table (sketch)": {
+     "input_role_records": 9,
+     "output_role_records": 2,
+     "kept": 2,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 7
+    },
+    "B: records in edge attrs": {
+     "input_role_records": 9,
+     "output_role_records": 2,
+     "kept": 2,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 0
+    }
+   },
+   {
+    "case": "c01-sample-undirected",
+    "op": "add_edge(new edge)",
+    "A: side table (sketch)": {
+     "input_role_records": 9,
+     "output_role_records": 9,
+     "kept": 9,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 2,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 0
+    },
+    "B: records in edge attrs": {
+     "input_role_records": 9,
+     "output_role_records": 9,
+     "kept": 9,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 2,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 0
+    }
+   },
+   {
+    "case": "c01-sample-undirected",
+    "op": "convert_labels_to_integers() [ids mapped back via the 'label' attr]",
+    "A: side table (sketch)": {
+     "input_role_records": 9,
+     "output_role_records": 0,
+     "kept": 0,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 9,
+     "id_mapping_applied": true,
+     "stale_records_dropped": 9
+    },
+    "B: records in edge attrs": {
+     "input_role_records": 9,
+     "output_role_records": 0,
+     "kept": 0,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 9,
+     "id_mapping_applied": true,
+     "stale_records_dropped": 9
+    }
+   },
+   {
+    "case": "c01-sample-undirected",
+    "op": "subhypergraph(nodes=['doc:guideline-2024', 'drug:metformin', 'org:ADA'])",
+    "A: side table (sketch)": {
+     "input_role_records": 9,
+     "output_role_records": 2,
+     "kept": 2,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 7
+    },
+    "B: records in edge attrs": {
+     "input_role_records": 9,
+     "output_role_records": 2,
+     "kept": 2,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 0
+    }
+   },
+   {
+    "case": "c01-sample-undirected",
+    "op": "dual()",
+    "A: side table (sketch)": {
+     "input_role_records": 9,
+     "output_role_records": 0,
+     "kept": 0,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 9,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 9
+    },
+    "B: records in edge attrs": {
+     "input_role_records": 9,
+     "output_role_records": 0,
+     "kept": 0,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 9,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 0
+    }
+   },
+   {
+    "case": "c01-sample-undirected",
+    "op": "add copy of first edge, merge_duplicate_edges()",
+    "A: side table (sketch)": {
+     "input_role_records": 9,
+     "output_role_records": 9,
+     "kept": 9,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 0
+    },
+    "B: records in edge attrs": {
+     "input_role_records": 9,
+     "output_role_records": 9,
+     "kept": 9,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 0
+    }
+   },
+   {
+    "case": "c01-sample-undirected",
+    "op": "H << H2 [edge ids mapped back by position]",
+    "A: side table (sketch)": {
+     "input_role_records": 9,
+     "output_role_records": 0,
+     "kept": 0,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 11,
+     "id_mapping_applied": true,
+     "stale_records_dropped": 9
+    },
+    "B: records in edge attrs": {
+     "input_role_records": 9,
+     "output_role_records": 9,
+     "kept": 9,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 2,
+     "id_mapping_applied": true,
+     "stale_records_dropped": 0
+    }
+   },
+   {
+    "case": "c05-two-roles-same-direction",
+    "op": "copy()",
+    "A: side table (sketch)": {
+     "input_role_records": 4,
+     "output_role_records": 4,
+     "kept": 4,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 0
+    },
+    "B: records in edge attrs": {
+     "input_role_records": 4,
+     "output_role_records": 4,
+     "kept": 4,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 0
+    }
+   },
+   {
+    "case": "c05-two-roles-same-direction",
+    "op": "remove_node('outcome:HbA1c') weak",
+    "A: side table (sketch)": {
+     "input_role_records": 4,
+     "output_role_records": 3,
+     "kept": 3,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 1
+    },
+    "B: records in edge attrs": {
+     "input_role_records": 4,
+     "output_role_records": 3,
+     "kept": 3,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 1
+    }
+   },
+   {
+    "case": "c05-two-roles-same-direction",
+    "op": "remove_node('drug:metformin', strong=True)",
+    "A: side table (sketch)": {
+     "input_role_records": 4,
+     "output_role_records": 0,
+     "kept": 0,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 4
+    },
+    "B: records in edge attrs": {
+     "input_role_records": 4,
+     "output_role_records": 0,
+     "kept": 0,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 0
+    }
+   },
+   {
+    "case": "c05-two-roles-same-direction",
+    "op": "add_edge(new edge)",
+    "A: side table (sketch)": {
+     "input_role_records": 4,
+     "output_role_records": 4,
+     "kept": 4,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 2,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 0
+    },
+    "B: records in edge attrs": {
+     "input_role_records": 4,
+     "output_role_records": 4,
+     "kept": 4,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 2,
+     "id_mapping_applied": false,
+     "stale_records_dropped": 0
+    }
+   },
+   {
+    "case": "c05-two-roles-same-direction",
+    "op": "convert_labels_to_integers() [ids mapped back via the 'label' attr]",
+    "A: side table (sketch)": {
+     "input_role_records": 4,
+     "output_role_records": 0,
+     "kept": 0,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 3,
+     "id_mapping_applied": true,
+     "stale_records_dropped": 4
+    },
+    "B: records in edge attrs": {
+     "input_role_records": 4,
+     "output_role_records": 0,
+     "kept": 0,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 3,
+     "id_mapping_applied": true,
+     "stale_records_dropped": 4
+    }
+   }
+  ],
+  "hnx": [
+   {
+    "case": "c00-sample-directed",
+    "op": "clone()",
+    "roles": {
+     "input_role_records": 9,
+     "output_role_records": 9,
+     "kept": 9,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false
+    },
+    "hif_schema_errors": []
+   },
+   {
+    "case": "c00-sample-directed",
+    "op": "restrict_to_nodes(['disease:T2DM', 'doc:guideline-2024', 'dose:500mg-bid'])",
+    "roles": {
+     "input_role_records": 9,
+     "output_role_records": 3,
+     "kept": 3,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false
+    },
+    "hif_schema_errors": []
+   },
+   {
+    "case": "c00-sample-directed",
+    "op": "remove_nodes('pop:adults')",
+    "roles": {
+     "input_role_records": 9,
+     "output_role_records": 8,
+     "kept": 8,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false
+    },
+    "hif_schema_errors": []
+   },
+   {
+    "case": "c00-sample-directed",
+    "op": "remove_incidences(('f1', 'drug:metformin'))",
+    "roles": {
+     "input_role_records": 9,
+     "output_role_records": 8,
+     "kept": 8,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false
+    },
+    "hif_schema_errors": []
+   },
+   {
+    "case": "c00-sample-directed",
+    "op": "rename(nodes={'drug:metformin': 'renamed'})",
+    "roles": {
+     "input_role_records": 9,
+     "output_role_records": 9,
+     "kept": 9,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": true
+    },
+    "hif_schema_errors": []
+   },
+   {
+    "case": "c00-sample-directed",
+    "op": "dual()",
+    "roles": {
+     "input_role_records": 9,
+     "output_role_records": 9,
+     "kept": 9,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false
+    },
+    "hif_schema_errors": []
+   },
+   {
+    "case": "c00-sample-directed",
+    "op": "collapse_nodes()",
+    "roles": {
+     "input_role_records": 9,
+     "output_role_records": 5,
+     "kept": 4,
+     "wrong (role on a pair that did not have it)": [
+      {
+       "<tuple>": [
+        "\"f3\"",
+        "\"doc:guideline-2024\"",
+        "publisher"
+       ]
+      }
+     ],
+     "wrong_count": 1,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false
+    },
+    "hif_schema_errors": []
+   },
+   {
+    "case": "c00-sample-directed",
+    "op": "add_incidence('f1', 'new-node', role='added', direction='tail')",
+    "roles": {
+     "input_role_records": 9,
+     "output_role_records": 10,
+     "kept": 9,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false
+    },
+    "hif_schema_errors": []
+   },
+   {
+    "case": "c05-two-roles-same-direction",
+    "op": "clone()",
+    "roles": {
+     "input_role_records": 4,
+     "output_role_records": 4,
+     "kept": 4,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false
+    },
+    "hif_schema_errors": []
+   },
+   {
+    "case": "c05-two-roles-same-direction",
+    "op": "restrict_to_nodes(['drug:insulin', 'drug:metformin', 'outcome:HbA1c'])",
+    "roles": {
+     "input_role_records": 4,
+     "output_role_records": 4,
+     "kept": 4,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false
+    },
+    "hif_schema_errors": []
+   },
+   {
+    "case": "c05-two-roles-same-direction",
+    "op": "remove_nodes('outcome:HbA1c')",
+    "roles": {
+     "input_role_records": 4,
+     "output_role_records": 3,
+     "kept": 3,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false
+    },
+    "hif_schema_errors": []
+   },
+   {
+    "case": "c05-two-roles-same-direction",
+    "op": "remove_incidences(('t1', 'drug:metformin'))",
+    "roles": {
+     "input_role_records": 4,
+     "output_role_records": 2,
+     "kept": 2,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false
+    },
+    "hif_schema_errors": []
+   },
+   {
+    "case": "c05-two-roles-same-direction",
+    "op": "rename(nodes={'drug:metformin': 'renamed'})",
+    "roles": {
+     "input_role_records": 4,
+     "output_role_records": 4,
+     "kept": 4,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": true
+    },
+    "hif_schema_errors": []
+   },
+   {
+    "case": "c05-two-roles-same-direction",
+    "op": "dual()",
+    "roles": {
+     "input_role_records": 4,
+     "output_role_records": 4,
+     "kept": 4,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false
+    },
+    "hif_schema_errors": []
+   },
+   {
+    "case": "c05-two-roles-same-direction",
+    "op": "collapse_nodes()",
+    "roles": {
+     "input_role_records": 4,
+     "output_role_records": 2,
+     "kept": 0,
+     "wrong (role on a pair that did not have it)": [
+      {
+       "<tuple>": [
+        "\"t1\"",
+        "\"drug:insulin\"",
+        "intervention"
+       ]
+      },
+      {
+       "<tuple>": [
+        "\"t1\"",
+        "\"drug:insulin\"",
+        "background-therapy"
+       ]
+      }
+     ],
+     "wrong_count": 2,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false
+    },
+    "hif_schema_errors": []
+   },
+   {
+    "case": "c05-two-roles-same-direction",
+    "op": "add_incidence('t1', 'new-node', role='added', direction='tail')",
+    "roles": {
+     "input_role_records": 4,
+     "output_role_records": 5,
+     "kept": 4,
+     "wrong (role on a pair that did not have it)": [],
+     "wrong_count": 0,
+     "output_records_without_role": 0,
+     "id_mapping_applied": false
+    },
+    "hif_schema_errors": []
+   }
+  ]
+ }
+}
