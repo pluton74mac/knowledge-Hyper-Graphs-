@@ -7,8 +7,6 @@ import sys
 
 from khg_contracts import data, examples
 
-GENERATED_LATER = {"library-hif-evidence.json": "written by tests/evidence (W7)"}
-
 
 def _tree(root):
     return {p.relative_to(root).as_posix(): p.read_bytes() for p in sorted(root.rglob("*")) if p.is_file()}
@@ -27,12 +25,9 @@ def test_the_examples_equal_design_examples_byte_for_byte(tmp_path, examples_dir
     result = examples.write_examples(tmp_path / "out", tests_dir=repo_root / "tests")
     got, want = _tree(tmp_path / "out"), _tree(examples_dir)
     assert len(want) == 151
-    missing = set(want) - set(got)
-    assert missing == set(result["missing"])
-    assert missing <= set(GENERATED_LATER), f"not mirrored: {sorted(missing - set(GENERATED_LATER))}"
-    assert set(got) - set(want) == set()
+    assert result["missing"] == []  # the five test-only files, the evidence file included (W7)
+    assert set(got) == set(want)
     assert [k for k in got if got[k] != want[k]] == []
-    assert len(got) >= 150
 
 
 def test_the_examples_without_the_test_files(tmp_path):
@@ -44,9 +39,8 @@ def test_the_examples_without_the_test_files(tmp_path):
 
 
 def test_the_test_only_files_live_under_tests(repo_root, examples_dir):
+    assert len(examples.TEST_ONLY) == 5
     for name, rel in examples.TEST_ONLY.items():
-        if name in GENERATED_LATER:
-            continue
         assert (repo_root / "tests" / rel).read_bytes() == (examples_dir / name).read_bytes()
 
 

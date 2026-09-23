@@ -1,0 +1,21 @@
+{
+ "network-type": "undirected",
+ "incidences": [
+  {
+   "edge": "e1",
+   "node": "a"
+  },
+  {
+   "edge": "e1",
+   "node": "b"
+  },
+  {
+   "edge": "e2",
+   "node": "b"
+  },
+  {
+   "edge": "e2",
+   "node": "c"
+  }
+ ]
+}

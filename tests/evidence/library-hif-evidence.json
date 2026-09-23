@@ -1,0 +1,156 @@
+{
+ "format": "khg-library-evidence/1.0.0",
+ "xgi": "0.10.2",
+ "hypernetx": "2.4.3",
+ "rows": [
+  {
+   "file": "fixture.hif.json",
+   "network-type": "undirected",
+   "xgi": {
+    "class": "Hypergraph",
+    "incidences": [
+     59,
+     56
+    ],
+    "roles_kept": [
+     0,
+     59
+    ],
+    "metadata_lost": [],
+    "metadata_added": [],
+    "weights_in_source": 4,
+    "isolated_nodes_kept": [
+     "ex:Mazarin"
+    ]
+   },
+   "hnx": {
+    "to_hif": null
+   }
+  },
+  {
+   "file": "fixture.directed-slice.hif.json",
+   "network-type": "directed",
+   "xgi": {
+    "class": "DiHypergraph",
+    "incidences": [
+     52,
+     51
+    ],
+    "roles_kept": [
+     0,
+     52
+    ],
+    "metadata_lost": [],
+    "metadata_added": [],
+    "weights_in_source": 4,
+    "isolated_nodes_kept": []
+   },
+   "hnx": {
+    "incidences": [
+     52,
+     50
+    ],
+    "roles_kept": [
+     50,
+     52
+    ],
+    "metadata_lost": [
+     "hif-schema",
+     "hif-schema-sha256",
+     "khg-complete",
+     "khg-document-id",
+     "khg-literal-nodes",
+     "khg-profile",
+     "khg-record",
+     "khg-schema",
+     "khg-schema-sha256",
+     "khg-slice",
+     "role-convention",
+     "title"
+    ],
+    "metadata_added": [
+     "default_attrs"
+    ],
+    "weights_in_source": 4,
+    "isolated_nodes_kept": [],
+    "second_generation": null
+   }
+  },
+  {
+   "file": "role-convention/tail-head.hif.json",
+   "network-type": "directed",
+   "xgi": {
+    "class": "DiHypergraph",
+    "incidences": [
+     3,
+     3
+    ],
+    "roles_kept": [
+     0,
+     3
+    ],
+    "metadata_lost": [],
+    "metadata_added": [],
+    "weights_in_source": 0,
+    "isolated_nodes_kept": []
+   },
+   "hnx": {
+    "incidences": [
+     3,
+     2
+    ],
+    "roles_kept": [
+     2,
+     3
+    ],
+    "metadata_lost": [
+     "role-convention"
+    ],
+    "metadata_added": [
+     "default_attrs"
+    ],
+    "weights_in_source": 0,
+    "isolated_nodes_kept": [],
+    "second_generation": null
+   }
+  },
+  {
+   "file": "role-convention/ordered.hif.json",
+   "network-type": "undirected",
+   "xgi": {
+    "class": "Hypergraph",
+    "incidences": [
+     4,
+     3
+    ],
+    "roles_kept": [
+     0,
+     4
+    ],
+    "metadata_lost": [],
+    "metadata_added": [],
+    "weights_in_source": 0,
+    "isolated_nodes_kept": []
+   },
+   "hnx": {
+    "incidences": [
+     4,
+     3
+    ],
+    "roles_kept": [
+     3,
+     4
+    ],
+    "metadata_lost": [
+     "role-convention"
+    ],
+    "metadata_added": [
+     "default_attrs"
+    ],
+    "weights_in_source": 0,
+    "isolated_nodes_kept": [],
+    "second_generation": 3
+   }
+  }
+ ]
+}
