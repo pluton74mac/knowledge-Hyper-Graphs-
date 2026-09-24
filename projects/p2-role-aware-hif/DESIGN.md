@@ -2560,6 +2560,11 @@ fixed them (`impl-notes/review-*.md`); these are the questions it left open.
     finite number with C010, so no invalid weight reaches a HIF file.
 15. **Retrieval cut-offs (f-scorers-11).** The top k is the first k units by list position; the declared `rank` is
     a sort key only (W11b). P10 may ask for declared ranks in a minor release.
+16. **Rank reasons in the Wikidata mapping (2026-09-24, from P3a).** §2.6 maps P2241 and P7452 to `rank_reason`.
+    That holds only when the reason matches the rank: P2241 on a deprecated statement, P7452 on a preferred one.
+    A reason on any other rank is kept as a `meta` binding under its property id. Validation is unchanged (C008
+    still requires a reason on a deprecated statement). The naming P3a and P6 share is
+    [wd-roles r1](../p6-schema-width/wd-roles.md).
 
 **Clarifications the review made normative.** Each is implemented and tested; the notes give the evidence.
 - §2.7 and D014: a history may go from `superseded` to `disputed` in one version (an undone supersession resolved
