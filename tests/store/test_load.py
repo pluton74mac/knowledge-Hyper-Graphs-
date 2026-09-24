@@ -8,7 +8,7 @@ import pytest
 
 from khg_contracts import data, record
 from khg_contracts.errors import CapabilityMissing, ValidationError, VersionError
-from khg_contracts.store import ALL_FLAGS, MemoryStore, ScenarioClock, compare_containers
+from khg_contracts.store import ALL_FLAGS, MemoryStore, ScenarioClock, compare_containers, data_flags
 
 CORE_DROPPED = ["f:born-scribe", "f:cat-7", "f:route-1", "g:who-1774"]
 
@@ -237,3 +237,32 @@ def test_reads_pass_over_a_malformed_record_that_a_load_kept(schema, fixture_doc
         s.load(doc)
         assert s.incident("ex:TP53") == [] and "f:reg-1" not in [r["id"] for r in s.find("regulates", [])]
         assert s.get("f:reg-1")[field] == bad  # get ignores Where and hands it out as loaded
+
+
+@pytest.mark.parametrize("relation", [["regulates"], {"regulates": True}, 7, "<absent>"])
+@pytest.mark.parametrize("rid", ["f:reg-1", "m:sup-1", "g:who-1774"])
+def test_load_refuses_a_hyperedge_whose_relation_is_not_a_string(schema, fixture_doc, rid, relation):
+    """C010 at the relation, not a raw TypeError from ``data_flags`` (a list or an object is not hashable, so it is
+    not a member of ``LIFECYCLE_RELATIONS``): the store indexes hyperedges by relation (review-integration fuzz)."""
+    doc = copy.deepcopy(fixture_doc)
+    i = next(k for k, r in enumerate(doc["records"]) if r["id"] == rid)
+    if relation == "<absent>":
+        del doc["records"][i]["relation"]
+    else:
+        doc["records"][i]["relation"] = relation
+    for flags, on_missing in ((None, "raise"), (ALL_FLAGS - {"goals", "nesting"}, "skip")):
+        s = fresh(schema, flags)
+        with pytest.raises(ValidationError) as e:
+            s.load(doc, on_missing=on_missing)
+        assert e.value.codes == ("KHG-C010",)
+        assert e.value.info["findings"][0]["path"] == f"/records/{i}/relation"
+        assert list(s.iter_records()) == [] and s.info()["header"] is None
+
+
+@pytest.mark.parametrize("relation", [["khg:supersedes"], {"regulates": True}])
+def test_data_flags_reads_a_relation_that_is_not_a_string(relation):
+    """``data_flags`` reads structure defensively, as its module says, for callers that pass unvalidated records: a
+    relation that is not a string is not a lifecycle relation."""
+    edge = {"kind": "hyperedge", "id": "f:x", "relation": relation, "status": "goal",
+            "bindings": [{"bid": "b1", "role": "r", "position": 1, "value": {"fact": "f:y"}}]}
+    assert data_flags(edge) == {"goals", "nesting", "ordered_roles"}

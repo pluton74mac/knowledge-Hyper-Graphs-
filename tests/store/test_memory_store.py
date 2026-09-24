@@ -5,7 +5,7 @@ import copy
 
 import pytest
 
-from khg_contracts import CONTRACTS, data, record
+from khg_contracts import CONTRACTS, data, record, validate
 from khg_contracts.errors import (CapabilityMissing, ConcurrencyError, KeyCollision, KHGError, ValidationError,
                                   VersionError)
 from khg_contracts.store import (ALL_FLAGS, MemoryStore, ScenarioClock, Store, SystemClock, Where,
@@ -122,6 +122,16 @@ def test_put_refuses_other_kinds_duplicates_and_lifecycle_records(ms, entities, 
     for actor in ("", None, 3):
         with pytest.raises(ValidationError):
             ms.put(entities[0], actor=actor)
+
+
+@pytest.mark.parametrize("relation", [["regulates"], {"regulates": True}])
+def test_put_refuses_a_relation_that_is_not_a_string(ms, entities, rec, relation):
+    """Layer C refuses it; ``put`` reads the flags of the raw records first, and that read does not raise
+    TypeError on an unhashable relation."""
+    ms.put(entities, actor="t")
+    with pytest.raises(ValidationError) as e:
+        ms.put(rec("f:reg-1", set={"relation": relation}), actor="t")
+    assert "KHG-C010" in e.value.codes and ms.get("f:reg-1") is None
 
 
 def test_a_new_version_follows_the_version_rule(ms, entities, rec, cur, T):
@@ -399,14 +409,67 @@ def test_a_status_rule_comes_before_record_validation(ms, entities, rec):
         assert e.value.codes == (("KHG-D014",) if status == "retracted" else ("KHG-D017",))
 
 
-def test_a_redirected_entity_is_refused_only_where_it_is_written(ms, entities, rec, cur):
-    ms.put(entities + [rec("f:born-louis14-paris")], actor="t")
-    ms.put(dict(entities[9], redirect_to="ex:Warszawa"), actor="t")  # ex:Paris
+def test_a_redirected_entity_is_refused_only_where_it_is_written(schema, fixture_doc, rec, cur):
+    """D020 on the values a write adds or changes (W8). Since ruling 10 only a trusted load can make a store hold a
+    value that names a redirected entity."""
+    doc = copy.deepcopy(fixture_doc)
+    next(r for r in doc["records"] if r["id"] == "ex:Paris")["redirect_to"] = "ex:Warszawa"
+    s = MemoryStore(schema, clock=ScenarioClock())
+    s.load(doc)
     with pytest.raises(ValidationError) as e:
-        ms.put(rec("f:born-louis14-paris", set={"id": "f:x"}), actor="t")
+        s.put(rec("f:born-louis14-paris", set={"id": "f:x"}), actor="t")
     assert e.value.codes == ("KHG-D020",)
-    receipt = ms.put(rec("f:born-louis14-paris", add_evidence=[cur]), actor="t")  # the value was there before
+    receipt = s.put(rec("f:born-louis14-paris", add_evidence=[cur]), actor="t")  # the value was there before
     assert receipt["records"] == [("f:born-louis14-paris", 2, "versioned")]
+
+
+def _refused_redirect(store, entity, redirect_to, *, batch=()):
+    """The one D020 finding of a put that sets ``redirect_to`` on the held ``entity``; the store is unchanged."""
+    before = store.get(entity)
+    with pytest.raises(ValidationError) as e:
+        store.put([*batch, dict(before, redirect_to=redirect_to)], actor="t")
+    assert e.value.codes == ("KHG-D020",) and store.get(entity) == before
+    (finding,) = e.value.info["findings"]
+    return finding
+
+
+def test_a_redirect_is_refused_while_a_held_record_names_the_entity(ms, entities, rec):
+    """Ruling 10 (d-store-10): a store never reaches a state whose own export fails validation, so ``redirect_to``
+    is refused with D020 while a record the store holds names the entity; rewriting such values comes in 1.2."""
+    ms.put(entities + [rec("f:born-louis14-paris")], actor="t")
+    finding = _refused_redirect(ms, "ex:Paris", "ex:Warszawa")
+    assert finding["path"] == "/records/0/redirect_to"
+    assert "f:born-louis14-paris names ex:Paris" in finding["message"]
+    lyon = {"kind": "entity", "id": "ex:Lyon", "types": ["Place"]}
+    finding = _refused_redirect(ms, "ex:Paris", "ex:Warszawa", batch=[lyon])  # all or nothing
+    assert finding["path"] == "/records/1/redirect_to" and ms.get("ex:Lyon") is None
+
+
+def test_a_redirect_is_refused_for_a_name_in_any_status_or_version(schema, fixture_doc):
+    loaded = MemoryStore(schema, clock=ScenarioClock())
+    loaded.load(fixture_doc)
+    finding = _refused_redirect(loaded, "ex:Kraków", "ex:Warszawa")  # named only by a superseded fact
+    assert "f:born-skłodowska-kraków names ex:Kraków" in finding["message"]
+    reg = copy.deepcopy(next(r for r in fixture_doc["records"] if r["id"] == "f:reg-1"))
+    for b in reg["bindings"]:
+        if b["value"] == {"entity": "ex:HeLa"}:
+            b["value"] = {"entity": "ex:TP53"}
+    loaded.load({"header": fixture_doc["header"], "records": [reg]})  # trusted: version 2 no longer names ex:HeLa
+    assert loaded.get("f:reg-1")["version"] == 2
+    finding = _refused_redirect(loaded, "ex:HeLa", "ex:TP53")
+    assert "f:reg-1 names ex:HeLa (version 1" in finding["message"]
+
+
+def test_a_redirect_is_accepted_when_no_record_names_the_entity(schema, fixture_doc, loaded):
+    dup = {"kind": "entity", "id": "ex:Louis-XIV-dup", "types": ["Person"], "label": "Louis XIV"}
+    loaded.put(dup, actor="t")
+    receipt = loaded.put(dict(dup, redirect_to="ex:LouisXIV"), actor="t")
+    assert receipt["records"] == [("ex:Louis-XIV-dup", 2, "versioned")]
+    fresh = MemoryStore(schema, clock=ScenarioClock())
+    assert fresh.put(dict(dup, redirect_to="ex:LouisXIV"), actor="t")["records"] == \
+        [("ex:Louis-XIV-dup", 1, "created")]
+    for content in ("snapshot", "history"):  # the store's own export stays valid
+        assert validate.validate_container(loaded.export("khg-json", content=content), schema=schema)["ok"]
 
 
 # ------------------------------------------------------------------------------------------------ reads

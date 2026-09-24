@@ -6,7 +6,8 @@ overlaid with them). The operation checks its own preconditions first (capabilit
 1. record validation: layers C and S on every record written (``ValidationError``);
 2. the version rule on new versions (D013, ``VersionError``);
 3. references: every new or changed entity and fact value resolves in the post-state (D002) and names no entity
-   with ``redirect_to`` (D020); and, for events, the lifecycle pointers (D010);
+   with ``redirect_to`` (D020); an entity gains ``redirect_to`` only while no version the store holds names it
+   (D020, ruling 10); and, for events, the lifecycle pointers (D010);
 4. nesting cycles (D008);
 5. the key invariant and, for ``put``, the disputed-key rule (D016, ``KeyCollision``), on the key groups the write
    touches; a write that breaks the invariant without an incoming asserted fact taking part (retracting the only
@@ -139,17 +140,18 @@ class WriteMixin:
     @staticmethod
     def _incoming(record: Any, where: str) -> dict[str, Any]:
         """An incoming record in canonical form without store fields; C codes when it cannot be read as an
-        entity or a hyperedge with a string id."""
+        entity or a hyperedge with a string id (and, for a hyperedge, a string relation)."""
         if not isinstance(record, Mapping):
             raise fail("KHG-C010", f"a record is an object, not {type(record).__name__}", where)
         kind = record.get("kind")
         if kind not in ("entity", "hyperedge"):
             code = "KHG-C010" if kind is None else "KHG-C002"
             raise fail(code, f"a store holds entity and hyperedge records, not {kind!r}", f"{where}/kind")
-        if not isinstance(record.get("id"), str):
-            findings = _c_findings(dict(record), where)
-            raise ValidationError.from_findings(findings or [make_finding("KHG-C010", f"{where}/id",
-                                                                          "a record id is a string")])
+        for field in ("id", "relation") if kind == "hyperedge" else ("id",):
+            if not isinstance(record.get(field), str):
+                findings = _c_findings(dict(record), where)
+                raise ValidationError.from_findings(findings or [make_finding("KHG-C010", f"{where}/{field}",
+                                                                              f"a record {field} is a string")])
         out = normalize(record)
         for f in STORE_FIELDS:
             out.pop(f, None)
@@ -187,10 +189,30 @@ class WriteMixin:
         if problems:
             raise lifecycle.error_for(problems)
 
+    def _named_by(self, eid: str) -> tuple[str, int, int] | None:
+        """(id, version, binding index) of the first held version, in id order then oldest first, of any status,
+        whose entity value names ``eid``; None when none does."""
+        for rid in sorted(self._table.by_node(eid)):
+            for e in self._table.entries(rid):
+                for j, kind, target in bound_nodes(e.record):
+                    if kind == "entity" and target == eid:
+                        return rid, e.record.get("version"), j
+        return None
+
     def _check_references(self, pending: Pending) -> None:
-        """D002 and D020 on the new or changed entity and fact values of the records with new content."""
+        """D002 and D020 on the new or changed entity and fact values of the records with new content; D020 on an
+        entity that gains ``redirect_to`` while a held version names it (ruling 10: values are rewritten in 1.2)."""
         found = []
         for i, r in enumerate(pending.records()):
+            if r.get("kind") == "entity" and r.get("redirect_to") and \
+                    not (self._table.current(r["id"]) or {}).get("redirect_to"):
+                named = self._named_by(r["id"])
+                if named is not None:
+                    rid, version, j = named
+                    found.append(make_finding("KHG-D020", f"/records/{i}/redirect_to",
+                                              f"{r['id']}: redirect_to is refused while {rid} names {r['id']} "
+                                              f"(version {version}, /bindings/{j}/value); values are rewritten "
+                                              "in 1.2"))
             if r["id"] not in pending.fresh or r.get("kind") != "hyperedge":
                 continue
             changed = set(_changed(r, self._table.current(r["id"])))

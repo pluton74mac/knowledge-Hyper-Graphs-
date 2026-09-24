@@ -176,7 +176,99 @@ equal `src/khg_contracts` file by file.
 - **The two C004 findings of an overlong year** (one from layer C at `.../time`, one from the S step at the
   literal) are the pattern that any malformed time literal already had, such as a missing sign. The S step does not
   skip a literal that layer C rejected.
-- **`MemoryStore.load` and an unhashable `relation`**: see the fuzz above.
+- **`MemoryStore.load` and an unhashable `relation`**: see the fuzz above. Fixed since: see the follow-up below.
 - **Two files outside the repository.** A misquoted shell line during the CI runs wrote two small logs,
   `/core-3.13.log` and `/gate-3.11.log` (82 bytes each, a "No such file" message). The session's safety check
   refused to delete files at the filesystem root, so they are left for the owner to remove.
+
+## Follow-up: MemoryStore.load on non-string relations (2026-09-24)
+
+This follow-up fixes the fuzz observation above. The same pass applies the director's ruling 10 (d-store-10). It
+changes only `store/` and `tests/store/`.
+
+### Relations that are not strings
+
+**The bug.** `MemoryStore.load` raised a raw `TypeError: unhashable type` from `store/flags.data_flags`
+(`record.get("relation") in LIFECYCLE_RELATIONS`) for a hyperedge whose `relation` is a list or an object. `put`
+crashed the same way: `_need_data` reads the flags of the raw records before validating them.
+
+**The changes.**
+- `MemoryStore.load` refuses a hyperedge whose `relation` is not a string with C010 at `/records/<i>/relation`. The
+  refusal comes in the loop that already refuses a record without a string id. Nothing is loaded. A number, `null`
+  or a missing relation is refused too. They did not crash, but the store indexes hyperedges by relation, and the
+  docstring promises C010 or C002 for what `load` cannot index.
+- `data_flags` treats a relation as a lifecycle relation only when it is a string
+  (`isinstance(relation, str) and relation in LIFECYCLE_RELATIONS`), for callers that pass unvalidated records.
+- **`_writes._incoming`** (used by `put` and the records an event carries) refuses a hyperedge whose relation is not
+  a string, as it already refused a non-string id. It raises layer C's findings, else C010 at `<where>/relation`.
+  Before this, `put` crashed in `record/lifecycle._is_lifecycle` once `data_flags` was fixed, so the `data_flags`
+  guard alone was not enough. Layer C reports C010 at `/relation` and a C012 from the schema's lifecycle-field
+  conditional. A record whose relation is missing or not a string now gets these C codes before the status rules
+  (D014, D017), as a non-string id already did.
+
+**Other shapes probed.** Both packaged containers were loaded with one field of one record replaced (scratch
+script `probe_load.py`):
+- the containers: `fixture.c1.json` (2,192 loads) and `fixture.history.c1.json` (1,644 loads);
+- the records: an entity, a fact, a lifecycle record and a goal;
+- the fields: 23 top-level fields; a binding's `value`, `role`, `bid` and `position`; an evidence record's `id`,
+  `supports` and `type`; a non-object appended to `bindings` or `evidence`;
+- the shapes: a list, an object, an integer, a float, `null`, a boolean, `""` or a deletion;
+- the runs: each mutant under `on_missing="raise"` with every flag, and under `"skip"` without `goals`,
+  `special_values` and `nesting`.
+
+At HEAD, 20 loads raised a non-KHG exception, all from the relation (12 in c1, 8 in the history). Now none does.
+Nothing else crashed: `bindings` that is not a list, a binding that is not an object, `status`, `status_ref` or
+`evidence` of the wrong type. Before and after the fix, `load` keeps such records as a trusted load, as
+`test_reads_pass_over_a_malformed_record_that_a_load_kept` pins for status, rank and visibility. A bad `version` was
+already C010 and a bad `recorded_at` was already C011. No other refusal was added. The same mutations through `put`
+(822 writes, `probe_put.py`): 4 `TypeError` at HEAD (the relation), none now.
+
+### Ruling 10: a redirect is refused while a held record names the entity
+
+`WriteMixin._check_references` is shared by `put` and the five events. It now refuses, with D020 at
+`/records/<i>/redirect_to`, an entity record of the write that gains `redirect_to` while a record the store holds has
+an entity value naming it. "Gains" means the held version has no `redirect_to`, or the entity is new. "Holds" covers
+any version and any status. The message names the first such record in id order, its version and its binding
+pointer, for example: `ex:Paris: redirect_to is refused while f:born-louis14-paris names ex:Paris (version 1,
+/bindings/0/value); values are rewritten in 1.2`.
+- **How it finds them.** The table's node index covers every version, so the check reads `by_node(entity)` and
+  then those ids' versions.
+- **What is not re-checked.** A new version that keeps a held `redirect_to`, such as a label change, is not checked
+  again. Changing `redirect_to` is still D013.
+- **The validator is looser.** Its container D020 looks at current versions only. The store's rule covers every
+  version, as the ruling was relayed.
+- **`load` stays trusted.** It can still build a store in which a value names a redirected entity.
+- **No conformance scenario was added** (a 1.1 addition, so the suite stays at 114 scenarios). S-VER-008 and
+  S-PUT-010 redirect entities that no record names, and still pass.
+- **Before the change,** a loaded fixture accepted `ex:Paris` → `redirect_to: ex:Warszawa` as version 2, and the
+  store's own `khg-json` export then failed validation with D020. Now the put is refused and the export validates.
+- **One existing test changed.** `test_a_redirected_entity_is_refused_only_where_it_is_written` (W8) redirected a
+  named entity with a put, which the ruling now refuses. It now builds the same state with a trusted load. It still
+  pins W8's rule that D002 and D020 apply to the values a write adds or changes.
+
+### Tests
+
+| Test | Cases | At HEAD | Now |
+|---|---|---|---|
+| `test_load.py::test_load_refuses_a_hyperedge_whose_relation_is_not_a_string` (f:reg-1, m:sup-1, g:who-1774 × list, object, 7, absent; C010 at the path, nothing loaded, under raise and skip) | 12 | 6 `TypeError`, 6 do not raise | pass |
+| `test_load.py::test_data_flags_reads_a_relation_that_is_not_a_string` | 2 | `TypeError` | pass |
+| `test_memory_store.py::test_put_refuses_a_relation_that_is_not_a_string` | 2 | `TypeError` | pass |
+| `test_memory_store.py::test_a_redirect_is_refused_while_a_held_record_names_the_entity` (path, the named record, a batch refused whole) | 1 | does not raise | pass |
+| `test_memory_store.py::test_a_redirect_is_refused_for_a_name_in_any_status_or_version` (a superseded fact; version 1 only) | 1 | does not raise | pass |
+| `test_memory_store.py::test_a_redirect_is_accepted_when_no_record_names_the_entity` (a new version, a new record; snapshot and history exports validate) | 1 | pass | pass |
+
+**Each change was checked alone.**
+- The load check alone leaves the `data_flags` and `put` cases failing (4).
+- The `data_flags` guard alone leaves the 12 load cases and the 2 `put` cases failing. `put` then crashes in
+  `record/lifecycle._is_lifecycle`.
+- All three changes together pass all 16 relation cases.
+
+**Checks.**
+- Full suite (dev venv, Python 3.11, every extra): 5895 passed, 1 skipped. That is 19 more than the 5876 above, all
+  of them the new tests.
+- ruff (F, E9, E501, W, B; 120 columns; py310) reports nothing on `store/` and `tests/store/`.
+- mypy (py310) gives the same error set as HEAD.
+
+**Observation (not changed; outside `store/`).** `record/lifecycle._is_lifecycle` still raises `TypeError` for an
+unhashable relation when `put_problem`, `nesting_cycle` or the history step check gets an unvalidated record
+directly. The store no longer passes it one.

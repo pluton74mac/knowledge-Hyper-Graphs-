@@ -73,7 +73,8 @@ def data_flags(record: Any) -> frozenset[str]:
     out: set[str] = set()
     if record.get("status") == "goal":
         out.add("goals")
-    lifecycle = record.get("relation") in LIFECYCLE_RELATIONS
+    relation = record.get("relation")
+    lifecycle = isinstance(relation, str) and relation in LIFECYCLE_RELATIONS
     bindings = record.get("bindings")
     for b in bindings if isinstance(bindings, list) else []:
         if not isinstance(b, Mapping):

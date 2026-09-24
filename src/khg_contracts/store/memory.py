@@ -169,6 +169,9 @@ class MemoryStore(EventsMixin, StoreBase):
                     r.get("id"), str):
                 raise fail("KHG-C010", "a loaded record is an entity or a hyperedge with a string id",
                            f"/records/{i}")
+            if r["kind"] == "hyperedge" and not isinstance(r.get("relation"), str):
+                raise fail("KHG-C010", f"{r['id']}: a loaded hyperedge has a string relation",
+                           f"/records/{i}/relation")
             raw.append(r)
         staged = [normalize(r) for r in self._carry_loaded(raw)]
         skipped = self._missing(staged, on_missing)
