@@ -218,9 +218,10 @@ Strictness on the probe instances (section 4.4 has the solver-by-solver table):
 | `b_triangle` | 3 / 3 | 2 | 3/2 | 2 | 2 | fhw < ghw |
 | `k5` (K5 as binary edges) | 5 / 10 | 4 | 5/2 | 3 | 3 | fhw < ghw = hw < tw + 1 |
 | `adler` (Adler's example, HyperBench id 1) | 10 / 8 | 4 | 2 | 2 | 3 | **ghw < hw** (HyperBench lists hw = 3, ghw ≤ 2, fhw ≤ 2 for it) |
-| `grohe_marx_3` (Example 4.2, n = 3) | 20 / 6 | 18 | ≤ 2 (ρ* = 2) | 3 | 3 | fhw < ghw, and tw far above both |
+| `grohe_marx_3` (Example 4.2, n = 3) | 20 / 6 | 18 | 2 (fraSMT; ρ* = 2) | 3 | 3 | fhw < ghw, and tw far above both |
 | `c_grid4` (4×4 grid) | 16 / 24 | 4 | 3 | 3 | 3 | ghw meets the graph lower bound ⌈(tw+1)/2⌉: some bag has tw + 1 vertices, and binary edges cover at most two each |
-| `c_grid5` (5×5 grid) | 25 / 40 | 5 (htd) | – | 3 | 3 | as above |
+| `c_grid5` (5×5 grid) | 25 / 40 | ≤ 5 (htd) | 3 (fraSMT) | 3 | 3 | as above |
+| `c_grid2d_10` (Samer's Grid2D, gate case (c) scaled up) | 50 / 50 | ≤ 13 (htd) | 4 (fraSMT) | 4 | 4 | the first instance where solver choice matters (4.4) |
 
 ### 2.3 Complexity of checking and computing
 
@@ -437,15 +438,17 @@ Two runtime shims, both in `probes/`, make the Python tools run unmodified:
   `ImportError` until clingo and CPLEX are importable. It uses CPLEX for its fractional-cover preprocessing, and the
   pip `cplex` package is IBM's size-limited Community Edition, proprietary.
 
-### 4.3 Input formats, and three pitfalls
+### 4.3 Input formats and naming pitfalls
 
 - **HyperBench format** (all tools except htd): `E1 (a, b),` … `En (x, y).`, with `%` comments. The manual says names
   "may consist of any combination of lower- and uppercase letters, numbers, underscore, colon, etc." In practice:
   1. **BalancedGo panics if a relation id equals a role id** ("Edge names not unique, not a valid hypergraph!"),
      for example relation `population` with role `population`. NewDetKDecomp accepts the clash.
   2. **NewDetKDecomp rejects `-` and `.` in names** ("Illegal character"). BalancedGo accepts them. Colons pass both.
-  3. Hence **P6 should emit neutral ids (`R<i>` for relations, `V<j>` for roles) plus a mapping file**, as
-     `probes/probe_schemas.py` does, and map decompositions back.
+  3. **fraSMT silently read 0 edges** from Samer's `grid2d_10` (ids like `C0:1`) and reported fhw 1. After renaming the
+     ids it returned 4.0 (4.4).
+  4. Hence **P6 should emit neutral ids (`R<i>` for relations, `V<j>` for roles) plus a mapping file**, as
+     `probes/probe_schemas.py` does, map decompositions back, and check that the edge count the tool echoes matches.
 - **PACE 2019** (`p htd <n> <m>`, then `<edge-id> <v> …`, 1-based integers; the
   [PACE 2019 spec](https://pacechallenge.org/2019/htd/htd_format/)): BalancedGo `-pace` gave the same widths as on
   HyperBench input.
@@ -483,21 +486,24 @@ SCALE_TABLE_PLACEHOLDER
   (C ∪ N(C)). Failed components are memoised (GLS 2002, §5; [Gottlob and Samer, 2008](https://doi.org/10.1145/1412228.1412229)).
   Every HD it returns is re-checked against the four conditions.
 
-Measured costs (single core, Python 3.11):
+Measured costs (single core, Python 3.11; `out/dp_limits.json`, `out/probe_theory.json`):
 
-| Computation | Instance | Result | Time |
+| Computation | Instance (core size) | Result | Time |
 |---|---|---|---|
+| tw DP | `c_grid4` (16 vertices) | 4 | 1 s |
 | ghw DP | `c_grid4` (16 vertices) | 3 | 2 s |
-| fhw DP (one LP per bag) | `c_grid4` (16 vertices) | 3 | 55 s |
+| fhw DP (one LP per bag) | `c_grid4` (16 vertices) | 3 | 57 s |
+| fhw DP | `adler` (10 vertices) | 2 | 2 s |
+| tw DP | `grohe_marx_3` (20 vertices) | 18 | 24 s |
 | ghw DP | `grohe_marx_3` (20 vertices) | 3 | 42 s |
-| tw DP | `grohe_marx_3` (20 vertices) | 18 | 23 s |
 | hw search | `c_grid5` (25 vertices, 40 edges) | 3, validated | 0.2 s |
-| hw search | `c_grid2d_10` (50 vertices, 50 edges) | budget of 3·10⁶ separator trials exhausted | 1 s |
+| hw search | `grohe_marx_3` (20 vertices, 6 edges) | 3, validated | < 0.1 s |
+| hw search | `c_grid2d_10` (50 vertices, 50 edges; hw 4) | budget of 3·10⁶ separator trials exhausted | 1 s |
 
 **How small.** Exact ghw via the DP is practical up to a **core of about 16–20 vertices**: time and memory grow as
 2ⁿ, and 20 vertices took 42 s. fhw is practical up to **about 16**, where the LPs dominate. The hw search depends on
-m^k rather than n. It is instant for ≤ 40 edges at k ≤ 3, and it is where the external solvers should take over
-once m exceeds ~50 or k exceeds 3. These limits apply to the *GYO residue*, not the whole schema. P2's fixture
+m^k rather than n. It was instant on 40 edges at k = 3 but gave up on 50 edges at k = 4, which BalancedGo solved
+in 3 s. So the external solvers should take over once m exceeds ~40 or k exceeds 3. These limits apply to the *GYO residue*, not the whole schema. P2's fixture
 (30 roles, 11 relations) has an empty residue, so its widths are trivial whatever its size.
 
 ### 4.7 Recommendation

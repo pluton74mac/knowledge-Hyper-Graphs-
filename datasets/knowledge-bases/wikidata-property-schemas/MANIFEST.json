@@ -421,5 +421,5 @@
    "seconds": null
   }
  ],
- "notes": ""
+ "notes": "Fetched by projects/p6-schema-width/research/probes/wd_fetch.py, one SPARQL query at a time with a descriptive User-Agent and retry on 429/5xx. WDQS serves the main graph only (scholarly articles split off on 2025-05-09). Not obtainable on 2026-09-24: a full GROUP BY of qualifier usage over all statements of P39 (HTTP 504) and a single (P166, P585) COUNT (HTTP 504, Blazegraph TimeoutException); a DISTINCT label query for type-constraint classes was cut off twice and dropped. usage_<P>_slice<offset> files are four 20,000-statement slices at fixed offsets of the p:<P> index (index order, not random; optimizer off). sqid-*.json come from https://sqid.toolforge.org/data/ (SQID statistics built from the Wikidata dump of 2026-08-10; only the per-property 'qs' qualifier counts are used). sqid-properties.headers.txt holds the HTTP response headers of that download (Last-Modified 2026-09-24 08:37:47 GMT). processed/ (gitignored) holds wd-declared-d_property.relation-schema.json written by wd_schema_survey.py."
 }

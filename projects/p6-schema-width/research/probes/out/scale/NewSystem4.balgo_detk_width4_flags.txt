@@ -1,0 +1,42 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/BalancedGo/BalancedGo -graph /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/hyperbench/all/NewSystem4.hg -width 4 -det -t -h -g -heuristic 1 -bench
+
+							Bag: {POSITIONATINTERN_LV304___36_, LV304__36_, COMMANDATP3_LV304___36_}
+							Cover: {lv304:bt:_36__r1}
+
+							Bag: {POSITIONATINTERN_LV304___36_, RESISTANCEATINTERN_LV304___36_, RESINTCONST_LV304___36_}
+							Cover: {lv304:bt:_36__r3}
+						]
+					]
+
+					Bag: {FLOWOUTATPOUT_MON52___1_, FLOWINATPOUT_MON52___1_}
+					Cover: {mon52:bt:__pout_r1}
+
+					Bag: {FLOWINATP1_PF01___13_, FLOWOUTATP1_PF01___13_}
+					Cover: {pf01:bt:__p1_r1}
+				]
+
+				Bag: {FLOWOUTATPOUT_MON74___2_, FLOWINATPOUT_MON74___2_}
+				Cover: {mon74:bt:__pout_r1}
+
+				Bag: {FLOWINATP1_PF02___30_, FLOWOUTATP1_PF02___30_}
+				Cover: {pf02:bt:__p1_r1}
+			]
+		]
+
+		Bag: {FLOWINATP3_N5___15_, FLOWOUTATP3_N5___15_}
+		Cover: {n5:bt:__p3_r1}
+
+		Bag: {FLOWINATP2_N5___15_, FLOWOUTATP2_N5___15_}
+		Cover: {n5:bt:__p2_r1}
+	]
+]
+
+Time: 139.78159 ms
+Time Composition: 
+Heuristic : 16.48049 ms
+Hingetree : 22.39496 ms
+Decomposition : 100.90614 ms
+
+Width:  4
+Correct:  true
+[exit 0]

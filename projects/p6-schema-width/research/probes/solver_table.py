@@ -60,8 +60,11 @@ def main() -> None:
         ndk_ghw, _ = per_k(d["ndk"], "ghw_balsep_k")
         glob, _ = per_k(d["balancedgo"], "ghw_global_k")
         leo = cell(d["htdleo"], "hw") + " / " + cell(d["htdsmt"], "hw")
+        fra = cell(d["frasmt"], "fhw")
+        if f"{n}_neutral" in data:  # fraSMT reran on renamed ids after it silently parsed 0 edges (see report 4.3)
+            fra = f"{fra} (0 edges parsed); {cell(data[n + '_neutral']['frasmt'], 'fhw')} with neutral ids"
         row = [f"`{n}`", f"{p.get('vertices', '?')}/{p.get('edges', '?')}", pv, bal, cell(d["logk"], "hw_exact"), ndk_hw,
-               cell(d["detk1"], "hw_k3"), leo, glob, ndk_ghw, cell(d["htdleo"], "ghw"), cell(d["frasmt"], "fhw"),
+               cell(d["detk1"], "hw_k3"), leo, glob, ndk_ghw, cell(d["htdleo"], "ghw"), fra,
                cell(d["htd"], "tw") + " / " + cell(d["htd"], "ghw_ub")]
         lines.append("| " + " | ".join(row) + " |")
     md = "\n".join(lines)

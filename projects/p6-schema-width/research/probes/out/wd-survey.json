@@ -1076,7 +1076,420 @@
    }
   }
  },
- "sparql_usage": {},
+ "sparql_usage": {
+  "P39": {
+   "label": "position held",
+   "statements_live": 1994039,
+   "slices": 4,
+   "slice_statements": 80000,
+   "allowed": 104,
+   "distinct_qualifiers_in_slices": 102,
+   "slice_qualifiers_not_allowed": [
+    "P1142",
+    "P118",
+    "P122",
+    "P140",
+    "P158",
+    "P17",
+    "P1705",
+    "P18",
+    "P199",
+    "P2354",
+    "P241",
+    "P3005",
+    "P31",
+    "P35",
+    "P39",
+    "P425",
+    "P4884",
+    "P6",
+    "P6087",
+    "P641",
+    "P6939",
+    "P749",
+    "P812",
+    "P856",
+    "P92"
+   ],
+   "slice_statements_with_not_allowed": 97,
+   "allowed_seen_in_slices": 77,
+   "share_in_slices_vs_dump": [
+    [
+     "P580",
+     0.6825,
+     0.6404
+    ],
+    [
+     "P582",
+     0.5652,
+     0.4876
+    ],
+    [
+     "P2937",
+     0.4062,
+     0.3458
+    ],
+    [
+     "P1366",
+     0.1531,
+     0.1487
+    ],
+    [
+     "P1534",
+     0.1244,
+     0.0918
+    ],
+    [
+     "P1365",
+     0.1201,
+     0.164
+    ],
+    [
+     "P768",
+     0.1199,
+     0.1508
+    ],
+    [
+     "P4100",
+     0.0823,
+     0.113
+    ]
+   ],
+   "meta_in_slices": [
+    "P1534",
+    "P1810",
+    "P1932",
+    "P2241",
+    "P3680",
+    "P7452",
+    "P805"
+   ]
+  },
+  "P69": {
+   "label": "educated at",
+   "statements_live": 3663722,
+   "slices": 4,
+   "slice_statements": 80000,
+   "allowed": 57,
+   "distinct_qualifiers_in_slices": 54,
+   "slice_qualifiers_not_allowed": [
+    "P1352",
+    "P1476",
+    "P1545",
+    "P17",
+    "P2578",
+    "P31",
+    "P361",
+    "P5471",
+    "P560",
+    "P69",
+    "P813",
+    "P859"
+   ],
+   "slice_statements_with_not_allowed": 23,
+   "allowed_seen_in_slices": 42,
+   "share_in_slices_vs_dump": [
+    [
+     "P582",
+     0.2531,
+     0.3261
+    ],
+    [
+     "P512",
+     0.2239,
+     0.294
+    ],
+    [
+     "P580",
+     0.1885,
+     0.2854
+    ],
+    [
+     "P812",
+     0.0582,
+     0.0369
+    ],
+    [
+     "P585",
+     0.0221,
+     0.0099
+    ],
+    [
+     "P6424",
+     0.0085,
+     0.0002
+    ],
+    [
+     "P276",
+     0.0012,
+     0.0006
+    ],
+    [
+     "P2868",
+     0.0011,
+     0.0004
+    ]
+   ],
+   "meta_in_slices": [
+    "P1534",
+    "P1810",
+    "P1932",
+    "P2241",
+    "P7452",
+    "P805",
+    "P813"
+   ]
+  },
+  "P108": {
+   "label": "employer",
+   "statements_live": 2588812,
+   "slices": 4,
+   "slice_statements": 80000,
+   "allowed": 55,
+   "distinct_qualifiers_in_slices": 51,
+   "slice_qualifiers_not_allowed": [
+    "P1001",
+    "P1037",
+    "P108",
+    "P131",
+    "P1408",
+    "P1476",
+    "P155",
+    "P156",
+    "P2389",
+    "P241",
+    "P2699",
+    "P31",
+    "P366",
+    "P410",
+    "P6936",
+    "P803",
+    "P812"
+   ],
+   "slice_statements_with_not_allowed": 29,
+   "allowed_seen_in_slices": 34,
+   "share_in_slices_vs_dump": [
+    [
+     "P580",
+     0.5651,
+     0.5678
+    ],
+    [
+     "P582",
+     0.2985,
+     0.2981
+    ],
+    [
+     "P2868",
+     0.1804,
+     0.1751
+    ],
+    [
+     "P39",
+     0.0186,
+     0.0256
+    ],
+    [
+     "P361",
+     0.0035,
+     0.0029
+    ],
+    [
+     "P585",
+     0.0014,
+     0.0039
+    ],
+    [
+     "P1534",
+     0.0014,
+     0.0013
+    ],
+    [
+     "P101",
+     0.0013,
+     0.0012
+    ]
+   ],
+   "meta_in_slices": [
+    "P1534",
+    "P1810",
+    "P1932",
+    "P2241",
+    "P3680",
+    "P7452",
+    "P805"
+   ]
+  },
+  "P166": {
+   "label": "award received",
+   "statements_live": 1904956,
+   "slices": 4,
+   "slice_statements": 80000,
+   "allowed": 73,
+   "distinct_qualifiers_in_slices": 89,
+   "slice_qualifiers_not_allowed": [
+    "P1013",
+    "P1111",
+    "P131",
+    "P136",
+    "P1365",
+    "P1366",
+    "P1449",
+    "P166",
+    "P1683",
+    "P17",
+    "P186",
+    "P1868",
+    "P2378",
+    "P2561",
+    "P2910",
+    "P304",
+    "P31",
+    "P393",
+    "P410",
+    "P413",
+    "P457",
+    "P463",
+    "P5168",
+    "P518",
+    "P54",
+    "P570",
+    "P571",
+    "P576",
+    "P641",
+    "P7081",
+    "P748",
+    "P790",
+    "P812",
+    "P813",
+    "P8793"
+   ],
+   "slice_statements_with_not_allowed": 164,
+   "allowed_seen_in_slices": 54,
+   "share_in_slices_vs_dump": [
+    [
+     "P585",
+     0.4811,
+     0.421
+    ],
+    [
+     "P1686",
+     0.0302,
+     0.021
+    ],
+    [
+     "P6208",
+     0.0222,
+     0.0141
+    ],
+    [
+     "P1346",
+     0.0138,
+     0.005
+    ],
+    [
+     "P805",
+     0.012,
+     0.0129
+    ],
+    [
+     "P6949",
+     0.0119,
+     0.0036
+    ],
+    [
+     "P1027",
+     0.0067,
+     0.0074
+    ],
+    [
+     "P1706",
+     0.0066,
+     0.0057
+    ]
+   ],
+   "meta_in_slices": [
+    "P1534",
+    "P1683",
+    "P1810",
+    "P1932",
+    "P2241",
+    "P805",
+    "P813"
+   ]
+  },
+  "P54": {
+   "label": "member of sports team",
+   "statements_live": 1775444,
+   "slices": 4,
+   "slice_statements": 80000,
+   "allowed": 31,
+   "distinct_qualifiers_in_slices": 35,
+   "slice_qualifiers_not_allowed": [
+    "P1355",
+    "P1358",
+    "P1363",
+    "P1932",
+    "P4626",
+    "P551",
+    "P793",
+    "P856",
+    "P919",
+    "P973"
+   ],
+   "slice_statements_with_not_allowed": 11,
+   "allowed_seen_in_slices": 25,
+   "share_in_slices_vs_dump": [
+    [
+     "P580",
+     0.7939,
+     0.7076
+    ],
+    [
+     "P582",
+     0.7281,
+     0.6306
+    ],
+    [
+     "P1351",
+     0.3707,
+     0.386
+    ],
+    [
+     "P1350",
+     0.3702,
+     0.3848
+    ],
+    [
+     "P1642",
+     0.0512,
+     0.0506
+    ],
+    [
+     "P1545",
+     0.0024,
+     0.003
+    ],
+    [
+     "P585",
+     0.0022,
+     0.0042
+    ],
+    [
+     "P1129",
+     0.0021,
+     0.0031
+    ]
+   ],
+   "meta_in_slices": [
+    "P1534",
+    "P1932",
+    "P2241",
+    "P7452",
+    "P813"
+   ]
+  }
+ },
  "schema_check_d_property_declared": {
   "path": "datasets/knowledge-bases/wikidata-property-schemas/processed/wd-declared-d_property.relation-schema.json",
   "relations": 1155,
@@ -1137,7 +1550,7 @@
    "residue_edges": 386,
    "residue_vertices": 552,
    "reference_checked": true,
-   "seconds": 0.19,
+   "seconds": 0.22,
    "notes": {
     "unknown_qualifier_ids": 0
    }
@@ -1149,7 +1562,7 @@
    "edges": 1155,
    "vertices": 966,
    "max_edge": 119,
-   "mean_edge": 9.31,
+   "mean_edge": 9.36,
    "components": 1,
    "largest_component_edges": 1155,
    "universal_vertices": [
@@ -1166,12 +1579,12 @@
      1155
     ],
     [
-     "P580",
-     396
+     "P582",
+     408
     ],
     [
-     "P582",
-     362
+     "P580",
+     408
     ],
     [
      "P518",
@@ -1191,13 +1604,14 @@
     ]
    ],
    "alpha_acyclic": false,
-   "residue_edges": 340,
+   "residue_edges": 339,
    "residue_vertices": 524,
    "reference_checked": true,
    "seconds": 0.15,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 110
+    "time_bound_added": 58,
+    "end_cause_as_builtin": 111
    }
   },
   {
@@ -1205,9 +1619,9 @@
    "variant": "a_generic",
    "treatment": "core+qualifier",
    "edges": 1155,
-   "vertices": 966,
+   "vertices": 964,
    "max_edge": 117,
-   "mean_edge": 8.71,
+   "mean_edge": 8.66,
    "components": 1,
    "largest_component_edges": 1155,
    "universal_vertices": [
@@ -1249,13 +1663,14 @@
     ]
    ],
    "alpha_acyclic": false,
-   "residue_edges": 350,
-   "residue_vertices": 524,
+   "residue_edges": 338,
+   "residue_vertices": 522,
    "reference_checked": true,
    "seconds": 0.15,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 110
+    "time_bound_added": 58,
+    "end_cause_as_builtin": 111
    }
   },
   {
@@ -1307,7 +1722,7 @@
    "residue_edges": 386,
    "residue_vertices": 550,
    "reference_checked": true,
-   "seconds": 0.16,
+   "seconds": 0.17,
    "notes": {
     "unknown_qualifier_ids": 0
    }
@@ -1319,18 +1734,18 @@
    "edges": 1155,
    "vertices": 3274,
    "max_edge": 119,
-   "mean_edge": 9.31,
+   "mean_edge": 9.36,
    "components": 141,
    "largest_component_edges": 1012,
    "universal_vertices": [],
    "top_degree": [
     [
-     "P580",
-     396
+     "P582",
+     408
     ],
     [
-     "P582",
-     362
+     "P580",
+     408
     ],
     [
      "P518",
@@ -1358,13 +1773,14 @@
     ]
    ],
    "alpha_acyclic": false,
-   "residue_edges": 340,
+   "residue_edges": 339,
    "residue_vertices": 522,
    "reference_checked": true,
-   "seconds": 0.15,
+   "seconds": 0.16,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 110
+    "time_bound_added": 58,
+    "end_cause_as_builtin": 111
    }
   },
   {
@@ -1372,11 +1788,11 @@
    "variant": "b_local",
    "treatment": "core+qualifier",
    "edges": 1155,
-   "vertices": 3274,
+   "vertices": 3272,
    "max_edge": 117,
-   "mean_edge": 8.71,
-   "components": 154,
-   "largest_component_edges": 999,
+   "mean_edge": 8.66,
+   "components": 158,
+   "largest_component_edges": 995,
    "universal_vertices": [],
    "top_degree": [
     [
@@ -1413,13 +1829,14 @@
     ]
    ],
    "alpha_acyclic": false,
-   "residue_edges": 350,
-   "residue_vertices": 522,
+   "residue_edges": 338,
+   "residue_vertices": 520,
    "reference_checked": true,
    "seconds": 0.1,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 110
+    "time_bound_added": 58,
+    "end_cause_as_builtin": 111
    }
   },
   {
@@ -1483,18 +1900,18 @@
    "edges": 1155,
    "vertices": 3073,
    "max_edge": 119,
-   "mean_edge": 9.31,
+   "mean_edge": 9.36,
    "components": 89,
    "largest_component_edges": 1054,
    "universal_vertices": [],
    "top_degree": [
     [
-     "P580",
-     396
+     "P582",
+     408
     ],
     [
-     "P582",
-     362
+     "P580",
+     408
     ],
     [
      "P518",
@@ -1522,13 +1939,14 @@
     ]
    ],
    "alpha_acyclic": false,
-   "residue_edges": 422,
+   "residue_edges": 421,
    "residue_vertices": 563,
    "reference_checked": true,
    "seconds": 0.13,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 110
+    "time_bound_added": 58,
+    "end_cause_as_builtin": 111
    }
   },
   {
@@ -1536,11 +1954,11 @@
    "variant": "c_typed",
    "treatment": "core+qualifier",
    "edges": 1155,
-   "vertices": 3073,
+   "vertices": 3071,
    "max_edge": 117,
-   "mean_edge": 8.71,
-   "components": 99,
-   "largest_component_edges": 1043,
+   "mean_edge": 8.66,
+   "components": 101,
+   "largest_component_edges": 1041,
    "universal_vertices": [],
    "top_degree": [
     [
@@ -1577,13 +1995,14 @@
     ]
    ],
    "alpha_acyclic": false,
-   "residue_edges": 438,
-   "residue_vertices": 563,
+   "residue_edges": 420,
+   "residue_vertices": 561,
    "reference_checked": true,
-   "seconds": 0.13,
+   "seconds": 0.15,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 110
+    "time_bound_added": 58,
+    "end_cause_as_builtin": 111
    }
   },
   {
@@ -1650,7 +2069,7 @@
    "edges": 1155,
    "vertices": 1884,
    "max_edge": 119,
-   "mean_edge": 9.31,
+   "mean_edge": 9.36,
    "components": 1,
    "largest_component_edges": 1155,
    "universal_vertices": [
@@ -1662,12 +2081,12 @@
      1155
     ],
     [
-     "P580",
-     396
+     "P582",
+     409
     ],
     [
-     "P582",
-     363
+     "P580",
+     408
     ],
     [
      "P518",
@@ -1691,13 +2110,14 @@
     ]
    ],
    "alpha_acyclic": false,
-   "residue_edges": 393,
+   "residue_edges": 392,
    "residue_vertices": 617,
    "reference_checked": true,
-   "seconds": 0.15,
+   "seconds": 0.16,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 110,
+    "time_bound_added": 58,
+    "end_cause_as_builtin": 111,
     "self_qualifier_dropped": 9
    }
   },
@@ -1706,9 +2126,9 @@
    "variant": "d_property",
    "treatment": "core+qualifier",
    "edges": 1155,
-   "vertices": 1884,
+   "vertices": 1883,
    "max_edge": 117,
-   "mean_edge": 8.7,
+   "mean_edge": 8.65,
    "components": 1,
    "largest_component_edges": 1155,
    "universal_vertices": [
@@ -1749,13 +2169,14 @@
     ]
    ],
    "alpha_acyclic": false,
-   "residue_edges": 401,
-   "residue_vertices": 618,
+   "residue_edges": 391,
+   "residue_vertices": 615,
    "reference_checked": true,
-   "seconds": 0.15,
+   "seconds": 0.19,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 110,
+    "time_bound_added": 58,
+    "end_cause_as_builtin": 111,
     "self_qualifier_dropped": 9
    }
   },
@@ -1772,11 +2193,11 @@
    "universal_vertices": [],
    "top_degree": [
     [
-     "P2968:value",
+     "P2968:subject",
      1
     ],
     [
-     "P2968:subject",
+     "P2968:value",
      1
     ],
     [
@@ -1788,11 +2209,11 @@
      1
     ],
     [
-     "P11759:subject",
+     "P11759:value",
      1
     ],
     [
-     "P11759:value",
+     "P11759:subject",
      1
     ],
     [
@@ -1808,7 +2229,7 @@
    "residue_edges": 0,
    "residue_vertices": 0,
    "reference_checked": true,
-   "seconds": 0.1,
+   "seconds": 0.03,
    "notes": {
     "unknown_qualifier_ids": 0
    }
@@ -1818,19 +2239,19 @@
    "variant": "e_relation_local",
    "treatment": "core+qualifier+time",
    "edges": 1155,
-   "vertices": 10757,
+   "vertices": 10815,
    "max_edge": 119,
-   "mean_edge": 9.31,
+   "mean_edge": 9.36,
    "components": 1155,
    "largest_component_edges": 1,
    "universal_vertices": [],
    "top_degree": [
     [
-     "P2968:value",
+     "P2968:subject",
      1
     ],
     [
-     "P2968:subject",
+     "P2968:value",
      1
     ],
     [
@@ -1842,19 +2263,19 @@
      1
     ],
     [
-     "P11759:subject",
-     1
-    ],
-    [
      "P11759:value",
      1
     ],
     [
-     "P11760:value",
+     "P11759:subject",
      1
     ],
     [
      "P11760:subject",
+     1
+    ],
+    [
+     "P11760:value",
      1
     ]
    ],
@@ -1865,7 +2286,8 @@
    "seconds": 0.02,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 110
+    "time_bound_added": 58,
+    "end_cause_as_builtin": 111
    }
   },
   {
@@ -1873,19 +2295,19 @@
    "variant": "e_relation_local",
    "treatment": "core+qualifier",
    "edges": 1155,
-   "vertices": 10057,
+   "vertices": 9999,
    "max_edge": 117,
-   "mean_edge": 8.71,
+   "mean_edge": 8.66,
    "components": 1155,
    "largest_component_edges": 1,
    "universal_vertices": [],
    "top_degree": [
     [
-     "P2968:value",
+     "P2968:subject",
      1
     ],
     [
-     "P2968:subject",
+     "P2968:value",
      1
     ],
     [
@@ -1897,19 +2319,19 @@
      1
     ],
     [
-     "P11759:subject",
-     1
-    ],
-    [
      "P11759:value",
      1
     ],
     [
-     "P11760:value",
+     "P11759:subject",
      1
     ],
     [
      "P11760:subject",
+     1
+    ],
+    [
+     "P11760:value",
      1
     ]
    ],
@@ -1920,7 +2342,8 @@
    "seconds": 0.02,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 110
+    "time_bound_added": 58,
+    "end_cause_as_builtin": 111
    }
   },
   {
@@ -1974,8 +2397,8 @@
    "alpha_acyclic": false,
    "residue_edges": 733,
    "residue_vertices": 427,
-   "reference_checked": null,
-   "seconds": 14.15,
+   "reference_checked": true,
+   "seconds": 15.09,
    "notes": {
     "unknown_qualifier_ids": 0
    }
@@ -1987,7 +2410,7 @@
    "edges": 13608,
    "vertices": 779,
    "max_edge": 36,
-   "mean_edge": 2.63,
+   "mean_edge": 2.65,
    "components": 1,
    "largest_component_edges": 13608,
    "universal_vertices": [
@@ -2005,15 +2428,15 @@
     ],
     [
      "P580",
-     750
+     806
+    ],
+    [
+     "P582",
+     806
     ],
     [
      "P585",
      621
-    ],
-    [
-     "P582",
-     602
     ],
     [
      "P518",
@@ -2029,13 +2452,14 @@
     ]
    ],
    "alpha_acyclic": false,
-   "residue_edges": 596,
-   "residue_vertices": 396,
-   "reference_checked": null,
-   "seconds": 14.47,
+   "residue_edges": 591,
+   "residue_vertices": 394,
+   "reference_checked": true,
+   "seconds": 15.32,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 42
+    "time_bound_added": 260,
+    "end_cause_as_builtin": 45
    }
   },
   {
@@ -2043,9 +2467,9 @@
    "variant": "a_generic",
    "treatment": "core+qualifier",
    "edges": 13608,
-   "vertices": 779,
+   "vertices": 777,
    "max_edge": 34,
-   "mean_edge": 2.55,
+   "mean_edge": 2.53,
    "components": 1,
    "largest_component_edges": 13608,
    "universal_vertices": [
@@ -2078,22 +2502,23 @@
      296
     ],
     [
-     "P580",
-     204
-    ],
-    [
      "P1545",
      197
+    ],
+    [
+     "P1552",
+     167
     ]
    ],
    "alpha_acyclic": false,
-   "residue_edges": 622,
-   "residue_vertices": 400,
-   "reference_checked": null,
-   "seconds": 14.35,
+   "residue_edges": 586,
+   "residue_vertices": 392,
+   "reference_checked": true,
+   "seconds": 15.74,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 42
+    "time_bound_added": 260,
+    "end_cause_as_builtin": 45
    }
   },
   {
@@ -2144,8 +2569,8 @@
    "alpha_acyclic": false,
    "residue_edges": 733,
    "residue_vertices": 425,
-   "reference_checked": null,
-   "seconds": 0.84,
+   "reference_checked": true,
+   "seconds": 1.82,
    "notes": {
     "unknown_qualifier_ids": 0
    }
@@ -2157,22 +2582,22 @@
    "edges": 13608,
    "vertices": 27993,
    "max_edge": 36,
-   "mean_edge": 2.63,
+   "mean_edge": 2.65,
    "components": 10881,
    "largest_component_edges": 2722,
    "universal_vertices": [],
    "top_degree": [
     [
      "P580",
-     750
+     806
+    ],
+    [
+     "P582",
+     806
     ],
     [
      "P585",
      621
-    ],
-    [
-     "P582",
-     602
     ],
     [
      "P518",
@@ -2196,13 +2621,14 @@
     ]
    ],
    "alpha_acyclic": false,
-   "residue_edges": 596,
-   "residue_vertices": 394,
-   "reference_checked": null,
-   "seconds": 0.22,
+   "residue_edges": 591,
+   "residue_vertices": 392,
+   "reference_checked": true,
+   "seconds": 1.02,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 42
+    "time_bound_added": 260,
+    "end_cause_as_builtin": 45
    }
   },
   {
@@ -2210,11 +2636,11 @@
    "variant": "b_local",
    "treatment": "core+qualifier",
    "edges": 13608,
-   "vertices": 27993,
+   "vertices": 27991,
    "max_edge": 34,
-   "mean_edge": 2.55,
-   "components": 11018,
-   "largest_component_edges": 2585,
+   "mean_edge": 2.53,
+   "components": 11122,
+   "largest_component_edges": 2481,
    "universal_vertices": [],
    "top_degree": [
     [
@@ -2232,10 +2658,6 @@
     [
      "P3831",
      296
-    ],
-    [
-     "P580",
-     204
     ],
     [
      "P1545",
@@ -2248,16 +2670,21 @@
     [
      "P1480",
      138
+    ],
+    [
+     "P1013",
+     119
     ]
    ],
    "alpha_acyclic": false,
-   "residue_edges": 622,
-   "residue_vertices": 398,
-   "reference_checked": null,
-   "seconds": 0.37,
+   "residue_edges": 586,
+   "residue_vertices": 390,
+   "reference_checked": true,
+   "seconds": 0.99,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 42
+    "time_bound_added": 260,
+    "end_cause_as_builtin": 45
    }
   },
   {
@@ -2308,8 +2735,8 @@
    "alpha_acyclic": false,
    "residue_edges": 1142,
    "residue_vertices": 593,
-   "reference_checked": null,
-   "seconds": 0.87,
+   "reference_checked": true,
+   "seconds": 3.85,
    "notes": {
     "unknown_qualifier_ids": 0
    }
@@ -2321,7 +2748,7 @@
    "edges": 13608,
    "vertices": 22585,
    "max_edge": 36,
-   "mean_edge": 2.63,
+   "mean_edge": 2.65,
    "components": 6063,
    "largest_component_edges": 6638,
    "universal_vertices": [],
@@ -2332,15 +2759,15 @@
     ],
     [
      "P580",
-     750
+     806
+    ],
+    [
+     "P582",
+     806
     ],
     [
      "P585",
      621
-    ],
-    [
-     "P582",
-     602
     ],
     [
      "P518",
@@ -2360,13 +2787,14 @@
     ]
    ],
    "alpha_acyclic": false,
-   "residue_edges": 900,
-   "residue_vertices": 526,
-   "reference_checked": null,
-   "seconds": 0.56,
+   "residue_edges": 886,
+   "residue_vertices": 522,
+   "reference_checked": true,
+   "seconds": 3.01,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 42
+    "time_bound_added": 260,
+    "end_cause_as_builtin": 45
    }
   },
   {
@@ -2374,11 +2802,11 @@
    "variant": "c_typed",
    "treatment": "core+qualifier",
    "edges": 13608,
-   "vertices": 22585,
+   "vertices": 22583,
    "max_edge": 34,
-   "mean_edge": 2.55,
-   "components": 6168,
-   "largest_component_edges": 6515,
+   "mean_edge": 2.53,
+   "components": 6231,
+   "largest_component_edges": 6435,
    "universal_vertices": [],
    "top_degree": [
     [
@@ -2410,18 +2838,19 @@
      224
     ],
     [
-     "P580",
-     204
+     "P1545",
+     197
     ]
    ],
    "alpha_acyclic": false,
-   "residue_edges": 908,
-   "residue_vertices": 522,
-   "reference_checked": null,
-   "seconds": 0.68,
+   "residue_edges": 848,
+   "residue_vertices": 506,
+   "reference_checked": true,
+   "seconds": 2.88,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 42
+    "time_bound_added": 260,
+    "end_cause_as_builtin": 45
    }
   },
   {
@@ -2474,8 +2903,8 @@
    "alpha_acyclic": false,
    "residue_edges": 893,
    "residue_vertices": 582,
-   "reference_checked": null,
-   "seconds": 9.95,
+   "reference_checked": true,
+   "seconds": 11.4,
    "notes": {
     "unknown_qualifier_ids": 0,
     "self_qualifier_dropped": 14
@@ -2488,7 +2917,7 @@
    "edges": 13608,
    "vertices": 13655,
    "max_edge": 36,
-   "mean_edge": 2.63,
+   "mean_edge": 2.65,
    "components": 1,
    "largest_component_edges": 13608,
    "universal_vertices": [
@@ -2501,15 +2930,15 @@
     ],
     [
      "P580",
-     751
+     807
+    ],
+    [
+     "P582",
+     807
     ],
     [
      "P585",
      622
-    ],
-    [
-     "P582",
-     603
     ],
     [
      "P518",
@@ -2529,13 +2958,14 @@
     ]
    ],
    "alpha_acyclic": false,
-   "residue_edges": 754,
-   "residue_vertices": 542,
-   "reference_checked": null,
-   "seconds": 10.18,
+   "residue_edges": 748,
+   "residue_vertices": 540,
+   "reference_checked": true,
+   "seconds": 11.89,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 42,
+    "time_bound_added": 260,
+    "end_cause_as_builtin": 45,
     "self_qualifier_dropped": 14
    }
   },
@@ -2546,7 +2976,7 @@
    "edges": 13608,
    "vertices": 13655,
    "max_edge": 34,
-   "mean_edge": 2.55,
+   "mean_edge": 2.53,
    "components": 1,
    "largest_component_edges": 13608,
    "universal_vertices": [
@@ -2574,26 +3004,27 @@
      297
     ],
     [
-     "P580",
-     205
-    ],
-    [
      "P1545",
      197
     ],
     [
      "P1552",
      168
+    ],
+    [
+     "P1480",
+     139
     ]
    ],
    "alpha_acyclic": false,
-   "residue_edges": 779,
-   "residue_vertices": 543,
-   "reference_checked": null,
-   "seconds": 10.64,
+   "residue_edges": 741,
+   "residue_vertices": 537,
+   "reference_checked": true,
+   "seconds": 11.79,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 42,
+    "time_bound_added": 260,
+    "end_cause_as_builtin": 45,
     "self_qualifier_dropped": 14
    }
   },
@@ -2618,7 +3049,7 @@
      1
     ],
     [
-     "P442:value",
+     "P442:subject",
      1
     ],
     [
@@ -2626,15 +3057,15 @@
      1
     ],
     [
-     "P442:subject",
-     1
-    ],
-    [
-     "P785:value",
+     "P442:value",
      1
     ],
     [
      "P785:subject",
+     1
+    ],
+    [
+     "P785:value",
      1
     ],
     [
@@ -2645,8 +3076,8 @@
    "alpha_acyclic": true,
    "residue_edges": 0,
    "residue_vertices": 0,
-   "reference_checked": null,
-   "seconds": 0.38,
+   "reference_checked": true,
+   "seconds": 0.37,
    "notes": {
     "unknown_qualifier_ids": 0
    }
@@ -2656,9 +3087,9 @@
    "variant": "e_relation_local",
    "treatment": "core+qualifier+time",
    "edges": 13608,
-   "vertices": 35805,
+   "vertices": 36065,
    "max_edge": 36,
-   "mean_edge": 2.63,
+   "mean_edge": 2.65,
    "components": 13608,
    "largest_component_edges": 1,
    "universal_vertices": [],
@@ -2672,7 +3103,11 @@
      1
     ],
     [
-     "P442:value",
+     "P442:subject",
+     1
+    ],
+    [
+     "P442:P580",
      1
     ],
     [
@@ -2680,11 +3115,7 @@
      1
     ],
     [
-     "P442:subject",
-     1
-    ],
-    [
-     "P785:value",
+     "P442:value",
      1
     ],
     [
@@ -2692,18 +3123,19 @@
      1
     ],
     [
-     "P784:subject",
+     "P785:value",
      1
     ]
    ],
    "alpha_acyclic": true,
    "residue_edges": 0,
    "residue_vertices": 0,
-   "reference_checked": null,
-   "seconds": 0.11,
+   "reference_checked": true,
+   "seconds": 0.36,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 42
+    "time_bound_added": 260,
+    "end_cause_as_builtin": 45
    }
   },
   {
@@ -2711,9 +3143,9 @@
    "variant": "e_relation_local",
    "treatment": "core+qualifier",
    "edges": 13608,
-   "vertices": 34713,
+   "vertices": 34453,
    "max_edge": 34,
-   "mean_edge": 2.55,
+   "mean_edge": 2.53,
    "components": 13608,
    "largest_component_edges": 1,
    "universal_vertices": [],
@@ -2727,19 +3159,11 @@
      1
     ],
     [
-     "P442:value",
-     1
-    ],
-    [
-     "P442:P582",
-     1
-    ],
-    [
      "P442:subject",
      1
     ],
     [
-     "P785:value",
+     "P442:value",
      1
     ],
     [
@@ -2747,18 +3171,27 @@
      1
     ],
     [
+     "P785:value",
+     1
+    ],
+    [
      "P784:subject",
+     1
+    ],
+    [
+     "P784:value",
      1
     ]
    ],
    "alpha_acyclic": true,
    "residue_edges": 0,
    "residue_vertices": 0,
-   "reference_checked": null,
-   "seconds": 0.34,
+   "reference_checked": true,
+   "seconds": 0.12,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 42
+    "time_bound_added": 260,
+    "end_cause_as_builtin": 45
    }
   },
   {
@@ -2777,11 +3210,11 @@
    ],
    "top_degree": [
     [
-     "value",
+     "subject",
      13608
     ],
     [
-     "subject",
+     "value",
      13608
     ],
     [
@@ -2812,8 +3245,8 @@
    "alpha_acyclic": false,
    "residue_edges": 994,
    "residue_vertices": 1676,
-   "reference_checked": null,
-   "seconds": 13.96,
+   "reference_checked": true,
+   "seconds": 15.96,
    "notes": {
     "unknown_qualifier_ids": 0
    }
@@ -2825,7 +3258,7 @@
    "edges": 13608,
    "vertices": 2532,
    "max_edge": 752,
-   "mean_edge": 6.38,
+   "mean_edge": 6.42,
    "components": 1,
    "largest_component_edges": 13608,
    "universal_vertices": [
@@ -2834,24 +3267,24 @@
    ],
    "top_degree": [
     [
-     "value",
-     13608
-    ],
-    [
      "subject",
      13608
     ],
     [
-     "P518",
-     1972
+     "value",
+     13608
     ],
     [
      "P580",
-     1934
+     2175
     ],
     [
      "P582",
-     1821
+     2175
+    ],
+    [
+     "P518",
+     1972
     ],
     [
      "P407",
@@ -2869,11 +3302,12 @@
    "alpha_acyclic": false,
    "residue_edges": 942,
    "residue_vertices": 1649,
-   "reference_checked": null,
-   "seconds": 13.88,
+   "reference_checked": true,
+   "seconds": 15.01,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 396
+    "time_bound_added": 595,
+    "end_cause_as_builtin": 406
    }
   },
   {
@@ -2881,9 +3315,9 @@
    "variant": "a_generic",
    "treatment": "core+qualifier",
    "edges": 13608,
-   "vertices": 2532,
+   "vertices": 2530,
    "max_edge": 750,
-   "mean_edge": 6.15,
+   "mean_edge": 6.1,
    "components": 1,
    "largest_component_edges": 13608,
    "universal_vertices": [
@@ -2925,13 +3359,14 @@
     ]
    ],
    "alpha_acyclic": false,
-   "residue_edges": 1120,
-   "residue_vertices": 1653,
-   "reference_checked": null,
-   "seconds": 13.82,
+   "residue_edges": 942,
+   "residue_vertices": 1647,
+   "reference_checked": true,
+   "seconds": 14.5,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 396
+    "time_bound_added": 595,
+    "end_cause_as_builtin": 406
    }
   },
   {
@@ -2982,8 +3417,8 @@
    "alpha_acyclic": false,
    "residue_edges": 994,
    "residue_vertices": 1674,
-   "reference_checked": null,
-   "seconds": 3.69,
+   "reference_checked": true,
+   "seconds": 5.49,
    "notes": {
     "unknown_qualifier_ids": 0
    }
@@ -2995,22 +3430,22 @@
    "edges": 13608,
    "vertices": 29746,
    "max_edge": 752,
-   "mean_edge": 6.38,
+   "mean_edge": 6.42,
    "components": 7525,
    "largest_component_edges": 6084,
    "universal_vertices": [],
    "top_degree": [
     [
-     "P518",
-     1972
-    ],
-    [
      "P580",
-     1934
+     2175
     ],
     [
      "P582",
-     1821
+     2175
+    ],
+    [
+     "P518",
+     1972
     ],
     [
      "P407",
@@ -3036,11 +3471,12 @@
    "alpha_acyclic": false,
    "residue_edges": 942,
    "residue_vertices": 1647,
-   "reference_checked": null,
-   "seconds": 1.35,
+   "reference_checked": true,
+   "seconds": 2.85,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 396
+    "time_bound_added": 595,
+    "end_cause_as_builtin": 406
    }
   },
   {
@@ -3048,11 +3484,11 @@
    "variant": "b_local",
    "treatment": "core+qualifier",
    "edges": 13608,
-   "vertices": 29746,
+   "vertices": 29744,
    "max_edge": 750,
-   "mean_edge": 6.15,
-   "components": 7662,
-   "largest_component_edges": 5947,
+   "mean_edge": 6.1,
+   "components": 7779,
+   "largest_component_edges": 5830,
    "universal_vertices": [],
    "top_degree": [
     [
@@ -3089,13 +3525,14 @@
     ]
    ],
    "alpha_acyclic": false,
-   "residue_edges": 1120,
-   "residue_vertices": 1651,
-   "reference_checked": null,
-   "seconds": 1.09,
+   "residue_edges": 942,
+   "residue_vertices": 1645,
+   "reference_checked": true,
+   "seconds": 2.66,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 396
+    "time_bound_added": 595,
+    "end_cause_as_builtin": 406
    }
   },
   {
@@ -3146,8 +3583,8 @@
    "alpha_acyclic": false,
    "residue_edges": 2243,
    "residue_vertices": 2043,
-   "reference_checked": null,
-   "seconds": 3.42,
+   "reference_checked": true,
+   "seconds": 9.62,
    "notes": {
     "unknown_qualifier_ids": 0
    }
@@ -3159,22 +3596,22 @@
    "edges": 13608,
    "vertices": 24338,
    "max_edge": 752,
-   "mean_edge": 6.38,
+   "mean_edge": 6.42,
    "components": 3931,
    "largest_component_edges": 9396,
    "universal_vertices": [],
    "top_degree": [
     [
-     "P518",
-     1972
-    ],
-    [
      "P580",
-     1934
+     2175
     ],
     [
      "P582",
-     1821
+     2175
+    ],
+    [
+     "P518",
+     1972
     ],
     [
      "P407",
@@ -3198,13 +3635,14 @@
     ]
    ],
    "alpha_acyclic": false,
-   "residue_edges": 1926,
+   "residue_edges": 1922,
    "residue_vertices": 1953,
-   "reference_checked": null,
-   "seconds": 1.96,
+   "reference_checked": true,
+   "seconds": 6.26,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 396
+    "time_bound_added": 595,
+    "end_cause_as_builtin": 406
    }
   },
   {
@@ -3212,11 +3650,11 @@
    "variant": "c_typed",
    "treatment": "core+qualifier",
    "edges": 13608,
-   "vertices": 24338,
+   "vertices": 24336,
    "max_edge": 750,
-   "mean_edge": 6.15,
-   "components": 4029,
-   "largest_component_edges": 9280,
+   "mean_edge": 6.1,
+   "components": 4098,
+   "largest_component_edges": 9193,
    "universal_vertices": [],
    "top_degree": [
     [
@@ -3253,13 +3691,14 @@
     ]
    ],
    "alpha_acyclic": false,
-   "residue_edges": 2047,
-   "residue_vertices": 1952,
-   "reference_checked": null,
-   "seconds": 1.3,
+   "residue_edges": 1878,
+   "residue_vertices": 1939,
+   "reference_checked": true,
+   "seconds": 6.08,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 396
+    "time_bound_added": 595,
+    "end_cause_as_builtin": 406
    }
   },
   {
@@ -3312,8 +3751,8 @@
    "alpha_acyclic": false,
    "residue_edges": 1520,
    "residue_vertices": 2050,
-   "reference_checked": null,
-   "seconds": 10.14,
+   "reference_checked": true,
+   "seconds": 13.33,
    "notes": {
     "unknown_qualifier_ids": 0,
     "self_qualifier_dropped": 441
@@ -3326,7 +3765,7 @@
    "edges": 13608,
    "vertices": 13690,
    "max_edge": 751,
-   "mean_edge": 6.35,
+   "mean_edge": 6.39,
    "components": 1,
    "largest_component_edges": 13608,
    "universal_vertices": [
@@ -3338,16 +3777,16 @@
      13608
     ],
     [
-     "P518",
-     1972
-    ],
-    [
      "P580",
-     1934
+     2175
     ],
     [
      "P582",
-     1821
+     2175
+    ],
+    [
+     "P518",
+     1972
     ],
     [
      "P407",
@@ -3369,11 +3808,12 @@
    "alpha_acyclic": false,
    "residue_edges": 1428,
    "residue_vertices": 1987,
-   "reference_checked": null,
-   "seconds": 10.03,
+   "reference_checked": true,
+   "seconds": 12.73,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 396,
+    "time_bound_added": 595,
+    "end_cause_as_builtin": 406,
     "self_qualifier_dropped": 441
    }
   },
@@ -3384,7 +3824,7 @@
    "edges": 13608,
    "vertices": 13690,
    "max_edge": 749,
-   "mean_edge": 6.11,
+   "mean_edge": 6.07,
    "components": 1,
    "largest_component_edges": 13608,
    "universal_vertices": [
@@ -3425,13 +3865,14 @@
     ]
    ],
    "alpha_acyclic": false,
-   "residue_edges": 1609,
-   "residue_vertices": 2026,
-   "reference_checked": null,
-   "seconds": 9.92,
+   "residue_edges": 1423,
+   "residue_vertices": 1982,
+   "reference_checked": true,
+   "seconds": 12.22,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 396,
+    "time_bound_added": 595,
+    "end_cause_as_builtin": 406,
     "self_qualifier_dropped": 441
    }
   },
@@ -3448,15 +3889,11 @@
    "universal_vertices": [],
    "top_degree": [
     [
-     "P440:P580",
-     1
-    ],
-    [
      "P440:P582",
      1
     ],
     [
-     "P440:subject",
+     "P440:P580",
      1
     ],
     [
@@ -3464,27 +3901,31 @@
      1
     ],
     [
-     "P442:P3680",
+     "P440:subject",
      1
     ],
     [
-     "P442:subject",
-     1
-    ],
-    [
-     "P442:value",
+     "P442:P518",
      1
     ],
     [
      "P442:P1310",
+     1
+    ],
+    [
+     "P442:P582",
+     1
+    ],
+    [
+     "P442:P3680",
      1
     ]
    ],
    "alpha_acyclic": true,
    "residue_edges": 0,
    "residue_vertices": 0,
-   "reference_checked": null,
-   "seconds": 0.45,
+   "reference_checked": true,
+   "seconds": 0.97,
    "notes": {
     "unknown_qualifier_ids": 0
    }
@@ -3494,23 +3935,19 @@
    "variant": "e_relation_local",
    "treatment": "core+qualifier+time",
    "edges": 13608,
-   "vertices": 86785,
+   "vertices": 87380,
    "max_edge": 752,
-   "mean_edge": 6.38,
+   "mean_edge": 6.42,
    "components": 13608,
    "largest_component_edges": 1,
    "universal_vertices": [],
    "top_degree": [
     [
-     "P440:P580",
-     1
-    ],
-    [
      "P440:P582",
      1
     ],
     [
-     "P440:subject",
+     "P440:P580",
      1
     ],
     [
@@ -3518,7 +3955,15 @@
      1
     ],
     [
-     "P442:subject",
+     "P440:subject",
+     1
+    ],
+    [
+     "P442:P518",
+     1
+    ],
+    [
+     "P442:P582",
      1
     ],
     [
@@ -3526,22 +3971,19 @@
      1
     ],
     [
-     "P442:P2699",
-     1
-    ],
-    [
-     "P442:P582",
+     "P442:subject",
      1
     ]
    ],
    "alpha_acyclic": true,
    "residue_edges": 0,
    "residue_vertices": 0,
-   "reference_checked": null,
-   "seconds": 0.36,
+   "reference_checked": true,
+   "seconds": 0.87,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 396
+    "time_bound_added": 595,
+    "end_cause_as_builtin": 406
    }
   },
   {
@@ -3549,9 +3991,9 @@
    "variant": "e_relation_local",
    "treatment": "core+qualifier",
    "edges": 13608,
-   "vertices": 83625,
+   "vertices": 83030,
    "max_edge": 750,
-   "mean_edge": 6.15,
+   "mean_edge": 6.1,
    "components": 13608,
    "largest_component_edges": 1,
    "universal_vertices": [],
@@ -3562,6 +4004,14 @@
     ],
     [
      "P440:subject",
+     1
+    ],
+    [
+     "P442:subject",
+     1
+    ],
+    [
+     "P442:P2699",
      1
     ],
     [
@@ -3573,30 +4023,23 @@
      1
     ],
     [
-     "P442:subject",
-     1
-    ],
-    [
-     "P442:P2699",
+     "P785:subject",
      1
     ],
     [
      "P785:value",
-     1
-    ],
-    [
-     "P785:subject",
      1
     ]
    ],
    "alpha_acyclic": true,
    "residue_edges": 0,
    "residue_vertices": 0,
-   "reference_checked": null,
-   "seconds": 0.94,
+   "reference_checked": true,
+   "seconds": 0.79,
    "notes": {
     "unknown_qualifier_ids": 0,
-    "end_cause_as_builtin": 396
+    "time_bound_added": 595,
+    "end_cause_as_builtin": 406
    }
   }
  ]
