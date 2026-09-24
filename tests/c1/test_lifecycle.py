@@ -488,3 +488,13 @@ def test_the_errors_a_store_raises():
     assert v.info["findings"][0]["path"] == "/status_ref" and len(v.info["problems"]) == 2
     with pytest.raises(ValueError):
         lifecycle.error_for([])
+
+
+@pytest.mark.parametrize("relation", [["regulates"], {"x": 1}])
+def test_put_problem_and_nesting_cycle_read_a_relation_that_is_not_a_string(relation):
+    """An unvalidated record whose relation is a list or an object is not a lifecycle record; it must not raise
+    TypeError (review follow-up to the MemoryStore.load fix)."""
+    record = {"kind": "hyperedge", "id": "f:odd", "version": 1, "relation": relation, "status": "asserted",
+              "bindings": []}
+    assert lifecycle.put_problem(record) is None
+    assert lifecycle.nesting_cycle([record]) is None

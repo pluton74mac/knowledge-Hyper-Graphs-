@@ -171,7 +171,8 @@ def _hyperedges(records: Records) -> dict[str, Record]:
 
 
 def _is_lifecycle(record: Record) -> bool:
-    return record.get("relation") in LIFECYCLE_RELATIONS
+    relation = record.get("relation")
+    return isinstance(relation, str) and relation in LIFECYCLE_RELATIONS
 
 
 def _same(a: Any, b: Any) -> bool:
