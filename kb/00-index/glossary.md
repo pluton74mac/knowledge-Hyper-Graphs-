@@ -4,7 +4,7 @@ type: glossary
 status: reviewed
 tags: [glossary, index]
 created: 2026-09-20
-updated: 2026-09-21
+updated: 2026-09-24
 ---
 
 # Glossary
@@ -585,8 +585,10 @@ See: [The machine-learning era](../08-history-and-frontier/machine-learning-era.
 higher-order networks: JSON with a draft-07 schema, five top-level keys of which only `incidences`
 is required, direction carried per incidence, and attributes at network, node, edge and incidence
 level. **Incidence-list-first**, which is what lets a role label live where it belongs. It has no
-relation types, no roles, no schema, no nesting and exactly one schema version (`v0.0`) with four
-competing schema URLs in circulation.
+relation types, no roles, no schema and no nesting. Its version labels disagree (CHANGELOG `v0.0`,
+schema file `0.1.0`, releases v0.1.0–v0.1.2), and data files cannot declare a version, although the
+validation rules have not changed since 2024. Roles can travel in incidence `attrs` by convention;
+project P2 defined one (`role-convention` 1.0.0, 2026-09-24).
 See: [HIF — the Hypergraph Interchange Format](../04-storage-and-formats/hif-hypergraph-interchange-format.md).
 
 **Higher-order** — **contested term with three unrelated senses**: (1) a group interaction among

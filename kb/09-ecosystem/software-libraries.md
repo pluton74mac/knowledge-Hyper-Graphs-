@@ -2,9 +2,9 @@
 title: Software libraries for hypergraphs and knowledge hypergraphs
 type: tool
 status: draft
-tags: [ecosystem, software, libraries, hypergraph, n-ary, HIF, rdf-star, databases, visualization]
+tags: [ecosystem, software, libraries, hypergraph, n-ary, HIF, rdf-star, databases, visualization, roles]
 created: 2026-09-20
-updated: 2026-09-21
+updated: 2026-09-24
 ---
 
 # Software libraries for hypergraphs and knowledge hypergraphs
@@ -25,8 +25,10 @@ Four caveats about the table that matter more than any individual number:
 2. **HIF is the only cross-library interchange format, and it is young.** Its schema changelog
    still lists a single entry, `v0.0`
    ([HIF-standard/schemas/CHANGELOG.md](https://raw.githubusercontent.com/HIF-org/HIF-standard/main/schemas/CHANGELOG.md),
-   checked 2026-09-20). Five libraries implement it. See
-   [../04-storage-and-formats/hif-hypergraph-interchange-format.md](../04-storage-and-formats/hif-hypergraph-interchange-format.md).
+   checked 2026-09-20), while the versioned schema file says `0.1.0`, the Zenodo releases run
+   v0.1.0 to v0.1.2 and the maintainers call the current state "v1" (checked 2026-09-23 by P2).
+   Five libraries implement it. See
+   [../04-storage-and-formats/hif-hypergraph-interchange-format.md](../04-storage-and-formats/hif-hypergraph-interchange-format.md) §4.
 3. **Stars are a poor maintenance signal.** DGL has 14k stars and no commit since 2025-07-31;
    halp has 101 stars and a PyPI release from 2014.
 4. **Several important pieces of research code carry no licence file at all** (HypE, HAT),
@@ -54,7 +56,9 @@ and enumerating their I/O functions, not only by reading documentation.
 [../../schemas/sample.hif.json](../../schemas/sample.hif.json) into all three Python libraries:
 
 - XGI 0.10.2 returns an `xgi.core.dihypergraph.DiHypergraph` — the `"direction"` field is honoured.
-- HyperNetX 2.4.3 returns an undirected `Hypergraph`; `direction` is not modelled.
+- HyperNetX 2.4.3 returns an undirected `Hypergraph`; it has no directed class, and `direction`
+  survives only as an opaque incidence column (corrected 2026-09-24 from P2's probes; the
+  2026-09-20 reading said direction was not kept at all).
 - Hypergraphx 1.8.0's `read_hif` is typed `-> hypergraphx.core.undirected.Hypergraph`; it
   **re-indexes node identifiers to integers** and keeps the original HIF ids only in the
   per-node metadata (`{'node': 'drug:metformin', 'attrs': {...}}`).
@@ -62,9 +66,43 @@ and enumerating their I/O functions, not only by reading documentation.
 So a HIF round-trip is *not* currently lossless across libraries for directed knowledge
 hypergraphs. HyperNetX also validates against a schema fetched at run time from
 `https://raw.githubusercontent.com/pszufe/HIF_validators/main/schemas/hif_schema_v0.1.0.json`
-(`hypernetx.hif.schema_url`), a third URL distinct from both the `HIF-org` repository and the
-`$id` recorded inside the published schema — see
-[standards-bodies-and-specifications.md](standards-bodies-and-specifications.md).
+(`hypernetx.hif.schema_url`). That is not a third standard: `pszufe/HIF_validators` is the oldest
+name of the `HIF-org/HIF-standard` repository, reached through GitHub's redirect, and the file is
+the versioned `hif_schema_v0.1.0.json`, whose validation rules are identical to those of
+`hif_schema.json` (P2 report 02 §4.4; see
+[../04-storage-and-formats/hif-hypergraph-interchange-format.md](../04-storage-and-formats/hif-hypergraph-interchange-format.md) §0, §3).
+
+**HIF input and output of XGI and HyperNetX, probed (P2, 2026-09-23).** Project P2 ran both
+libraries' own HIF functions on the KB sample and 26 edge-case files, with `xgi` **0.10.2** and
+`hypernetx` **2.4.3**, the latest releases on PyPI that day, under Python 3.11.15 (HyperNetX pins
+`pandas<3.0.0`; pandas 2.3.3 was used). Every cited source file was byte-identical to the
+release tags, and the HIF modules on both development branches were byte-identical too, so none
+of this was already fixed upstream. Full tables with file-and-line root causes:
+[P2 report 03](../../projects/p2-role-aware-hif/research/03-library-probes.md).
+
+| Behaviour on `read_hif`/`write_hif` (XGI) and `from_hif`/`to_hif` (HNX) | XGI 0.10.2 | HyperNetX 2.4.3 |
+|---|---|---|
+| role in `incidences[].attrs.role` | **lost**: every incidence `attrs` is dropped (0 of 9 roles back for the sample); XGI has no incidence-level store | **kept** as a cell property (9 of 9 for the sample); readable with `get_cell_properties`, which flattens nested attrs |
+| two records for one (edge, node) pair | collapsed (members are sets); a node in both tail and head of one directed edge survives, without its roles | the second record is **dropped silently**; `aggregate_by` is accepted but ignored |
+| record-level `weight` (node, edge, incidence) | **lost** everywhere | kept, but `weight: 1` is **added** to every record without one |
+| `direction` | kept as `DiHypergraph` tail (`"in"`) and head (`"out"`) sets; a directed file with a missing `direction` raises `KeyError`, and any value other than `tail` becomes head | an opaque cell column; written back only with `to_hif(..., network_type="directed")`; `network-type` is never read |
+| `metadata` | kept | all keys but `name` **lost**; `default_attrs` **added** |
+| second round trip | idempotent | **fails on directed files**: re-reading its own `default_attrs` turns every direction into `"nil"`, and `to_hif` returns `None` |
+| isolated nodes, empty edges | kept | dropped on export |
+| schema validation and errors | none: 10 of 13 schema-invalid files load silently | fetches the schema over the network on every call; on invalid input or output it returns `None` without raising (13 of 13 invalid files) |
+| output order | depends on `PYTHONHASHSEED` (4 seeds gave 4 different files) | stable across seeds |
+
+The practical consequence, tested by P2: a loader that bypasses both libraries' HIF functions,
+builds the objects through their public constructors and keeps what the library cannot hold beside
+it, round-trips role-labelled files exactly, offline and deterministically. P2's package does this
+([DESIGN §5](../../projects/p2-role-aware-hif/DESIGN.md)). Its gate chain, C1 record → HIF → XGI →
+HIF → HyperNetX → HIF → C1, kept every role, weight, direction and metadata key on a
+59-incidence fixture with three repeated pairs and on its directed slice (gate passed 2026-09-24).
+The same fixture through the libraries' own functions: XGI 59 → 56 incidences with 0 of 59 roles,
+and HyperNetX's `to_hif` returns `None`
+([library-hif-evidence.json](../../tests/evidence/library-hif-evidence.json)). Issues for both
+libraries are drafted in [projects/p2-role-aware-hif/upstream/](../../projects/p2-role-aware-hif/upstream/)
+and not yet filed.
 
 ---
 
@@ -178,7 +216,7 @@ hyperedge's arity. Full analysis in
 
 | Name | Language | Purpose | Licence | Stars | Last activity (checked 2026-09-20) | URL |
 |---|---|---|---|---|---|---|
-| **HIF-standard** | JSON Schema + Jupyter notebooks | the Hypergraph Interchange Format: schema, validators for Python/R/Julia, per-library tutorials | MIT | 36 | schema `CHANGELOG.md` lists only **v0.0**; last commit 2026-03-19 | [HIF-org/HIF-standard](https://github.com/HIF-org/HIF-standard) |
+| **HIF-standard** | JSON Schema + Jupyter notebooks | the Hypergraph Interchange Format: schema, validators for Python/R/Julia, per-library tutorials | MIT | 36 | schema `CHANGELOG.md` lists only **v0.0**, while the versioned schema file says `0.1.0` and the Zenodo releases are v0.1.0–v0.1.2 (2025-07 to 2025-10); last commit 2026-03-19 | [HIF-org/HIF-standard](https://github.com/HIF-org/HIF-standard) |
 | **hypernetx-widget** | JavaScript/React | interactive Jupyter widget for HyperNetX (drag, select, collapse) | GitHub metadata "Other" | 23 | last commit **2021-10-22** — dormant | [pnnl/hypernetx-widget](https://github.com/pnnl/hypernetx-widget) |
 | **XGI drawing module** | Python (matplotlib) | `xgi.draw`, `draw_bipartite`, `draw_multilayer`, Rubber-band and convex-hull hyperedge drawing | part of XGI (3-clause BSD) | — | see XGI row above | [xgi.readthedocs.io](https://xgi.readthedocs.io) |
 | **Hypergraph-DB visualiser** | Python + JS | browser-based hypergraph viewer shipped with Hypergraph-DB and reused by Hyper-RAG | Apache-2.0 | 87 | last commit 2025-11-05 | [imoonlab.github.io/Hypergraph-DB](https://imoonlab.github.io/Hypergraph-DB/) |
@@ -201,7 +239,11 @@ Stated as observations from the table above, not as claims from any one source:
   without a bespoke converter.
 - **No library implements roles on incidences as a first-class concept.** HIF permits
   `incidences[].attrs` (which is how [../../schemas/sample.hif.json](../../schemas/sample.hif.json)
-  stores roles), but every library surveyed treats those attributes as opaque payload.
+  stores roles), but every library surveyed treats those attributes as opaque payload. Probed on
+  2026-09-23 (§1): XGI 0.10.2 drops them on read, and HyperNetX 2.4.3 keeps them as cell
+  properties but drops a second record for the same (edge, node) pair. Role-preserving loaders
+  exist outside the libraries, in P2's package, which keeps the records beside the library object
+  ([projects/p2-role-aware-hif/](../../projects/p2-role-aware-hif/)).
 - **The n-ary KG research code is frozen.** StarE (2023-12-01), HypE (2022-07-15 / 2020-05-15)
   and HyNT (2025-05-27) have all stopped; none is packaged; none has a test suite that a
   newcomer can run.
@@ -227,5 +269,11 @@ Stated as observations from the table above, not as claims from any one source:
 - GitHub repository metadata (stars, licence, `pushed_at`) retrieved via the GitHub repository search API on 2026-09-20 for every repository linked above.
 - PyPI JSON API (`https://pypi.org/pypi/<name>/json`), crates.io API, Maven Central `search.maven.org` and the Julia General registry (`JuliaRegistries/General`), all queried 2026-09-20, for package versions and upload dates.
 - Local verification in a Python 3.11.15 virtualenv with `hypernetx==2.4.3`, `xgi==0.10.2`, `hypergraphx==1.8.0`, `rdflib==7.6.0` (2026-09-20): HIF round-trip behaviour, `hypernetx.hif.schema_url`, and the rdflib RDF-star parse failures reported above.
+- XGI source at release tag v0.10.2 (`xgi/readwrite/hif.py`, `xgi/convert/hif_dict.py`, `xgi/core/hypergraph.py`, `xgi/core/dihypergraph.py`, `xgi/convert/bipartite_edges.py`), byte-identical to the PyPI wheel (uploaded 2026-05-15), checked 2026-09-23. <https://github.com/xgi-org/xgi/tree/v0.10.2> · <https://pypi.org/project/xgi/0.10.2/>
+- HyperNetX source at release tag v2.4.3 (`hypernetx/hif.py`, `hypernetx/classes/factory.py`, `hypernetx/classes/hypergraph.py`, `hypernetx/classes/property_store.py`, `hypernetx/classes/hyp_view.py`), byte-identical to the PyPI wheel (uploaded 2026-07-23), checked 2026-09-23. <https://github.com/pnnl/HyperNetX/tree/v2.4.3> · <https://pypi.org/project/hypernetx/2.4.3/>
+- HyperNetX issue #171, "Code Fails on Import if Internet Connection is Disrupted" (opened 2025-10-21, open on 2026-09-23). <https://github.com/pnnl/HyperNetX/issues/171>
+- P2 research report 03, *XGI and HyperNetX HIF input and output, probed* (this repository, probes run 2026-09-23 with the versions above). [projects/p2-role-aware-hif/research/03-library-probes.md](../../projects/p2-role-aware-hif/research/03-library-probes.md)
+- P2 research report 02, *What the HIF standard says today, from primary sources* (this repository, 2026-09-23). [projects/p2-role-aware-hif/research/02-hif-standard.md](../../projects/p2-role-aware-hif/research/02-hif-standard.md)
+- P2 design §5 (loaders) and the library evidence file written by `tests/evidence` (this repository, 2026-09-24). [projects/p2-role-aware-hif/DESIGN.md](../../projects/p2-role-aware-hif/DESIGN.md) · [tests/evidence/library-hif-evidence.json](../../tests/evidence/library-hif-evidence.json)
 - Feng, Y. *Hyper-Extract* repository: `README.md`, `LICENSE` (Apache-2.0), `hyperextract/types/`, `hyperextract/methods/registry.py`, `hyperextract/templates/presets/`, `hyperextract/utils/template_engine/validator.py`. Cloned and read at commit `395039e` (2026-09-20); checked 2026-09-21. <https://github.com/yifanfeng97/hyper-extract>
 - PyPI `hyperextract` 0.10.3 (Apache-2.0, uploaded 2026-09-20, 19 releases) and `ontomem` 0.6.0 (Apache-2.0), queried 2026-09-21. <https://pypi.org/project/hyperextract/> · <https://pypi.org/project/ontomem/>
