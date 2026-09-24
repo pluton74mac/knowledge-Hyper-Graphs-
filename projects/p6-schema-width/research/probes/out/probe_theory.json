@@ -1,0 +1,397 @@
+{
+ "boundary": {
+  "berge_path": {
+   "class": "berge",
+   "expected": "berge",
+   "brute_force": "berge",
+   "join_tree": [
+    [
+     "E1",
+     "E2"
+    ]
+   ]
+  },
+  "berge_triangle": {
+   "class": "gamma",
+   "expected": "gamma",
+   "brute_force": "gamma",
+   "berge_cycle": [
+    "y",
+    "E1",
+    "x",
+    "E2"
+   ],
+   "join_tree": [
+    [
+     "E1",
+     "E2"
+    ]
+   ]
+  },
+  "gamma_triangle": {
+   "class": "beta",
+   "expected": "beta",
+   "brute_force": "beta",
+   "berge_cycle": [
+    "y",
+    "E1",
+    "x",
+    "E3"
+   ],
+   "gamma_triangle": [
+    "x",
+    "y",
+    "z"
+   ],
+   "join_tree": [
+    [
+     "E1",
+     "E3"
+    ],
+    [
+     "E2",
+     "E3"
+    ]
+   ]
+  },
+  "a_triangle_cover": {
+   "class": "alpha",
+   "expected": "alpha",
+   "brute_force": "alpha",
+   "berge_cycle": [
+    "c",
+    "E2",
+    "b",
+    "E1",
+    "a",
+    "E3"
+   ],
+   "beta_cycle": [
+    "a",
+    "E1",
+    "b",
+    "E2",
+    "c",
+    "E3"
+   ],
+   "join_tree": [
+    [
+     "E1",
+     "E4"
+    ],
+    [
+     "E2",
+     "E4"
+    ],
+    [
+     "E3",
+     "E4"
+    ]
+   ]
+  },
+  "b_triangle": {
+   "class": "cyclic",
+   "expected": "cyclic",
+   "brute_force": "cyclic",
+   "berge_cycle": [
+    "c",
+    "E2",
+    "b",
+    "E1",
+    "a",
+    "E3"
+   ],
+   "beta_cycle": [
+    "a",
+    "E1",
+    "b",
+    "E2",
+    "c",
+    "E3"
+   ],
+   "gyo_residue": [
+    [
+     "a",
+     "b"
+    ],
+    [
+     "b",
+     "c"
+    ],
+    [
+     "a",
+     "c"
+    ]
+   ]
+  }
+ },
+ "random": {
+  "n": 400,
+  "seed": 20260924,
+  "classes": {
+   "beta": 78,
+   "gamma": 118,
+   "cyclic": 101,
+   "berge": 72,
+   "alpha": 31
+  },
+  "class_mismatches": [],
+  "width_violations": [],
+  "width_triples_fhw_ghw_hw": {
+   "1|1|1": 299,
+   "2|2|2": 9,
+   "3/2|2|2": 81,
+   "5/3|2|2": 11
+  },
+  "hw_gt_ghw": 0,
+  "fhw_lt_ghw": 92,
+  "seconds": 3.2
+ },
+ "widths": {
+  "berge_path": {
+   "vertices": 3,
+   "edges": 2,
+   "expected": {
+    "class": "berge",
+    "hw": 1,
+    "ghw": 1,
+    "fhw": "1"
+   },
+   "tw_primal": 1,
+   "ghw": 1,
+   "fhw": "1",
+   "hw": 1,
+   "hd_valid": {
+    "covers": true,
+    "connected": true,
+    "chi_in_lambda": true,
+    "special": true,
+    "width": 1,
+    "nodes": 2
+   },
+   "seconds": 0.0
+  },
+  "berge_triangle": {
+   "vertices": 3,
+   "edges": 2,
+   "expected": {
+    "class": "gamma",
+    "hw": 1,
+    "ghw": 1,
+    "fhw": "1"
+   },
+   "tw_primal": 2,
+   "ghw": 1,
+   "fhw": "1",
+   "hw": 1,
+   "hd_valid": {
+    "covers": true,
+    "connected": true,
+    "chi_in_lambda": true,
+    "special": true,
+    "width": 1,
+    "nodes": 2
+   },
+   "seconds": 0.0
+  },
+  "gamma_triangle": {
+   "vertices": 3,
+   "edges": 3,
+   "expected": {
+    "class": "beta",
+    "hw": 1,
+    "ghw": 1,
+    "fhw": "1"
+   },
+   "tw_primal": 2,
+   "ghw": 1,
+   "fhw": "1",
+   "hw": 1,
+   "hd_valid": {
+    "covers": true,
+    "connected": true,
+    "chi_in_lambda": true,
+    "special": true,
+    "width": 1,
+    "nodes": 2
+   },
+   "seconds": 0.0
+  },
+  "a_triangle_cover": {
+   "vertices": 3,
+   "edges": 4,
+   "expected": {
+    "class": "alpha",
+    "hw": 1,
+    "ghw": 1,
+    "fhw": "1"
+   },
+   "tw_primal": 2,
+   "ghw": 1,
+   "fhw": "1",
+   "hw": 1,
+   "hd_valid": {
+    "covers": true,
+    "connected": true,
+    "chi_in_lambda": true,
+    "special": true,
+    "width": 1,
+    "nodes": 2
+   },
+   "seconds": 0.0
+  },
+  "b_triangle": {
+   "vertices": 3,
+   "edges": 3,
+   "expected": {
+    "class": "cyclic",
+    "hw": 2,
+    "ghw": 2,
+    "fhw": "3/2"
+   },
+   "tw_primal": 2,
+   "ghw": 2,
+   "fhw": "3/2",
+   "hw": 2,
+   "hd_valid": {
+    "covers": true,
+    "connected": true,
+    "chi_in_lambda": true,
+    "special": true,
+    "width": 2,
+    "nodes": 2
+   },
+   "seconds": 0.01
+  },
+  "c_grid4": {
+   "vertices": 16,
+   "edges": 24,
+   "expected": {
+    "class": "cyclic",
+    "hw": null,
+    "ghw": null,
+    "fhw": null
+   },
+   "tw_primal": 4,
+   "ghw": 3,
+   "fhw": "3",
+   "hw": 3,
+   "hd_valid": {
+    "covers": true,
+    "connected": true,
+    "chi_in_lambda": true,
+    "special": true,
+    "width": 3,
+    "nodes": 13
+   },
+   "seconds": 57.19
+  },
+  "c_grid5": {
+   "vertices": 25,
+   "edges": 40,
+   "expected": {
+    "class": "cyclic",
+    "hw": null,
+    "ghw": null,
+    "fhw": null
+   },
+   "tw_primal": "skipped: 25 vertices exceeds the exact-DP limit 18",
+   "ghw": "skipped: 25 vertices exceeds the exact-DP limit 18",
+   "fhw": "skipped: 25 vertices exceeds the exact-DP limit 18",
+   "hw": 3,
+   "hd_valid": {
+    "covers": true,
+    "connected": true,
+    "chi_in_lambda": true,
+    "special": true,
+    "width": 3,
+    "nodes": 24
+   },
+   "seconds": 0.22
+  },
+  "k5": {
+   "vertices": 5,
+   "edges": 10,
+   "expected": {
+    "class": "cyclic",
+    "hw": 3,
+    "ghw": 3,
+    "fhw": "5/2"
+   },
+   "tw_primal": 4,
+   "ghw": 3,
+   "fhw": "5/2",
+   "hw": 3,
+   "hd_valid": {
+    "covers": true,
+    "connected": true,
+    "chi_in_lambda": true,
+    "special": true,
+    "width": 3,
+    "nodes": 4
+   },
+   "seconds": 0.05
+  },
+  "adler": {
+   "vertices": 10,
+   "edges": 8,
+   "expected": {
+    "class": "cyclic",
+    "hw": 3,
+    "ghw": 2,
+    "fhw": null
+   },
+   "tw_primal": 4,
+   "ghw": 2,
+   "fhw": "2",
+   "hw": 3,
+   "hd_valid": {
+    "covers": true,
+    "connected": true,
+    "chi_in_lambda": true,
+    "special": true,
+    "width": 3,
+    "nodes": 7
+   },
+   "seconds": 1.54
+  },
+  "grohe_marx_3": {
+   "vertices": 20,
+   "edges": 6,
+   "expected": {
+    "class": "cyclic",
+    "hw": 3,
+    "ghw": null,
+    "fhw": "2"
+   },
+   "tw_primal": "skipped: 20 vertices exceeds the exact-DP limit 18",
+   "ghw": "skipped: 20 vertices exceeds the exact-DP limit 18",
+   "fhw": "skipped: 20 vertices exceeds the exact-DP limit 18",
+   "hw": 3,
+   "hd_valid": {
+    "covers": true,
+    "connected": true,
+    "chi_in_lambda": true,
+    "special": true,
+    "width": 3,
+    "nodes": 4
+   },
+   "seconds": 0.0
+  },
+  "c_grid2d_10": {
+   "vertices": 50,
+   "edges": 50,
+   "expected": {
+    "class": "cyclic",
+    "hw": null,
+    "ghw": null,
+    "fhw": null
+   },
+   "tw_primal": "skipped: 50 vertices exceeds the exact-DP limit 18",
+   "ghw": "skipped: 50 vertices exceeds the exact-DP limit 18",
+   "fhw": "skipped: 50 vertices exceeds the exact-DP limit 18",
+   "hw": "skipped: budget exhausted",
+   "seconds": 1.28
+  }
+ }
+}

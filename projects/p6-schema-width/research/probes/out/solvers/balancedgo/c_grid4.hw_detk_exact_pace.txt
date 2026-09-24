@@ -1,0 +1,84 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/BalancedGo/BalancedGo -graph /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/instances/c_grid4.pace.hgr -pace -exact -det
+Used algorithm: DetK @
+Result ( ran with K = 3 )
+ 
+Bag: {V1, V2}
+Cover: {E1}
+Children: 1
+[
+	Bag: {V1, V2, V5}
+	Cover: {E1, E2}
+	Children: 1
+	[
+		Bag: {V1, V2, V5, V3}
+		Cover: {E1, E2, E3}
+		Children: 1
+		[
+			Bag: {V1, V2, V5, V3, V6}
+			Cover: {E3, E1, E8}
+			Children: 1
+			[
+				Bag: {V1, V5, V3, V6, V4}
+				Cover: {E8, E2, E5}
+				Children: 1
+				[
+					Bag: {V5, V3, V6, V4, V7}
+					Cover: {E5, E8, E6}
+					Children: 1
+					[
+						Bag: {V5, V6, V4, V7, V8}
+						Cover: {E8, E10, E7}
+						Children: 1
+						[
+							Bag: {V5, V6, V7, V8, V12}
+							Cover: {E8, E10, E14}
+							Children: 1
+							[
+								Bag: {V5, V6, V7, V11, V12}
+								Cover: {E8, E10, E19}
+								Children: 1
+								[
+									Bag: {V5, V6, V9, V11, V12}
+									Cover: {E8, E19, E9}
+									Children: 1
+									[
+										Bag: {V5, V6, V9, V10, V11, V12}
+										Cover: {E19, E9, E11}
+										Children: 1
+										[
+											Bag: {V9, V10, V11, V12, V16}
+											Cover: {E15, E17, E21}
+											Children: 1
+											[
+												Bag: {V9, V10, V11, V15, V16}
+												Cover: {E15, E17, E24}
+												Children: 1
+												[
+													Bag: {V9, V10, V14, V15}
+													Cover: {E15, E9, E23}
+													Children: 1
+													[
+														Bag: {V9, V10, V13, V14}
+														Cover: {E9, E15, E22}
+													]
+												]
+											]
+										]
+									]
+								]
+							]
+						]
+					]
+				]
+			]
+		]
+	]
+]
+
+Time: 14.75791 ms
+Time Composition: 
+Decomposition : 14.75791 ms
+
+Width:  3
+Correct:  true
+[exit 0]

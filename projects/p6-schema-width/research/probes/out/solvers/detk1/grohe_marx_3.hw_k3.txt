@@ -1,0 +1,22 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/detkdecomp/sources/detkdecomp 3 grohe_marx_3.hg
+*** det-k-decomp (version 1.0) ***
+
+Parsing input file "grohe_marx_3.hg" ... 
+Parsing input file done in 0 sec (6 atoms, 20 variables).
+
+Building hypergraph ... 
+Building hypergraph done in 0 sec.
+
+Building hypertree (det-3-decomp) ... 
+Building hypertree done in 0 sec (hypertree-width: 3).
+
+Checking hypertree conditions ... 
+Condition 1: satisfied.
+Condition 2: satisfied.
+Condition 3: satisfied.
+Condition 4: satisfied.
+Checking hypertree conditions done in 0 sec.
+
+GML output written to: grohe_marx_3.gml
+
+[exit 0]

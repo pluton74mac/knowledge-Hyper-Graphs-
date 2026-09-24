@@ -1,0 +1,16 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/BalancedGo/BalancedGo -graph /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/instances/c_grid5.hg -width 2 -global
+Graph with subedges 
+ {(), (r0c0), (r0c1), (r1c0), (r0c2), (r1c1), (r0c3), (r1c2), (r0c4), (r1c3), (r1c4), (r2c0), (r2c1), (r2c2), (r2c3), (r2c4), (r3c0), (r3c1), (r3c2), (r3c3), (r3c4), (r4c0), (r4c1), (r4c2), (r4c3), (r4c4), (r0c0, r0c1), (r0c0, r1c0), (r0c1, r0c2), (r0c1, r1c1), (r1c0, r1c1), (r1c0, r2c0), (r0c2, r0c3), (r0c2, r1c2), (r1c1, r1c2), (r1c1, r2c1), (r0c3, r0c4), (r0c3, r1c3), (r1c2, r1c3), (r1c2, r2c2), (r0c4, r1c4), (r1c3, r1c4), (r1c3, r2c3), (r1c4, r2c4), (r2c0, r2c1), (r2c0, r3c0), (r2c1, r2c2), (r2c1, r3c1), (r2c2, r2c3), (r2c2, r3c2), (r2c3, r2c4), (r2c3, r3c3), v2_4, (r3c0, r3c1), v3_0, (r3c1, r3c2), (r3c1, r4c1), (r3c2, r3c3), (r3c2, r4c2), (r3c3, r3c4), (r3c3, r4c3), v3_4, (r4c0, r4c1), h4_1, (r4c2, r4c3), (r4c3, r4c4)}
+Used algorithm: BalSep Global @
+Result ( ran with K = 2 )
+ 
+Bag: {}
+Cover: {}
+
+Time: 16.21259 ms
+Time Composition: 
+Decomposition : 16.21259 ms
+
+Width:  0
+Correct:  false
+[exit 0]

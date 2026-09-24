@@ -1,0 +1,127 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/BalancedGo/BalancedGo -graph /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/instances/c_grid5.pace.hgr -pace -exact -det
+Used algorithm: DetK @
+Result ( ran with K = 3 )
+ 
+Bag: {V1, V2}
+Cover: {E1}
+Children: 1
+[
+	Bag: {V1, V2, V6}
+	Cover: {E1, E2}
+	Children: 1
+	[
+		Bag: {V1, V2, V6, V3}
+		Cover: {E1, E2, E3}
+		Children: 1
+		[
+			Bag: {V1, V2, V6, V3, V7}
+			Cover: {E3, E1, E10}
+			Children: 1
+			[
+				Bag: {V1, V6, V3, V7, V4}
+				Cover: {E10, E2, E5}
+				Children: 1
+				[
+					Bag: {V6, V3, V7, V4, V8}
+					Cover: {E5, E10, E6}
+					Children: 1
+					[
+						Bag: {V6, V7, V4, V8, V5}
+						Cover: {E10, E12, E7}
+						Children: 1
+						[
+							Bag: {V6, V7, V4, V8, V5, V11}
+							Cover: {E7, E12, E11}
+							Children: 1
+							[
+								Bag: {V7, V4, V8, V5, V11, V12}
+								Cover: {E7, E12, E19}
+								Children: 1
+								[
+									Bag: {V4, V8, V5, V9, V11, V12}
+									Cover: {E7, E19, E14}
+									Children: 1
+									[
+										Bag: {V8, V5, V9, V10, V11, V12}
+										Cover: {E14, E19, E9}
+										Children: 1
+										[
+											Bag: {V8, V9, V10, V11, V12, V15}
+											Cover: {E14, E19, E18}
+											Children: 1
+											[
+												Bag: {V8, V9, V11, V12, V14, V15}
+												Cover: {E14, E19, E25}
+												Children: 1
+												[
+													Bag: {V8, V11, V12, V13, V14, V15}
+													Cover: {E19, E25, E15}
+													Children: 1
+													[
+														Bag: {V11, V12, V13, V14, V15, V18}
+														Cover: {E19, E25, E24}
+														Children: 1
+														[
+															Bag: {V11, V12, V14, V15, V17, V18}
+															Cover: {E19, E25, E30}
+															Children: 1
+															[
+																Bag: {V11, V14, V15, V16, V17, V18}
+																Cover: {E30, E25, E20}
+																Children: 1
+																[
+																	Bag: {V14, V15, V16, V17, V18, V19}
+																	Cover: {E28, E25, E32}
+																	Children: 1
+																	[
+																		Bag: {V15, V16, V17, V18, V19, V20}
+																		Cover: {E28, E32, E27}
+																		Children: 1
+																		[
+																			Bag: {V16, V17, V18, V19, V20, V23}
+																			Cover: {E28, E34, E33}
+																			Children: 2
+																			[
+																				Bag: {V16, V17, V22, V23}
+																				Cover: {E28, E20, E38}
+																				Children: 1
+																				[
+																					Bag: {V16, V17, V21, V22}
+																					Cover: {E20, E28, E37}
+																				]
+
+																				Bag: {V19, V20, V23, V24}
+																				Cover: {E34, E26, E39}
+																				Children: 1
+																				[
+																					Bag: {V19, V20, V24, V25}
+																					Cover: {E27, E34, E40}
+																				]
+																			]
+																		]
+																	]
+																]
+															]
+														]
+													]
+												]
+											]
+										]
+									]
+								]
+							]
+						]
+					]
+				]
+			]
+		]
+	]
+]
+
+Time: 42.77381 ms
+Time Composition: 
+Decomposition : 42.77381 ms
+
+Width:  3
+Correct:  true
+[exit 0]

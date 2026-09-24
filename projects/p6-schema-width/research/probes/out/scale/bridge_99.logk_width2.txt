@@ -1,0 +1,42 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/log-k-decomp/log-k-decomp -graph /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/hyperbench/all/bridge_99.hg -width 2 -bench
+																																]
+																															]
+																														]
+																													]
+																												]
+																											]
+																										]
+																									]
+																								]
+																							]
+																						]
+																					]
+																				]
+																			]
+																		]
+																	]
+																]
+															]
+														]
+													]
+												]
+											]
+										]
+									]
+								]
+							]
+						]
+					]
+				]
+			]
+		]
+	]
+]
+
+Time: 16674.77073 ms
+Time Composition: 
+Decomposition : 16674.77073 ms
+
+Width:  2
+Correct:  true
+[exit 0]

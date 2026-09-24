@@ -1,0 +1,18 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/newdetkdecomp/bin/hg-stats a_triangle_cover.hg
+*** hypergraph-properties (version 2.0) ***
+
+Parsing input file "a_triangle_cover.hg" ... 
+Parsing input file done in 0 sec (4 atoms, 3 variables).
+
+Building hypergraph ... 
+Building hypergraph done in 0 sec.
+
+Vertices: 3
+Edges: 4
+Degree: 3
+Arity: 3
+BIP: 2
+3-BIP: 1
+4-BIP: 0
+VC-dim: 1
+[exit 0]

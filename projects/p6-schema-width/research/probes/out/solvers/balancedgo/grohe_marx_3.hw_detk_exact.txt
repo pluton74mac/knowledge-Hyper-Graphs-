@@ -1,0 +1,29 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/BalancedGo/BalancedGo -graph /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/instances/grohe_marx_3.hg -exact -det
+Used algorithm: DetK @
+Result ( ran with K = 3 )
+ 
+Bag: {s1_2_3, s1_2_4, s1_2_5, s1_2_6, s1_3_4, s1_3_5, s1_3_6, s1_4_5, s1_4_6, s1_5_6}
+Cover: {e1}
+Children: 1
+[
+	Bag: {s1_2_3, s1_2_4, s1_2_5, s1_2_6, s1_3_4, s1_3_5, s1_3_6, s1_4_5, s1_4_6, s1_5_6, s2_3_4, s2_3_5, s2_3_6, s2_4_5, s2_4_6, s2_5_6}
+	Cover: {e1, e2}
+	Children: 1
+	[
+		Bag: {s1_2_3, s1_2_4, s1_2_5, s1_2_6, s1_3_4, s1_3_5, s1_3_6, s1_4_5, s1_4_6, s1_5_6, s2_3_4, s2_3_5, s2_3_6, s2_4_5, s2_4_6, s2_5_6, s3_4_5, s3_4_6, s3_5_6}
+		Cover: {e1, e2, e3}
+		Children: 1
+		[
+			Bag: {s1_2_4, s1_2_5, s1_2_6, s1_3_4, s1_3_5, s1_3_6, s1_4_5, s1_4_6, s1_5_6, s2_3_4, s2_3_5, s2_3_6, s2_4_5, s2_4_6, s2_5_6, s3_4_5, s3_4_6, s3_5_6, s4_5_6}
+			Cover: {e4, e5, e6}
+		]
+	]
+]
+
+Time: 1.03159 ms
+Time Composition: 
+Decomposition : 1.03159 ms
+
+Width:  3
+Correct:  true
+[exit 0]

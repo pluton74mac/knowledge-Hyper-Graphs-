@@ -1,0 +1,15 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/newdetkdecomp/bin/balsepkdecomp 1 c_grid2d_10.hg
+*** balsep-k-decomp (version 2.0) ***
+
+Parsing input file "c_grid2d_10.hg" ... 
+Parsing input file done in 0 sec (50 atoms, 50 variables).
+
+Building hypergraph ... 
+Building hypergraph done in 0 sec.
+
+Building hypertree (det-1-decomp) ... 
+0 balanced separators tried.
+0 subedge balanced separators tried.
+Hypertree of width 1 not found in 0 sec.
+
+[exit 0]

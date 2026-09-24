@@ -1,0 +1,12 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/htd/build/bin/htd_main-1.2.0 --input hgr --type hypertree --output human -s 1 --instance /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/instances/grohe_marx_3.htd.hgr
+NODE 1: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 19, 20 ]
+  COVERING EDGES: 
+    HYPEREDGE 1: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
+    HYPEREDGE 2: [ 1, 2, 3, 4, 11, 12, 13, 14, 15, 16 ]
+    HYPEREDGE 6: [ 4, 7, 9, 10, 13, 15, 16, 18, 19, 20 ]
+  NODE 2: [ 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ]
+    COVERING EDGES: 
+      HYPEREDGE 3: [ 1, 5, 6, 7, 11, 12, 13, 17, 18, 19 ]
+      HYPEREDGE 4: [ 2, 5, 8, 9, 11, 14, 15, 17, 18, 20 ]
+      HYPEREDGE 5: [ 3, 6, 8, 10, 12, 14, 16, 17, 19, 20 ]
+[exit 0]

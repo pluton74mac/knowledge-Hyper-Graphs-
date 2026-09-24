@@ -1,0 +1,107 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/log-k-decomp/log-k-decomp -graph /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/instances/c_grid5.hg -exact
+Used algorithm: LogKHybrid
+Result ( ran with K = 3 )
+ 
+Bag: {r0c1, r1c1, r1c2, r2c2, r3c2, r4c2}
+Cover: {v0_1, v1_2, v3_2}
+Children: 2
+[
+	Bag: {r0c1, r0c2, r1c2, r2c2, r3c2, r4c2}
+	Cover: {v1_2, v3_2, h0_1}
+	Children: 1
+	[
+		Bag: {r0c2, r0c3, r1c2, r2c2, r3c2, r4c2}
+		Cover: {v1_2, v3_2, h0_2}
+		Children: 1
+		[
+			Bag: {r0c3, r1c2, r1c3, r2c2, r3c2, r4c2}
+			Cover: {v1_2, v3_2, v0_3}
+			Children: 1
+			[
+				Bag: {r0c3, r1c3, r2c2, r3c2, r4c2, r4c3}
+				Cover: {v2_2, v0_3, h4_2}
+				Children: 1
+				[
+					Bag: {r0c3, r1c3, r2c2, r3c2, r3c3, r4c3}
+					Cover: {v0_3, v2_2, v3_3}
+					Children: 1
+					[
+						Bag: {r0c3, r1c3, r2c2, r2c3, r3c3, r4c3}
+						Cover: {v0_3, v3_3, h2_2}
+						Children: 1
+						[
+							Bag: {r0c3, r0c4, r1c3, r2c3, r3c3, r4c3}
+							Cover: {v1_3, v3_3, h0_3}
+							Children: 1
+							[
+								Bag: {r0c4, r1c3, r1c4, r2c3, r3c3, r4c3}
+								Cover: {v1_3, v3_3, v0_4}
+								Children: 1
+								[
+									Bag: {r1c4, r2c3, r2c4, r3c3, r4c3}
+									Cover: {v2_3, v3_3, v1_4}
+									Children: 1
+									[
+										Bag: {r1c4, r2c4, r3c3, r3c4, r4c3}
+										Cover: {v3_3, v1_4, v2_4}
+										Children: 1
+										[
+											Bag: {r2c4, r3c3, r3c4, r4c3, r4c4}
+											Cover: {v2_4, h3_3, h4_3}
+										]
+									]
+								]
+							]
+						]
+					]
+				]
+			]
+		]
+	]
+
+	Bag: {r0c1, r1c1, r2c2, r3c2, r4c1, r4c2}
+	Cover: {v2_2, v0_1, h4_1}
+	Children: 1
+	[
+		Bag: {r0c1, r1c1, r2c2, r3c1, r3c2, r4c1}
+		Cover: {v0_1, v2_2, v3_1}
+		Children: 1
+		[
+			Bag: {r0c1, r1c1, r2c1, r2c2, r3c1, r4c1}
+			Cover: {v0_1, v3_1, h2_1}
+			Children: 1
+			[
+				Bag: {r0c0, r0c1, r1c1, r2c1, r3c1, r4c1}
+				Cover: {v1_1, v3_1, h0_0}
+				Children: 1
+				[
+					Bag: {r0c0, r1c0, r1c1, r2c1, r3c1, r4c1}
+					Cover: {v1_1, v3_1, v0_0}
+					Children: 1
+					[
+						Bag: {r1c0, r2c0, r2c1, r3c1, r4c1}
+						Cover: {v2_1, v3_1, v1_0}
+						Children: 1
+						[
+							Bag: {r1c0, r2c0, r3c0, r3c1, r4c1}
+							Cover: {v3_1, v1_0, v2_0}
+							Children: 1
+							[
+								Bag: {r2c0, r3c0, r3c1, r4c0, r4c1}
+								Cover: {v2_0, h3_0, h4_0}
+							]
+						]
+					]
+				]
+			]
+		]
+	]
+]
+
+Time: 28.17384 ms
+Time Composition: 
+Decomposition : 28.17384 ms
+
+Width:  3
+Correct:  true
+[exit 0]

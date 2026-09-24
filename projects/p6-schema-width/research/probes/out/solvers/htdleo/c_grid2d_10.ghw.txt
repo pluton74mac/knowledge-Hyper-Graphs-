@@ -1,0 +1,14 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/venv/bin/python /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/run_htdleo.py /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/htdleo/htdleo /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/instances/c_grid2d_10.hg -g
+ERROR:root:Inverse edge function property does not hold for node "1"
+ERROR:root:Bag of the subtree induced at "1" contained "{1, 2, 3, 38, 46, 22, 23, 26, 27}"
+ERROR:root:Vertices returned from the edge function are "{1, 2, 3, 38, 44, 45, 46, 22, 23, 26, 27}"
+ERROR:root:Bag content is: {1, 2, 3, 38, 46, 22, 23, 27}
+ERROR:root:Hence, not (vertices_in_bags_below_u & self._B(u) <= self.bags[u]) does not hold for node 1.
+ERROR:root:ERROR in Tree Decomposition.
+ERROR:root:Inverse edge function property does not hold for node "1"
+ERROR:root:Bag of the subtree induced at "1" contained "{1, 2, 3, 38, 46, 22, 23, 26, 27}"
+ERROR:root:Vertices returned from the edge function are "{1, 2, 3, 38, 44, 45, 46, 22, 23, 26, 27}"
+ERROR:root:Bag content is: {1, 2, 3, 38, 46, 22, 23, 27}
+ERROR:root:Hence, not (vertices_in_bags_below_u & self._B(u) <= self.bags[u]) does not hold for node 1.
+Result: 4	Valid:  False	SP: False	GHTD: True	in 40.12371253967285
+[exit 0]

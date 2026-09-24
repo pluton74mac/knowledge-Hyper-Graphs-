@@ -1,0 +1,10 @@
+instance	run	result	seconds	status
+bridge_99	logk_width2	width 2	17.5	[exit 0]
+bridge_99	balgo_detk_width2	width 2	3.5	[exit 0]
+bridge_99	balgo_approx60	width 12	60.9	[exit 0]
+NewSystem4	logk_width4	timeout	300.0	[exit 124]
+NewSystem4	balgo_detk_width4	timeout	300.0	[exit 124]
+NewSystem4	balgo_approx60	width 5	60.2	[exit 0]
+s1423	logk_width4	timeout	300.0	[exit 124]
+s1423	balgo_detk_width4	timeout	300.0	[exit 124]
+s1423	balgo_approx60	width 83	60.2	[exit 0]

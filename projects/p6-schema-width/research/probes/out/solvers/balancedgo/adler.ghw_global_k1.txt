@@ -1,0 +1,16 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/BalancedGo/BalancedGo -graph /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/instances/adler.hg -width 1 -global
+Graph with subedges 
+ {(), (V1), (V2), (V9), (V3), (V10), (V4), (V5), (V6), (V7), (V8), E3, E8, E1, E2, E4, E5, E6, E7}
+Used algorithm: BalSep Global @
+Result ( ran with K = 1 )
+ 
+Bag: {}
+Cover: {}
+
+Time: 0.34275 ms
+Time Composition: 
+Decomposition : 0.34275 ms
+
+Width:  0
+Correct:  false
+[exit 0]

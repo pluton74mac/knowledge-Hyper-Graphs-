@@ -1,0 +1,18 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/newdetkdecomp/bin/hg-stats grohe_marx_3.hg
+*** hypergraph-properties (version 2.0) ***
+
+Parsing input file "grohe_marx_3.hg" ... 
+Parsing input file done in 0 sec (6 atoms, 20 variables).
+
+Building hypergraph ... 
+Building hypergraph done in 0 sec.
+
+Vertices: 20
+Edges: 6
+Degree: 3
+Arity: 10
+BIP: 4
+3-BIP: 1
+4-BIP: 0
+VC-dim: 2
+[exit 0]

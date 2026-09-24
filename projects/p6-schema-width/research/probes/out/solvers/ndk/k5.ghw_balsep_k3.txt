@@ -1,0 +1,24 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/newdetkdecomp/bin/balsepkdecomp 3 k5.hg
+*** balsep-k-decomp (version 2.0) ***
+
+Parsing input file "k5.hg" ... 
+Parsing input file done in 0 sec (10 atoms, 5 variables).
+
+Building hypergraph ... 
+Building hypergraph done in 0 sec.
+
+Building hypertree (det-3-decomp) ... 
+1 balanced separators tried.
+0 subedge balanced separators tried.
+Building hypertree done in 0 sec (hypertree-width: 3).
+
+Checking hypertree conditions ... 
+Condition 1: satisfied.
+Condition 2: satisfied.
+Condition 3: satisfied.
+Condition 4: satisfied.
+Checking hypertree conditions done in 0 sec.
+
+GML output written to: k5.gml
+
+[exit 0]

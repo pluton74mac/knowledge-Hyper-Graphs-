@@ -1,0 +1,13 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/newdetkdecomp/bin/detkdecomp 2 k5.hg
+*** det-k-decomp (version 2.0) ***
+
+Parsing input file "k5.hg" ... 
+Parsing input file done in 0 sec (10 atoms, 5 variables).
+
+Building hypergraph ... 
+Building hypergraph done in 0 sec.
+
+Building hypertree (det-2-decomp) ... 
+Hypertree of width 2 not found in 0 sec.
+
+[exit 0]

@@ -1,0 +1,17 @@
+{
+ "name": "gocam-schema",
+ "family": "knowledge-bases",
+ "source_url": "https://github.com/geneontology/gocam-py",
+ "source_ref": "v0.12.0 (commit e6f824a5cc2d50ad1fa12081bec0ca5c945c5199, committed 2026-07-27)",
+ "retrieved": "2026-09-24",
+ "licence": "repository LICENSE: BSD-3-Clause text with the placeholder holder 'Copyright (c) 2024, My Name'; the schema file declares no licence [unverified: intended licence]",
+ "files": [
+  {
+   "path": "raw/gocam.yaml",
+   "sha256": "22b48414adc83f570a4ad1d78d32779c7a2deb30f3c78c4d97ed89aa7325dd4d",
+   "bytes": 36648,
+   "source_url": "https://raw.githubusercontent.com/geneontology/gocam-py/e6f824a5cc2d50ad1fa12081bec0ca5c945c5199/src/gocam/schema/gocam.yaml"
+  }
+ ],
+ "notes": "Fallback biomedical schema for P6; quick check only."
+}

@@ -1,0 +1,42 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/BalancedGo/BalancedGo -graph /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/hyperbench/all/NewSystem4.hg -approx 60 -balDet 1 -bench
+						Children: 4
+						[
+							Bag: {POSITIONATINTERN_LV1___60_, PRESSUREATP1_TT1___61_, FLOWINATP1_TT1___61_, R1ATINTERN_TT1___61_, FLOWOUTATP2A_LV1___60_, PRESSUREATP2A_LV1___60_, RESISTANCEATINTERN_LV1___60_, FLOWINATP1A_LV1___60_, PRESSUREATP1A_LV1___60_, FLOWOUTATP1A_LV1___60_, TT1_S_LV1__67_}
+							Cover: {tt1_s_lv1:bt:_67__r1, tt1:bt:_61__r4, lv1:bt:_60__r4}
+
+							Bag: {PRESSUREATP1_TT1___61_, FLOWINATP1_TT1___61_, R1ATINTERN_TT1___61_, R2ATINTERN_TT1___61_, PRESSUREATP2_TT1___61_, FLOWINATP2_TT1___61_, BOTHFLOWSPRESENTATINTERN_TT1___61_, INTRES2CONST_TT1___61_}
+							Cover: {tt1:bt:_61__r4, tt1:bt:_61__r5, tt1:bt:_61__r3}
+							Children: 1
+							[
+								Bag: {R1ATINTERN_TT1___61_, BOTHFLOWSPRESENTATINTERN_TT1___61_, INTRES1CONST_TT1___61_}
+								Cover: {tt1:bt:_61__r2}
+							]
+
+							Bag: {PRESSUREATP1_TT1___61_, PRESSUREATP2_TT1___61_, PRESSUREATP3_TT1___61_}
+							Cover: {tt1:bt:_61__r7}
+							Children: 1
+							[
+								Bag: {PRESSUREATP1_TT1___61_, PRESSUREATP2_TT1___61_, PRESSUREATP3_TT1___61_, TEMPERATUREATP4_TT1___61_}
+								Cover: {tt1:bt:_61__r7, tt1:bt:_61__r1}
+							]
+
+							Bag: {PRESSUREATP1_TT1___61_, FLOWINATP1_TT1___61_, R1ATINTERN_TT1___61_, FLOWOUTATP1_TT1___61_}
+							Cover: {tt1:bt:_61__r4, tt1:bt:__p1_r1}
+						]
+					]
+				]
+
+				Bag: {POSITIONATINTERN_LV1___60_, RESISTANCEATINTERN_LV1___60_, RESINTCONST_LV1___60_}
+				Cover: {lv1:bt:_60__r4, lv1:bt:_60__r3}
+			]
+		]
+	]
+]
+
+Time: 60001.28585 ms
+Time Composition: 
+Decomposition : 60001.28585 ms
+
+Width:  5
+Correct:  true
+[exit 0]

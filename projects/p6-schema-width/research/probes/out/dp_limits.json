@@ -1,0 +1,82 @@
+{
+ "python": "3.11.15",
+ "machine": "x86_64",
+ "runs": [
+  {
+   "instance": "c_grid4",
+   "measure": "tw",
+   "value": 4,
+   "seconds": 1.0,
+   "core_vertices": 16
+  },
+  {
+   "instance": "c_grid4",
+   "measure": "ghw",
+   "value": 3,
+   "seconds": 1.9,
+   "core_vertices": 16
+  },
+  {
+   "instance": "c_grid4",
+   "measure": "fhw",
+   "value": "3",
+   "seconds": 56.8,
+   "core_vertices": 16
+  },
+  {
+   "instance": "adler",
+   "measure": "fhw",
+   "value": "2",
+   "seconds": 1.6,
+   "core_vertices": 10
+  },
+  {
+   "instance": "grohe_marx_3",
+   "measure": "tw",
+   "value": 18,
+   "seconds": 23.5,
+   "core_vertices": 20
+  },
+  {
+   "instance": "grohe_marx_3",
+   "measure": "ghw",
+   "value": 3,
+   "seconds": 42.0,
+   "core_vertices": 20
+  },
+  {
+   "instance": "c_grid5",
+   "measure": "hw",
+   "value": {
+    "hw": 3,
+    "valid": {
+     "covers": true,
+     "connected": true,
+     "chi_in_lambda": true,
+     "special": true,
+     "width": 3,
+     "nodes": 24
+    }
+   },
+   "seconds": 0.2,
+   "core_vertices": 25
+  },
+  {
+   "instance": "grohe_marx_3",
+   "measure": "hw",
+   "value": {
+    "hw": 3,
+    "valid": {
+     "covers": true,
+     "connected": true,
+     "chi_in_lambda": true,
+     "special": true,
+     "width": 3,
+     "nodes": 4
+    }
+   },
+   "seconds": 0.0,
+   "core_vertices": 20
+  }
+ ]
+}

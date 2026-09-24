@@ -1,0 +1,1276 @@
+{
+ "packaged:fixture/fixture.relation-schema.json [core+qualifier]": {
+  "class": "berge",
+  "berge": true,
+  "gamma": true,
+  "beta": true,
+  "alpha": true,
+  "join_tree": [
+   [
+    "claims",
+    "population"
+   ],
+   [
+    "flies_between",
+    "flight_route"
+   ]
+  ],
+  "vertices": 30,
+  "edges": 11,
+  "core": {
+   "vertices": 0,
+   "edges": 0
+  },
+  "tw_primal": 7,
+  "ghw": 1,
+  "fhw": "1",
+  "hw": 1,
+  "hd_check": {
+   "covers": true,
+   "connected": true,
+   "chi_in_lambda": true,
+   "special": true,
+   "width": 1,
+   "nodes": 11
+  },
+  "khg_contracts_gyo": {
+   "acyclic": true,
+   "residue": []
+  },
+  "balancedgo_hw": 1
+ },
+ "packaged:fixture/fixture.relation-schema.json [core+qualifier+time]": {
+  "class": "gamma",
+  "berge": false,
+  "gamma": true,
+  "beta": true,
+  "alpha": true,
+  "berge_cycle": [
+   "start_time",
+   "position_held",
+   "end_time",
+   "married"
+  ],
+  "join_tree": [
+   [
+    "claims",
+    "population"
+   ],
+   [
+    "flies_between",
+    "flight_route"
+   ],
+   [
+    "married",
+    "position_held"
+   ]
+  ],
+  "vertices": 32,
+  "edges": 11,
+  "core": {
+   "vertices": 0,
+   "edges": 0
+  },
+  "tw_primal": 7,
+  "ghw": 1,
+  "fhw": "1",
+  "hw": 1,
+  "hd_check": {
+   "covers": true,
+   "connected": true,
+   "chi_in_lambda": true,
+   "special": true,
+   "width": 1,
+   "nodes": 11
+  },
+  "khg_contracts_gyo": {
+   "acyclic": true,
+   "residue": []
+  },
+  "balancedgo_hw": 1
+ },
+ "packaged:fixture/cyclic.relation-schema.json [core+qualifier]": {
+  "class": "cyclic",
+  "berge": false,
+  "gamma": false,
+  "beta": false,
+  "alpha": false,
+  "berge_cycle": [
+   "buyer",
+   "sale",
+   "seller",
+   "brokerage",
+   "broker",
+   "referral"
+  ],
+  "beta_residue": [
+   [
+    "broker",
+    "buyer"
+   ],
+   [
+    "broker",
+    "seller"
+   ],
+   [
+    "buyer",
+    "seller"
+   ]
+  ],
+  "beta_cycle": [
+   "broker",
+   "brokerage",
+   "seller",
+   "sale",
+   "buyer",
+   "referral"
+  ],
+  "gyo_residue": [
+   [
+    "buyer",
+    "seller"
+   ],
+   [
+    "broker",
+    "seller"
+   ],
+   [
+    "broker",
+    "buyer"
+   ]
+  ],
+  "vertices": 3,
+  "edges": 3,
+  "core": {
+   "vertices": 3,
+   "edges": 3
+  },
+  "tw_primal": 2,
+  "ghw": 2,
+  "fhw": "3/2",
+  "hw": 2,
+  "hd_check": {
+   "covers": true,
+   "connected": true,
+   "chi_in_lambda": true,
+   "special": true,
+   "width": 2,
+   "nodes": 2
+  },
+  "khg_contracts_gyo": {
+   "acyclic": false,
+   "residue": [
+    [
+     "buyer",
+     "seller"
+    ],
+    [
+     "broker",
+     "seller"
+    ],
+    [
+     "broker",
+     "buyer"
+    ]
+   ]
+  },
+  "balancedgo_hw": 2
+ },
+ "packaged:fixture/cyclic.relation-schema.json [core+qualifier+time]": {
+  "class": "cyclic",
+  "berge": false,
+  "gamma": false,
+  "beta": false,
+  "alpha": false,
+  "berge_cycle": [
+   "buyer",
+   "sale",
+   "seller",
+   "brokerage",
+   "broker",
+   "referral"
+  ],
+  "beta_residue": [
+   [
+    "broker",
+    "buyer"
+   ],
+   [
+    "broker",
+    "seller"
+   ],
+   [
+    "buyer",
+    "seller"
+   ]
+  ],
+  "beta_cycle": [
+   "broker",
+   "brokerage",
+   "seller",
+   "sale",
+   "buyer",
+   "referral"
+  ],
+  "gyo_residue": [
+   [
+    "buyer",
+    "seller"
+   ],
+   [
+    "broker",
+    "seller"
+   ],
+   [
+    "broker",
+    "buyer"
+   ]
+  ],
+  "vertices": 3,
+  "edges": 3,
+  "core": {
+   "vertices": 3,
+   "edges": 3
+  },
+  "tw_primal": 2,
+  "ghw": 2,
+  "fhw": "3/2",
+  "hw": 2,
+  "hd_check": {
+   "covers": true,
+   "connected": true,
+   "chi_in_lambda": true,
+   "special": true,
+   "width": 2,
+   "nodes": 2
+  },
+  "khg_contracts_gyo": {
+   "acyclic": false,
+   "residue": [
+    [
+     "buyer",
+     "seller"
+    ],
+    [
+     "broker",
+     "seller"
+    ],
+    [
+     "broker",
+     "buyer"
+    ]
+   ]
+  },
+  "balancedgo_hw": 2
+ },
+ "packaged:fixture/wikidata-shaped.relation-schema.json [core+qualifier]": {
+  "class": "cyclic",
+  "berge": false,
+  "gamma": false,
+  "beta": false,
+  "alpha": false,
+  "berge_cycle": [
+   "replaces",
+   "position_held",
+   "series_ordinal",
+   "award_received",
+   "point_in_time",
+   "member_of_sports_team"
+  ],
+  "beta_residue": [
+   [
+    "point_in_time",
+    "replaces"
+   ],
+   [
+    "point_in_time",
+    "series_ordinal"
+   ],
+   [
+    "replaces",
+    "series_ordinal"
+   ]
+  ],
+  "beta_cycle": [
+   "point_in_time",
+   "award_received",
+   "series_ordinal",
+   "position_held",
+   "replaces",
+   "member_of_sports_team"
+  ],
+  "gyo_residue": [
+   [
+    "replaces",
+    "series_ordinal"
+   ],
+   [
+    "point_in_time",
+    "series_ordinal"
+   ],
+   [
+    "point_in_time",
+    "replaces"
+   ]
+  ],
+  "vertices": 10,
+  "edges": 3,
+  "core": {
+   "vertices": 3,
+   "edges": 3
+  },
+  "tw_primal": 4,
+  "ghw": 2,
+  "fhw": "3/2",
+  "hw": 2,
+  "hd_check": {
+   "covers": true,
+   "connected": true,
+   "chi_in_lambda": true,
+   "special": true,
+   "width": 2,
+   "nodes": 3
+  },
+  "khg_contracts_gyo": {
+   "acyclic": false,
+   "residue": [
+    [
+     "replaces",
+     "series_ordinal"
+    ],
+    [
+     "point_in_time",
+     "series_ordinal"
+    ],
+    [
+     "point_in_time",
+     "replaces"
+    ]
+   ]
+  },
+  "balancedgo_hw": 2
+ },
+ "packaged:fixture/wikidata-shaped.relation-schema.json [core+qualifier+time]": {
+  "class": "cyclic",
+  "berge": false,
+  "gamma": false,
+  "beta": false,
+  "alpha": false,
+  "berge_cycle": [
+   "point_in_time",
+   "award_received",
+   "series_ordinal",
+   "position_held",
+   "end_time",
+   "member_of_sports_team"
+  ],
+  "beta_residue": [
+   [
+    "end_time",
+    "point_in_time",
+    "replaces",
+    "start_time"
+   ],
+   [
+    "end_time",
+    "replaces",
+    "series_ordinal",
+    "start_time"
+   ],
+   [
+    "point_in_time",
+    "series_ordinal"
+   ]
+  ],
+  "beta_cycle": [
+   "end_time",
+   "position_held",
+   "series_ordinal",
+   "award_received",
+   "point_in_time",
+   "member_of_sports_team"
+  ],
+  "gyo_residue": [
+   [
+    "end_time",
+    "replaces",
+    "series_ordinal",
+    "start_time"
+   ],
+   [
+    "point_in_time",
+    "series_ordinal"
+   ],
+   [
+    "end_time",
+    "point_in_time",
+    "replaces",
+    "start_time"
+   ]
+  ],
+  "vertices": 12,
+  "edges": 3,
+  "core": {
+   "vertices": 3,
+   "edges": 3
+  },
+  "tw_primal": 5,
+  "ghw": 2,
+  "fhw": "3/2",
+  "hw": 2,
+  "hd_check": {
+   "covers": true,
+   "connected": true,
+   "chi_in_lambda": true,
+   "special": true,
+   "width": 2,
+   "nodes": 3
+  },
+  "khg_contracts_gyo": {
+   "acyclic": false,
+   "residue": [
+    [
+     "end_time",
+     "replaces",
+     "series_ordinal",
+     "start_time"
+    ],
+    [
+     "point_in_time",
+     "series_ordinal"
+    ],
+    [
+     "end_time",
+     "point_in_time",
+     "replaces",
+     "start_time"
+    ]
+   ]
+  },
+  "balancedgo_hw": 2
+ },
+ "packaged:sample/sample.relation-schema.json [core+qualifier]": {
+  "class": "berge",
+  "berge": true,
+  "gamma": true,
+  "beta": true,
+  "alpha": true,
+  "join_tree": [],
+  "vertices": 8,
+  "edges": 3,
+  "core": {
+   "vertices": 0,
+   "edges": 0
+  },
+  "tw_primal": 3,
+  "ghw": 1,
+  "fhw": "1",
+  "hw": 1,
+  "hd_check": {
+   "covers": true,
+   "connected": true,
+   "chi_in_lambda": true,
+   "special": true,
+   "width": 1,
+   "nodes": 3
+  },
+  "khg_contracts_gyo": {
+   "acyclic": true,
+   "residue": []
+  },
+  "balancedgo_hw": 1
+ },
+ "packaged:sample/sample.relation-schema.json [core+qualifier+time]": {
+  "class": "berge",
+  "berge": true,
+  "gamma": true,
+  "beta": true,
+  "alpha": true,
+  "join_tree": [],
+  "vertices": 10,
+  "edges": 3,
+  "core": {
+   "vertices": 0,
+   "edges": 0
+  },
+  "tw_primal": 5,
+  "ghw": 1,
+  "fhw": "1",
+  "hw": 1,
+  "hd_check": {
+   "covers": true,
+   "connected": true,
+   "chi_in_lambda": true,
+   "special": true,
+   "width": 1,
+   "nodes": 3
+  },
+  "khg_contracts_gyo": {
+   "acyclic": true,
+   "residue": []
+  },
+  "balancedgo_hw": 1
+ },
+ "constructed:p6-alpha-not-beta.relation-schema.json [core+qualifier]": {
+  "class": "alpha",
+  "berge": false,
+  "gamma": false,
+  "beta": false,
+  "alpha": true,
+  "berge_cycle": [
+   "buyer",
+   "sale",
+   "seller",
+   "brokerage",
+   "broker",
+   "referral"
+  ],
+  "beta_residue": [
+   [
+    "broker",
+    "buyer"
+   ],
+   [
+    "broker",
+    "buyer",
+    "seller"
+   ],
+   [
+    "broker",
+    "seller"
+   ],
+   [
+    "buyer",
+    "seller"
+   ]
+  ],
+  "beta_cycle": [
+   "broker",
+   "brokerage",
+   "seller",
+   "sale",
+   "buyer",
+   "referral"
+  ],
+  "join_tree": [
+   [
+    "brokerage",
+    "brokered_sale"
+   ],
+   [
+    "referral",
+    "brokered_sale"
+   ],
+   [
+    "brokered_sale",
+    "sale"
+   ]
+  ],
+  "vertices": 3,
+  "edges": 4,
+  "core": {
+   "vertices": 0,
+   "edges": 0
+  },
+  "tw_primal": 2,
+  "ghw": 1,
+  "fhw": "1",
+  "hw": 1,
+  "hd_check": {
+   "covers": true,
+   "connected": true,
+   "chi_in_lambda": true,
+   "special": true,
+   "width": 1,
+   "nodes": 2
+  },
+  "khg_contracts_gyo": {
+   "acyclic": true,
+   "residue": []
+  },
+  "balancedgo_hw": 1
+ },
+ "constructed:p6-alpha-not-beta.relation-schema.json [core+qualifier+time]": {
+  "class": "alpha",
+  "berge": false,
+  "gamma": false,
+  "beta": false,
+  "alpha": true,
+  "berge_cycle": [
+   "buyer",
+   "sale",
+   "seller",
+   "brokerage",
+   "broker",
+   "referral"
+  ],
+  "beta_residue": [
+   [
+    "broker",
+    "buyer"
+   ],
+   [
+    "broker",
+    "buyer",
+    "seller"
+   ],
+   [
+    "broker",
+    "seller"
+   ],
+   [
+    "buyer",
+    "seller"
+   ]
+  ],
+  "beta_cycle": [
+   "broker",
+   "brokerage",
+   "seller",
+   "sale",
+   "buyer",
+   "referral"
+  ],
+  "join_tree": [
+   [
+    "brokerage",
+    "brokered_sale"
+   ],
+   [
+    "referral",
+    "brokered_sale"
+   ],
+   [
+    "brokered_sale",
+    "sale"
+   ]
+  ],
+  "vertices": 3,
+  "edges": 4,
+  "core": {
+   "vertices": 0,
+   "edges": 0
+  },
+  "tw_primal": 2,
+  "ghw": 1,
+  "fhw": "1",
+  "hw": 1,
+  "hd_check": {
+   "covers": true,
+   "connected": true,
+   "chi_in_lambda": true,
+   "special": true,
+   "width": 1,
+   "nodes": 2
+  },
+  "khg_contracts_gyo": {
+   "acyclic": true,
+   "residue": []
+  },
+  "balancedgo_hw": 1
+ },
+ "constructed:p6-berge-path.relation-schema.json [core+qualifier]": {
+  "class": "berge",
+  "berge": true,
+  "gamma": true,
+  "beta": true,
+  "alpha": true,
+  "join_tree": [
+   [
+    "employment",
+    "headquartered_in"
+   ]
+  ],
+  "vertices": 3,
+  "edges": 2,
+  "core": {
+   "vertices": 0,
+   "edges": 0
+  },
+  "tw_primal": 1,
+  "ghw": 1,
+  "fhw": "1",
+  "hw": 1,
+  "hd_check": {
+   "covers": true,
+   "connected": true,
+   "chi_in_lambda": true,
+   "special": true,
+   "width": 1,
+   "nodes": 2
+  },
+  "khg_contracts_gyo": {
+   "acyclic": true,
+   "residue": []
+  },
+  "balancedgo_hw": 1
+ },
+ "constructed:p6-berge-path.relation-schema.json [core+qualifier+time]": {
+  "class": "berge",
+  "berge": true,
+  "gamma": true,
+  "beta": true,
+  "alpha": true,
+  "join_tree": [
+   [
+    "employment",
+    "headquartered_in"
+   ]
+  ],
+  "vertices": 3,
+  "edges": 2,
+  "core": {
+   "vertices": 0,
+   "edges": 0
+  },
+  "tw_primal": 1,
+  "ghw": 1,
+  "fhw": "1",
+  "hw": 1,
+  "hd_check": {
+   "covers": true,
+   "connected": true,
+   "chi_in_lambda": true,
+   "special": true,
+   "width": 1,
+   "nodes": 2
+  },
+  "khg_contracts_gyo": {
+   "acyclic": true,
+   "residue": []
+  },
+  "balancedgo_hw": 1
+ },
+ "constructed:p6-beta-not-gamma.relation-schema.json [core+qualifier]": {
+  "class": "beta",
+  "berge": false,
+  "gamma": false,
+  "beta": true,
+  "alpha": true,
+  "berge_cycle": [
+   "buyer",
+   "sale",
+   "seller",
+   "brokerage",
+   "broker",
+   "brokered_sale"
+  ],
+  "gamma_triangle": [
+   "broker",
+   "seller",
+   "buyer"
+  ],
+  "join_tree": [
+   [
+    "brokerage",
+    "brokered_sale"
+   ],
+   [
+    "brokered_sale",
+    "sale"
+   ]
+  ],
+  "vertices": 3,
+  "edges": 3,
+  "core": {
+   "vertices": 0,
+   "edges": 0
+  },
+  "tw_primal": 2,
+  "ghw": 1,
+  "fhw": "1",
+  "hw": 1,
+  "hd_check": {
+   "covers": true,
+   "connected": true,
+   "chi_in_lambda": true,
+   "special": true,
+   "width": 1,
+   "nodes": 2
+  },
+  "khg_contracts_gyo": {
+   "acyclic": true,
+   "residue": []
+  },
+  "balancedgo_hw": 1
+ },
+ "constructed:p6-beta-not-gamma.relation-schema.json [core+qualifier+time]": {
+  "class": "beta",
+  "berge": false,
+  "gamma": false,
+  "beta": true,
+  "alpha": true,
+  "berge_cycle": [
+   "buyer",
+   "sale",
+   "seller",
+   "brokerage",
+   "broker",
+   "brokered_sale"
+  ],
+  "gamma_triangle": [
+   "broker",
+   "seller",
+   "buyer"
+  ],
+  "join_tree": [
+   [
+    "brokerage",
+    "brokered_sale"
+   ],
+   [
+    "brokered_sale",
+    "sale"
+   ]
+  ],
+  "vertices": 3,
+  "edges": 3,
+  "core": {
+   "vertices": 0,
+   "edges": 0
+  },
+  "tw_primal": 2,
+  "ghw": 1,
+  "fhw": "1",
+  "hw": 1,
+  "hd_check": {
+   "covers": true,
+   "connected": true,
+   "chi_in_lambda": true,
+   "special": true,
+   "width": 1,
+   "nodes": 2
+  },
+  "khg_contracts_gyo": {
+   "acyclic": true,
+   "residue": []
+  },
+  "balancedgo_hw": 1
+ },
+ "constructed:p6-gamma-not-berge.relation-schema.json [core+qualifier]": {
+  "class": "gamma",
+  "berge": false,
+  "gamma": true,
+  "beta": true,
+  "alpha": true,
+  "berge_cycle": [
+   "seller",
+   "sale",
+   "buyer",
+   "brokered_sale"
+  ],
+  "join_tree": [
+   [
+    "brokered_sale",
+    "sale"
+   ]
+  ],
+  "vertices": 3,
+  "edges": 2,
+  "core": {
+   "vertices": 0,
+   "edges": 0
+  },
+  "tw_primal": 2,
+  "ghw": 1,
+  "fhw": "1",
+  "hw": 1,
+  "hd_check": {
+   "covers": true,
+   "connected": true,
+   "chi_in_lambda": true,
+   "special": true,
+   "width": 1,
+   "nodes": 1
+  },
+  "khg_contracts_gyo": {
+   "acyclic": true,
+   "residue": []
+  },
+  "balancedgo_hw": 1
+ },
+ "constructed:p6-gamma-not-berge.relation-schema.json [core+qualifier+time]": {
+  "class": "gamma",
+  "berge": false,
+  "gamma": true,
+  "beta": true,
+  "alpha": true,
+  "berge_cycle": [
+   "seller",
+   "sale",
+   "buyer",
+   "brokered_sale"
+  ],
+  "join_tree": [
+   [
+    "brokered_sale",
+    "sale"
+   ]
+  ],
+  "vertices": 3,
+  "edges": 2,
+  "core": {
+   "vertices": 0,
+   "edges": 0
+  },
+  "tw_primal": 2,
+  "ghw": 1,
+  "fhw": "1",
+  "hw": 1,
+  "hd_check": {
+   "covers": true,
+   "connected": true,
+   "chi_in_lambda": true,
+   "special": true,
+   "width": 1,
+   "nodes": 1
+  },
+  "khg_contracts_gyo": {
+   "acyclic": true,
+   "residue": []
+  },
+  "balancedgo_hw": 1
+ },
+ "constructed:p6-qualifier-k5.relation-schema.json [core+qualifier]": {
+  "class": "cyclic",
+  "berge": false,
+  "gamma": false,
+  "beta": false,
+  "alpha": false,
+  "berge_cycle": [
+   "point_in_time",
+   "relation_1",
+   "start_time",
+   "relation_0",
+   "end_time",
+   "relation_4"
+  ],
+  "beta_residue": [
+   [
+    "end_time",
+    "point_in_time"
+   ],
+   [
+    "end_time",
+    "replaces"
+   ],
+   [
+    "end_time",
+    "series_ordinal"
+   ],
+   [
+    "end_time",
+    "start_time"
+   ],
+   [
+    "point_in_time",
+    "replaces"
+   ],
+   [
+    "point_in_time",
+    "series_ordinal"
+   ],
+   [
+    "point_in_time",
+    "start_time"
+   ],
+   [
+    "replaces",
+    "series_ordinal"
+   ],
+   [
+    "replaces",
+    "start_time"
+   ],
+   [
+    "series_ordinal",
+    "start_time"
+   ]
+  ],
+  "beta_cycle": [
+   "end_time",
+   "relation_0",
+   "start_time",
+   "relation_1",
+   "point_in_time",
+   "relation_4"
+  ],
+  "gyo_residue": [
+   [
+    "end_time",
+    "start_time"
+   ],
+   [
+    "point_in_time",
+    "start_time"
+   ],
+   [
+    "series_ordinal",
+    "start_time"
+   ],
+   [
+    "replaces",
+    "start_time"
+   ],
+   [
+    "end_time",
+    "point_in_time"
+   ],
+   [
+    "end_time",
+    "series_ordinal"
+   ],
+   [
+    "end_time",
+    "replaces"
+   ],
+   [
+    "point_in_time",
+    "series_ordinal"
+   ],
+   [
+    "point_in_time",
+    "replaces"
+   ],
+   [
+    "replaces",
+    "series_ordinal"
+   ]
+  ],
+  "vertices": 25,
+  "edges": 10,
+  "core": {
+   "vertices": 5,
+   "edges": 10
+  },
+  "tw_primal": 4,
+  "ghw": 3,
+  "fhw": "5/2",
+  "hw": 3,
+  "hd_check": {
+   "covers": true,
+   "connected": true,
+   "chi_in_lambda": true,
+   "special": true,
+   "width": 3,
+   "nodes": 10
+  },
+  "khg_contracts_gyo": {
+   "acyclic": false,
+   "residue": [
+    [
+     "end_time",
+     "start_time"
+    ],
+    [
+     "point_in_time",
+     "start_time"
+    ],
+    [
+     "series_ordinal",
+     "start_time"
+    ],
+    [
+     "replaces",
+     "start_time"
+    ],
+    [
+     "end_time",
+     "point_in_time"
+    ],
+    [
+     "end_time",
+     "series_ordinal"
+    ],
+    [
+     "end_time",
+     "replaces"
+    ],
+    [
+     "point_in_time",
+     "series_ordinal"
+    ],
+    [
+     "point_in_time",
+     "replaces"
+    ],
+    [
+     "replaces",
+     "series_ordinal"
+    ]
+   ]
+  },
+  "balancedgo_hw": 3
+ },
+ "constructed:p6-qualifier-k5.relation-schema.json [core+qualifier+time]": {
+  "class": "cyclic",
+  "berge": false,
+  "gamma": false,
+  "beta": false,
+  "alpha": false,
+  "berge_cycle": [
+   "point_in_time",
+   "relation_1",
+   "start_time",
+   "relation_0",
+   "end_time",
+   "relation_4"
+  ],
+  "beta_residue": [
+   [
+    "end_time",
+    "point_in_time"
+   ],
+   [
+    "end_time",
+    "replaces"
+   ],
+   [
+    "end_time",
+    "series_ordinal"
+   ],
+   [
+    "end_time",
+    "start_time"
+   ],
+   [
+    "point_in_time",
+    "replaces"
+   ],
+   [
+    "point_in_time",
+    "series_ordinal"
+   ],
+   [
+    "point_in_time",
+    "start_time"
+   ],
+   [
+    "replaces",
+    "series_ordinal"
+   ],
+   [
+    "replaces",
+    "start_time"
+   ],
+   [
+    "series_ordinal",
+    "start_time"
+   ]
+  ],
+  "beta_cycle": [
+   "end_time",
+   "relation_0",
+   "start_time",
+   "relation_1",
+   "point_in_time",
+   "relation_4"
+  ],
+  "gyo_residue": [
+   [
+    "end_time",
+    "start_time"
+   ],
+   [
+    "point_in_time",
+    "start_time"
+   ],
+   [
+    "series_ordinal",
+    "start_time"
+   ],
+   [
+    "replaces",
+    "start_time"
+   ],
+   [
+    "end_time",
+    "point_in_time"
+   ],
+   [
+    "end_time",
+    "series_ordinal"
+   ],
+   [
+    "end_time",
+    "replaces"
+   ],
+   [
+    "point_in_time",
+    "series_ordinal"
+   ],
+   [
+    "point_in_time",
+    "replaces"
+   ],
+   [
+    "replaces",
+    "series_ordinal"
+   ]
+  ],
+  "vertices": 25,
+  "edges": 10,
+  "core": {
+   "vertices": 5,
+   "edges": 10
+  },
+  "tw_primal": 4,
+  "ghw": 3,
+  "fhw": "5/2",
+  "hw": 3,
+  "hd_check": {
+   "covers": true,
+   "connected": true,
+   "chi_in_lambda": true,
+   "special": true,
+   "width": 3,
+   "nodes": 10
+  },
+  "khg_contracts_gyo": {
+   "acyclic": false,
+   "residue": [
+    [
+     "end_time",
+     "start_time"
+    ],
+    [
+     "point_in_time",
+     "start_time"
+    ],
+    [
+     "series_ordinal",
+     "start_time"
+    ],
+    [
+     "replaces",
+     "start_time"
+    ],
+    [
+     "end_time",
+     "point_in_time"
+    ],
+    [
+     "end_time",
+     "series_ordinal"
+    ],
+    [
+     "end_time",
+     "replaces"
+    ],
+    [
+     "point_in_time",
+     "series_ordinal"
+    ],
+    [
+     "point_in_time",
+     "replaces"
+    ],
+    [
+     "replaces",
+     "series_ordinal"
+    ]
+   ]
+  },
+  "balancedgo_hw": 3
+ }
+}

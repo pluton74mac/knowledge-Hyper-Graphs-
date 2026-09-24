@@ -1,0 +1,3603 @@
+{
+ "describe": {
+  "properties": 13928,
+  "excluded_as_relations": 57,
+  "excluded_with_allowed_qualifiers": 13,
+  "excluded_examples": [
+   "P1855",
+   "P360",
+   "P4224",
+   "P5192",
+   "P6685",
+   "P2271",
+   "P1630",
+   "P5977"
+  ],
+  "datatypes": [
+   [
+    "ExternalId",
+    10606
+   ],
+   [
+    "WikibaseItem",
+    1784
+   ],
+   [
+    "Quantity",
+    695
+   ],
+   [
+    "String",
+    358
+   ],
+   [
+    "Url",
+    124
+   ],
+   [
+    "CommonsMedia",
+    93
+   ],
+   [
+    "Time",
+    70
+   ],
+   [
+    "Monolingualtext",
+    67
+   ],
+   [
+    "Math",
+    36
+   ],
+   [
+    "WikibaseProperty",
+    22
+   ],
+   [
+    "WikibaseSense",
+    19
+   ],
+   [
+    "WikibaseLexeme",
+    16
+   ],
+   [
+    "GlobeCoordinate",
+    10
+   ],
+   [
+    "WikibaseForm",
+    10
+   ],
+   [
+    "TabularData",
+    7
+   ],
+   [
+    "MusicalNotation",
+    6
+   ],
+   [
+    "GeoShape",
+    3
+   ],
+   [
+    "WikibaseEntitySchema",
+    2
+   ]
+  ],
+  "with_allowed_qualifiers": 1155,
+  "allowed_qualifiers_novalue_only": 23,
+  "allowed_constraint_statement_ranks": {
+   "NormalRank": 11777,
+   "DeprecatedRank": 200,
+   "PreferredRank": 2
+  },
+  "allowed_constraint_status": [
+   [
+    "Q21502408",
+    106
+   ],
+   [
+    "Q62026391",
+    35
+   ]
+  ],
+  "with_allowed_qualifiers_by_datatype": [
+   [
+    "ExternalId",
+    584
+   ],
+   [
+    "WikibaseItem",
+    278
+   ],
+   [
+    "Quantity",
+    129
+   ],
+   [
+    "String",
+    54
+   ],
+   [
+    "Url",
+    37
+   ],
+   [
+    "CommonsMedia",
+    26
+   ],
+   [
+    "Time",
+    16
+   ],
+   [
+    "Monolingualtext",
+    13
+   ],
+   [
+    "GlobeCoordinate",
+    4
+   ],
+   [
+    "WikibaseLexeme",
+    4
+   ],
+   [
+    "Math",
+    4
+   ],
+   [
+    "WikibaseSense",
+    3
+   ],
+   [
+    "WikibaseProperty",
+    2
+   ],
+   [
+    "WikibaseEntitySchema",
+    1
+   ]
+  ],
+  "allowed_list_size": {
+   "mean": 10.02,
+   "median": 6,
+   "max": 129,
+   "bins": {
+    "0": 23,
+    "1": 115,
+    "32-63": 56,
+    "16-31": 141,
+    "2-3": 217,
+    "8-15": 289,
+    "64+": 10,
+    "4-7": 304
+   }
+  },
+  "largest_allowed_lists": [
+   [
+    "P31",
+    "instance of",
+    129
+   ],
+   [
+    "P18",
+    "image",
+    106
+   ],
+   [
+    "P39",
+    "position held",
+    104
+   ],
+   [
+    "P106",
+    "occupation",
+    80
+   ],
+   [
+    "P1344",
+    "participant in",
+    80
+   ],
+   [
+    "P1476",
+    "title",
+    79
+   ],
+   [
+    "P856",
+    "official website",
+    74
+   ],
+   [
+    "P166",
+    "award received",
+    73
+   ],
+   [
+    "P8687",
+    "social media followers",
+    70
+   ],
+   [
+    "P1448",
+    "official name",
+    69
+   ]
+  ],
+  "distinct_allowed_qualifiers": 989,
+  "most_shared_allowed_qualifiers": [
+   [
+    "P2241",
+    "reason for deprecated rank",
+    719
+   ],
+   [
+    "P7452",
+    "reason for preferred rank",
+    614
+   ],
+   [
+    "P1810",
+    "subject named as",
+    541
+   ],
+   [
+    "P580",
+    "start time",
+    396
+   ],
+   [
+    "P582",
+    "end time",
+    362
+   ],
+   [
+    "P518",
+    "applies to part",
+    305
+   ],
+   [
+    "P585",
+    "point in time",
+    303
+   ],
+   [
+    "P3831",
+    "object of statement has role",
+    236
+   ],
+   [
+    "P1326",
+    "latest date",
+    231
+   ],
+   [
+    "P1319",
+    "earliest date",
+    229
+   ],
+   [
+    "P8554",
+    "earliest end date",
+    223
+   ],
+   [
+    "P8555",
+    "latest start date",
+    217
+   ],
+   [
+    "P5102",
+    "nature of statement",
+    172
+   ],
+   [
+    "P1552",
+    "has characteristic",
+    171
+   ],
+   [
+    "P1480",
+    "sourcing circumstances",
+    169
+   ],
+   [
+    "P407",
+    "language of work or name",
+    167
+   ],
+   [
+    "P1932",
+    "object named as",
+    159
+   ],
+   [
+    "P805",
+    "statement is subject of",
+    157
+   ],
+   [
+    "P4970",
+    "alternative name",
+    139
+   ],
+   [
+    "P1065",
+    "archive URL",
+    131
+   ],
+   [
+    "P4070",
+    "identifier shared with",
+    124
+   ],
+   [
+    "P1545",
+    "series ordinal",
+    115
+   ],
+   [
+    "P1534",
+    "end cause",
+    113
+   ],
+   [
+    "P10663",
+    "applies to work",
+    100
+   ],
+   [
+    "P459",
+    "determination method or standard",
+    98
+   ],
+   [
+    "P3680",
+    "statement supported by",
+    97
+   ],
+   [
+    "P2868",
+    "subject has role",
+    97
+   ],
+   [
+    "P1013",
+    "criterion used",
+    94
+   ],
+   [
+    "P1001",
+    "applies to jurisdiction",
+    85
+   ],
+   [
+    "P2960",
+    "archive date",
+    81
+   ]
+  ],
+  "main_statements_total": 1789552674,
+  "main_statements_covered_by_allowed": 1272951360,
+  "top100_by_use_with_allowed": 56,
+  "top1000_by_use_with_allowed": 264,
+  "with_required_qualifiers": 542,
+  "required_qualifiers_most_common": [
+   [
+    "P585",
+    "point in time",
+    116
+   ],
+   [
+    "P9675",
+    "MediaWiki page ID",
+    90
+   ],
+   [
+    "P407",
+    "language of work or name",
+    51
+   ],
+   [
+    "P580",
+    "start time",
+    32
+   ],
+   [
+    "P1810",
+    "subject named as",
+    29
+   ],
+   [
+    "P400",
+    "platform",
+    26
+   ],
+   [
+    "P2076",
+    "temperature",
+    25
+   ],
+   [
+    "P459",
+    "determination method or standard",
+    21
+   ],
+   [
+    "P2676",
+    "rating certificate ID",
+    16
+   ],
+   [
+    "P7367",
+    "content descriptor",
+    12
+   ]
+  ],
+  "with_subject_type": 9012,
+  "subject_type_rel": [
+   [
+    "Q21503252",
+    7510
+   ],
+   [
+    "Q30208840",
+    1368
+   ],
+   [
+    "Q21514624",
+    159
+   ],
+   [
+    "Q33002955",
+    1
+   ]
+  ],
+  "subject_type_classes_per_property": [
+   [
+    1,
+    5059
+   ],
+   [
+    2,
+    1683
+   ],
+   [
+    3,
+    738
+   ],
+   [
+    4,
+    417
+   ],
+   [
+    5,
+    283
+   ],
+   [
+    6,
+    195
+   ],
+   [
+    7,
+    116
+   ],
+   [
+    8,
+    104
+   ],
+   [
+    9,
+    68
+   ],
+   [
+    10,
+    60
+   ],
+   [
+    11,
+    41
+   ],
+   [
+    12,
+    32
+   ],
+   [
+    13,
+    34
+   ],
+   [
+    14,
+    27
+   ],
+   [
+    15,
+    27
+   ],
+   [
+    16,
+    13
+   ],
+   [
+    17,
+    15
+   ],
+   [
+    18,
+    11
+   ],
+   [
+    19,
+    13
+   ],
+   [
+    20,
+    9
+   ],
+   [
+    21,
+    6
+   ],
+   [
+    22,
+    13
+   ],
+   [
+    23,
+    4
+   ],
+   [
+    24,
+    4
+   ],
+   [
+    25,
+    8
+   ],
+   [
+    26,
+    5
+   ],
+   [
+    27,
+    1
+   ],
+   [
+    28,
+    1
+   ],
+   [
+    29,
+    2
+   ],
+   [
+    30,
+    1
+   ],
+   [
+    31,
+    6
+   ],
+   [
+    33,
+    3
+   ],
+   [
+    34,
+    1
+   ],
+   [
+    35,
+    3
+   ],
+   [
+    36,
+    1
+   ],
+   [
+    39,
+    1
+   ],
+   [
+    41,
+    1
+   ],
+   [
+    50,
+    2
+   ],
+   [
+    57,
+    1
+   ],
+   [
+    66,
+    1
+   ],
+   [
+    88,
+    1
+   ],
+   [
+    92,
+    1
+   ]
+  ],
+  "subject_type_top_classes": [
+   [
+    "Q5",
+    2808
+   ],
+   [
+    "Q43229",
+    744
+   ],
+   [
+    "Q16334295",
+    438
+   ],
+   [
+    "Q7889",
+    419
+   ],
+   [
+    "Q16521",
+    364
+   ],
+   [
+    "Q11424",
+    357
+   ],
+   [
+    "Q386724",
+    237
+   ],
+   [
+    "Q95074",
+    233
+   ],
+   [
+    "Q618123",
+    206
+   ],
+   [
+    "Q838948",
+    195
+   ]
+  ],
+  "item_properties": 1784,
+  "item_properties_with_value_type": 1194,
+  "value_type_rel": [
+   [
+    "Q21503252",
+    740
+   ],
+   [
+    "Q30208840",
+    387
+   ],
+   [
+    "Q21514624",
+    88
+   ]
+  ],
+  "value_type_top_classes": [
+   [
+    "Q5",
+    200
+   ],
+   [
+    "Q43229",
+    109
+   ],
+   [
+    "Q95074",
+    56
+   ],
+   [
+    "Q16334295",
+    52
+   ],
+   [
+    "Q386724",
+    31
+   ],
+   [
+    "Q3895768",
+    27
+   ],
+   [
+    "Q16521",
+    26
+   ],
+   [
+    "Q56061",
+    26
+   ],
+   [
+    "Q4164871",
+    26
+   ],
+   [
+    "Q14623646",
+    23
+   ]
+  ],
+  "observed_properties_with_main_use": 13608,
+  "observed_properties_with_any_qualifier": 8574,
+  "observed_distinct_qualifiers": 2556,
+  "observed_robust_distinct_qualifiers": 800,
+  "meta_list": [
+   "P1065",
+   "P1310",
+   "P13589",
+   "P143",
+   "P14457",
+   "P1534",
+   "P1683",
+   "P1810",
+   "P1932",
+   "P2241",
+   "P248",
+   "P2916",
+   "P2960",
+   "P3452",
+   "P3680",
+   "P4656",
+   "P4970",
+   "P5017",
+   "P6607",
+   "P7452",
+   "P7528",
+   "P805",
+   "P813",
+   "P8327",
+   "P854",
+   "P887",
+   "P9570"
+  ]
+ },
+ "declared_vs_observed": {
+  "declared_with_usage": 1149,
+  "jaccard_declared_vs_robust_median": 0.286,
+  "share_of_qualifier_snaks_outside_allowed_median": 0.0042,
+  "sample": {
+   "P39": {
+    "label": "position held",
+    "allowed": 104,
+    "observed_distinct": 328,
+    "observed_robust": 34,
+    "allowed_and_robust": 34,
+    "allowed_never_used": 1,
+    "robust_not_allowed": [],
+    "snaks_total": 4918049,
+    "snaks_outside_allowed": 4338,
+    "top_observed": [
+     [
+      "P580",
+      1276916
+     ],
+     [
+      "P582",
+      972116
+     ],
+     [
+      "P2937",
+      689404
+     ],
+     [
+      "P1365",
+      326906
+     ],
+     [
+      "P768",
+      300641
+     ],
+     [
+      "P1366",
+      296455
+     ],
+     [
+      "P4100",
+      225371
+     ],
+     [
+      "P2715",
+      207533
+     ],
+     [
+      "P1534",
+      182972
+     ],
+     [
+      "P708",
+      83141
+     ],
+     [
+      "P1268",
+      64514
+     ],
+     [
+      "P2389",
+      58929
+     ]
+    ]
+   },
+   "P69": {
+    "label": "educated at",
+    "allowed": 57,
+    "observed_distinct": 136,
+    "observed_robust": 6,
+    "allowed_and_robust": 6,
+    "allowed_never_used": 1,
+    "robust_not_allowed": [],
+    "snaks_total": 3519076,
+    "snaks_outside_allowed": 1471,
+    "top_observed": [
+     [
+      "P582",
+      1194722
+     ],
+     [
+      "P512",
+      1076919
+     ],
+     [
+      "P580",
+      1045610
+     ],
+     [
+      "P812",
+      135326
+     ],
+     [
+      "P585",
+      36185
+     ],
+     [
+      "P1932",
+      4207
+     ],
+     [
+      "P184",
+      2928
+     ],
+     [
+      "P276",
+      2238
+     ],
+     [
+      "P1534",
+      2107
+     ],
+     [
+      "P1066",
+      2032
+     ],
+     [
+      "P101",
+      1991
+     ],
+     [
+      "P811",
+      1632
+     ]
+    ]
+   },
+   "P108": {
+    "label": "employer",
+    "allowed": 55,
+    "observed_distinct": 210,
+    "observed_robust": 11,
+    "allowed_and_robust": 11,
+    "allowed_never_used": 0,
+    "robust_not_allowed": [],
+    "snaks_total": 2806429,
+    "snaks_outside_allowed": 923,
+    "top_observed": [
+     [
+      "P580",
+      1469660
+     ],
+     [
+      "P582",
+      771660
+     ],
+     [
+      "P2868",
+      453162
+     ],
+     [
+      "P39",
+      66166
+     ],
+     [
+      "P585",
+      10126
+     ],
+     [
+      "P361",
+      7614
+     ],
+     [
+      "P6424",
+      4556
+     ],
+     [
+      "P937",
+      3856
+     ],
+     [
+      "P1534",
+      3489
+     ],
+     [
+      "P101",
+      3191
+     ],
+     [
+      "P1932",
+      3020
+     ],
+     [
+      "P1416",
+      2298
+     ]
+    ]
+   },
+   "P166": {
+    "label": "award received",
+    "allowed": 73,
+    "observed_distinct": 274,
+    "observed_robust": 20,
+    "allowed_and_robust": 19,
+    "allowed_never_used": 0,
+    "robust_not_allowed": [
+     "P393"
+    ],
+    "snaks_total": 1064710,
+    "snaks_outside_allowed": 5677,
+    "top_observed": [
+     [
+      "P585",
+      801826
+     ],
+     [
+      "P1686",
+      39941
+     ],
+     [
+      "P27",
+      29754
+     ],
+     [
+      "P6208",
+      26937
+     ],
+     [
+      "P805",
+      24651
+     ],
+     [
+      "P1027",
+      14176
+     ],
+     [
+      "P580",
+      12912
+     ],
+     [
+      "P155",
+      11446
+     ],
+     [
+      "P156",
+      11028
+     ],
+     [
+      "P1706",
+      10825
+     ],
+     [
+      "P1810",
+      10426
+     ],
+     [
+      "P1346",
+      9587
+     ]
+    ]
+   },
+   "P54": {
+    "label": "member of sports team",
+    "allowed": 31,
+    "observed_distinct": 100,
+    "observed_robust": 12,
+    "allowed_and_robust": 12,
+    "allowed_never_used": 0,
+    "robust_not_allowed": [],
+    "snaks_total": 3878290,
+    "snaks_outside_allowed": 199,
+    "top_observed": [
+     [
+      "P580",
+      1256163
+     ],
+     [
+      "P582",
+      1119582
+     ],
+     [
+      "P1351",
+      685271
+     ],
+     [
+      "P1350",
+      683171
+     ],
+     [
+      "P1642",
+      89852
+     ],
+     [
+      "P413",
+      7497
+     ],
+     [
+      "P585",
+      7475
+     ],
+     [
+      "P1618",
+      6356
+     ],
+     [
+      "P1129",
+      5539
+     ],
+     [
+      "P1545",
+      5293
+     ],
+     [
+      "P3450",
+      3577
+     ],
+     [
+      "P2094",
+      3245
+     ]
+    ]
+   }
+  }
+ },
+ "sparql_usage": {},
+ "schema_check_d_property_declared": {
+  "path": "datasets/knowledge-bases/wikidata-property-schemas/processed/wd-declared-d_property.relation-schema.json",
+  "relations": 1155,
+  "roles": 1909,
+  "errors": [],
+  "n_findings": 0
+ },
+ "runs": [
+  {
+   "table": "declared",
+   "variant": "a_generic",
+   "treatment": "naive",
+   "edges": 1155,
+   "vertices": 991,
+   "max_edge": 131,
+   "mean_edge": 12.02,
+   "components": 1,
+   "largest_component_edges": 1155,
+   "universal_vertices": [
+    "subject",
+    "value"
+   ],
+   "top_degree": [
+    [
+     "subject",
+     1155
+    ],
+    [
+     "value",
+     1155
+    ],
+    [
+     "P2241",
+     719
+    ],
+    [
+     "P7452",
+     614
+    ],
+    [
+     "P1810",
+     541
+    ],
+    [
+     "P580",
+     396
+    ],
+    [
+     "P582",
+     362
+    ],
+    [
+     "P518",
+     305
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 386,
+   "residue_vertices": 552,
+   "reference_checked": true,
+   "seconds": 0.19,
+   "notes": {
+    "unknown_qualifier_ids": 0
+   }
+  },
+  {
+   "table": "declared",
+   "variant": "a_generic",
+   "treatment": "core+qualifier+time",
+   "edges": 1155,
+   "vertices": 966,
+   "max_edge": 119,
+   "mean_edge": 9.31,
+   "components": 1,
+   "largest_component_edges": 1155,
+   "universal_vertices": [
+    "subject",
+    "value"
+   ],
+   "top_degree": [
+    [
+     "subject",
+     1155
+    ],
+    [
+     "value",
+     1155
+    ],
+    [
+     "P580",
+     396
+    ],
+    [
+     "P582",
+     362
+    ],
+    [
+     "P518",
+     305
+    ],
+    [
+     "P585",
+     303
+    ],
+    [
+     "P3831",
+     236
+    ],
+    [
+     "P1326",
+     231
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 340,
+   "residue_vertices": 524,
+   "reference_checked": true,
+   "seconds": 0.15,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 110
+   }
+  },
+  {
+   "table": "declared",
+   "variant": "a_generic",
+   "treatment": "core+qualifier",
+   "edges": 1155,
+   "vertices": 966,
+   "max_edge": 117,
+   "mean_edge": 8.71,
+   "components": 1,
+   "largest_component_edges": 1155,
+   "universal_vertices": [
+    "subject",
+    "value"
+   ],
+   "top_degree": [
+    [
+     "subject",
+     1155
+    ],
+    [
+     "value",
+     1155
+    ],
+    [
+     "P518",
+     305
+    ],
+    [
+     "P585",
+     303
+    ],
+    [
+     "P3831",
+     236
+    ],
+    [
+     "P1326",
+     231
+    ],
+    [
+     "P1319",
+     229
+    ],
+    [
+     "P8554",
+     223
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 350,
+   "residue_vertices": 524,
+   "reference_checked": true,
+   "seconds": 0.15,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 110
+   }
+  },
+  {
+   "table": "declared",
+   "variant": "b_local",
+   "treatment": "naive",
+   "edges": 1155,
+   "vertices": 3299,
+   "max_edge": 131,
+   "mean_edge": 12.02,
+   "components": 27,
+   "largest_component_edges": 1129,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P2241",
+     719
+    ],
+    [
+     "P7452",
+     614
+    ],
+    [
+     "P1810",
+     541
+    ],
+    [
+     "P580",
+     396
+    ],
+    [
+     "P582",
+     362
+    ],
+    [
+     "P518",
+     305
+    ],
+    [
+     "P585",
+     303
+    ],
+    [
+     "P3831",
+     236
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 386,
+   "residue_vertices": 550,
+   "reference_checked": true,
+   "seconds": 0.16,
+   "notes": {
+    "unknown_qualifier_ids": 0
+   }
+  },
+  {
+   "table": "declared",
+   "variant": "b_local",
+   "treatment": "core+qualifier+time",
+   "edges": 1155,
+   "vertices": 3274,
+   "max_edge": 119,
+   "mean_edge": 9.31,
+   "components": 141,
+   "largest_component_edges": 1012,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P580",
+     396
+    ],
+    [
+     "P582",
+     362
+    ],
+    [
+     "P518",
+     305
+    ],
+    [
+     "P585",
+     303
+    ],
+    [
+     "P3831",
+     236
+    ],
+    [
+     "P1326",
+     231
+    ],
+    [
+     "P1319",
+     229
+    ],
+    [
+     "P8554",
+     223
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 340,
+   "residue_vertices": 522,
+   "reference_checked": true,
+   "seconds": 0.15,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 110
+   }
+  },
+  {
+   "table": "declared",
+   "variant": "b_local",
+   "treatment": "core+qualifier",
+   "edges": 1155,
+   "vertices": 3274,
+   "max_edge": 117,
+   "mean_edge": 8.71,
+   "components": 154,
+   "largest_component_edges": 999,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P518",
+     305
+    ],
+    [
+     "P585",
+     303
+    ],
+    [
+     "P3831",
+     236
+    ],
+    [
+     "P1326",
+     231
+    ],
+    [
+     "P1319",
+     229
+    ],
+    [
+     "P8554",
+     223
+    ],
+    [
+     "P8555",
+     217
+    ],
+    [
+     "P5102",
+     172
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 350,
+   "residue_vertices": 522,
+   "reference_checked": true,
+   "seconds": 0.1,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 110
+   }
+  },
+  {
+   "table": "declared",
+   "variant": "c_typed",
+   "treatment": "naive",
+   "edges": 1155,
+   "vertices": 3098,
+   "max_edge": 131,
+   "mean_edge": 12.02,
+   "components": 18,
+   "largest_component_edges": 1137,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P2241",
+     719
+    ],
+    [
+     "P7452",
+     614
+    ],
+    [
+     "P1810",
+     541
+    ],
+    [
+     "P580",
+     396
+    ],
+    [
+     "P582",
+     362
+    ],
+    [
+     "P518",
+     305
+    ],
+    [
+     "P585",
+     303
+    ],
+    [
+     "P3831",
+     236
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 476,
+   "residue_vertices": 591,
+   "reference_checked": true,
+   "seconds": 0.18,
+   "notes": {
+    "unknown_qualifier_ids": 0
+   }
+  },
+  {
+   "table": "declared",
+   "variant": "c_typed",
+   "treatment": "core+qualifier+time",
+   "edges": 1155,
+   "vertices": 3073,
+   "max_edge": 119,
+   "mean_edge": 9.31,
+   "components": 89,
+   "largest_component_edges": 1054,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P580",
+     396
+    ],
+    [
+     "P582",
+     362
+    ],
+    [
+     "P518",
+     305
+    ],
+    [
+     "P585",
+     303
+    ],
+    [
+     "P3831",
+     236
+    ],
+    [
+     "P1326",
+     231
+    ],
+    [
+     "P1319",
+     229
+    ],
+    [
+     "P8554",
+     223
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 422,
+   "residue_vertices": 563,
+   "reference_checked": true,
+   "seconds": 0.13,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 110
+   }
+  },
+  {
+   "table": "declared",
+   "variant": "c_typed",
+   "treatment": "core+qualifier",
+   "edges": 1155,
+   "vertices": 3073,
+   "max_edge": 117,
+   "mean_edge": 8.71,
+   "components": 99,
+   "largest_component_edges": 1043,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P518",
+     305
+    ],
+    [
+     "P585",
+     303
+    ],
+    [
+     "P3831",
+     236
+    ],
+    [
+     "P1326",
+     231
+    ],
+    [
+     "P1319",
+     229
+    ],
+    [
+     "P8554",
+     223
+    ],
+    [
+     "P8555",
+     217
+    ],
+    [
+     "P5102",
+     172
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 438,
+   "residue_vertices": 563,
+   "reference_checked": true,
+   "seconds": 0.13,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 110
+   }
+  },
+  {
+   "table": "declared",
+   "variant": "d_property",
+   "treatment": "naive",
+   "edges": 1155,
+   "vertices": 1909,
+   "max_edge": 131,
+   "mean_edge": 12.01,
+   "components": 1,
+   "largest_component_edges": 1155,
+   "universal_vertices": [
+    "subject"
+   ],
+   "top_degree": [
+    [
+     "subject",
+     1155
+    ],
+    [
+     "P2241",
+     719
+    ],
+    [
+     "P7452",
+     614
+    ],
+    [
+     "P1810",
+     541
+    ],
+    [
+     "P580",
+     396
+    ],
+    [
+     "P582",
+     363
+    ],
+    [
+     "P518",
+     305
+    ],
+    [
+     "P585",
+     303
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 435,
+   "residue_vertices": 645,
+   "reference_checked": true,
+   "seconds": 0.19,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "self_qualifier_dropped": 9
+   }
+  },
+  {
+   "table": "declared",
+   "variant": "d_property",
+   "treatment": "core+qualifier+time",
+   "edges": 1155,
+   "vertices": 1884,
+   "max_edge": 119,
+   "mean_edge": 9.31,
+   "components": 1,
+   "largest_component_edges": 1155,
+   "universal_vertices": [
+    "subject"
+   ],
+   "top_degree": [
+    [
+     "subject",
+     1155
+    ],
+    [
+     "P580",
+     396
+    ],
+    [
+     "P582",
+     363
+    ],
+    [
+     "P518",
+     305
+    ],
+    [
+     "P585",
+     303
+    ],
+    [
+     "P3831",
+     236
+    ],
+    [
+     "P1326",
+     231
+    ],
+    [
+     "P1319",
+     229
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 393,
+   "residue_vertices": 617,
+   "reference_checked": true,
+   "seconds": 0.15,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 110,
+    "self_qualifier_dropped": 9
+   }
+  },
+  {
+   "table": "declared",
+   "variant": "d_property",
+   "treatment": "core+qualifier",
+   "edges": 1155,
+   "vertices": 1884,
+   "max_edge": 117,
+   "mean_edge": 8.7,
+   "components": 1,
+   "largest_component_edges": 1155,
+   "universal_vertices": [
+    "subject"
+   ],
+   "top_degree": [
+    [
+     "subject",
+     1155
+    ],
+    [
+     "P518",
+     305
+    ],
+    [
+     "P585",
+     303
+    ],
+    [
+     "P3831",
+     236
+    ],
+    [
+     "P1326",
+     231
+    ],
+    [
+     "P1319",
+     229
+    ],
+    [
+     "P8554",
+     223
+    ],
+    [
+     "P8555",
+     217
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 401,
+   "residue_vertices": 618,
+   "reference_checked": true,
+   "seconds": 0.15,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 110,
+    "self_qualifier_dropped": 9
+   }
+  },
+  {
+   "table": "declared",
+   "variant": "e_relation_local",
+   "treatment": "naive",
+   "edges": 1155,
+   "vertices": 13884,
+   "max_edge": 131,
+   "mean_edge": 12.02,
+   "components": 1155,
+   "largest_component_edges": 1,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P2968:value",
+     1
+    ],
+    [
+     "P2968:subject",
+     1
+    ],
+    [
+     "P1921:subject",
+     1
+    ],
+    [
+     "P1921:value",
+     1
+    ],
+    [
+     "P11759:subject",
+     1
+    ],
+    [
+     "P11759:value",
+     1
+    ],
+    [
+     "P11760:subject",
+     1
+    ],
+    [
+     "P11760:value",
+     1
+    ]
+   ],
+   "alpha_acyclic": true,
+   "residue_edges": 0,
+   "residue_vertices": 0,
+   "reference_checked": true,
+   "seconds": 0.1,
+   "notes": {
+    "unknown_qualifier_ids": 0
+   }
+  },
+  {
+   "table": "declared",
+   "variant": "e_relation_local",
+   "treatment": "core+qualifier+time",
+   "edges": 1155,
+   "vertices": 10757,
+   "max_edge": 119,
+   "mean_edge": 9.31,
+   "components": 1155,
+   "largest_component_edges": 1,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P2968:value",
+     1
+    ],
+    [
+     "P2968:subject",
+     1
+    ],
+    [
+     "P1921:subject",
+     1
+    ],
+    [
+     "P1921:value",
+     1
+    ],
+    [
+     "P11759:subject",
+     1
+    ],
+    [
+     "P11759:value",
+     1
+    ],
+    [
+     "P11760:value",
+     1
+    ],
+    [
+     "P11760:subject",
+     1
+    ]
+   ],
+   "alpha_acyclic": true,
+   "residue_edges": 0,
+   "residue_vertices": 0,
+   "reference_checked": true,
+   "seconds": 0.02,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 110
+   }
+  },
+  {
+   "table": "declared",
+   "variant": "e_relation_local",
+   "treatment": "core+qualifier",
+   "edges": 1155,
+   "vertices": 10057,
+   "max_edge": 117,
+   "mean_edge": 8.71,
+   "components": 1155,
+   "largest_component_edges": 1,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P2968:value",
+     1
+    ],
+    [
+     "P2968:subject",
+     1
+    ],
+    [
+     "P1921:subject",
+     1
+    ],
+    [
+     "P1921:value",
+     1
+    ],
+    [
+     "P11759:subject",
+     1
+    ],
+    [
+     "P11759:value",
+     1
+    ],
+    [
+     "P11760:value",
+     1
+    ],
+    [
+     "P11760:subject",
+     1
+    ]
+   ],
+   "alpha_acyclic": true,
+   "residue_edges": 0,
+   "residue_vertices": 0,
+   "reference_checked": true,
+   "seconds": 0.02,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 110
+   }
+  },
+  {
+   "table": "observed_robust",
+   "variant": "a_generic",
+   "treatment": "naive",
+   "edges": 13608,
+   "vertices": 802,
+   "max_edge": 39,
+   "mean_edge": 2.89,
+   "components": 1,
+   "largest_component_edges": 13608,
+   "universal_vertices": [
+    "subject",
+    "value"
+   ],
+   "top_degree": [
+    [
+     "subject",
+     13608
+    ],
+    [
+     "value",
+     13608
+    ],
+    [
+     "P1810",
+     2036
+    ],
+    [
+     "P580",
+     750
+    ],
+    [
+     "P585",
+     621
+    ],
+    [
+     "P2241",
+     606
+    ],
+    [
+     "P582",
+     602
+    ],
+    [
+     "P518",
+     492
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 733,
+   "residue_vertices": 427,
+   "reference_checked": null,
+   "seconds": 14.15,
+   "notes": {
+    "unknown_qualifier_ids": 0
+   }
+  },
+  {
+   "table": "observed_robust",
+   "variant": "a_generic",
+   "treatment": "core+qualifier+time",
+   "edges": 13608,
+   "vertices": 779,
+   "max_edge": 36,
+   "mean_edge": 2.63,
+   "components": 1,
+   "largest_component_edges": 13608,
+   "universal_vertices": [
+    "subject",
+    "value"
+   ],
+   "top_degree": [
+    [
+     "subject",
+     13608
+    ],
+    [
+     "value",
+     13608
+    ],
+    [
+     "P580",
+     750
+    ],
+    [
+     "P585",
+     621
+    ],
+    [
+     "P582",
+     602
+    ],
+    [
+     "P518",
+     492
+    ],
+    [
+     "P407",
+     393
+    ],
+    [
+     "P3831",
+     296
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 596,
+   "residue_vertices": 396,
+   "reference_checked": null,
+   "seconds": 14.47,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 42
+   }
+  },
+  {
+   "table": "observed_robust",
+   "variant": "a_generic",
+   "treatment": "core+qualifier",
+   "edges": 13608,
+   "vertices": 779,
+   "max_edge": 34,
+   "mean_edge": 2.55,
+   "components": 1,
+   "largest_component_edges": 13608,
+   "universal_vertices": [
+    "subject",
+    "value"
+   ],
+   "top_degree": [
+    [
+     "subject",
+     13608
+    ],
+    [
+     "value",
+     13608
+    ],
+    [
+     "P585",
+     621
+    ],
+    [
+     "P518",
+     492
+    ],
+    [
+     "P407",
+     393
+    ],
+    [
+     "P3831",
+     296
+    ],
+    [
+     "P580",
+     204
+    ],
+    [
+     "P1545",
+     197
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 622,
+   "residue_vertices": 400,
+   "reference_checked": null,
+   "seconds": 14.35,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 42
+   }
+  },
+  {
+   "table": "observed_robust",
+   "variant": "b_local",
+   "treatment": "naive",
+   "edges": 13608,
+   "vertices": 28016,
+   "max_edge": 39,
+   "mean_edge": 2.89,
+   "components": 9300,
+   "largest_component_edges": 4303,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P1810",
+     2036
+    ],
+    [
+     "P580",
+     750
+    ],
+    [
+     "P585",
+     621
+    ],
+    [
+     "P2241",
+     606
+    ],
+    [
+     "P582",
+     602
+    ],
+    [
+     "P518",
+     492
+    ],
+    [
+     "P407",
+     393
+    ],
+    [
+     "P3831",
+     296
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 733,
+   "residue_vertices": 425,
+   "reference_checked": null,
+   "seconds": 0.84,
+   "notes": {
+    "unknown_qualifier_ids": 0
+   }
+  },
+  {
+   "table": "observed_robust",
+   "variant": "b_local",
+   "treatment": "core+qualifier+time",
+   "edges": 13608,
+   "vertices": 27993,
+   "max_edge": 36,
+   "mean_edge": 2.63,
+   "components": 10881,
+   "largest_component_edges": 2722,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P580",
+     750
+    ],
+    [
+     "P585",
+     621
+    ],
+    [
+     "P582",
+     602
+    ],
+    [
+     "P518",
+     492
+    ],
+    [
+     "P407",
+     393
+    ],
+    [
+     "P3831",
+     296
+    ],
+    [
+     "P1545",
+     197
+    ],
+    [
+     "P1552",
+     167
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 596,
+   "residue_vertices": 394,
+   "reference_checked": null,
+   "seconds": 0.22,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 42
+   }
+  },
+  {
+   "table": "observed_robust",
+   "variant": "b_local",
+   "treatment": "core+qualifier",
+   "edges": 13608,
+   "vertices": 27993,
+   "max_edge": 34,
+   "mean_edge": 2.55,
+   "components": 11018,
+   "largest_component_edges": 2585,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P585",
+     621
+    ],
+    [
+     "P518",
+     492
+    ],
+    [
+     "P407",
+     393
+    ],
+    [
+     "P3831",
+     296
+    ],
+    [
+     "P580",
+     204
+    ],
+    [
+     "P1545",
+     197
+    ],
+    [
+     "P1552",
+     167
+    ],
+    [
+     "P1480",
+     138
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 622,
+   "residue_vertices": 398,
+   "reference_checked": null,
+   "seconds": 0.37,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 42
+   }
+  },
+  {
+   "table": "observed_robust",
+   "variant": "c_typed",
+   "treatment": "naive",
+   "edges": 13608,
+   "vertices": 22608,
+   "max_edge": 39,
+   "mean_edge": 2.89,
+   "components": 5069,
+   "largest_component_edges": 7926,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P1810",
+     2036
+    ],
+    [
+     "subject:Q5",
+     1658
+    ],
+    [
+     "P580",
+     750
+    ],
+    [
+     "P585",
+     621
+    ],
+    [
+     "P2241",
+     606
+    ],
+    [
+     "P582",
+     602
+    ],
+    [
+     "P518",
+     492
+    ],
+    [
+     "P407",
+     393
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 1142,
+   "residue_vertices": 593,
+   "reference_checked": null,
+   "seconds": 0.87,
+   "notes": {
+    "unknown_qualifier_ids": 0
+   }
+  },
+  {
+   "table": "observed_robust",
+   "variant": "c_typed",
+   "treatment": "core+qualifier+time",
+   "edges": 13608,
+   "vertices": 22585,
+   "max_edge": 36,
+   "mean_edge": 2.63,
+   "components": 6063,
+   "largest_component_edges": 6638,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "subject:Q5",
+     1658
+    ],
+    [
+     "P580",
+     750
+    ],
+    [
+     "P585",
+     621
+    ],
+    [
+     "P582",
+     602
+    ],
+    [
+     "P518",
+     492
+    ],
+    [
+     "P407",
+     393
+    ],
+    [
+     "subject:Q16521",
+     309
+    ],
+    [
+     "P3831",
+     296
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 900,
+   "residue_vertices": 526,
+   "reference_checked": null,
+   "seconds": 0.56,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 42
+   }
+  },
+  {
+   "table": "observed_robust",
+   "variant": "c_typed",
+   "treatment": "core+qualifier",
+   "edges": 13608,
+   "vertices": 22585,
+   "max_edge": 34,
+   "mean_edge": 2.55,
+   "components": 6168,
+   "largest_component_edges": 6515,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "subject:Q5",
+     1658
+    ],
+    [
+     "P585",
+     621
+    ],
+    [
+     "P518",
+     492
+    ],
+    [
+     "P407",
+     393
+    ],
+    [
+     "subject:Q16521",
+     309
+    ],
+    [
+     "P3831",
+     296
+    ],
+    [
+     "subject:Q7889",
+     224
+    ],
+    [
+     "P580",
+     204
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 908,
+   "residue_vertices": 522,
+   "reference_checked": null,
+   "seconds": 0.68,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 42
+   }
+  },
+  {
+   "table": "observed_robust",
+   "variant": "d_property",
+   "treatment": "naive",
+   "edges": 13608,
+   "vertices": 13659,
+   "max_edge": 39,
+   "mean_edge": 2.89,
+   "components": 1,
+   "largest_component_edges": 13608,
+   "universal_vertices": [
+    "subject"
+   ],
+   "top_degree": [
+    [
+     "subject",
+     13608
+    ],
+    [
+     "P1810",
+     2037
+    ],
+    [
+     "P580",
+     751
+    ],
+    [
+     "P585",
+     622
+    ],
+    [
+     "P2241",
+     606
+    ],
+    [
+     "P582",
+     603
+    ],
+    [
+     "P518",
+     493
+    ],
+    [
+     "P407",
+     394
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 893,
+   "residue_vertices": 582,
+   "reference_checked": null,
+   "seconds": 9.95,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "self_qualifier_dropped": 14
+   }
+  },
+  {
+   "table": "observed_robust",
+   "variant": "d_property",
+   "treatment": "core+qualifier+time",
+   "edges": 13608,
+   "vertices": 13655,
+   "max_edge": 36,
+   "mean_edge": 2.63,
+   "components": 1,
+   "largest_component_edges": 13608,
+   "universal_vertices": [
+    "subject"
+   ],
+   "top_degree": [
+    [
+     "subject",
+     13608
+    ],
+    [
+     "P580",
+     751
+    ],
+    [
+     "P585",
+     622
+    ],
+    [
+     "P582",
+     603
+    ],
+    [
+     "P518",
+     493
+    ],
+    [
+     "P407",
+     394
+    ],
+    [
+     "P3831",
+     297
+    ],
+    [
+     "P1545",
+     197
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 754,
+   "residue_vertices": 542,
+   "reference_checked": null,
+   "seconds": 10.18,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 42,
+    "self_qualifier_dropped": 14
+   }
+  },
+  {
+   "table": "observed_robust",
+   "variant": "d_property",
+   "treatment": "core+qualifier",
+   "edges": 13608,
+   "vertices": 13655,
+   "max_edge": 34,
+   "mean_edge": 2.55,
+   "components": 1,
+   "largest_component_edges": 13608,
+   "universal_vertices": [
+    "subject"
+   ],
+   "top_degree": [
+    [
+     "subject",
+     13608
+    ],
+    [
+     "P585",
+     622
+    ],
+    [
+     "P518",
+     493
+    ],
+    [
+     "P407",
+     394
+    ],
+    [
+     "P3831",
+     297
+    ],
+    [
+     "P580",
+     205
+    ],
+    [
+     "P1545",
+     197
+    ],
+    [
+     "P1552",
+     168
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 779,
+   "residue_vertices": 543,
+   "reference_checked": null,
+   "seconds": 10.64,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 42,
+    "self_qualifier_dropped": 14
+   }
+  },
+  {
+   "table": "observed_robust",
+   "variant": "e_relation_local",
+   "treatment": "naive",
+   "edges": 13608,
+   "vertices": 39353,
+   "max_edge": 39,
+   "mean_edge": 2.89,
+   "components": 13608,
+   "largest_component_edges": 1,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P440:value",
+     1
+    ],
+    [
+     "P440:subject",
+     1
+    ],
+    [
+     "P442:value",
+     1
+    ],
+    [
+     "P442:P582",
+     1
+    ],
+    [
+     "P442:subject",
+     1
+    ],
+    [
+     "P785:value",
+     1
+    ],
+    [
+     "P785:subject",
+     1
+    ],
+    [
+     "P784:subject",
+     1
+    ]
+   ],
+   "alpha_acyclic": true,
+   "residue_edges": 0,
+   "residue_vertices": 0,
+   "reference_checked": null,
+   "seconds": 0.38,
+   "notes": {
+    "unknown_qualifier_ids": 0
+   }
+  },
+  {
+   "table": "observed_robust",
+   "variant": "e_relation_local",
+   "treatment": "core+qualifier+time",
+   "edges": 13608,
+   "vertices": 35805,
+   "max_edge": 36,
+   "mean_edge": 2.63,
+   "components": 13608,
+   "largest_component_edges": 1,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P440:value",
+     1
+    ],
+    [
+     "P440:subject",
+     1
+    ],
+    [
+     "P442:value",
+     1
+    ],
+    [
+     "P442:P582",
+     1
+    ],
+    [
+     "P442:subject",
+     1
+    ],
+    [
+     "P785:value",
+     1
+    ],
+    [
+     "P785:subject",
+     1
+    ],
+    [
+     "P784:subject",
+     1
+    ]
+   ],
+   "alpha_acyclic": true,
+   "residue_edges": 0,
+   "residue_vertices": 0,
+   "reference_checked": null,
+   "seconds": 0.11,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 42
+   }
+  },
+  {
+   "table": "observed_robust",
+   "variant": "e_relation_local",
+   "treatment": "core+qualifier",
+   "edges": 13608,
+   "vertices": 34713,
+   "max_edge": 34,
+   "mean_edge": 2.55,
+   "components": 13608,
+   "largest_component_edges": 1,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P440:value",
+     1
+    ],
+    [
+     "P440:subject",
+     1
+    ],
+    [
+     "P442:value",
+     1
+    ],
+    [
+     "P442:P582",
+     1
+    ],
+    [
+     "P442:subject",
+     1
+    ],
+    [
+     "P785:value",
+     1
+    ],
+    [
+     "P785:subject",
+     1
+    ],
+    [
+     "P784:subject",
+     1
+    ]
+   ],
+   "alpha_acyclic": true,
+   "residue_edges": 0,
+   "residue_vertices": 0,
+   "reference_checked": null,
+   "seconds": 0.34,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 42
+   }
+  },
+  {
+   "table": "observed_all",
+   "variant": "a_generic",
+   "treatment": "naive",
+   "edges": 13608,
+   "vertices": 2558,
+   "max_edge": 771,
+   "mean_edge": 7.7,
+   "components": 1,
+   "largest_component_edges": 13608,
+   "universal_vertices": [
+    "subject",
+    "value"
+   ],
+   "top_degree": [
+    [
+     "value",
+     13608
+    ],
+    [
+     "subject",
+     13608
+    ],
+    [
+     "P1810",
+     5434
+    ],
+    [
+     "P2241",
+     3715
+    ],
+    [
+     "P518",
+     1972
+    ],
+    [
+     "P580",
+     1934
+    ],
+    [
+     "P582",
+     1821
+    ],
+    [
+     "P407",
+     1820
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 994,
+   "residue_vertices": 1676,
+   "reference_checked": null,
+   "seconds": 13.96,
+   "notes": {
+    "unknown_qualifier_ids": 0
+   }
+  },
+  {
+   "table": "observed_all",
+   "variant": "a_generic",
+   "treatment": "core+qualifier+time",
+   "edges": 13608,
+   "vertices": 2532,
+   "max_edge": 752,
+   "mean_edge": 6.38,
+   "components": 1,
+   "largest_component_edges": 13608,
+   "universal_vertices": [
+    "subject",
+    "value"
+   ],
+   "top_degree": [
+    [
+     "value",
+     13608
+    ],
+    [
+     "subject",
+     13608
+    ],
+    [
+     "P518",
+     1972
+    ],
+    [
+     "P580",
+     1934
+    ],
+    [
+     "P582",
+     1821
+    ],
+    [
+     "P407",
+     1820
+    ],
+    [
+     "P585",
+     1699
+    ],
+    [
+     "P3831",
+     1134
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 942,
+   "residue_vertices": 1649,
+   "reference_checked": null,
+   "seconds": 13.88,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 396
+   }
+  },
+  {
+   "table": "observed_all",
+   "variant": "a_generic",
+   "treatment": "core+qualifier",
+   "edges": 13608,
+   "vertices": 2532,
+   "max_edge": 750,
+   "mean_edge": 6.15,
+   "components": 1,
+   "largest_component_edges": 13608,
+   "universal_vertices": [
+    "subject",
+    "value"
+   ],
+   "top_degree": [
+    [
+     "subject",
+     13608
+    ],
+    [
+     "value",
+     13608
+    ],
+    [
+     "P518",
+     1972
+    ],
+    [
+     "P407",
+     1820
+    ],
+    [
+     "P585",
+     1699
+    ],
+    [
+     "P3831",
+     1134
+    ],
+    [
+     "P1552",
+     911
+    ],
+    [
+     "P1480",
+     857
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 1120,
+   "residue_vertices": 1653,
+   "reference_checked": null,
+   "seconds": 13.82,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 396
+   }
+  },
+  {
+   "table": "observed_all",
+   "variant": "b_local",
+   "treatment": "naive",
+   "edges": 13608,
+   "vertices": 29772,
+   "max_edge": 771,
+   "mean_edge": 7.7,
+   "components": 5046,
+   "largest_component_edges": 8563,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P1810",
+     5434
+    ],
+    [
+     "P2241",
+     3715
+    ],
+    [
+     "P518",
+     1972
+    ],
+    [
+     "P580",
+     1934
+    ],
+    [
+     "P582",
+     1821
+    ],
+    [
+     "P407",
+     1820
+    ],
+    [
+     "P585",
+     1699
+    ],
+    [
+     "P1932",
+     1353
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 994,
+   "residue_vertices": 1674,
+   "reference_checked": null,
+   "seconds": 3.69,
+   "notes": {
+    "unknown_qualifier_ids": 0
+   }
+  },
+  {
+   "table": "observed_all",
+   "variant": "b_local",
+   "treatment": "core+qualifier+time",
+   "edges": 13608,
+   "vertices": 29746,
+   "max_edge": 752,
+   "mean_edge": 6.38,
+   "components": 7525,
+   "largest_component_edges": 6084,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P518",
+     1972
+    ],
+    [
+     "P580",
+     1934
+    ],
+    [
+     "P582",
+     1821
+    ],
+    [
+     "P407",
+     1820
+    ],
+    [
+     "P585",
+     1699
+    ],
+    [
+     "P3831",
+     1134
+    ],
+    [
+     "P1552",
+     911
+    ],
+    [
+     "P1480",
+     857
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 942,
+   "residue_vertices": 1647,
+   "reference_checked": null,
+   "seconds": 1.35,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 396
+   }
+  },
+  {
+   "table": "observed_all",
+   "variant": "b_local",
+   "treatment": "core+qualifier",
+   "edges": 13608,
+   "vertices": 29746,
+   "max_edge": 750,
+   "mean_edge": 6.15,
+   "components": 7662,
+   "largest_component_edges": 5947,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P518",
+     1972
+    ],
+    [
+     "P407",
+     1820
+    ],
+    [
+     "P585",
+     1699
+    ],
+    [
+     "P3831",
+     1134
+    ],
+    [
+     "P1552",
+     911
+    ],
+    [
+     "P1480",
+     857
+    ],
+    [
+     "P5102",
+     849
+    ],
+    [
+     "P1476",
+     730
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 1120,
+   "residue_vertices": 1651,
+   "reference_checked": null,
+   "seconds": 1.09,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 396
+   }
+  },
+  {
+   "table": "observed_all",
+   "variant": "c_typed",
+   "treatment": "naive",
+   "edges": 13608,
+   "vertices": 24364,
+   "max_edge": 771,
+   "mean_edge": 7.7,
+   "components": 2650,
+   "largest_component_edges": 10805,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P1810",
+     5434
+    ],
+    [
+     "P2241",
+     3715
+    ],
+    [
+     "P518",
+     1972
+    ],
+    [
+     "P580",
+     1934
+    ],
+    [
+     "P582",
+     1821
+    ],
+    [
+     "P407",
+     1820
+    ],
+    [
+     "P585",
+     1699
+    ],
+    [
+     "subject:Q5",
+     1658
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 2243,
+   "residue_vertices": 2043,
+   "reference_checked": null,
+   "seconds": 3.42,
+   "notes": {
+    "unknown_qualifier_ids": 0
+   }
+  },
+  {
+   "table": "observed_all",
+   "variant": "c_typed",
+   "treatment": "core+qualifier+time",
+   "edges": 13608,
+   "vertices": 24338,
+   "max_edge": 752,
+   "mean_edge": 6.38,
+   "components": 3931,
+   "largest_component_edges": 9396,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P518",
+     1972
+    ],
+    [
+     "P580",
+     1934
+    ],
+    [
+     "P582",
+     1821
+    ],
+    [
+     "P407",
+     1820
+    ],
+    [
+     "P585",
+     1699
+    ],
+    [
+     "subject:Q5",
+     1658
+    ],
+    [
+     "P3831",
+     1134
+    ],
+    [
+     "P1552",
+     911
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 1926,
+   "residue_vertices": 1953,
+   "reference_checked": null,
+   "seconds": 1.96,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 396
+   }
+  },
+  {
+   "table": "observed_all",
+   "variant": "c_typed",
+   "treatment": "core+qualifier",
+   "edges": 13608,
+   "vertices": 24338,
+   "max_edge": 750,
+   "mean_edge": 6.15,
+   "components": 4029,
+   "largest_component_edges": 9280,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P518",
+     1972
+    ],
+    [
+     "P407",
+     1820
+    ],
+    [
+     "P585",
+     1699
+    ],
+    [
+     "subject:Q5",
+     1658
+    ],
+    [
+     "P3831",
+     1134
+    ],
+    [
+     "P1552",
+     911
+    ],
+    [
+     "P1480",
+     857
+    ],
+    [
+     "P5102",
+     849
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 2047,
+   "residue_vertices": 1952,
+   "reference_checked": null,
+   "seconds": 1.3,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 396
+   }
+  },
+  {
+   "table": "observed_all",
+   "variant": "d_property",
+   "treatment": "naive",
+   "edges": 13608,
+   "vertices": 13694,
+   "max_edge": 770,
+   "mean_edge": 7.66,
+   "components": 1,
+   "largest_component_edges": 13608,
+   "universal_vertices": [
+    "subject"
+   ],
+   "top_degree": [
+    [
+     "subject",
+     13608
+    ],
+    [
+     "P1810",
+     5434
+    ],
+    [
+     "P2241",
+     3715
+    ],
+    [
+     "P518",
+     1972
+    ],
+    [
+     "P580",
+     1934
+    ],
+    [
+     "P582",
+     1821
+    ],
+    [
+     "P407",
+     1820
+    ],
+    [
+     "P585",
+     1699
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 1520,
+   "residue_vertices": 2050,
+   "reference_checked": null,
+   "seconds": 10.14,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "self_qualifier_dropped": 441
+   }
+  },
+  {
+   "table": "observed_all",
+   "variant": "d_property",
+   "treatment": "core+qualifier+time",
+   "edges": 13608,
+   "vertices": 13690,
+   "max_edge": 751,
+   "mean_edge": 6.35,
+   "components": 1,
+   "largest_component_edges": 13608,
+   "universal_vertices": [
+    "subject"
+   ],
+   "top_degree": [
+    [
+     "subject",
+     13608
+    ],
+    [
+     "P518",
+     1972
+    ],
+    [
+     "P580",
+     1934
+    ],
+    [
+     "P582",
+     1821
+    ],
+    [
+     "P407",
+     1820
+    ],
+    [
+     "P585",
+     1699
+    ],
+    [
+     "P3831",
+     1134
+    ],
+    [
+     "P1552",
+     911
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 1428,
+   "residue_vertices": 1987,
+   "reference_checked": null,
+   "seconds": 10.03,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 396,
+    "self_qualifier_dropped": 441
+   }
+  },
+  {
+   "table": "observed_all",
+   "variant": "d_property",
+   "treatment": "core+qualifier",
+   "edges": 13608,
+   "vertices": 13690,
+   "max_edge": 749,
+   "mean_edge": 6.11,
+   "components": 1,
+   "largest_component_edges": 13608,
+   "universal_vertices": [
+    "subject"
+   ],
+   "top_degree": [
+    [
+     "subject",
+     13608
+    ],
+    [
+     "P518",
+     1972
+    ],
+    [
+     "P407",
+     1820
+    ],
+    [
+     "P585",
+     1699
+    ],
+    [
+     "P3831",
+     1134
+    ],
+    [
+     "P1552",
+     911
+    ],
+    [
+     "P1480",
+     858
+    ],
+    [
+     "P5102",
+     850
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 1609,
+   "residue_vertices": 2026,
+   "reference_checked": null,
+   "seconds": 9.92,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 396,
+    "self_qualifier_dropped": 441
+   }
+  },
+  {
+   "table": "observed_all",
+   "variant": "e_relation_local",
+   "treatment": "naive",
+   "edges": 13608,
+   "vertices": 104724,
+   "max_edge": 771,
+   "mean_edge": 7.7,
+   "components": 13608,
+   "largest_component_edges": 1,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P440:P580",
+     1
+    ],
+    [
+     "P440:P582",
+     1
+    ],
+    [
+     "P440:subject",
+     1
+    ],
+    [
+     "P440:value",
+     1
+    ],
+    [
+     "P442:P3680",
+     1
+    ],
+    [
+     "P442:subject",
+     1
+    ],
+    [
+     "P442:value",
+     1
+    ],
+    [
+     "P442:P1310",
+     1
+    ]
+   ],
+   "alpha_acyclic": true,
+   "residue_edges": 0,
+   "residue_vertices": 0,
+   "reference_checked": null,
+   "seconds": 0.45,
+   "notes": {
+    "unknown_qualifier_ids": 0
+   }
+  },
+  {
+   "table": "observed_all",
+   "variant": "e_relation_local",
+   "treatment": "core+qualifier+time",
+   "edges": 13608,
+   "vertices": 86785,
+   "max_edge": 752,
+   "mean_edge": 6.38,
+   "components": 13608,
+   "largest_component_edges": 1,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P440:P580",
+     1
+    ],
+    [
+     "P440:P582",
+     1
+    ],
+    [
+     "P440:subject",
+     1
+    ],
+    [
+     "P440:value",
+     1
+    ],
+    [
+     "P442:subject",
+     1
+    ],
+    [
+     "P442:value",
+     1
+    ],
+    [
+     "P442:P2699",
+     1
+    ],
+    [
+     "P442:P582",
+     1
+    ]
+   ],
+   "alpha_acyclic": true,
+   "residue_edges": 0,
+   "residue_vertices": 0,
+   "reference_checked": null,
+   "seconds": 0.36,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 396
+   }
+  },
+  {
+   "table": "observed_all",
+   "variant": "e_relation_local",
+   "treatment": "core+qualifier",
+   "edges": 13608,
+   "vertices": 83625,
+   "max_edge": 750,
+   "mean_edge": 6.15,
+   "components": 13608,
+   "largest_component_edges": 1,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "P440:value",
+     1
+    ],
+    [
+     "P440:subject",
+     1
+    ],
+    [
+     "P442:value",
+     1
+    ],
+    [
+     "P442:P518",
+     1
+    ],
+    [
+     "P442:subject",
+     1
+    ],
+    [
+     "P442:P2699",
+     1
+    ],
+    [
+     "P785:value",
+     1
+    ],
+    [
+     "P785:subject",
+     1
+    ]
+   ],
+   "alpha_acyclic": true,
+   "residue_edges": 0,
+   "residue_vertices": 0,
+   "reference_checked": null,
+   "seconds": 0.94,
+   "notes": {
+    "unknown_qualifier_ids": 0,
+    "end_cause_as_builtin": 396
+   }
+  }
+ ]
+}

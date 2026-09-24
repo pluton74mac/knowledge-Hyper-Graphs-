@@ -1,0 +1,29 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/BalancedGo/BalancedGo -graph /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/instances/k5.hg -exact -det
+Used algorithm: DetK @
+Result ( ran with K = 3 )
+ 
+Bag: {x1, x2}
+Cover: {e1_2}
+Children: 1
+[
+	Bag: {x1, x2, x3}
+	Cover: {e1_2, e1_3}
+	Children: 1
+	[
+		Bag: {x1, x2, x3, x4}
+		Cover: {e1_2, e1_3, e1_4}
+		Children: 1
+		[
+			Bag: {x1, x2, x3, x4, x5}
+			Cover: {e1_2, e1_3, e4_5}
+		]
+	]
+]
+
+Time: 1.61334 ms
+Time Composition: 
+Decomposition : 1.61334 ms
+
+Width:  3
+Correct:  true
+[exit 0]

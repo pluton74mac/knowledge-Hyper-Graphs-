@@ -1,0 +1,21 @@
+{
+ "relations": {
+  "position_held": "R0",
+  "award_received": "R1",
+  "member_of_sports_team": "R2"
+ },
+ "roles": {
+  "award": "V0",
+  "conferrer": "V1",
+  "end_time": "V2",
+  "holder": "V3",
+  "member": "V4",
+  "point_in_time": "V5",
+  "position": "V6",
+  "recipient": "V7",
+  "replaces": "V8",
+  "series_ordinal": "V9",
+  "start_time": "V10",
+  "team": "V11"
+ }
+}

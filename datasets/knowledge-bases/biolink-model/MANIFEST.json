@@ -1,0 +1,29 @@
+{
+ "name": "biolink-model",
+ "family": "knowledge-bases",
+ "source_url": "https://github.com/biolink/biolink-model",
+ "source_ref": "v4.4.5 (commit a4180f818e9722c493788c5ff1f047fde64f13a7, committed 2026-09-18)",
+ "retrieved": "2026-09-24",
+ "licence": "model: CC0-1.0 (the `license:` field of biolink-model.yaml); repository LICENSE file: Apache-2.0; Python package metadata (pyproject.toml): MIT",
+ "files": [
+  {
+   "path": "raw/biolink-model.yaml",
+   "sha256": "7a0e3b3b9e09505d09f9511fed45cb2ac9ad209815017a28970d6a81d20101ed",
+   "bytes": 544594,
+   "source_url": "https://raw.githubusercontent.com/biolink/biolink-model/a4180f818e9722c493788c5ff1f047fde64f13a7/biolink-model.yaml"
+  },
+  {
+   "path": "raw/attributes.yaml",
+   "sha256": "a8be9078ee33492141b1043989dc6ee05d51b9eaeb7e35d3dda1fef7fd42e07d",
+   "bytes": 16400,
+   "source_url": "https://raw.githubusercontent.com/biolink/biolink-model/a4180f818e9722c493788c5ff1f047fde64f13a7/attributes.yaml"
+  },
+  {
+   "path": "raw/LICENSE",
+   "sha256": "8cf88c8c0e912fee74bea0fb2bac7065beb251be971e896cc974fdb91ca7b6d9",
+   "bytes": 523,
+   "source_url": "https://raw.githubusercontent.com/biolink/biolink-model/a4180f818e9722c493788c5ff1f047fde64f13a7/LICENSE"
+  }
+ ],
+ "notes": "Only the schema file, its local import attributes.yaml and the licence are fetched; the other import, linkml:types, comes with linkml-runtime. Parsed with linkml-runtime SchemaView by projects/p6-schema-width/research/probes/biolink_extract.py."
+}

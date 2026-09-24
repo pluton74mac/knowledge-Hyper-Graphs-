@@ -1,0 +1,6 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/htd/build/bin/htd_main-1.2.0 --input hgr --type hypertree --output human -s 1 --instance /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/instances/b_triangle.htd.hgr
+NODE 1: [ 1, 2, 3 ]
+  COVERING EDGES: 
+    HYPEREDGE 1: [ 1, 2 ]
+    HYPEREDGE 2: [ 2, 3 ]
+[exit 0]

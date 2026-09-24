@@ -1,0 +1,2089 @@
+{
+ "describe": {
+  "source": "v4.4.5 (commit a4180f818e9722c493788c5ff1f047fde64f13a7, committed 2026-09-18)",
+  "sha256": "7a0e3b3b9e09505d09f9511fed45cb2ac9ad209815017a28970d6a81d20101ed",
+  "association_classes": 107,
+  "concrete": 103,
+  "abstract": [
+   "anatomical entity to anatomical entity association",
+   "organism taxon to environment association",
+   "organism taxon to organism taxon association",
+   "sequence variant modulates treatment association"
+  ],
+  "qualifier_slots_defined": 44,
+  "qualifier_slots_used": 33,
+  "qualifiers_per_class": [
+   [
+    3,
+    52
+   ],
+   [
+    4,
+    4
+   ],
+   [
+    5,
+    3
+   ],
+   [
+    6,
+    1
+   ],
+   [
+    7,
+    2
+   ],
+   [
+    8,
+    1
+   ],
+   [
+    14,
+    14
+   ],
+   [
+    15,
+    18
+   ],
+   [
+    16,
+    4
+   ],
+   [
+    17,
+    3
+   ],
+   [
+    18,
+    1
+   ]
+  ],
+  "most_shared_qualifiers": [
+   [
+    "association basis qualifier",
+    103
+   ],
+   [
+    "species context qualifier",
+    103
+   ],
+   [
+    "statistical significance qualifier",
+    103
+   ],
+   [
+    "object direction qualifier",
+    44
+   ],
+   [
+    "qualified predicate",
+    43
+   ],
+   [
+    "object aspect qualifier",
+    42
+   ],
+   [
+    "subject aspect qualifier",
+    41
+   ],
+   [
+    "subject direction qualifier",
+    39
+   ],
+   [
+    "anatomical context qualifier",
+    36
+   ],
+   [
+    "population context qualifier",
+    31
+   ],
+   [
+    "frequency qualifier",
+    30
+   ],
+   [
+    "object specialization qualifier",
+    30
+   ],
+   [
+    "disease context qualifier",
+    29
+   ],
+   [
+    "subject specialization qualifier",
+    29
+   ],
+   [
+    "subject form or variant qualifier",
+    13
+   ],
+   [
+    "causal mechanism qualifier",
+    11
+   ],
+   [
+    "object context qualifier",
+    11
+   ],
+   [
+    "subject context qualifier",
+    11
+   ],
+   [
+    "sex qualifier",
+    10
+   ],
+   [
+    "object form or variant qualifier",
+    6
+   ]
+  ],
+  "domain_slots_used": [
+   [
+    "has count",
+    11
+   ],
+   [
+    "has percentage",
+    11
+   ],
+   [
+    "has quotient",
+    11
+   ],
+   [
+    "has total",
+    11
+   ],
+   [
+    "allelic requirement",
+    7
+   ],
+   [
+    "clinical approval status",
+    3
+   ],
+   [
+    "max research phase",
+    3
+   ],
+   [
+    "number of cases",
+    3
+   ],
+   [
+    "quantifier qualifier",
+    3
+   ],
+   [
+    "expression site",
+    2
+   ],
+   [
+    "phenotypic state",
+    2
+   ],
+   [
+    "reaction direction",
+    2
+   ],
+   [
+    "reaction side",
+    2
+   ],
+   [
+    "stoichiometry",
+    2
+   ],
+   [
+    "has zygosity",
+    1
+   ],
+   [
+    "catalyst qualifier",
+    1
+   ],
+   [
+    "FDA adverse event level",
+    1
+   ],
+   [
+    "treatment outcome",
+    1
+   ],
+   [
+    "end interbase coordinate",
+    1
+   ],
+   [
+    "genome build",
+    1
+   ],
+   [
+    "phase",
+    1
+   ],
+   [
+    "start interbase coordinate",
+    1
+   ],
+   [
+    "strand",
+    1
+   ],
+   [
+    "associated environmental context",
+    1
+   ],
+   [
+    "interacting molecules category",
+    1
+   ]
+  ],
+  "subject_ranges": [
+   [
+    "GeneOrGeneProduct",
+    13
+   ],
+   [
+    "NamedThing",
+    12
+   ],
+   [
+    "ChemicalEntity",
+    9
+   ],
+   [
+    "Genotype",
+    6
+   ],
+   [
+    "SequenceVariant",
+    6
+   ],
+   [
+    "MacromolecularMachineMixin",
+    5
+   ],
+   [
+    "Case",
+    4
+   ],
+   [
+    "Disease",
+    4
+   ],
+   [
+    "AnatomicalEntity",
+    3
+   ],
+   [
+    "BiologicalProcessOrActivity",
+    3
+   ],
+   [
+    "DiseaseOrPhenotypicFeature",
+    3
+   ],
+   [
+    "ChemicalEntityOrGeneOrGeneProduct",
+    3
+   ]
+  ],
+  "object_ranges": [
+   [
+    "Disease",
+    16
+   ],
+   [
+    "GeneOrGeneProduct",
+    11
+   ],
+   [
+    "AnatomicalEntity",
+    8
+   ],
+   [
+    "PhenotypicFeature",
+    8
+   ],
+   [
+    "NamedThing",
+    6
+   ],
+   [
+    "DiseaseOrPhenotypicFeature",
+    6
+   ],
+   [
+    "ChemicalEntity",
+    6
+   ],
+   [
+    "Gene",
+    4
+   ],
+   [
+    "BiologicalProcess",
+    3
+   ],
+   [
+    "Pathway",
+    3
+   ],
+   [
+    "OrganismTaxon",
+    3
+   ],
+   [
+    "BiologicalProcessOrActivity",
+    2
+   ]
+  ]
+ },
+ "runs": [
+  {
+   "variant": "a_generic",
+   "qualifiers": "formal qualifiers",
+   "schema_errors": 0,
+   "edges": 103,
+   "vertices": 35,
+   "max_edge": 20,
+   "mean_edge": 9.9,
+   "components": 1,
+   "largest_component_edges": 103,
+   "universal_vertices": [
+    "association_basis_qualifier",
+    "object",
+    "species_context_qualifier",
+    "statistical_significance_qualifier",
+    "subject"
+   ],
+   "top_degree": [
+    [
+     "statistical_significance_qualifier",
+     103
+    ],
+    [
+     "subject",
+     103
+    ],
+    [
+     "object",
+     103
+    ],
+    [
+     "association_basis_qualifier",
+     103
+    ],
+    [
+     "species_context_qualifier",
+     103
+    ],
+    [
+     "object_direction_qualifier",
+     44
+    ],
+    [
+     "qualified_predicate",
+     43
+    ],
+    [
+     "object_aspect_qualifier",
+     42
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 5,
+   "residue_vertices": 18,
+   "residue_sample": [
+    [
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "causal_mechanism_qualifier",
+     "object",
+     "object_aspect_qualifier",
+     "object_context_qualifier",
+     "object_direction_qualifier",
+     "qualified_predicate",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "subject",
+     "subject_aspect_qualifier",
+     "subject_context_qualifier",
+     "subject_direction_qualifier",
+     "subject_form_or_variant_qualifier"
+    ],
+    [
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "object",
+     "object_aspect_qualifier",
+     "object_direction_qualifier",
+     "object_specialization_qualifier",
+     "population_context_qualifier",
+     "qualified_predicate",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "subject",
+     "subject_aspect_qualifier",
+     "subject_direction_qualifier",
+     "subject_form_or_variant_qualifier"
+    ],
+    [
+     "association_basis_qualifier",
+     "causal_mechanism_qualifier",
+     "object",
+     "object_aspect_qualifier",
+     "object_context_qualifier",
+     "object_direction_qualifier",
+     "qualified_predicate",
+     "species_context_qualifier",
+     "stage_qualifier",
+     "statistical_significance_qualifier",
+     "subject",
+     "subject_aspect_qualifier",
+     "subject_context_qualifier",
+     "subject_direction_qualifier"
+    ]
+   ]
+  },
+  {
+   "variant": "a_generic",
+   "qualifiers": "formal + domain",
+   "schema_errors": 0,
+   "edges": 103,
+   "vertices": 60,
+   "max_edge": 24,
+   "mean_edge": 10.72,
+   "components": 1,
+   "largest_component_edges": 103,
+   "universal_vertices": [
+    "association_basis_qualifier",
+    "object",
+    "species_context_qualifier",
+    "statistical_significance_qualifier",
+    "subject"
+   ],
+   "top_degree": [
+    [
+     "statistical_significance_qualifier",
+     103
+    ],
+    [
+     "subject",
+     103
+    ],
+    [
+     "object",
+     103
+    ],
+    [
+     "association_basis_qualifier",
+     103
+    ],
+    [
+     "species_context_qualifier",
+     103
+    ],
+    [
+     "object_direction_qualifier",
+     44
+    ],
+    [
+     "qualified_predicate",
+     43
+    ],
+    [
+     "object_aspect_qualifier",
+     42
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 5,
+   "residue_vertices": 19,
+   "residue_sample": [
+    [
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "causal_mechanism_qualifier",
+     "object",
+     "object_aspect_qualifier",
+     "object_context_qualifier",
+     "object_direction_qualifier",
+     "qualified_predicate",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "subject",
+     "subject_aspect_qualifier",
+     "subject_context_qualifier",
+     "subject_direction_qualifier",
+     "subject_form_or_variant_qualifier"
+    ],
+    [
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "object",
+     "object_aspect_qualifier",
+     "object_direction_qualifier",
+     "object_specialization_qualifier",
+     "population_context_qualifier",
+     "qualified_predicate",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "subject",
+     "subject_aspect_qualifier",
+     "subject_direction_qualifier",
+     "subject_form_or_variant_qualifier"
+    ],
+    [
+     "association_basis_qualifier",
+     "causal_mechanism_qualifier",
+     "object",
+     "object_aspect_qualifier",
+     "object_context_qualifier",
+     "object_direction_qualifier",
+     "qualified_predicate",
+     "quantifier_qualifier",
+     "species_context_qualifier",
+     "stage_qualifier",
+     "statistical_significance_qualifier",
+     "subject",
+     "subject_aspect_qualifier",
+     "subject_context_qualifier",
+     "subject_direction_qualifier"
+    ]
+   ]
+  },
+  {
+   "variant": "a_generic",
+   "qualifiers": "all slots",
+   "schema_errors": 0,
+   "edges": 103,
+   "vertices": 117,
+   "max_edge": 74,
+   "mean_edge": 59.91,
+   "components": 1,
+   "largest_component_edges": 103,
+   "universal_vertices": [
+    "adjusted_p_value",
+    "agent_type",
+    "aggregator_knowledge_source",
+    "association_basis_qualifier",
+    "category",
+    "deprecated",
+    "description",
+    "effect_size",
+    "effect_type",
+    "elevate_to_prediction",
+    "evidence_count",
+    "has_attribute",
+    "has_confidence_score",
+    "has_evidence",
+    "has_evidence_of_type",
+    "has_supporting_studies",
+    "id",
+    "iri",
+    "knowledge_level",
+    "knowledge_source",
+    "name",
+    "negated",
+    "object",
+    "object_category",
+    "object_category_closure",
+    "object_closure",
+    "object_feature_name",
+    "object_label_closure",
+    "object_namespace",
+    "original_object",
+    "original_predicate",
+    "original_subject",
+    "p_value",
+    "primary_knowledge_source",
+    "publications",
+    "retrieval_source_ids",
+    "semmed_agreement_count",
+    "sources",
+    "species_context_qualifier",
+    "statistical_significance_qualifier",
+    "stringdb_coexpression_score",
+    "stringdb_combined_score",
+    "stringdb_experimental_score",
+    "subject",
+    "subject_category",
+    "subject_category_closure",
+    "subject_closure",
+    "subject_feature_name",
+    "subject_label_closure",
+    "subject_namespace",
+    "supporting_text",
+    "timepoint",
+    "type",
+    "update_date"
+   ],
+   "top_degree": [
+    [
+     "adjusted_p_value",
+     103
+    ],
+    [
+     "statistical_significance_qualifier",
+     103
+    ],
+    [
+     "object_category",
+     103
+    ],
+    [
+     "object_namespace",
+     103
+    ],
+    [
+     "subject",
+     103
+    ],
+    [
+     "subject_category",
+     103
+    ],
+    [
+     "has_evidence_of_type",
+     103
+    ],
+    [
+     "subject_category_closure",
+     103
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 7,
+   "residue_vertices": 74,
+   "residue_sample": [
+    [
+     "adjusted_p_value",
+     "agent_type",
+     "aggregator_knowledge_source",
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "category",
+     "causal_mechanism_qualifier",
+     "deprecated",
+     "description",
+     "effect_size",
+     "effect_type",
+     "elevate_to_prediction",
+     "evidence_count",
+     "has_attribute",
+     "has_confidence_score",
+     "has_evidence",
+     "has_evidence_of_type",
+     "has_supporting_studies",
+     "id",
+     "iri",
+     "knowledge_level",
+     "knowledge_source",
+     "name",
+     "negated",
+     "object",
+     "object_aspect_qualifier",
+     "object_category",
+     "object_category_closure",
+     "object_closure",
+     "object_context_qualifier",
+     "object_derivative_qualifier",
+     "object_direction_qualifier",
+     "object_feature_name",
+     "object_form_or_variant_qualifier",
+     "object_label_closure",
+     "object_namespace",
+     "object_part_qualifier",
+     "original_object",
+     "original_predicate",
+     "original_subject",
+     "p_value",
+     "primary_knowledge_source",
+     "publications",
+     "qualified_predicate",
+     "retrieval_source_ids",
+     "semmed_agreement_count",
+     "sources",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "stringdb_coexpression_score",
+     "stringdb_combined_score",
+     "stringdb_experimental_score",
+     "subject",
+     "subject_aspect_qualifier",
+     "subject_category",
+     "subject_category_closure",
+     "subject_closure",
+     "subject_context_qualifier",
+     "subject_derivative_qualifier",
+     "subject_direction_qualifier",
+     "subject_feature_name",
+     "subject_form_or_variant_qualifier",
+     "subject_label_closure",
+     "subject_namespace",
+     "subject_part_qualifier",
+     "supporting_text",
+     "timepoint",
+     "type",
+     "update_date"
+    ],
+    [
+     "adjusted_p_value",
+     "agent_type",
+     "aggregator_knowledge_source",
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "category",
+     "causal_mechanism_qualifier",
+     "deprecated",
+     "description",
+     "effect_size",
+     "effect_type",
+     "elevate_to_prediction",
+     "evidence_count",
+     "has_attribute",
+     "has_confidence_score",
+     "has_evidence",
+     "has_evidence_of_type",
+     "has_supporting_studies",
+     "id",
+     "iri",
+     "knowledge_level",
+     "knowledge_source",
+     "name",
+     "negated",
+     "object",
+     "object_aspect_qualifier",
+     "object_category",
+     "object_category_closure",
+     "object_closure",
+     "object_context_qualifier",
+     "object_direction_qualifier",
+     "object_feature_name",
+     "object_form_or_variant_qualifier",
+     "object_label_closure",
+     "object_namespace",
+     "object_part_qualifier",
+     "original_object",
+     "original_predicate",
+     "original_subject",
+     "p_value",
+     "primary_knowledge_source",
+     "publications",
+     "qualified_predicate",
+     "retrieval_source_ids",
+     "semmed_agreement_count",
+     "sources",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "stringdb_coexpression_score",
+     "stringdb_combined_score",
+     "stringdb_experimental_score",
+     "subject",
+     "subject_aspect_qualifier",
+     "subject_category",
+     "subject_category_closure",
+     "subject_closure",
+     "subject_context_qualifier",
+     "subject_derivative_qualifier",
+     "subject_direction_qualifier",
+     "subject_feature_name",
+     "subject_form_or_variant_qualifier",
+     "subject_label_closure",
+     "subject_namespace",
+     "subject_part_qualifier",
+     "supporting_documents",
+     "supporting_text",
+     "timepoint",
+     "type",
+     "update_date"
+    ],
+    [
+     "adjusted_p_value",
+     "agent_type",
+     "aggregator_knowledge_source",
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "category",
+     "deprecated",
+     "description",
+     "effect_size",
+     "effect_type",
+     "elevate_to_prediction",
+     "evidence_count",
+     "has_attribute",
+     "has_confidence_score",
+     "has_evidence",
+     "has_evidence_of_type",
+     "has_supporting_studies",
+     "id",
+     "iri",
+     "knowledge_level",
+     "knowledge_source",
+     "name",
+     "negated",
+     "object",
+     "object_aspect_qualifier",
+     "object_category",
+     "object_category_closure",
+     "object_closure",
+     "object_derivative_qualifier",
+     "object_direction_qualifier",
+     "object_feature_name",
+     "object_form_or_variant_qualifier",
+     "object_label_closure",
+     "object_namespace",
+     "object_part_qualifier",
+     "original_object",
+     "original_predicate",
+     "original_subject",
+     "p_value",
+     "primary_knowledge_source",
+     "publications",
+     "qualified_predicate",
+     "retrieval_source_ids",
+     "semmed_agreement_count",
+     "sources",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "stringdb_coexpression_score",
+     "stringdb_combined_score",
+     "stringdb_experimental_score",
+     "subject",
+     "subject_aspect_qualifier",
+     "subject_category",
+     "subject_category_closure",
+     "subject_closure",
+     "subject_derivative_qualifier",
+     "subject_direction_qualifier",
+     "subject_feature_name",
+     "subject_form_or_variant_qualifier",
+     "subject_label_closure",
+     "subject_namespace",
+     "subject_part_qualifier",
+     "supporting_documents",
+     "supporting_text",
+     "timepoint",
+     "type",
+     "update_date"
+    ]
+   ]
+  },
+  {
+   "variant": "b_local",
+   "qualifiers": "formal qualifiers",
+   "schema_errors": 0,
+   "edges": 103,
+   "vertices": 239,
+   "max_edge": 20,
+   "mean_edge": 9.9,
+   "components": 1,
+   "largest_component_edges": 103,
+   "universal_vertices": [
+    "association_basis_qualifier",
+    "species_context_qualifier",
+    "statistical_significance_qualifier"
+   ],
+   "top_degree": [
+    [
+     "statistical_significance_qualifier",
+     103
+    ],
+    [
+     "association_basis_qualifier",
+     103
+    ],
+    [
+     "species_context_qualifier",
+     103
+    ],
+    [
+     "object_direction_qualifier",
+     44
+    ],
+    [
+     "qualified_predicate",
+     43
+    ],
+    [
+     "object_aspect_qualifier",
+     42
+    ],
+    [
+     "subject_aspect_qualifier",
+     41
+    ],
+    [
+     "subject_direction_qualifier",
+     39
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 5,
+   "residue_vertices": 16,
+   "residue_sample": [
+    [
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "causal_mechanism_qualifier",
+     "object_aspect_qualifier",
+     "object_context_qualifier",
+     "object_direction_qualifier",
+     "qualified_predicate",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "subject_aspect_qualifier",
+     "subject_context_qualifier",
+     "subject_direction_qualifier",
+     "subject_form_or_variant_qualifier"
+    ],
+    [
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "object_aspect_qualifier",
+     "object_direction_qualifier",
+     "object_specialization_qualifier",
+     "population_context_qualifier",
+     "qualified_predicate",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "subject_aspect_qualifier",
+     "subject_direction_qualifier",
+     "subject_form_or_variant_qualifier"
+    ],
+    [
+     "association_basis_qualifier",
+     "causal_mechanism_qualifier",
+     "object_aspect_qualifier",
+     "object_context_qualifier",
+     "object_direction_qualifier",
+     "qualified_predicate",
+     "species_context_qualifier",
+     "stage_qualifier",
+     "statistical_significance_qualifier",
+     "subject_aspect_qualifier",
+     "subject_context_qualifier",
+     "subject_direction_qualifier"
+    ]
+   ]
+  },
+  {
+   "variant": "b_local",
+   "qualifiers": "formal + domain",
+   "schema_errors": 0,
+   "edges": 103,
+   "vertices": 264,
+   "max_edge": 24,
+   "mean_edge": 10.72,
+   "components": 1,
+   "largest_component_edges": 103,
+   "universal_vertices": [
+    "association_basis_qualifier",
+    "species_context_qualifier",
+    "statistical_significance_qualifier"
+   ],
+   "top_degree": [
+    [
+     "statistical_significance_qualifier",
+     103
+    ],
+    [
+     "association_basis_qualifier",
+     103
+    ],
+    [
+     "species_context_qualifier",
+     103
+    ],
+    [
+     "object_direction_qualifier",
+     44
+    ],
+    [
+     "qualified_predicate",
+     43
+    ],
+    [
+     "object_aspect_qualifier",
+     42
+    ],
+    [
+     "subject_aspect_qualifier",
+     41
+    ],
+    [
+     "subject_direction_qualifier",
+     39
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 5,
+   "residue_vertices": 17,
+   "residue_sample": [
+    [
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "causal_mechanism_qualifier",
+     "object_aspect_qualifier",
+     "object_context_qualifier",
+     "object_direction_qualifier",
+     "qualified_predicate",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "subject_aspect_qualifier",
+     "subject_context_qualifier",
+     "subject_direction_qualifier",
+     "subject_form_or_variant_qualifier"
+    ],
+    [
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "object_aspect_qualifier",
+     "object_direction_qualifier",
+     "object_specialization_qualifier",
+     "population_context_qualifier",
+     "qualified_predicate",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "subject_aspect_qualifier",
+     "subject_direction_qualifier",
+     "subject_form_or_variant_qualifier"
+    ],
+    [
+     "association_basis_qualifier",
+     "causal_mechanism_qualifier",
+     "object_aspect_qualifier",
+     "object_context_qualifier",
+     "object_direction_qualifier",
+     "qualified_predicate",
+     "quantifier_qualifier",
+     "species_context_qualifier",
+     "stage_qualifier",
+     "statistical_significance_qualifier",
+     "subject_aspect_qualifier",
+     "subject_context_qualifier",
+     "subject_direction_qualifier"
+    ]
+   ]
+  },
+  {
+   "variant": "b_local",
+   "qualifiers": "all slots",
+   "schema_errors": 0,
+   "edges": 103,
+   "vertices": 321,
+   "max_edge": 74,
+   "mean_edge": 59.91,
+   "components": 1,
+   "largest_component_edges": 103,
+   "universal_vertices": [
+    "adjusted_p_value",
+    "agent_type",
+    "aggregator_knowledge_source",
+    "association_basis_qualifier",
+    "category",
+    "deprecated",
+    "description",
+    "effect_size",
+    "effect_type",
+    "elevate_to_prediction",
+    "evidence_count",
+    "has_attribute",
+    "has_confidence_score",
+    "has_evidence",
+    "has_evidence_of_type",
+    "has_supporting_studies",
+    "id",
+    "iri",
+    "knowledge_level",
+    "knowledge_source",
+    "name",
+    "negated",
+    "object_category",
+    "object_category_closure",
+    "object_closure",
+    "object_feature_name",
+    "object_label_closure",
+    "object_namespace",
+    "original_object",
+    "original_predicate",
+    "original_subject",
+    "p_value",
+    "primary_knowledge_source",
+    "publications",
+    "retrieval_source_ids",
+    "semmed_agreement_count",
+    "sources",
+    "species_context_qualifier",
+    "statistical_significance_qualifier",
+    "stringdb_coexpression_score",
+    "stringdb_combined_score",
+    "stringdb_experimental_score",
+    "subject_category",
+    "subject_category_closure",
+    "subject_closure",
+    "subject_feature_name",
+    "subject_label_closure",
+    "subject_namespace",
+    "supporting_text",
+    "timepoint",
+    "type",
+    "update_date"
+   ],
+   "top_degree": [
+    [
+     "adjusted_p_value",
+     103
+    ],
+    [
+     "statistical_significance_qualifier",
+     103
+    ],
+    [
+     "object_category",
+     103
+    ],
+    [
+     "object_namespace",
+     103
+    ],
+    [
+     "subject_category",
+     103
+    ],
+    [
+     "has_evidence_of_type",
+     103
+    ],
+    [
+     "subject_category_closure",
+     103
+    ],
+    [
+     "stringdb_combined_score",
+     103
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 7,
+   "residue_vertices": 72,
+   "residue_sample": [
+    [
+     "adjusted_p_value",
+     "agent_type",
+     "aggregator_knowledge_source",
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "category",
+     "causal_mechanism_qualifier",
+     "deprecated",
+     "description",
+     "effect_size",
+     "effect_type",
+     "elevate_to_prediction",
+     "evidence_count",
+     "has_attribute",
+     "has_confidence_score",
+     "has_evidence",
+     "has_evidence_of_type",
+     "has_supporting_studies",
+     "id",
+     "iri",
+     "knowledge_level",
+     "knowledge_source",
+     "name",
+     "negated",
+     "object_aspect_qualifier",
+     "object_category",
+     "object_category_closure",
+     "object_closure",
+     "object_context_qualifier",
+     "object_derivative_qualifier",
+     "object_direction_qualifier",
+     "object_feature_name",
+     "object_form_or_variant_qualifier",
+     "object_label_closure",
+     "object_namespace",
+     "object_part_qualifier",
+     "original_object",
+     "original_predicate",
+     "original_subject",
+     "p_value",
+     "primary_knowledge_source",
+     "publications",
+     "qualified_predicate",
+     "retrieval_source_ids",
+     "semmed_agreement_count",
+     "sources",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "stringdb_coexpression_score",
+     "stringdb_combined_score",
+     "stringdb_experimental_score",
+     "subject_aspect_qualifier",
+     "subject_category",
+     "subject_category_closure",
+     "subject_closure",
+     "subject_context_qualifier",
+     "subject_derivative_qualifier",
+     "subject_direction_qualifier",
+     "subject_feature_name",
+     "subject_form_or_variant_qualifier",
+     "subject_label_closure",
+     "subject_namespace",
+     "subject_part_qualifier",
+     "supporting_text",
+     "timepoint",
+     "type",
+     "update_date"
+    ],
+    [
+     "adjusted_p_value",
+     "agent_type",
+     "aggregator_knowledge_source",
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "category",
+     "causal_mechanism_qualifier",
+     "deprecated",
+     "description",
+     "effect_size",
+     "effect_type",
+     "elevate_to_prediction",
+     "evidence_count",
+     "has_attribute",
+     "has_confidence_score",
+     "has_evidence",
+     "has_evidence_of_type",
+     "has_supporting_studies",
+     "id",
+     "iri",
+     "knowledge_level",
+     "knowledge_source",
+     "name",
+     "negated",
+     "object_aspect_qualifier",
+     "object_category",
+     "object_category_closure",
+     "object_closure",
+     "object_context_qualifier",
+     "object_direction_qualifier",
+     "object_feature_name",
+     "object_form_or_variant_qualifier",
+     "object_label_closure",
+     "object_namespace",
+     "object_part_qualifier",
+     "original_object",
+     "original_predicate",
+     "original_subject",
+     "p_value",
+     "primary_knowledge_source",
+     "publications",
+     "qualified_predicate",
+     "retrieval_source_ids",
+     "semmed_agreement_count",
+     "sources",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "stringdb_coexpression_score",
+     "stringdb_combined_score",
+     "stringdb_experimental_score",
+     "subject_aspect_qualifier",
+     "subject_category",
+     "subject_category_closure",
+     "subject_closure",
+     "subject_context_qualifier",
+     "subject_derivative_qualifier",
+     "subject_direction_qualifier",
+     "subject_feature_name",
+     "subject_form_or_variant_qualifier",
+     "subject_label_closure",
+     "subject_namespace",
+     "subject_part_qualifier",
+     "supporting_documents",
+     "supporting_text",
+     "timepoint",
+     "type",
+     "update_date"
+    ],
+    [
+     "adjusted_p_value",
+     "agent_type",
+     "aggregator_knowledge_source",
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "category",
+     "deprecated",
+     "description",
+     "effect_size",
+     "effect_type",
+     "elevate_to_prediction",
+     "evidence_count",
+     "has_attribute",
+     "has_confidence_score",
+     "has_evidence",
+     "has_evidence_of_type",
+     "has_supporting_studies",
+     "id",
+     "iri",
+     "knowledge_level",
+     "knowledge_source",
+     "name",
+     "negated",
+     "object_aspect_qualifier",
+     "object_category",
+     "object_category_closure",
+     "object_closure",
+     "object_derivative_qualifier",
+     "object_direction_qualifier",
+     "object_feature_name",
+     "object_form_or_variant_qualifier",
+     "object_label_closure",
+     "object_namespace",
+     "object_part_qualifier",
+     "original_object",
+     "original_predicate",
+     "original_subject",
+     "p_value",
+     "primary_knowledge_source",
+     "publications",
+     "qualified_predicate",
+     "retrieval_source_ids",
+     "semmed_agreement_count",
+     "sources",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "stringdb_coexpression_score",
+     "stringdb_combined_score",
+     "stringdb_experimental_score",
+     "subject_aspect_qualifier",
+     "subject_category",
+     "subject_category_closure",
+     "subject_closure",
+     "subject_derivative_qualifier",
+     "subject_direction_qualifier",
+     "subject_feature_name",
+     "subject_form_or_variant_qualifier",
+     "subject_label_closure",
+     "subject_namespace",
+     "subject_part_qualifier",
+     "supporting_documents",
+     "supporting_text",
+     "timepoint",
+     "type",
+     "update_date"
+    ]
+   ]
+  },
+  {
+   "variant": "c_typed",
+   "qualifiers": "formal qualifiers",
+   "schema_errors": 0,
+   "edges": 103,
+   "vertices": 98,
+   "max_edge": 20,
+   "mean_edge": 9.9,
+   "components": 1,
+   "largest_component_edges": 103,
+   "universal_vertices": [
+    "association_basis_qualifier",
+    "species_context_qualifier",
+    "statistical_significance_qualifier"
+   ],
+   "top_degree": [
+    [
+     "statistical_significance_qualifier",
+     103
+    ],
+    [
+     "association_basis_qualifier",
+     103
+    ],
+    [
+     "species_context_qualifier",
+     103
+    ],
+    [
+     "object_direction_qualifier",
+     44
+    ],
+    [
+     "qualified_predicate",
+     43
+    ],
+    [
+     "object_aspect_qualifier",
+     42
+    ],
+    [
+     "subject_aspect_qualifier",
+     41
+    ],
+    [
+     "subject_direction_qualifier",
+     39
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 53,
+   "residue_vertices": 59,
+   "residue_sample": [
+    [
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "causal_mechanism_qualifier",
+     "object:ChemicalEntity",
+     "object_aspect_qualifier",
+     "object_context_qualifier",
+     "object_derivative_qualifier",
+     "object_direction_qualifier",
+     "object_form_or_variant_qualifier",
+     "object_part_qualifier",
+     "qualified_predicate",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "subject:ChemicalEntityOrGeneOrGeneProduct",
+     "subject_aspect_qualifier",
+     "subject_context_qualifier",
+     "subject_derivative_qualifier",
+     "subject_direction_qualifier",
+     "subject_form_or_variant_qualifier",
+     "subject_part_qualifier"
+    ],
+    [
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "causal_mechanism_qualifier",
+     "object:GeneOrGeneProduct",
+     "object_aspect_qualifier",
+     "object_context_qualifier",
+     "object_direction_qualifier",
+     "object_form_or_variant_qualifier",
+     "object_part_qualifier",
+     "qualified_predicate",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "subject:ChemicalEntity",
+     "subject_context_qualifier",
+     "subject_derivative_qualifier",
+     "subject_form_or_variant_qualifier",
+     "subject_part_qualifier"
+    ],
+    [
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "causal_mechanism_qualifier",
+     "object_aspect_qualifier",
+     "object_context_qualifier",
+     "object_direction_qualifier",
+     "object_form_or_variant_qualifier",
+     "object_part_qualifier",
+     "qualified_predicate",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "subject:ChemicalEntity",
+     "subject_aspect_qualifier",
+     "subject_context_qualifier",
+     "subject_derivative_qualifier",
+     "subject_direction_qualifier",
+     "subject_form_or_variant_qualifier",
+     "subject_part_qualifier"
+    ]
+   ]
+  },
+  {
+   "variant": "c_typed",
+   "qualifiers": "formal + domain",
+   "schema_errors": 0,
+   "edges": 103,
+   "vertices": 123,
+   "max_edge": 24,
+   "mean_edge": 10.72,
+   "components": 1,
+   "largest_component_edges": 103,
+   "universal_vertices": [
+    "association_basis_qualifier",
+    "species_context_qualifier",
+    "statistical_significance_qualifier"
+   ],
+   "top_degree": [
+    [
+     "statistical_significance_qualifier",
+     103
+    ],
+    [
+     "association_basis_qualifier",
+     103
+    ],
+    [
+     "species_context_qualifier",
+     103
+    ],
+    [
+     "object_direction_qualifier",
+     44
+    ],
+    [
+     "qualified_predicate",
+     43
+    ],
+    [
+     "object_aspect_qualifier",
+     42
+    ],
+    [
+     "subject_aspect_qualifier",
+     41
+    ],
+    [
+     "subject_direction_qualifier",
+     39
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 53,
+   "residue_vertices": 73,
+   "residue_sample": [
+    [
+     "allelic_requirement",
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "disease_context_qualifier",
+     "frequency_qualifier",
+     "has_count",
+     "has_percentage",
+     "has_quotient",
+     "has_total",
+     "object:PhenotypicFeature",
+     "object_aspect_qualifier",
+     "object_direction_qualifier",
+     "object_specialization_qualifier",
+     "population_context_qualifier",
+     "qualified_predicate",
+     "sex_qualifier",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "subject:GeneOrGeneProduct",
+     "subject_aspect_qualifier",
+     "subject_direction_qualifier",
+     "subject_form_or_variant_qualifier",
+     "subject_specialization_qualifier"
+    ],
+    [
+     "allelic_requirement",
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "disease_context_qualifier",
+     "frequency_qualifier",
+     "object:Disease",
+     "object_aspect_qualifier",
+     "object_direction_qualifier",
+     "object_specialization_qualifier",
+     "population_context_qualifier",
+     "qualified_predicate",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "subject:GeneOrGeneProduct",
+     "subject_aspect_qualifier",
+     "subject_direction_qualifier",
+     "subject_form_or_variant_qualifier",
+     "subject_specialization_qualifier"
+    ],
+    [
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "causal_mechanism_qualifier",
+     "object:ChemicalEntity",
+     "object_aspect_qualifier",
+     "object_context_qualifier",
+     "object_derivative_qualifier",
+     "object_direction_qualifier",
+     "object_form_or_variant_qualifier",
+     "object_part_qualifier",
+     "qualified_predicate",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "subject:ChemicalEntityOrGeneOrGeneProduct",
+     "subject_aspect_qualifier",
+     "subject_context_qualifier",
+     "subject_derivative_qualifier",
+     "subject_direction_qualifier",
+     "subject_form_or_variant_qualifier",
+     "subject_part_qualifier"
+    ]
+   ]
+  },
+  {
+   "variant": "c_typed",
+   "qualifiers": "all slots",
+   "schema_errors": 0,
+   "edges": 103,
+   "vertices": 180,
+   "max_edge": 74,
+   "mean_edge": 59.91,
+   "components": 1,
+   "largest_component_edges": 103,
+   "universal_vertices": [
+    "adjusted_p_value",
+    "agent_type",
+    "aggregator_knowledge_source",
+    "association_basis_qualifier",
+    "category",
+    "deprecated",
+    "description",
+    "effect_size",
+    "effect_type",
+    "elevate_to_prediction",
+    "evidence_count",
+    "has_attribute",
+    "has_confidence_score",
+    "has_evidence",
+    "has_evidence_of_type",
+    "has_supporting_studies",
+    "id",
+    "iri",
+    "knowledge_level",
+    "knowledge_source",
+    "name",
+    "negated",
+    "object_category",
+    "object_category_closure",
+    "object_closure",
+    "object_feature_name",
+    "object_label_closure",
+    "object_namespace",
+    "original_object",
+    "original_predicate",
+    "original_subject",
+    "p_value",
+    "primary_knowledge_source",
+    "publications",
+    "retrieval_source_ids",
+    "semmed_agreement_count",
+    "sources",
+    "species_context_qualifier",
+    "statistical_significance_qualifier",
+    "stringdb_coexpression_score",
+    "stringdb_combined_score",
+    "stringdb_experimental_score",
+    "subject_category",
+    "subject_category_closure",
+    "subject_closure",
+    "subject_feature_name",
+    "subject_label_closure",
+    "subject_namespace",
+    "supporting_text",
+    "timepoint",
+    "type",
+    "update_date"
+   ],
+   "top_degree": [
+    [
+     "adjusted_p_value",
+     103
+    ],
+    [
+     "statistical_significance_qualifier",
+     103
+    ],
+    [
+     "object_category",
+     103
+    ],
+    [
+     "object_namespace",
+     103
+    ],
+    [
+     "subject_category",
+     103
+    ],
+    [
+     "has_evidence_of_type",
+     103
+    ],
+    [
+     "subject_category_closure",
+     103
+    ],
+    [
+     "stringdb_combined_score",
+     103
+    ]
+   ],
+   "alpha_acyclic": false,
+   "residue_edges": 53,
+   "residue_vertices": 126,
+   "residue_sample": [
+    [
+     "adjusted_p_value",
+     "agent_type",
+     "aggregator_knowledge_source",
+     "allelic_requirement",
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "category",
+     "deprecated",
+     "description",
+     "disease_context_qualifier",
+     "effect_size",
+     "effect_type",
+     "elevate_to_prediction",
+     "evidence_count",
+     "frequency_qualifier",
+     "has_attribute",
+     "has_confidence_score",
+     "has_count",
+     "has_evidence",
+     "has_evidence_of_type",
+     "has_percentage",
+     "has_quotient",
+     "has_supporting_studies",
+     "has_total",
+     "id",
+     "iri",
+     "knowledge_level",
+     "knowledge_source",
+     "name",
+     "negated",
+     "object:PhenotypicFeature",
+     "object_aspect_qualifier",
+     "object_category",
+     "object_category_closure",
+     "object_closure",
+     "object_direction_qualifier",
+     "object_feature_name",
+     "object_label_closure",
+     "object_namespace",
+     "object_specialization_qualifier",
+     "original_object",
+     "original_predicate",
+     "original_subject",
+     "p_value",
+     "population_context_qualifier",
+     "primary_knowledge_source",
+     "publications",
+     "qualified_predicate",
+     "retrieval_source_ids",
+     "semmed_agreement_count",
+     "sex_qualifier",
+     "sources",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "stringdb_coexpression_score",
+     "stringdb_combined_score",
+     "stringdb_experimental_score",
+     "subject:GeneOrGeneProduct",
+     "subject_aspect_qualifier",
+     "subject_category",
+     "subject_category_closure",
+     "subject_closure",
+     "subject_direction_qualifier",
+     "subject_feature_name",
+     "subject_form_or_variant_qualifier",
+     "subject_label_closure",
+     "subject_namespace",
+     "subject_specialization_qualifier",
+     "supporting_text",
+     "timepoint",
+     "type",
+     "update_date"
+    ],
+    [
+     "adjusted_p_value",
+     "agent_type",
+     "aggregator_knowledge_source",
+     "allelic_requirement",
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "category",
+     "deprecated",
+     "description",
+     "disease_context_qualifier",
+     "effect_size",
+     "effect_type",
+     "elevate_to_prediction",
+     "evidence_count",
+     "frequency_qualifier",
+     "has_attribute",
+     "has_confidence_score",
+     "has_evidence",
+     "has_evidence_of_type",
+     "has_supporting_studies",
+     "id",
+     "iri",
+     "knowledge_level",
+     "knowledge_source",
+     "name",
+     "negated",
+     "object:Disease",
+     "object_aspect_qualifier",
+     "object_category",
+     "object_category_closure",
+     "object_closure",
+     "object_direction_qualifier",
+     "object_feature_name",
+     "object_label_closure",
+     "object_namespace",
+     "object_specialization_qualifier",
+     "original_object",
+     "original_predicate",
+     "original_subject",
+     "p_value",
+     "population_context_qualifier",
+     "primary_knowledge_source",
+     "publications",
+     "qualified_predicate",
+     "retrieval_source_ids",
+     "semmed_agreement_count",
+     "sources",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "stringdb_coexpression_score",
+     "stringdb_combined_score",
+     "stringdb_experimental_score",
+     "subject:GeneOrGeneProduct",
+     "subject_aspect_qualifier",
+     "subject_category",
+     "subject_category_closure",
+     "subject_closure",
+     "subject_direction_qualifier",
+     "subject_feature_name",
+     "subject_form_or_variant_qualifier",
+     "subject_label_closure",
+     "subject_namespace",
+     "subject_specialization_qualifier",
+     "supporting_text",
+     "timepoint",
+     "type",
+     "update_date"
+    ],
+    [
+     "adjusted_p_value",
+     "agent_type",
+     "aggregator_knowledge_source",
+     "anatomical_context_qualifier",
+     "association_basis_qualifier",
+     "category",
+     "causal_mechanism_qualifier",
+     "deprecated",
+     "description",
+     "dgidb_evidence_score",
+     "dgidb_interaction_score",
+     "effect_size",
+     "effect_type",
+     "elevate_to_prediction",
+     "evidence_count",
+     "has_attribute",
+     "has_confidence_score",
+     "has_evidence",
+     "has_evidence_of_type",
+     "has_supporting_studies",
+     "id",
+     "iri",
+     "knowledge_level",
+     "knowledge_source",
+     "name",
+     "negated",
+     "object:GeneOrGeneProduct",
+     "object_aspect_qualifier",
+     "object_category",
+     "object_category_closure",
+     "object_closure",
+     "object_context_qualifier",
+     "object_direction_qualifier",
+     "object_feature_name",
+     "object_form_or_variant_qualifier",
+     "object_label_closure",
+     "object_namespace",
+     "object_part_qualifier",
+     "original_object",
+     "original_predicate",
+     "original_subject",
+     "p_value",
+     "primary_knowledge_source",
+     "publications",
+     "qualified_predicate",
+     "retrieval_source_ids",
+     "semmed_agreement_count",
+     "sources",
+     "species_context_qualifier",
+     "statistical_significance_qualifier",
+     "stringdb_coexpression_score",
+     "stringdb_combined_score",
+     "stringdb_experimental_score",
+     "subject:ChemicalEntity",
+     "subject_category",
+     "subject_category_closure",
+     "subject_closure",
+     "subject_context_qualifier",
+     "subject_derivative_qualifier",
+     "subject_feature_name",
+     "subject_form_or_variant_qualifier",
+     "subject_label_closure",
+     "subject_namespace",
+     "subject_part_qualifier",
+     "supporting_text",
+     "timepoint",
+     "type",
+     "update_date"
+    ]
+   ]
+  },
+  {
+   "variant": "e_relation_local",
+   "qualifiers": "formal qualifiers",
+   "schema_errors": 0,
+   "edges": 103,
+   "vertices": 1020,
+   "max_edge": 20,
+   "mean_edge": 9.9,
+   "components": 103,
+   "largest_component_edges": 1,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "AnatomicalEntityHasPartAnatomicalEntityAssociation:species_context_qualifier",
+     1
+    ],
+    [
+     "AnatomicalEntityHasPartAnatomicalEntityAssociation:subject",
+     1
+    ],
+    [
+     "AnatomicalEntityHasPartAnatomicalEntityAssociation:object",
+     1
+    ],
+    [
+     "AnatomicalEntityHasPartAnatomicalEntityAssociation:association_basis_qualifier",
+     1
+    ],
+    [
+     "AnatomicalEntityHasPartAnatomicalEntityAssociation:statistical_significance_qualifier",
+     1
+    ],
+    [
+     "AnatomicalEntityPartOfAnatomicalEntityAssociation:association_basis_qualifier",
+     1
+    ],
+    [
+     "AnatomicalEntityPartOfAnatomicalEntityAssociation:object",
+     1
+    ],
+    [
+     "AnatomicalEntityPartOfAnatomicalEntityAssociation:statistical_significance_qualifier",
+     1
+    ]
+   ],
+   "alpha_acyclic": true,
+   "residue_edges": 0,
+   "residue_vertices": 0,
+   "residue_sample": []
+  },
+  {
+   "variant": "e_relation_local",
+   "qualifiers": "formal + domain",
+   "schema_errors": 0,
+   "edges": 103,
+   "vertices": 1104,
+   "max_edge": 24,
+   "mean_edge": 10.72,
+   "components": 103,
+   "largest_component_edges": 1,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "AnatomicalEntityHasPartAnatomicalEntityAssociation:species_context_qualifier",
+     1
+    ],
+    [
+     "AnatomicalEntityHasPartAnatomicalEntityAssociation:subject",
+     1
+    ],
+    [
+     "AnatomicalEntityHasPartAnatomicalEntityAssociation:object",
+     1
+    ],
+    [
+     "AnatomicalEntityHasPartAnatomicalEntityAssociation:association_basis_qualifier",
+     1
+    ],
+    [
+     "AnatomicalEntityHasPartAnatomicalEntityAssociation:statistical_significance_qualifier",
+     1
+    ],
+    [
+     "AnatomicalEntityPartOfAnatomicalEntityAssociation:association_basis_qualifier",
+     1
+    ],
+    [
+     "AnatomicalEntityPartOfAnatomicalEntityAssociation:object",
+     1
+    ],
+    [
+     "AnatomicalEntityPartOfAnatomicalEntityAssociation:statistical_significance_qualifier",
+     1
+    ]
+   ],
+   "alpha_acyclic": true,
+   "residue_edges": 0,
+   "residue_vertices": 0,
+   "residue_sample": []
+  },
+  {
+   "variant": "e_relation_local",
+   "qualifiers": "all slots",
+   "schema_errors": 0,
+   "edges": 103,
+   "vertices": 6171,
+   "max_edge": 74,
+   "mean_edge": 59.91,
+   "components": 103,
+   "largest_component_edges": 1,
+   "universal_vertices": [],
+   "top_degree": [
+    [
+     "AnatomicalEntityHasPartAnatomicalEntityAssociation:species_context_qualifier",
+     1
+    ],
+    [
+     "AnatomicalEntityHasPartAnatomicalEntityAssociation:publications",
+     1
+    ],
+    [
+     "AnatomicalEntityHasPartAnatomicalEntityAssociation:id",
+     1
+    ],
+    [
+     "AnatomicalEntityHasPartAnatomicalEntityAssociation:object_closure",
+     1
+    ],
+    [
+     "AnatomicalEntityHasPartAnatomicalEntityAssociation:object_category_closure",
+     1
+    ],
+    [
+     "AnatomicalEntityHasPartAnatomicalEntityAssociation:object",
+     1
+    ],
+    [
+     "AnatomicalEntityHasPartAnatomicalEntityAssociation:category",
+     1
+    ],
+    [
+     "AnatomicalEntityHasPartAnatomicalEntityAssociation:original_object",
+     1
+    ]
+   ],
+   "alpha_acyclic": true,
+   "residue_edges": 0,
+   "residue_vertices": 0,
+   "residue_sample": []
+  }
+ ]
+}

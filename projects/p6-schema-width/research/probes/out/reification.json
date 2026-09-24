@@ -1,0 +1,54 @@
+{
+ "a_triangle_cover": {
+  "n_ary": {
+   "class": "alpha",
+   "hw": 1,
+   "ghw": 1
+  },
+  "reified": {
+   "class": "cyclic",
+   "hw": 2,
+   "ghw": 2,
+   "tw": 3
+  }
+ },
+ "b_triangle": {
+  "n_ary": {
+   "class": "cyclic",
+   "hw": 2,
+   "ghw": 2
+  },
+  "reified": {
+   "class": "cyclic",
+   "hw": 2,
+   "ghw": 2,
+   "tw": 2
+  }
+ },
+ "gamma_triangle": {
+  "n_ary": {
+   "class": "beta",
+   "hw": 1,
+   "ghw": 1
+  },
+  "reified": {
+   "class": "cyclic",
+   "hw": 2,
+   "ghw": 2,
+   "tw": 2
+  }
+ },
+ "k5": {
+  "n_ary": {
+   "class": "cyclic",
+   "hw": 3,
+   "ghw": 3
+  },
+  "reified": {
+   "class": "cyclic",
+   "hw": 4,
+   "ghw": 4,
+   "tw": 4
+  }
+ }
+}

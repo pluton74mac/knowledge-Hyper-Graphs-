@@ -1,0 +1,19 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/log-k-decomp/log-k-decomp -graph /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/instances/k5.hg -exact
+Used algorithm: LogKHybrid
+Result ( ran with K = 3 )
+ 
+Bag: {x1, x2, x3, x4}
+Cover: {e1_2, e1_3, e1_4}
+Children: 1
+[
+	Bag: {x1, x2, x3, x4, x5}
+	Cover: {e1_2, e1_3, e4_5}
+]
+
+Time: 0.93387 ms
+Time Composition: 
+Decomposition : 0.93387 ms
+
+Width:  3
+Correct:  true
+[exit 0]

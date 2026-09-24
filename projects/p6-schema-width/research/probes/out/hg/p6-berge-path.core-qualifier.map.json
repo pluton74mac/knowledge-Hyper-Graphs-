@@ -1,0 +1,11 @@
+{
+ "relations": {
+  "employment": "R0",
+  "headquartered_in": "R1"
+ },
+ "roles": {
+  "city": "V0",
+  "employee": "V1",
+  "employer": "V2"
+ }
+}

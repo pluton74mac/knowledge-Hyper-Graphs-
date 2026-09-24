@@ -1,0 +1,14 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/log-k-decomp/log-k-decomp -graph /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/instances/gamma_triangle.hg -exact
+Used algorithm: LogKHybrid
+Result ( ran with K = 1 )
+ 
+Bag: {x, y, z}
+Cover: {E3}
+
+Time: 0.22258 ms
+Time Composition: 
+Decomposition : 0.22258 ms
+
+Width:  1
+Correct:  true
+[exit 0]

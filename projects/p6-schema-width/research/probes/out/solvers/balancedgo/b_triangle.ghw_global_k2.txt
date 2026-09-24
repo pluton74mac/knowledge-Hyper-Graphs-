@@ -1,0 +1,27 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/BalancedGo/BalancedGo -graph /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/instances/b_triangle.hg -width 2 -global
+Graph with subedges 
+ {(), (a), (b), (c), E1, (a, c), (b, c)}
+Used algorithm: BalSep Global @
+Result ( ran with K = 2 )
+ 
+Bag: {a, c}
+Cover: {E1, E3}
+Children: 1
+[
+	Bag: {a, b, c}
+	Cover: {E3, E2}
+	Children: 1
+	[
+		Bag: {a, b}
+		Cover: {E1, E1}
+	]
+]
+
+Time: 0.28245 ms
+Time Composition: 
+Decomposition : 0.28245 ms
+
+Width:  2
+SCV found!. Not a valid hypertree decomposition!
+Correct:  true
+[exit 0]
