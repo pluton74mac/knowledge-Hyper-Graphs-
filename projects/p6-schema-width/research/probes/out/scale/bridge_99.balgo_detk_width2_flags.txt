@@ -1,0 +1,42 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/BalancedGo/BalancedGo -graph /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/hyperbench/all/bridge_99.hg -width 2 -det -t -h -g -heuristic 1 -bench
+
+																							Bag: {Umv99, Uqv100}
+																							Cover: {UCONNv99}
+																							Children: 1
+																							[
+																								Bag: {Uqv100}
+																								Cover: {Term}
+																							]
+																						]
+																					]
+																				]
+																			]
+																		]
+																	]
+																]
+															]
+														]
+													]
+												]
+											]
+										]
+									]
+								]
+							]
+						]
+					]
+				]
+			]
+		]
+	]
+]
+
+Time: 883.08578 ms
+Time Composition: 
+Heuristic : 50.90552 ms
+Hingetree : 417.21409 ms
+Decomposition : 414.96617 ms
+
+Width:  2
+Correct:  true
+[exit 0]

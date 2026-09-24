@@ -34,11 +34,14 @@ report, what is the published baseline to compare against, and which solvers wor
   have exact hw 1 (673), 2 (432) or 3 (8). By construction, the SPARQL and Wikidata subsets hold only cyclic queries
   (section 3).
 - **Solvers, probed.** Seven tools were built and run on 11 instances: BalancedGo, log-k-decomp, NewDetKDecomp,
-  det-k-decomp 1.0, htd, HtdLEO/htdsmt and fraSMT. They agree wherever each is exact (section 4.4). Wikidata
-  residues have hundreds of edges, so in-process search stops being enough there. **Recommendation: call
-  BalancedGo (MIT, Go, one static binary, JSON decompositions) for hw, with log-k-decomp (MIT) as the second opinion.
-  Keep a pure-Python core for classes, witnesses, reductions, exact ghw/fhw on cores of ≤ 16–18 vertices and exact
-  hw on small inputs.** Do not vendor NewDetKDecomp or det-k-decomp (no licence), nor fraSMT (GPL-3 plus
+  det-k-decomp 1.0, htd, HtdLEO/htdsmt and fraSMT. They agree wherever each is exact (section 4.4). Two
+  traps: fraSMT silently parsed 0 edges from ids containing colons and reported width 1, and a "Correct"
+  decomposition can still violate the HD special condition. Both argue for neutral ids and for validating every
+  decomposition in Python. At the size of Wikidata residues (hundreds of edges), preprocessing flags decided
+  feasibility: a 300 s timeout became 0.9 s (section 4.5). **Recommendation: call BalancedGo (MIT, one static Go
+  binary, JSON decompositions) for hw, with log-k-decomp (MIT) as the second opinion. Keep a pure-Python core for
+  classes, witnesses, reductions, the validator, exact ghw and fhw on cores of up to ~18 vertices, and exact hw on
+  inputs up to ~40 edges.** Do not vendor NewDetKDecomp or det-k-decomp (no licence), nor fraSMT (GPL-3 plus
   IBM CPLEX).
 - **One conceptual caveat decides what the numbers mean.** P2's `schema_hypergraph` has roles as vertices and
   relations as edges. Its width is the width of the query that joins *all relations on same-named roles*, which is
@@ -138,7 +141,8 @@ tree" (Brault-Baron, §3.2).
 
 ### 1.4 Worked examples that separate adjacent classes
 
-Each example is Brault-Baron's canonical counter-example (his Figure 2). They were computed by
+Apart from the path, each example is one of Brault-Baron's canonical counter-examples, named as in his Figure 2.
+They were computed by
 `probes/p6check.py` and checked against brute-force evaluation of the definitions
 (`probes/probe_theory.py`, `out/probe_theory.json`):
 
@@ -204,9 +208,10 @@ Following [Grohe and Marx, 2014](https://arxiv.org/abs/1711.04506) and
 
 - **fhw ≤ ghw ≤ hw ≤ 3·ghw + 1.** "It has been proved in [Adler et al. 2007] that ghw(H) ≤ hw(H) ≤ 3 · ghw(H) + 1",
   and "fhw(H) ≤ ghw(H)" (Grohe and Marx, §4; Adler, Gottlob and Grohe, *European Journal of Combinatorics*
-  28(8):2167–2181, 2007, [DOI](https://doi.org/10.1016/j.ejc.2007.04.013), not read directly). Beware: the JEA
-  HyperBench text (p. 3) and the GLPR arXiv text (p. 2) both print "ghw(H) ≤ 3 · hw(H) + 1", with the variables
-  swapped. The PODS 2019 HyperBench text has the correct "hw ≤ 3 · ghw + 1".
+  28(8):2167–2181, 2007, [DOI](https://doi.org/10.1016/j.ejc.2007.04.013), not read directly). Beware: the
+  introductions of both HyperBench versions (arXiv 1811.08181 and 2009.01769) and of GLPR (arXiv 2002.05239) print
+  "ghw(H) ≤ 3 · hw(H) + 1", with the variables swapped. Their later sections state it the right way round: "only
+  the upper bound hw ≤ 3 · ghw + 1 is known" (HyperBench), and "hw(H) ≤ 3 · ghw(H) + 1 holds" (GLPR).
 - **ghw ≤ tw + 1**, and a hypergraph with V(H) ∈ E(H) has ghw = 1 but tw = |V| − 1 (Grohe and Marx, §4).
 - **hw = 1 ⇔ ghw = 1 ⇔ fhw = 1 ⇔ α-acyclic** (GLS, Theorem 4.4; Grohe and Marx: "fhw(H) = 1 ⇐⇒ ghw(H) = 1").
 - **fhw ≤ ρ*(H)** (Grohe and Marx). The family H_n of their Example 4.2 has ρ* = 2 and hw = n.
@@ -279,8 +284,8 @@ cost directly" should be narrowed to that.
 2. **hw**, exact where the solvers finish, otherwise [lower, upper]. Reasons: it has a polynomial check and a
    checkable certificate (an HD), and it is what HyperBench and the SPARQL-log studies report, so it is directly
    comparable. On HyperBench, when both are known, hw = ghw in 99.2% of cases (3.4).
-3. **ghw**, exact on small residues (DP) or via BalancedGo's GHD mode, otherwise bounds. hw ≤ 3·ghw + 1 makes any
-   hw bound a ghw bound.
+3. **ghw**, exact on small residues (DP) or via a GHD solver, otherwise bounds. An hw upper bound u gives ghw ≤ u, and
+   an hw lower bound l gives ghw ≥ (l − 1)/3 (from hw ≤ 3·ghw + 1).
 4. **fhw**, exact on small residues (DP + LP), otherwise an upper bound max_t ρ*(B_t) over the HD found (HyperBench's
    "ImproveHD" idea) and a clique lower bound (5.3). It gives the sharpest cost exponent (2.4).
 5. **tw of the primal graph**, for contrast with graph-based work and to show how much arity matters.
@@ -463,14 +468,128 @@ Case (a) is `a_triangle_cover` (α-acyclic, hw 1), (b) `b_triangle` (cyclic, hw 
 width reported, with seconds in parentheses where they exceeded 1. "k:no/yes" lists the per-k answers. A dash
 means not run.
 
-SOLVER_TABLE_PLACEHOLDER
+| Instance | V/E | p6check tw / ghw / fhw / hw | BalancedGo `-exact -det` (hw) | log-k-decomp `-exact` (hw) | NewDetKDecomp `detkdecomp` k (hw) | det-k-decomp 1.0, k = 3 | HtdLEO hw / htdsmt hw | BalancedGo `-global` k (ghw) | NewDetKDecomp `balsepkdecomp` k (ghw) | HtdLEO `-g` (ghw) | fraSMT (fhw) | htd tw / GHD ub |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `berge_path` | 3/2 | 1 / 1 / 1 / 1 | 1 | 1 | 1:yes | yes | 1 / 1 | 1:yes | 1:yes | 1 | 1 | 1 / 1 |
+| `berge_triangle` | 3/2 | 2 / 1 / 1 / 1 | 1 | 1 | 1:yes | yes | 1 / 1 | 1:yes | 1:yes | 1 | 1 | 2 / 1 |
+| `gamma_triangle` | 3/3 | 2 / 1 / 1 / 1 | 1 | 1 | 1:yes | yes | 1 / 1 | 1:yes | 1:yes | 1 | 1 | 2 / 1 |
+| `a_triangle_cover` | 3/4 | 2 / 1 / 1 / 1 | 1 | 1 | 1:yes | yes | 1 / 1 | 1:yes | 1:yes | 1 | 1 | 2 / 1 |
+| `b_triangle` | 3/3 | 2 / 2 / 3/2 / 2 | 2 | 2 | 1:no 2:yes | yes | 2 / 2 | 1:no 2:yes | 1:no 2:yes | 2 | 1.5 | 2 / 2 |
+| `k5` | 5/10 | 4 / 3 / 5/2 / 3 | 3 | 3 | 1:no 2:no 3:yes | yes | 3 / 3 | 1:no 2:no (4 s) 3:yes | 1:no 2:no 3:yes | 3 | 2.5 | 4 / 3 |
+| `adler` | 10/8 | 4 / 2 / 2 / 3 | 3 | 3 | 1:no 2:no 3:yes | yes | 3 / 3 | 1:no 2:yes (6 s) | 1:no 2:yes | 2 | 2.0 | 4 / 3 |
+| `c_grid4` | 16/24 | 4 / 3 / 3 / 3 | 3 | 3 | 1:no 2:no 3:yes | yes | 3 / 3 | 1:no 2:no 3:yes | 1:no 2:no 3:yes | 3 | 3.0 | 4 / 4 |
+| `c_grid5` | 25/40 | skip: 25 ver / skip: 25 ver / skip: 25 ver / 3 | 3 | 3 | 1:no 2:no 3:yes | yes | 3 / 3 | 1:no 2:no 3:yes (2 s) | 1:no 2:no 3:yes | 3 | 3.0 (2 s) | 5 / 4 |
+| `grohe_marx_3` | 20/6 | skip: 20 ver / skip: 20 ver / skip: 20 ver / 3 | 3 | 3 | 1:no 2:no 3:yes | yes | 3 / 3 | 1:no 2:t/o (300 s) 3:t/o (300 s) | 1:no 2:no 3:yes | 3 | 2.0 (3 s) | 18 / 3 |
+| `c_grid2d_10` | 50/50 | skip: 50 ver / skip: 50 ver / skip: 50 ver / skip: budget | 4 (3 s) | 4 (1 s) | 1:no 2:no 3:no (39 s) 4:yes | no (9 s) | 4 (29 s) / 4 (30 s) | 1:no 2:no (7 s) 3:t/o (240 s) 4:t/o (240 s) | 1:no 2:no 3:no (3 s) 4:t/o (240 s) 5:t/o (240 s) | 4 (40 s) | 1 (0 edges parsed); 4.0 (53 s) with neutral ids | 13 / 6 |
+
+Generated by `probes/solver_table.py` from `out/solvers/summary.tsv` and `out/probe_theory.json` ("skip" means the
+instance exceeds the prototype's exact-DP limit of 18 vertices or its separator budget). Readings:
+
+- **Every tool that is exact agrees with every other on every instance it finished.** The hw columns agree:
+  BalancedGo, log-k-decomp, NewDetKDecomp, det-k-decomp 1.0 (k = 3 answers), HtdLEO, htdsmt and the prototype. So do
+  the ghw columns (BalancedGo `-global`, NewDetKDecomp `balsepkdecomp`, HtdLEO `-g`, the prototype's DP) and the fhw
+  columns (fraSMT and the DP). The prototype's DP beyond the probe's limit gives ghw(`grohe_marx_3`) = 3 in 42 s and
+  tw 18 (`out/dp_limits.json`). fraSMT gives fhw(`grohe_marx_3`) = 2, which confirms Grohe and Marx's ρ* = 2.
+- **Case (c), Samer's `grid2d_10` (50 vertices, 50 edges), is where the tools separate.** hw = 4: BalancedGo 3 s,
+  log-k-decomp 1 s, HtdLEO and htdsmt about 30 s. NewDetKDecomp needs 39 s to refute k = 3 and det-k-decomp 1.0
+  9 s. ghw = 4 as well: `balsepkdecomp` refutes 3 in 3 s and HtdLEO `-g` returns 4 in 40 s, while BalancedGo
+  `-global` and `balsepkdecomp` time out at k = 4 (240 s). fhw = 4 (fraSMT, 53 s). The prototype's hw search
+  exhausted its budget in 1 s, and htd gives only upper bounds (tw ≤ 13, GHD width ≤ 6).
+- **ghw < hw is seen once, on Adler's example** (ghw 2, hw 3), by three independent GHD tools. HtdLEO `-g` flags its
+  answer as "GHTD: True, Valid: False", a GHD that is not an HD, as it should.
+- **BalancedGo `-global` is the weak spot.** It timed out on `grohe_marx_3` at k = 2 and 3 (6 edges of 10 vertices;
+  the subedge set explodes) and on `grid2d_10` at k = 3 and 4. For ghw, NewDetKDecomp's `balsepkdecomp` (quick
+  refutations) and HtdLEO `-g` (exact, slower) did better where they ran.
+- **fraSMT fails silently on some names.** On `grid2d_10` as written (ids like `C0:1`, `X0:2`) it parsed **0 edges**
+  and reported fhw 1. With the ids renamed to `e<i>`/`v<j>` it parsed the edges and returned 4.0. Any fhw it
+  reports must be checked against the edge count it echoes (`"#hyperedges"`).
+- **htd is only an upper bound.** Its GHD cover heuristic gave 4 on `c_grid4`/`c_grid5` (true ghw 3), 3 on `adler`
+  (true ghw 2) and 6 on `grid2d_10` (true 4). Its tw values matched the exact DP wherever both ran.
+- **PACE input** (`-pace`) gave the same widths as HyperBench input on every instance.
+
+Exact commands and outputs for the gate's three cases, from the recommended solvers and one SAT cross-check (`$T` is the scratch build directory; blank lines and the `Time:` lines are removed, nothing else is changed except where marked; full files in `out/solvers/`):
+
+```text
+$ $T/BalancedGo/BalancedGo -graph probes/instances/a_triangle_cover.hg -exact -det
+Used algorithm: DetK @
+Result ( ran with K = 1 )
+Bag: {a, b}
+Cover: {E1}
+Children: 1
+[
+	Bag: {a, b, c}
+	Cover: {E4}
+]
+Width:  1
+Correct:  true
+[exit 0]
+
+$ $T/BalancedGo/BalancedGo -graph probes/instances/b_triangle.hg -exact -det
+Used algorithm: DetK @
+Result ( ran with K = 2 )
+Bag: {a, b}
+Cover: {E1}
+Children: 1
+[
+	Bag: {a, b, c}
+	Cover: {E1, E2}
+]
+Width:  2
+Correct:  true
+[exit 0]
+
+$ $T/log-k-decomp/log-k-decomp -graph probes/instances/c_grid4.hg -exact
+Used algorithm: LogKHybrid
+Result ( ran with K = 3 )
+Bag: {r0c0, r0c1, r1c0, r1c1, r2c2, r3c2}
+Cover: {h0_0, h1_0, v2_2}
+Children: 2
+[
+	Bag: {r0c1, r0c2, r1c1, r2c2, r3c2}
+	Cover: {v0_1, v2_2, h0_1}
+	Children: 1
+[... 9 further nodes omitted here; full file in out/solvers/logk/c_grid4.hw_exact.txt ...]
+Width:  3
+Correct:  true
+[exit 0]
+
+$ $T/venv/bin/python probes/run_htdleo.py $T/htdleo/htdleo probes/instances/c_grid4.hg
+Result: 3	Valid:  True	SP: True	GHTD: True	in 0.13718032836914062
+[exit 0]
+```
 
 ### 4.5 Scaling to the size of Wikidata residues
 
 `probes/scale_probe.sh` ran on three large HyperBench instances (timeout 300 s, 4 cores, other probes running).
 Output: `probes/out/scale/`.
 
-SCALE_TABLE_PLACEHOLDER
+| Instance | edges / vertices / rank | published hw | k tried | log-k-decomp `-width k` | BalancedGo `-width k -det` | log-k-decomp + flags | BalancedGo `-det` + flags | BalancedGo `-approx 60 -balDet 1` |
+|---|---|---|---|---|---|---|---|---|
+| `bridge_99` | 893 / 893 / 4 | 2 (exact) | 2 | width 2 (18 s) | width 2 (4 s) | width 2 (14 s) | width 2 (4 s) | width 12 (61 s) |
+| `NewSystem4` | 418 / 718 / 6 | 4 (exact) | 4 | timeout (300 s) | timeout (300 s) | width 4 (2 s) | width 4 (1 s) | width 5 (60 s) |
+| `s1423` | 731 / 748 / 5 | [4, 25] | 4 | timeout (300 s) | timeout (300 s) | timeout (300 s) | timeout (300 s) | width 83 (60 s) |
+
+"+ flags" means `-t -h -g -heuristic 1` added (the `_flags` runs in `summary.tsv`): type collapse (twin merging), hinge-tree splitting, GYÖ reduct and
+vertex-degree edge ordering. These are the flags recorded in the `RunInfo` column of the published log-k-decomp runs
+(Zenodo `Run.csv`). Readings:
+
+- **Preprocessing decides feasibility.** On `NewSystem4` (418 edges, published hw 4), `-width 4` timed out at 300 s
+  in both tools without the flags. With them it took 0.9 s (BalancedGo DetK) and 1.8 s (log-k-decomp). The
+  published data agrees: with the same flags, LogKHybrid's recorded `Time` at K = 4 is 200 to 354. The Zenodo
+  README does not state the unit; read as milliseconds, which fits its 1-hour timeout, that is well under a second
+  `[unverified]`.
+- **A "Correct" decomposition after preprocessing is not necessarily an HD.** log-k-decomp's width-4 result on
+  `NewSystem4` with the flags printed "SCV found!. Not a valid hypertree decomposition!" followed by
+  "Correct:  true". BalancedGo's `Correct` checks only the GHD conditions against the original graph (bags within
+  guards, edge coverage, connectedness; `lib/decomp.go`). The special condition is reported separately. The restored
+  decomposition is therefore a width-4 **GHD** certificate, not an HD certificate. BalancedGo DetK's width-4 result
+  with the same flags had no violation. P6 must check the special condition itself before calling a width "hw".
+- **`s1423`** (731 edges, published hw in [4, 25]) was not decided at k = 4 within 300 s either way.
+- **`-approx 60` gives valid but loose upper bounds:** 12 on `bridge_99` (hw 2), 5 on `NewSystem4` (hw 4), 83 on
+  `s1423`.
+
+For the Wikidata residues (section 3.5: hundreds to thousands of edges), plan for **per-k runs with the preprocessing
+flags, a time limit per k, and bounds as the normal outcome**. Validate every returned decomposition in Python.
 
 ### 4.6 The pure-Python fallback, and how small is small
 
@@ -503,26 +622,36 @@ Measured costs (single core, Python 3.11; `out/dp_limits.json`, `out/probe_theor
 **How small.** Exact ghw via the DP is practical up to a **core of about 16–20 vertices**: time and memory grow as
 2ⁿ, and 20 vertices took 42 s. fhw is practical up to **about 16**, where the LPs dominate. The hw search depends on
 m^k rather than n. It was instant on 40 edges at k = 3 but gave up on 50 edges at k = 4, which BalancedGo solved
-in 3 s. So the external solvers should take over once m exceeds ~40 or k exceeds 3. These limits apply to the *GYO residue*, not the whole schema. P2's fixture
-(30 roles, 11 relations) has an empty residue, so its widths are trivial whatever its size.
+in 3 s. So the external solvers should take over once m exceeds ~40 or k exceeds 3. These limits apply to the *GYO
+residue*, not the whole schema. P2's fixture (30 roles, 11 relations) has an empty residue, so its widths are
+trivial whatever its size.
 
 ### 4.7 Recommendation
 
-1. **Primary external solver: BalancedGo** (MIT, a single static Go binary, both input formats, JSON output).
-   Use `-exact -det` for hw. For ghw use the GHD modes one k at a time: `-width k -global`, or `-local` /
-   `-balDet d`. Do not use `-global -exact`: the subedges are computed for the `-width` flag value, not per
-   iteration (read from `balanced.go`). `-approx` is weak: it returned width 12 in 60 s on `bridge_99`, whose hw is 2.
-2. **Second opinion for hw: log-k-decomp** (MIT, same authors, same formats). It and BalancedGo disagreed on nothing
-   in 4.4.
-3. **In-process (vendored in P6's Python):** the class tests, witnesses, reductions, exact DP for small cores, the
-   small-hw search, an FHD upper bound max ρ*(B_t) over the HD returned, and the validator for any decomposition.
-4. **Cross-validation only, not dependencies:** HtdLEO/htdsmt (exact hw and ghw by SAT; GPL-3 or CC BY with GPL
-   parts), fraSMT for exact fhw on small cores (GPL-3; needs proprietary CPLEX), htd for fast tw and GHD upper
-   bounds (GPL-3). **Do not vendor** NewDetKDecomp or det-k-decomp: they carry no licence.
-5. **For large residues, report bounds.** Upper bound: the best of BalancedGo/log-k-decomp at increasing k under a
-   time limit, htd's TD + cover heuristic, and FHD improvement. Lower bound: the largest k refuted without timeout,
-   ghw ≥ max over primal cliques K of ρ(K), and fhw ≥ max ρ*(K). A clique of the primal graph must fit in one bag of
-   every tree decomposition, so these hold; fraSMT uses clique bounds in its preprocessing too.
+1. **Primary external solver: BalancedGo** (MIT; one statically linked Go binary; HyperBench and PACE input; JSON
+   output via `-json`). For hw on small inputs use `-exact -det`. On large residues run one k at a time,
+   `-width k -det -t -h -g -heuristic 1`, under a time limit per k. The preprocessing flags turned a 300 s timeout into
+   0.9 s on `NewSystem4` (4.5). **Always check the special condition yourself.** The tool's `Correct: true` covers
+   only the GHD conditions, and a violation is printed separately as "SCV found!" (seen once, from log-k-decomp with
+   the flags).
+2. **Second opinion for hw: log-k-decomp** (MIT, same authors, same formats). Wherever both finished, it agreed with
+   BalancedGo (4.4, 4.5).
+3. **ghw.** Report it exact only when the DP on the core finishes, or when a refutation meets the hw upper bound.
+   BalancedGo `-global` was the slowest GHD mode probed: it timed out on `grohe_marx_3` and `grid2d_10`. Its
+   `-local` and `-balDet` modes were **not probed**. Try them first when implementing, and fall back to "ghw ≤ hw" and
+   hw ≤ 3·ghw + 1 as bounds.
+4. **In-process (vendored in P6's Python):** the class tests, witnesses, reductions, the exact DP for cores of up to
+   ~18 vertices, the small-hw search, an FHD upper bound max_t ρ*(B_t) over the HD returned, and the validator for
+   every decomposition received.
+5. **Cross-validation only, not dependencies:** HtdLEO/htdsmt (exact hw and ghw by SAT, the most robust GHD tool
+   here; CC BY with GPL-3 parts, or GPL-3), fraSMT for exact fhw on small cores (GPL-3; needs proprietary CPLEX;
+   check the edge count it echoes, 4.3), and htd for fast tw and GHD upper bounds (GPL-3). **Do not vendor**
+   NewDetKDecomp or det-k-decomp: they carry no licence.
+6. **For large residues, report bounds.** Upper bounds: the best width BalancedGo or log-k-decomp returns at
+   increasing k, htd's TD + cover heuristic, and FHD improvement. Lower bounds: the largest k refuted without
+   timeout, ghw ≥ max over primal cliques K of ρ(K), and fhw ≥ max ρ*(K). These hold because a clique of the
+   primal graph must fit inside one bag of every tree decomposition; fraSMT uses clique bounds in its
+   preprocessing too. `-approx` returns valid but far too loose upper bounds: 12, 5 and 83 on instances of hw 2, 4 and ≥ 4.
 
 ---
 
@@ -547,7 +676,8 @@ in 3 s. So the external solvers should take over once m exceeds ~40 or k exceeds
    here; BalancedGo's `-h` hinge option is the tool's own route `[unverified]`.
 5. **Emit** HyperBench text with neutral ids plus a mapping JSON (4.3). Call the solver with a timeout and parse
    `Width:` / `Correct:` and the `-json` tree. **Validate the returned decomposition in Python** (four HD conditions,
-   or three for a GHD) before reporting it, then map ids back to relation and role names.
+   or three for a GHD) before reporting it. A "SCV found!" line or a failed special condition demotes the result from
+   an hw bound to a ghw bound (4.5). Then map ids back to relation and role names.
 
 ### 5.2 Reductions that preserve ghw and fhw (and why)
 
@@ -630,12 +760,12 @@ under GYO. What stays is the triangle that the three shared qualifiers form.
 | D3 | Role naming (agree with P3a) | global roles (P2 F4); relation-local core roles; typed roles; Wikidata property as role | Survey at least global-qualifier with local core roles (P2's default) against fully relation-local roles. The fully local variant is trivially Berge-acyclic, so it is the control that shows the width comes from shared names |
 | D4 | Set or multi-hypergraph | – | Set hypergraph for α, β, γ and the widths; multi-hypergraph for Berge; report duplicate role-sets |
 | D5 | Width measures | hw only; hw + ghw + fhw + tw | All four, each labelled exact or bounded with its method (2.5, 5.3). hw is the headline (comparable with HyperBench) |
-| D6 | Solver architecture | pure Python; vendor C++/Go; call binaries | Pure-Python core (classes, witnesses, reductions, small exact DP, validator) inside P6. **BalancedGo as the called binary** (MIT), log-k-decomp as a second opinion; binaries fetched and built by a script with pinned commits, not committed |
+| D6 | Solver architecture | pure Python; vendor C++/Go; call binaries | Pure-Python core inside P6: classes, witnesses, reductions, small exact DP, validator. **BalancedGo as the called binary** (MIT), with log-k-decomp as a second opinion. Build both with a script from pinned commits (`872c662`, `v1.1.0`); do not commit binaries. On large residues run `-width k -det -t -h -g -heuristic 1` per k (4.5, 4.7) |
 | D7 | Exactness policy | exact or nothing; bounds | Bounds with explicit methods and time limits (e.g. 600 s per k). Wikidata residues are in the size class where HyperBench itself has only bounds (3.5) |
 | D8 | Reductions | none; GYO + twins; + block split | GYO + twins + block split for ghw, fhw and tw (proved safe in 5.2 and 5.1). hw on the unreduced hypergraph unless a proof or the tool's documented `-g` option is adopted |
 | D9 | Gate fixtures | one cyclic case; one per boundary | One per boundary plus a width-3 qualifier case (5.4); keep P2's `cyclic` and `wikidata-shaped` |
 | D10 | Baseline data | website zip; Zenodo | Zenodo 10.5281/zenodo.7180787 (CC BY 4.0), with the recomputed distribution (3.5); cite papers [1]–[5] as the website asks |
-| D11 | Trust in solver output | accept; validate | Validate every decomposition (four conditions) and log disagreements. The published run data contains at least one wrong "yes" (3.5) |
+| D11 | Trust in solver output | accept; validate | Validate every decomposition in Python (all four HD conditions) and log disagreements. Three reasons: the published run data contains at least one wrong "yes" (3.5); `Correct: true` does not include the special condition (4.5); fraSMT silently parsed 0 edges (4.3) |
 | D12 | fhw exactness | fraSMT; DP; upper bound only | DP on small cores, otherwise the upper bound max ρ*(B_t) over the HD found plus a clique lower bound. fraSMT only for manual cross-checks |
 
 ---
@@ -651,9 +781,11 @@ the SAT and SMT tools), and `PYTHONPATH=<repo>/src` for the schema probes.
 | `p6check.py` | the reference prototype: classes, witnesses, reductions, exact DP widths, hw search, HD validator |
 | `probe_theory.py` | brute-force cross-check on 400 random hypergraphs, plus widths of the named instances → `out/probe_theory.json` |
 | `probe_schemas.py` | the prototype end to end on P2's packaged schemas and the constructed ones, compared with `is_alpha_acyclic` and BalancedGo → `out/probe_schemas.json`, `out/hg/*.hg` (+ id maps) |
-| `run_solvers.sh` | every external tool on every instance → `out/solvers/` |
+| `run_solvers.sh` | every external tool on every instance → `out/solvers/` (one raw file per run, first line the command; `summary.tsv`). The fraSMT rerun on renamed ids is `out/solvers/frasmt/c_grid2d_10_neutral.fhw.txt`. Two oversized BalancedGo `-global` logs are truncated, as marked inside them |
 | `run_htdleo.py`, `run_frasmt.py` | compatibility shims (4.2) |
-| `scale_probe.sh` | large HyperBench instances → `out/scale/` |
+| `scale_probe.sh` | large HyperBench instances, with and without the preprocessing flags (`P6_FLAGS`) → `out/scale/` |
+| `solver_table.py` | builds the table of 4.4 from `out/solvers/summary.tsv` → `out/solver_table.md` |
+| `probe_dp_limits.py` | wall time of the exact DP and the hw search on the larger instances → `out/dp_limits.json` |
 | `hyperbench_baseline.py` | the hw distribution from Zenodo's `Run.csv` → `out/hyperbench_hw.json` |
 | `schemas/*.relation-schema.json` | the constructed boundary cases (5.4) |
 | `out/reification.json` | n-ary against reified widths (1.3) |
@@ -693,6 +825,8 @@ and are not described here.
 - Schidler, A., Szeider, S. "Computing optimal hypertree decompositions with SAT." *IJCAI 2021* (per the Zenodo record) and *Artificial Intelligence* 325:104015, 2023. https://doi.org/10.1016/j.artint.2023.104015 ; code: https://zenodo.org/records/4742100 and https://github.com/ASchidler/htdsmt
 - Fichte, J. K., Hecher, M., Lodha, N., Szeider, S. "An SMT Approach to Fractional Hypertree Width." *CP 2018*, LNCS, pp. 109–127. https://doi.org/10.1007/978-3-319-98334-9_8 ; code: https://github.com/daajoe/frasmt
 - "Fast Hypertree Decompositions via Linear Programming: Fractional and Generalized" (Ralph). *Proceedings of the ACM on Management of Data*, 2025. https://doi.org/10.1145/3725296 (search-result description only; authors and code not verified `[unverified]`)
+- Bonifati, A., Martens, W., Timm, T. "An Analytical Study of Large SPARQL Query Logs." *PVLDB* 11(2):149–161, 2017; and "Navigating the Maze of Wikidata Query Logs." *WWW 2019*, pp. 127–138. Bibliographic details from the HyperBench front page; figures quoted through HyperBench JEA §2 `[unverified]` against the originals
+- Samer, M., Gottlob, G. det-k-decomp benchmark instances (Grid2D, DaimlerChrysler, ISCAS89), as distributed in https://github.com/daajoe/detkdecomp (`benchmarks/Grid2D/grid2d_10.txt`, sha256 `c4db06eb…f801a`; not copied into the repository)
 - PACE 2019 hypertree decomposition format. https://pacechallenge.org/2019/htd/htd_format/
 - Solver repositories probed: https://github.com/cem-okulmus/BalancedGo · https://github.com/cem-okulmus/log-k-decomp · https://github.com/dmlongo/newdetkdecomp · https://github.com/TUfischl/newdetkdecomp · https://github.com/daajoe/detkdecomp · https://github.com/mabseher/htd · https://github.com/ASchidler/htdsmt · https://github.com/daajoe/frasmt
 - Wikipedia, "Hypergraph" (acyclicity section), checked 2026-09-24. https://en.wikipedia.org/wiki/Hypergraph (used only as a cross-check of the hierarchy and of the linear-time claims)
