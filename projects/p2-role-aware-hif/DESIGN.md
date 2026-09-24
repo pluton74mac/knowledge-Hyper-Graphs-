@@ -107,7 +107,7 @@ Every machine-readable part is in [design-examples/](design-examples/). The prot
 
 The sequences below are written against the API of §10.2. `tests/consumers/test_<project>.py` copies them
 verbatim and runs them on `MemoryStore` with packaged data [DC §1.4] (graft [J-cons], [J-std]). They are also the
-v1 scope filter (§12): a v1 name that no sequence or gate clause calls is a scope error.
+v1 scope filter (§12): a v1 name that no sequence, no gate clause and no consumer row of §12.1 uses is a scope error.
 
 ```python
 from khg_contracts import hif, identity, loaders, queue, record, schema as sch, store, validate
@@ -164,6 +164,7 @@ except store.KeyCollision as e:
             if c["action"] == "close_older":
                 ms.apply({"op": "end_validity", "target": c["id"], "end": start_literal(new),
                           "evidence": [inferred_close]}, actor="p7")
+                ms.put(new, actor="p7")                    # §2.5 close_older: end the older fact, then the put
             elif c["action"] == "dispute":
                 ms.apply({"op": "transition", "targets": [c["id"]], "to": "disputed", "records": [new],
                           "id": "m:dis-7", "reason": "key_conflict", "evidence": [ev]}, actor="p7")
@@ -2178,9 +2179,9 @@ The table gives every name that §1.3 and G1–G3 call (critique API-GAPS, CONS-
 | `khg_contracts.__version__`, `CONTRACTS` | `str`; `Mapping[str, str]` (§11) | |
 | `jsonio.loads`, `jsonio.load` | `(text \| bytes)`, `(path)` → object | `ValidationError` J001–J007 |
 | `jsonio.canonical`, `jsonio.digest` | `(obj) -> str`; `(domain, payload) -> "sha256:…"` | |
-| `record.read_container` | `(path) -> dict`, from `.khg.json` or `.khg.jsonl` by suffix | J, V001 |
+| `record.read_container` | `(path) -> dict`, from `.khg.json` or `.khg.jsonl` by suffix; any other suffix raises `ValueError` | J, V001 |
 | `record.iter_jsonl` | `(path) -> Iterator[dict]`: the header, then records, streamed | J |
-| `record.write_container` | `(container, path, *, format="jsonl" \| "json") -> None`: canonical order, after the V and C checks | V001, C |
+| `record.write_container` | `(container, path, *, format="jsonl" \| "json") -> None`: canonical order, after the V and C checks; a path whose suffix is not the one `format` implies (`.json` or `.jsonl`) raises `ValueError` | V001, C |
 | `record.normalize` | `(record, schema) -> dict`: canonical form and literal normalisation (NFC, lower-case `lang`, `supports` defaults); no checks | |
 | `record.derive` | `(record, schema) -> dict`: the `derived` block (arity family, three keys, `valid_time`) | `ValueError` on an invalid record |
 | `record.content_key`, `core_key`, `key_digest`, `arity`, `valid_time` | `(record, schema)` → `str`; `str`; `str \| None`; `{arity, core_arity, statement_arity, distinct_fillers}` or `{n_bound, n_unbound}`; the §2.6 dict | as `derive` |
@@ -2271,6 +2272,7 @@ has one smoke test in `tests/cli/`.
 | C2 and its scenarios | `khg-store/1.0.0` (`info().interface_version`), `khg-scenario/1.0.0` | their own semver |
 | C5, its outputs, the C4 draft | `khg-scorers/1.0.0`, `khg-c5-io/1.0.0`, `khg-c4-items/0.1.0` | C1; P3a owns C4 |
 | derived text | `khg-render/1` | a new number for any change |
+| migration report | `khg-migration-report/1.0.0` | `migrate/`; its own semver |
 | relation schemas | `<id>/<version>` (`typed_under`) | the author |
 | codes, cases, hash domains | `khg-codes/1.0.0`, `khg-malformed-cases/1.0.0`; `khg-content-key/1` and the other domains | codes only grow; domains change only with a C1 major |
 
@@ -2522,6 +2524,23 @@ Each row settles a question that the critique found open. The Revision log names
 3. **Deprecation reasons.** The default stays `wd:Q41755623` only. P3a's datasheet reports the distribution of
    deprecation reasons it finds, and P3a and P7 confirm or extend the list before the memory set is built. A change
    is a minor release of the C4 draft.
+
+**Director's rulings on implementation questions (2026-09-24).** Raised by the build steps; see
+`impl-notes/`.
+4. **Container suffixes.** `read_container` and `write_container` dispatch on the suffix only: `.json` is one
+   JSON document, `.jsonl` is JSONL, and any other suffix raises `ValueError` (the CLI exits 2). Before this ruling,
+   a container written as `x.txt` could not be read back.
+5. **One appender per queue file.** A second appender raises `ConcurrencyError` without a code in v1. A code is a
+   1.1 candidate.
+6. **Migration report.** `khg-migration-report/1.0.0` is a format id (§11.1) and is listed in `CONTRACTS`.
+7. **I004's scope.** I004 means only a memory question without `stale_values` or `future_values`, as the registry
+   says. Any other missing required field of a C4 item is I002. The unreleased `khg-c4-items/0.1.0` draft is
+   corrected in place.
+8. **Memory tolerance and unanswered questions.** A quantity tolerance is `{"amount": d}` on same-unit quantities,
+   and a question without a response gets the outcome `missing` (strict 0, lenient 0). Both are v1 defaults that
+   P3a confirms or replaces when it builds C4.
+9. **Conformance exit status.** `khg-conformance` exits 1 when a scenario is `failed` or `cantTell`; `passed` and
+   `inapplicable` exit 0.
 
 ## Implementation plan
 
