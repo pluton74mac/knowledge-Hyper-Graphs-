@@ -6,6 +6,7 @@ folder, created from `_template/`, and links back to the `kb/` notes it depends 
 | Project | Status | One-line goal |
 |---|---|---|
 | [P2 Role-aware HIF and shared contracts](p2-role-aware-hif/) | gate passed 2026-09-24; release pending | A `roles` convention for HIF, validator and loaders, plus contracts C1, C2, C3, C5 for the programme |
+| [P6 Schema width survey](p6-schema-width/) | exploring | Acyclicity class and hypertree width of Wikidata qualifier schemas and one biomedical schema; a checker for schema files |
 
 ## Candidate vectors (to be confirmed with the repository owner)
 
