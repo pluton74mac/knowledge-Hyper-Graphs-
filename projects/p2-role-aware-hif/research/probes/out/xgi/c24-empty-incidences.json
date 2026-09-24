@@ -1,0 +1,135 @@
+{
+ "case": "c24-empty-incidences",
+ "description": "the smallest valid HIF document: incidences is an empty array",
+ "input": "lib-cases/c24-empty-incidences.hif.json",
+ "lib": "xgi",
+ "lib_version": "0.10.2",
+ "load": {
+  "api": "xgi.read_hif(path)",
+  "ok": true,
+  "error": null,
+  "warnings": [],
+  "class": "Hypergraph"
+ },
+ "placement": {
+  "class": "Hypergraph",
+  "num_nodes": 0,
+  "num_edges": 0,
+  "net_attr (H._net_attr)": {},
+  "node_attrs (H.nodes[n])": {},
+  "edge_attrs (H.edges[e])": {},
+  "edge_members": {},
+  "role_strings_in_object_state": {},
+  "record_weight_values_in_object_state": [],
+  "record_weight_values_searched": []
+ },
+ "field_locations": {
+  "incidence.attrs (role)": "n/a",
+  "incidence.direction": "n/a",
+  "record-level weight values": "n/a",
+  "network-type": "class Hypergraph",
+  "metadata": "n/a"
+ },
+ "export": {
+  "api": "xgi.write_hif(H, path)",
+  "ok": true,
+  "error": null,
+  "warnings": [],
+  "output": "out/xgi/c24-empty-incidences.out.hif.json",
+  "strict_json": true,
+  "schema_errors": [],
+  "top_level_keys": [
+   "incidences",
+   "metadata",
+   "network-type"
+  ],
+  "n_node_records": 0,
+  "n_edge_records": 0,
+  "to_hif_dict_equals_file": true
+ },
+ "diff": {
+  "top": {
+   "network-type": {
+    "in": "<absent>",
+    "out": "undirected",
+    "status": "added"
+   },
+   "metadata": {
+    "keys_lost": [],
+    "keys_added": [],
+    "keys_changed": [],
+    "status": "preserved"
+   },
+   "other_top_level_keys_out": []
+  },
+  "incidences": {},
+  "nodes": {},
+  "edges": {},
+  "id_type_changes": [],
+  "summary": {
+   "incidence_records": "0 -> 0",
+   "role_records_kept": "0/0",
+   "direction_records_kept": "0/0",
+   "incidence_weight_records_kept": "0/0",
+   "incidence_attrs_records_kept": "0/0",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 0,
+   "nodes": {
+    "declared_in": 0,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 0,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "network_type": "added (<absent> -> undirected)",
+   "metadata": "preserved",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [],
+   "id_type_changes": 0
+  }
+ },
+ "gen2": {
+  "load_error": null,
+  "export_error": null,
+  "idempotent (gen1 == gen2 structurally)": true,
+  "diff_gen1_gen2_summary": {
+   "incidence_records": "0 -> 0",
+   "role_records_kept": "0/0",
+   "direction_records_kept": "0/0",
+   "incidence_weight_records_kept": "0/0",
+   "incidence_attrs_records_kept": "0/0",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 0,
+   "nodes": {
+    "declared_in": 0,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 0,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "network_type": "preserved (undirected -> undirected)",
+   "metadata": "preserved",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [],
+   "id_type_changes": 0
+  }
+ }
+}

@@ -1,0 +1,100 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-KEY-001",
+ "title": "a put that breaks the key invariant raises KeyCollision and writes nothing",
+ "requires": [
+  "key_constraint",
+  "literal_values",
+  "valid_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    "@f:king-13"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:king-14",
+      "set": {
+       "id": "f:king-14b"
+      },
+      "set_binding": {
+       "b3": {
+        "literal": {
+         "datatype": "time",
+         "time": "+1640-01-01T00:00:00Z",
+         "precision": 11
+        }
+       }
+      }
+     }
+    ]
+   },
+   "then": {
+    "error": "KHG-D016",
+    "info": {
+     "collisions": [
+      {
+       "record": "f:king-14b",
+       "policy": "close_older",
+       "conflicts": [
+        {
+         "id": "f:king-13",
+         "in_batch": false,
+         "shape": "overlap_after_end",
+         "class": "distinct",
+         "action": "dispute"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:king-14b"
+   },
+   "then": {
+    "select": "record",
+    "equals": null
+   }
+  },
+  {
+   "op": "find_by_key",
+   "args": {
+    "relation": "position_held",
+    "key": [
+     {
+      "role": "position",
+      "value": {
+       "entity": "ex:KingOfFrance"
+      }
+     }
+    ]
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:king-13"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "B C2-S040 passed",
+  "C S-KEY-002 passed",
+  "A C2-12 passed",
+  "critique SEM-04 (X2 shape)"
+ ]
+}

@@ -1,0 +1,174 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-KEY-017",
+ "title": "a new claim on a disputed key joins the dispute",
+ "requires": [
+  "atomic_writes",
+  "key_constraint"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    "@f:born-skłodowska-warszawa"
+   ]
+  },
+  {
+   "apply": {
+    "op": "transition",
+    "targets": [
+     "f:born-skłodowska-warszawa"
+    ],
+    "to": "disputed",
+    "records": [
+     {
+      "@": "f:born-skłodowska-kraków",
+      "set": {
+       "status": "asserted"
+      },
+      "drop": [
+       "status_ref"
+      ]
+     }
+    ],
+    "id": "m:dis-1",
+    "reason": "key_conflict",
+    "evidence": [
+     {
+      "id": "e9",
+      "type": "curated",
+      "mode": "manual",
+      "source": {
+       "doc_id": "doc:scenario"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:born-skłodowska-warszawa",
+      "set": {
+       "id": "f:born-skłodowska-paris"
+      },
+      "set_binding": {
+       "b2": {
+        "entity": "ex:Paris"
+       }
+      }
+     }
+    ]
+   },
+   "then": {
+    "error": "KHG-D016",
+    "info": {
+     "collisions": [
+      {
+       "record": "f:born-skłodowska-paris",
+       "policy": "dispute",
+       "conflicts": [
+        {
+         "id": "f:born-skłodowska-kraków",
+         "in_batch": false,
+         "shape": null,
+         "class": "distinct",
+         "action": "dispute"
+        },
+        {
+         "id": "f:born-skłodowska-warszawa",
+         "in_batch": false,
+         "shape": null,
+         "class": "distinct",
+         "action": "dispute"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "op": "apply",
+   "args": {
+    "event": {
+     "op": "transition",
+     "targets": [
+      "f:born-skłodowska-kraków",
+      "f:born-skłodowska-warszawa"
+     ],
+     "to": "disputed",
+     "records": [
+      {
+       "@": "f:born-skłodowska-warszawa",
+       "set": {
+        "id": "f:born-skłodowska-paris"
+       },
+       "set_binding": {
+        "b2": {
+         "entity": "ex:Paris"
+        }
+       }
+      }
+     ],
+     "id": "m:dis-2",
+     "reason": "key_conflict",
+     "evidence": [
+      {
+       "id": "e9",
+       "type": "curated",
+       "mode": "manual",
+       "source": {
+        "doc_id": "doc:scenario"
+       }
+      }
+     ]
+    }
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "f:born-skłodowska-kraków",
+      2,
+      "versioned"
+     ],
+     [
+      "f:born-skłodowska-paris",
+      1,
+      "created"
+     ],
+     [
+      "f:born-skłodowska-warszawa",
+      3,
+      "versioned"
+     ],
+     [
+      "m:dis-2",
+      1,
+      "created"
+     ]
+    ]
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:born-skłodowska-warszawa"
+   },
+   "then": {
+    "select": "status_ref",
+    "equals": "m:dis-2"
+   }
+  }
+ ],
+ "precedent": [
+  "critique SEM-09"
+ ]
+}

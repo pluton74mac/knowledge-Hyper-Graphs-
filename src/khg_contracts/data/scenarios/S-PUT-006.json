@@ -1,0 +1,80 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-PUT-006",
+ "title": "optimistic concurrency: a stale expect is refused",
+ "requires": [],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    "@f:reg-1"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:reg-1",
+      "add_evidence": [
+       {
+        "id": "e9",
+        "type": "curated",
+        "mode": "manual",
+        "source": {
+         "doc_id": "doc:scenario"
+        }
+       }
+      ]
+     }
+    ],
+    "expect": {
+     "f:reg-1": 2
+    }
+   },
+   "then": {
+    "error": "KHG-D019"
+   }
+  },
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:reg-1",
+      "add_evidence": [
+       {
+        "id": "e9",
+        "type": "curated",
+        "mode": "manual",
+        "source": {
+         "doc_id": "doc:scenario"
+        }
+       }
+      ]
+     }
+    ],
+    "expect": {
+     "f:reg-1": 1
+    }
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "f:reg-1",
+      2,
+      "versioned"
+     ]
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "B S006"
+ ]
+}

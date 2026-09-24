@@ -1,0 +1,247 @@
+{
+  "metadata": {},
+  "network-type": "asc",
+  "nodes": [
+    {
+      "attrs": {
+        "type": "Drug",
+        "label": "metformin"
+      },
+      "node": "drug:metformin"
+    },
+    {
+      "attrs": {
+        "type": "Population",
+        "label": "adults"
+      },
+      "node": "pop:adults"
+    },
+    {
+      "attrs": {
+        "type": "Dosage",
+        "label": "500 mg twice daily"
+      },
+      "node": "dose:500mg-bid"
+    },
+    {
+      "attrs": {
+        "type": "AdverseEffect",
+        "label": "hypoglycaemia"
+      },
+      "node": "effect:hypoglycemia"
+    },
+    {
+      "attrs": {
+        "type": "Organisation",
+        "label": "American Diabetes Association"
+      },
+      "node": "org:ADA"
+    },
+    {
+      "attrs": {
+        "type": "Drug",
+        "label": "insulin"
+      },
+      "node": "drug:insulin"
+    },
+    {
+      "attrs": {
+        "type": "Document",
+        "label": "Standards of Care 2024"
+      },
+      "node": "doc:guideline-2024"
+    },
+    {
+      "attrs": {
+        "type": "Disease",
+        "label": "type 2 diabetes mellitus"
+      },
+      "node": "disease:T2DM"
+    }
+  ],
+  "edges": [
+    {
+      "attrs": {
+        "relation": "treats",
+        "arity": 4,
+        "source": "doc:guideline-2024",
+        "valid-from": "2024-01-01"
+      },
+      "edge": "f1"
+    },
+    {
+      "attrs": {
+        "relation": "co-administration-causes",
+        "arity": 3,
+        "source": "doc:guideline-2024"
+      },
+      "edge": "f2"
+    },
+    {
+      "attrs": {
+        "relation": "publishes",
+        "arity": 2,
+        "source": "doc:guideline-2024"
+      },
+      "edge": "f3"
+    }
+  ],
+  "incidences": [
+    {
+      "edge": "f1",
+      "node": "drug:metformin"
+    },
+    {
+      "edge": "f1",
+      "node": "disease:T2DM"
+    },
+    {
+      "edge": "f1",
+      "node": "dose:500mg-bid"
+    },
+    {
+      "edge": "f1",
+      "node": "pop:adults"
+    },
+    {
+      "edge": "f2",
+      "node": "drug:metformin"
+    },
+    {
+      "edge": "f2",
+      "node": "effect:hypoglycemia"
+    },
+    {
+      "edge": "f2",
+      "node": "drug:insulin"
+    },
+    {
+      "edge": "f3",
+      "node": "org:ADA"
+    },
+    {
+      "edge": "f3",
+      "node": "doc:guideline-2024"
+    },
+    {
+      "edge": 0,
+      "node": "disease:T2DM"
+    },
+    {
+      "edge": 0,
+      "node": "dose:500mg-bid"
+    },
+    {
+      "edge": 1,
+      "node": "effect:hypoglycemia"
+    },
+    {
+      "edge": 1,
+      "node": "drug:insulin"
+    },
+    {
+      "edge": 2,
+      "node": "drug:metformin"
+    },
+    {
+      "edge": 2,
+      "node": "disease:T2DM"
+    },
+    {
+      "edge": 3,
+      "node": "disease:T2DM"
+    },
+    {
+      "edge": 3,
+      "node": "pop:adults"
+    },
+    {
+      "edge": 4,
+      "node": "drug:metformin"
+    },
+    {
+      "edge": 4,
+      "node": "pop:adults"
+    },
+    {
+      "edge": 4,
+      "node": "dose:500mg-bid"
+    },
+    {
+      "edge": 5,
+      "node": "drug:metformin"
+    },
+    {
+      "edge": 5,
+      "node": "dose:500mg-bid"
+    },
+    {
+      "edge": 6,
+      "node": "drug:metformin"
+    },
+    {
+      "edge": 6,
+      "node": "effect:hypoglycemia"
+    },
+    {
+      "edge": 7,
+      "node": "drug:metformin"
+    },
+    {
+      "edge": 7,
+      "node": "pop:adults"
+    },
+    {
+      "edge": 8,
+      "node": "drug:metformin"
+    },
+    {
+      "edge": 8,
+      "node": "drug:insulin"
+    },
+    {
+      "edge": 9,
+      "node": "pop:adults"
+    },
+    {
+      "edge": 9,
+      "node": "dose:500mg-bid"
+    },
+    {
+      "edge": 10,
+      "node": "drug:metformin"
+    },
+    {
+      "edge": 10,
+      "node": "disease:T2DM"
+    },
+    {
+      "edge": 10,
+      "node": "dose:500mg-bid"
+    },
+    {
+      "edge": 11,
+      "node": "disease:T2DM"
+    },
+    {
+      "edge": 11,
+      "node": "pop:adults"
+    },
+    {
+      "edge": 11,
+      "node": "dose:500mg-bid"
+    },
+    {
+      "edge": 12,
+      "node": "drug:metformin"
+    },
+    {
+      "edge": 12,
+      "node": "disease:T2DM"
+    },
+    {
+      "edge": 12,
+      "node": "pop:adults"
+    }
+  ]
+}

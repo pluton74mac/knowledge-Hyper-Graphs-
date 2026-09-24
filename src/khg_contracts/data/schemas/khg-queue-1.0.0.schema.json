@@ -1,0 +1,935 @@
+{
+ "$schema": "http://json-schema.org/draft-07/schema#",
+ "$id": "tag:khg-contracts,2026:schema/khg-queue/1.0.0",
+ "title": "C3 queue lines khg-queue/1.0.0 (layer Q): the header line, queue items and log entries",
+ "description": "One line of a .khg-queue.jsonl file. Line 1 is the queue-header. A queue-item's payload is checked by layer C against khg-record #/definitions/hyperedge; the fold, the ids scoped by the queue, the keys, entity resolution, the base and replay are checked in Python (layer Q).",
+ "type": "object",
+ "required": [
+  "kind"
+ ],
+ "properties": {
+  "kind": {
+   "enum": [
+    "queue-header",
+    "queue-item",
+    "log-entry"
+   ],
+   "x-khg-code": "KHG-Q003"
+  }
+ },
+ "allOf": [
+  {
+   "if": {
+    "properties": {
+     "kind": {
+      "const": "queue-header",
+      "x-khg-code": {
+       "default": "KHG-Q008",
+       "required": "KHG-Q003"
+      }
+     }
+    },
+    "required": [
+     "kind"
+    ],
+    "x-khg-code": {
+     "default": "KHG-Q008",
+     "required": "KHG-Q003"
+    }
+   },
+   "then": {
+    "$ref": "tag:khg-contracts,2026:schema/khg-queue/1.0.0#/definitions/header"
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "kind": {
+      "const": "queue-item",
+      "x-khg-code": {
+       "default": "KHG-Q008",
+       "required": "KHG-Q003"
+      }
+     }
+    },
+    "required": [
+     "kind"
+    ],
+    "x-khg-code": {
+     "default": "KHG-Q008",
+     "required": "KHG-Q003"
+    }
+   },
+   "then": {
+    "$ref": "tag:khg-contracts,2026:schema/khg-queue/1.0.0#/definitions/item"
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "kind": {
+      "const": "log-entry",
+      "x-khg-code": {
+       "default": "KHG-Q008",
+       "required": "KHG-Q003"
+      }
+     }
+    },
+    "required": [
+     "kind"
+    ],
+    "x-khg-code": {
+     "default": "KHG-Q008",
+     "required": "KHG-Q003"
+    }
+   },
+   "then": {
+    "$ref": "tag:khg-contracts,2026:schema/khg-queue/1.0.0#/definitions/entry"
+   }
+  }
+ ],
+ "definitions": {
+  "timestamp": {
+   "type": "string",
+   "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z(?!\\n)$",
+   "x-khg-code": "KHG-Q008"
+  },
+  "sha256": {
+   "type": "string",
+   "pattern": "^sha256:[0-9a-f]{64}(?!\\n)$",
+   "x-khg-code": "KHG-Q008"
+  },
+  "qid": {
+   "type": "string",
+   "pattern": "^q:[0-9A-Za-z][0-9A-Za-z._:-]{0,127}\\.[0-9]+(?!\\n)$",
+   "x-khg-code": "KHG-Q008"
+  },
+  "lid": {
+   "type": "string",
+   "pattern": "^l:[0-9A-Za-z][0-9A-Za-z._:-]{0,127}\\.[0-9]+(?!\\n)$",
+   "x-khg-code": "KHG-Q008"
+  },
+  "actor": {
+   "type": "object",
+   "required": [
+    "type",
+    "id"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "type": {
+     "enum": [
+      "agent",
+      "linter",
+      "person",
+      "system"
+     ],
+     "x-khg-code": "KHG-Q008"
+    },
+    "id": {
+     "type": "string",
+     "minLength": 1,
+     "x-khg-code": "KHG-Q008"
+    },
+    "version": {
+     "type": "string",
+     "minLength": 1,
+     "x-khg-code": "KHG-Q008"
+    }
+   },
+   "x-khg-code": "KHG-Q008"
+  },
+  "written": {
+   "type": "object",
+   "required": [
+    "id",
+    "version"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string",
+     "minLength": 1,
+     "x-khg-code": "KHG-Q008"
+    },
+    "version": {
+     "type": "integer",
+     "minimum": 1,
+     "x-khg-code": "KHG-Q008"
+    }
+   },
+   "x-khg-code": "KHG-Q008"
+  },
+  "finding": {
+   "type": "object",
+   "required": [
+    "code",
+    "severity",
+    "path",
+    "message"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "code": {
+     "type": "string",
+     "pattern": "^KHG-[A-Z][0-9]{3}(?!\\n)$",
+     "x-khg-code": "KHG-Q004"
+    },
+    "severity": {
+     "enum": [
+      "error",
+      "warning",
+      "info"
+     ],
+     "x-khg-code": "KHG-Q004"
+    },
+    "path": {
+     "type": "string",
+     "x-khg-code": "KHG-Q004"
+    },
+    "message": {
+     "type": "string",
+     "x-khg-code": "KHG-Q004"
+    }
+   },
+   "x-khg-code": "KHG-Q004"
+  },
+  "verdict": {
+   "type": "object",
+   "required": [
+    "evidence_id",
+    "core_key",
+    "event_hash",
+    "label",
+    "bindings",
+    "missing"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "evidence_id": {
+     "type": "string",
+     "pattern": "^e[1-9][0-9]*(?!\\n)$",
+     "x-khg-code": "KHG-Q008"
+    },
+    "core_key": {
+     "$ref": "tag:khg-contracts,2026:schema/khg-queue/1.0.0#/definitions/sha256"
+    },
+    "event_hash": {
+     "$ref": "tag:khg-contracts,2026:schema/khg-queue/1.0.0#/definitions/sha256"
+    },
+    "label": {
+     "enum": [
+      "correct",
+      "no_relation",
+      "wrong_relation",
+      "wrong_role",
+      "wrong_filler",
+      "span_boundary",
+      "missing_participant",
+      "extra_participant",
+      "negated",
+      "hypothesis",
+      "other"
+     ],
+     "x-khg-code": "KHG-Q008"
+    },
+    "bindings": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "role",
+       "position",
+       "value",
+       "label"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "role": {
+        "type": "string",
+        "minLength": 1,
+        "x-khg-code": "KHG-Q008"
+       },
+       "position": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "minimum": 1,
+        "x-khg-code": "KHG-Q008"
+       },
+       "value": {
+        "type": "object",
+        "x-khg-code": "KHG-Q008"
+       },
+       "bid": {
+        "type": "string",
+        "pattern": "^b[1-9][0-9]*(?!\\n)$",
+        "x-khg-code": "KHG-Q008"
+       },
+       "label": {
+        "enum": [
+         "correct",
+         "no_relation",
+         "wrong_relation",
+         "wrong_role",
+         "wrong_filler",
+         "span_boundary",
+         "missing_participant",
+         "extra_participant",
+         "negated",
+         "hypothesis",
+         "other"
+        ],
+        "x-khg-code": "KHG-Q008"
+       },
+       "should_be_role": {
+        "type": "string",
+        "minLength": 1,
+        "x-khg-code": "KHG-Q008"
+       }
+      },
+      "x-khg-code": "KHG-Q008"
+     },
+     "x-khg-code": "KHG-Q008"
+    },
+    "missing": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "role"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "role": {
+        "type": "string",
+        "minLength": 1,
+        "x-khg-code": "KHG-Q008"
+       },
+       "position": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "minimum": 1,
+        "x-khg-code": "KHG-Q008"
+       },
+       "value": {
+        "type": "object",
+        "x-khg-code": "KHG-Q008"
+       }
+      },
+      "x-khg-code": "KHG-Q008"
+     },
+     "x-khg-code": "KHG-Q008"
+    },
+    "note": {
+     "type": "string",
+     "minLength": 1,
+     "x-khg-code": "KHG-Q008"
+    }
+   },
+   "allOf": [
+    {
+     "if": {
+      "properties": {
+       "label": {
+        "const": "other",
+        "x-khg-code": "KHG-Q008"
+       }
+      },
+      "required": [
+       "label"
+      ],
+      "x-khg-code": "KHG-Q008"
+     },
+     "then": {
+      "required": [
+       "note"
+      ],
+      "x-khg-code": "KHG-Q008"
+     }
+    }
+   ],
+   "x-khg-code": "KHG-Q008"
+  },
+  "header": {
+   "type": "object",
+   "required": [
+    "kind",
+    "format",
+    "queue_id",
+    "record_format",
+    "schema",
+    "created_at"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "kind": {
+     "const": "queue-header",
+     "x-khg-code": "KHG-Q008"
+    },
+    "format": {
+     "type": "string",
+     "pattern": "^khg-queue/(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?!\\n)$",
+     "x-khg-code": "KHG-Q008"
+    },
+    "queue_id": {
+     "type": "string",
+     "pattern": "^[0-9A-Za-z][0-9A-Za-z._:-]{0,127}(?!\\n)$",
+     "x-khg-code": "KHG-Q008"
+    },
+    "record_format": {
+     "type": "string",
+     "pattern": "^khg-record/(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?!\\n)$",
+     "x-khg-code": "KHG-Q008"
+    },
+    "schema": {
+     "type": "object",
+     "required": [
+      "id",
+      "version",
+      "sha256"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "id": {
+       "type": "string",
+       "minLength": 1,
+       "x-khg-code": "KHG-Q008"
+      },
+      "version": {
+       "type": "string",
+       "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?!\\n)$",
+       "x-khg-code": "KHG-Q008"
+      },
+      "sha256": {
+       "$ref": "tag:khg-contracts,2026:schema/khg-queue/1.0.0#/definitions/sha256"
+      }
+     },
+     "x-khg-code": "KHG-Q008"
+    },
+    "base": {
+     "type": "object",
+     "required": [
+      "document_id",
+      "sha256"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "document_id": {
+       "type": "string",
+       "minLength": 1,
+       "x-khg-code": "KHG-Q008"
+      },
+      "sha256": {
+       "$ref": "tag:khg-contracts,2026:schema/khg-queue/1.0.0#/definitions/sha256"
+      }
+     },
+     "x-khg-code": "KHG-Q008"
+    },
+    "created_at": {
+     "$ref": "tag:khg-contracts,2026:schema/khg-queue/1.0.0#/definitions/timestamp"
+    }
+   },
+   "x-khg-code": "KHG-Q008"
+  },
+  "item": {
+   "type": "object",
+   "required": [
+    "kind",
+    "qid",
+    "item_kind",
+    "submitted_at",
+    "payload"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "kind": {
+     "const": "queue-item",
+     "x-khg-code": "KHG-Q008"
+    },
+    "qid": {
+     "$ref": "tag:khg-contracts,2026:schema/khg-queue/1.0.0#/definitions/qid"
+    },
+    "item_kind": {
+     "enum": [
+      "hyperedge"
+     ],
+     "x-khg-code": "KHG-Q003"
+    },
+    "submitted_at": {
+     "$ref": "tag:khg-contracts,2026:schema/khg-queue/1.0.0#/definitions/timestamp"
+    },
+    "submitted_by": {
+     "type": "string",
+     "pattern": "^[^\\s]+/[^\\s/]+(?!\\n)$",
+     "x-khg-code": "KHG-Q001"
+    },
+    "run": {
+     "type": "object",
+     "required": [
+      "run_id",
+      "order_id",
+      "position"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "run_id": {
+       "type": "string",
+       "minLength": 1,
+       "x-khg-code": {
+        "default": "KHG-Q001",
+        "additionalProperties": "KHG-Q008"
+       }
+      },
+      "order_id": {
+       "type": "string",
+       "minLength": 1,
+       "x-khg-code": {
+        "default": "KHG-Q001",
+        "additionalProperties": "KHG-Q008"
+       }
+      },
+      "position": {
+       "type": "integer",
+       "minimum": 0,
+       "x-khg-code": {
+        "default": "KHG-Q001",
+        "additionalProperties": "KHG-Q008"
+       }
+      },
+      "seed": {
+       "type": "integer",
+       "x-khg-code": {
+        "default": "KHG-Q001",
+        "additionalProperties": "KHG-Q008"
+       }
+      },
+      "temperature": {
+       "type": "number",
+       "minimum": 0,
+       "x-khg-code": {
+        "default": "KHG-Q001",
+        "additionalProperties": "KHG-Q008"
+       }
+      },
+      "model": {
+       "type": "string",
+       "minLength": 1,
+       "x-khg-code": {
+        "default": "KHG-Q001",
+        "additionalProperties": "KHG-Q008"
+       }
+      },
+      "prompt_id": {
+       "type": "string",
+       "minLength": 1,
+       "x-khg-code": {
+        "default": "KHG-Q001",
+        "additionalProperties": "KHG-Q008"
+       }
+      },
+      "skill_id": {
+       "type": "string",
+       "minLength": 1,
+       "x-khg-code": {
+        "default": "KHG-Q001",
+        "additionalProperties": "KHG-Q008"
+       }
+      }
+     },
+     "x-khg-code": {
+      "default": "KHG-Q001",
+      "additionalProperties": "KHG-Q008"
+     }
+    },
+    "doc": {
+     "type": "object",
+     "required": [
+      "doc_id",
+      "doc_sha256"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "doc_id": {
+       "type": "string",
+       "minLength": 1,
+       "x-khg-code": {
+        "default": "KHG-Q001",
+        "additionalProperties": "KHG-Q008"
+       }
+      },
+      "doc_sha256": {
+       "type": "string",
+       "pattern": "^sha256:[0-9a-f]{64}(?!\\n)$",
+       "x-khg-code": {
+        "default": "KHG-Q001",
+        "additionalProperties": "KHG-Q008"
+       }
+      }
+     },
+     "x-khg-code": {
+      "default": "KHG-Q001",
+      "additionalProperties": "KHG-Q008"
+     }
+    },
+    "payload": {
+     "type": "object",
+     "x-khg-code": "KHG-Q008"
+    },
+    "keys": {
+     "type": "object",
+     "required": [
+      "content_key",
+      "core_key",
+      "key_digest"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "content_key": {
+       "type": "string",
+       "pattern": "^sha256:[0-9a-f]{64}(?!\\n)$",
+       "x-khg-code": "KHG-Q010"
+      },
+      "core_key": {
+       "type": "string",
+       "pattern": "^sha256:[0-9a-f]{64}(?!\\n)$",
+       "x-khg-code": "KHG-Q010"
+      },
+      "key_digest": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "pattern": "^sha256:[0-9a-f]{64}(?!\\n)$",
+       "x-khg-code": "KHG-Q010"
+      }
+     },
+     "x-khg-code": "KHG-Q010"
+    },
+    "entities": {
+     "type": "array",
+     "items": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/entity"
+     },
+     "x-khg-code": "KHG-Q008"
+    }
+   },
+   "allOf": [
+    {
+     "required": [
+      "submitted_by"
+     ],
+     "x-khg-code": "KHG-Q001"
+    },
+    {
+     "if": {
+      "properties": {
+       "item_kind": {
+        "const": "hyperedge",
+        "x-khg-code": "KHG-Q008"
+       }
+      },
+      "required": [
+       "item_kind"
+      ],
+      "x-khg-code": "KHG-Q008"
+     },
+     "then": {
+      "allOf": [
+       {
+        "required": [
+         "run",
+         "doc"
+        ],
+        "x-khg-code": "KHG-Q001"
+       },
+       {
+        "required": [
+         "keys"
+        ],
+        "x-khg-code": "KHG-Q010"
+       }
+      ],
+      "properties": {
+       "payload": {
+        "required": [
+         "id",
+         "status"
+        ],
+        "properties": {
+         "id": {
+          "type": "string",
+          "pattern": "^cand:[0-9A-Za-z][0-9A-Za-z._:-]{0,127}\\.[0-9]+(?!\\n)$",
+          "x-khg-code": "KHG-Q002"
+         },
+         "status": {
+          "const": "candidate",
+          "x-khg-code": "KHG-Q002"
+         },
+         "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "x-khg-code": "KHG-Q001"
+         }
+        },
+        "allOf": [
+         {
+          "required": [
+           "evidence"
+          ],
+          "x-khg-code": "KHG-Q001"
+         }
+        ],
+        "x-khg-code": "KHG-Q002"
+       }
+      }
+     }
+    }
+   ],
+   "x-khg-code": "KHG-Q008"
+  },
+  "entry": {
+   "type": "object",
+   "required": [
+    "kind",
+    "lid",
+    "parent",
+    "target",
+    "action",
+    "state_before",
+    "state_after",
+    "actor",
+    "mode",
+    "at"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "kind": {
+     "const": "log-entry",
+     "x-khg-code": "KHG-Q008"
+    },
+    "lid": {
+     "$ref": "tag:khg-contracts,2026:schema/khg-queue/1.0.0#/definitions/lid"
+    },
+    "parent": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "pattern": "^l:[0-9A-Za-z][0-9A-Za-z._:-]{0,127}\\.[0-9]+(?!\\n)$",
+     "x-khg-code": "KHG-Q008"
+    },
+    "target": {
+     "$ref": "tag:khg-contracts,2026:schema/khg-queue/1.0.0#/definitions/qid"
+    },
+    "action": {
+     "enum": [
+      "lint",
+      "accept",
+      "reject",
+      "flag",
+      "verdict",
+      "withdraw"
+     ],
+     "x-khg-code": "KHG-Q003"
+    },
+    "state_before": {
+     "enum": [
+      "pending",
+      "linted",
+      "needs_review",
+      "accepted",
+      "rejected",
+      "withdrawn"
+     ],
+     "x-khg-code": "KHG-Q005"
+    },
+    "state_after": {
+     "enum": [
+      "pending",
+      "linted",
+      "needs_review",
+      "accepted",
+      "rejected",
+      "withdrawn"
+     ],
+     "x-khg-code": "KHG-Q005"
+    },
+    "actor": {
+     "$ref": "tag:khg-contracts,2026:schema/khg-queue/1.0.0#/definitions/actor"
+    },
+    "mode": {
+     "enum": [
+      "automatic",
+      "manual",
+      "semi_automatic"
+     ],
+     "x-khg-code": "KHG-Q008"
+    },
+    "at": {
+     "$ref": "tag:khg-contracts,2026:schema/khg-queue/1.0.0#/definitions/timestamp"
+    },
+    "rule_set": {
+     "type": "object",
+     "required": [
+      "id",
+      "version"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "id": {
+       "type": "string",
+       "minLength": 1,
+       "x-khg-code": "KHG-Q004"
+      },
+      "version": {
+       "type": "string",
+       "minLength": 1,
+       "x-khg-code": "KHG-Q004"
+      }
+     },
+     "x-khg-code": "KHG-Q004"
+    },
+    "findings": {
+     "type": "array",
+     "items": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-queue/1.0.0#/definitions/finding"
+     },
+     "x-khg-code": "KHG-Q004"
+    },
+    "outcome": {
+     "enum": [
+      "pass",
+      "warn",
+      "fail"
+     ],
+     "x-khg-code": "KHG-Q004"
+    },
+    "reason": {
+     "type": "string",
+     "minLength": 1,
+     "x-khg-code": "KHG-Q008"
+    },
+    "before": {
+     "type": "array",
+     "items": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-queue/1.0.0#/definitions/written"
+     },
+     "x-khg-code": "KHG-Q008"
+    },
+    "after": {
+     "type": "array",
+     "items": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-queue/1.0.0#/definitions/written"
+     },
+     "x-khg-code": "KHG-Q008"
+    },
+    "decision_hash": {
+     "$ref": "tag:khg-contracts,2026:schema/khg-queue/1.0.0#/definitions/sha256"
+    },
+    "verdict": {
+     "$ref": "tag:khg-contracts,2026:schema/khg-queue/1.0.0#/definitions/verdict"
+    }
+   },
+   "allOf": [
+    {
+     "if": {
+      "properties": {
+       "action": {
+        "const": "lint",
+        "x-khg-code": "KHG-Q008"
+       }
+      },
+      "required": [
+       "action"
+      ],
+      "x-khg-code": "KHG-Q008"
+     },
+     "then": {
+      "required": [
+       "rule_set",
+       "findings",
+       "outcome"
+      ],
+      "x-khg-code": "KHG-Q004"
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "action": {
+        "enum": [
+         "accept",
+         "reject",
+         "flag",
+         "withdraw"
+        ],
+        "x-khg-code": "KHG-Q008"
+       }
+      },
+      "required": [
+       "action"
+      ],
+      "x-khg-code": "KHG-Q008"
+     },
+     "then": {
+      "required": [
+       "reason"
+      ],
+      "x-khg-code": "KHG-Q008"
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "action": {
+        "const": "accept",
+        "x-khg-code": "KHG-Q008"
+       }
+      },
+      "required": [
+       "action"
+      ],
+      "x-khg-code": "KHG-Q008"
+     },
+     "then": {
+      "required": [
+       "before",
+       "after",
+       "decision_hash"
+      ],
+      "x-khg-code": "KHG-Q008"
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "action": {
+        "const": "verdict",
+        "x-khg-code": "KHG-Q008"
+       }
+      },
+      "required": [
+       "action"
+      ],
+      "x-khg-code": "KHG-Q008"
+     },
+     "then": {
+      "required": [
+       "verdict"
+      ],
+      "x-khg-code": "KHG-Q008"
+     }
+    }
+   ],
+   "x-khg-code": "KHG-Q008"
+  }
+ },
+ "x-khg-code": {
+  "default": "KHG-Q008",
+  "required": "KHG-Q003"
+ }
+}

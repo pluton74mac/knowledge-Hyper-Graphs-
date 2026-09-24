@@ -1,0 +1,72 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-VER-005",
+ "title": "a transition outside the table (retracted to disputed) is refused",
+ "requires": [
+  "atomic_writes"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    "@f:reg-1"
+   ]
+  },
+  {
+   "apply": {
+    "op": "transition",
+    "targets": [
+     "f:reg-1"
+    ],
+    "to": "retracted",
+    "id": "m:ret-1",
+    "reason": "withdrawn",
+    "evidence": [
+     {
+      "id": "e9",
+      "type": "curated",
+      "mode": "manual",
+      "source": {
+       "doc_id": "doc:scenario"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "when": [
+  {
+   "op": "apply",
+   "args": {
+    "event": {
+     "op": "transition",
+     "targets": [
+      "f:reg-1"
+     ],
+     "to": "disputed",
+     "id": "m:dis-1",
+     "reason": "curator",
+     "evidence": [
+      {
+       "id": "e9",
+       "type": "curated",
+       "mode": "manual",
+       "source": {
+        "doc_id": "doc:scenario"
+       }
+      }
+     ]
+    }
+   },
+   "then": {
+    "error": "KHG-D014"
+   }
+  }
+ ],
+ "precedent": [
+  "B S014",
+  "A C2-16 passed"
+ ]
+}

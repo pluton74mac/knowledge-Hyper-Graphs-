@@ -1,0 +1,39 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-READ-016c",
+ "title": "get_many returns every requested record in one call (capability-limited fixture @fixture[core])",
+ "requires": [
+  "literal_values",
+  "nesting"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "load": "@fixture[core]"
+  }
+ ],
+ "when": [
+  {
+   "op": "get_many",
+   "args": {
+    "ids": [
+     "f:reg-1",
+     "ex:TP53",
+     "ex:HeLa"
+    ]
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "ex:HeLa",
+     "ex:TP53",
+     "f:reg-1"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "core variant of S-READ-016"
+ ]
+}

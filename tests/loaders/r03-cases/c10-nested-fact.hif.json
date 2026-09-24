@@ -1,0 +1,65 @@
+{
+ "network-type": "directed",
+ "nodes": [
+  {
+   "node": "f1",
+   "attrs": {
+    "type": "Statement"
+   }
+  },
+  {
+   "node": "org:ADA",
+   "attrs": {
+    "type": "Organisation"
+   }
+  }
+ ],
+ "edges": [
+  {
+   "edge": "f1",
+   "attrs": {
+    "relation": "treats"
+   }
+  },
+  {
+   "edge": "m1",
+   "attrs": {
+    "relation": "asserts"
+   }
+  }
+ ],
+ "incidences": [
+  {
+   "edge": "f1",
+   "node": "drug:metformin",
+   "direction": "tail",
+   "attrs": {
+    "role": "treatment"
+   }
+  },
+  {
+   "edge": "f1",
+   "node": "disease:T2DM",
+   "direction": "head",
+   "attrs": {
+    "role": "condition"
+   }
+  },
+  {
+   "edge": "m1",
+   "node": "org:ADA",
+   "direction": "tail",
+   "attrs": {
+    "role": "asserter"
+   }
+  },
+  {
+   "edge": "m1",
+   "node": "f1",
+   "direction": "head",
+   "attrs": {
+    "role": "statement"
+   }
+  }
+ ]
+}

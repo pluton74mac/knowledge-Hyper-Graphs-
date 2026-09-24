@@ -1,0 +1,159 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-LIFE-013",
+ "title": "undoing a keyed correction must resolve the superseding fact, here by a dispute",
+ "requires": [
+  "atomic_writes",
+  "key_constraint"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    {
+     "@": "f:born-skłodowska-kraków",
+     "set": {
+      "status": "asserted"
+     },
+     "drop": [
+      "status_ref"
+     ]
+    }
+   ]
+  },
+  {
+   "apply": {
+    "op": "supersede",
+    "id": "m:sup-1",
+    "superseded": [
+     "f:born-skłodowska-kraków"
+    ],
+    "records": [
+     "@f:born-skłodowska-warszawa"
+    ],
+    "reason": "correction",
+    "note": "birthplace is Warsaw, per the curated biography",
+    "evidence": [
+     {
+      "id": "e9",
+      "type": "curated",
+      "mode": "manual",
+      "source": {
+       "doc_id": "doc:scenario"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "when": [
+  {
+   "op": "apply",
+   "args": {
+    "event": {
+     "op": "transition",
+     "targets": [
+      "m:sup-1"
+     ],
+     "to": "retracted",
+     "id": "m:ret-9",
+     "reason": "withdrawn",
+     "evidence": [
+      {
+       "id": "e9",
+       "type": "curated",
+       "mode": "manual",
+       "source": {
+        "doc_id": "doc:scenario"
+       }
+      }
+     ]
+    }
+   },
+   "then": {
+    "error": "KHG-D016"
+   }
+  },
+  {
+   "op": "apply",
+   "args": {
+    "event": {
+     "op": "transition",
+     "targets": [
+      "m:sup-1"
+     ],
+     "to": "retracted",
+     "id": "m:ret-9",
+     "reason": "withdrawn",
+     "resolve_superseding": "dispute",
+     "dispute_id": "m:dis-9",
+     "evidence": [
+      {
+       "id": "e9",
+       "type": "curated",
+       "mode": "manual",
+       "source": {
+        "doc_id": "doc:scenario"
+       }
+      }
+     ]
+    }
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "f:born-skłodowska-kraków",
+      3,
+      "versioned"
+     ],
+     [
+      "f:born-skłodowska-warszawa",
+      2,
+      "versioned"
+     ],
+     [
+      "m:dis-9",
+      1,
+      "created"
+     ],
+     [
+      "m:ret-9",
+      1,
+      "created"
+     ],
+     [
+      "m:sup-1",
+      2,
+      "versioned"
+     ]
+    ]
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:born-skłodowska-kraków"
+   },
+   "then": {
+    "select": "status",
+    "equals": "disputed"
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:born-skłodowska-warszawa"
+   },
+   "then": {
+    "select": "status_ref",
+    "equals": "m:dis-9"
+   }
+  }
+ ],
+ "precedent": [
+  "critique SEM-19"
+ ]
+}

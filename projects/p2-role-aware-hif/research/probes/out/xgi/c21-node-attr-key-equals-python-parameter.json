@@ -1,0 +1,25 @@
+{
+ "case": "c21-node-attr-key-equals-python-parameter",
+ "description": "an isolated node whose attrs contain the key 'node' (the name of the XGI add_node parameter)",
+ "input": "lib-cases/c21-node-attr-key-equals-python-parameter.hif.json",
+ "lib": "xgi",
+ "lib_version": "0.10.2",
+ "load": {
+  "api": "xgi.read_hif(path)",
+  "ok": false,
+  "error": {
+   "type": "TypeError",
+   "message": "DiHypergraph.add_node() got multiple values for argument 'node'",
+   "raised_at": "xgi/convert/hif_dict.py:171 in from_hif_dict: H.add_node(n, **attr)",
+   "library_frame": "xgi/convert/hif_dict.py:171 in from_hif_dict: H.add_node(n, **attr)"
+  },
+  "warnings": [],
+  "class": null,
+  "from_hif_dict_error": {
+   "type": "TypeError",
+   "message": "DiHypergraph.add_node() got multiple values for argument 'node'",
+   "raised_at": "xgi/convert/hif_dict.py:171 in from_hif_dict: H.add_node(n, **attr)",
+   "library_frame": "xgi/convert/hif_dict.py:171 in from_hif_dict: H.add_node(n, **attr)"
+  }
+ }
+}

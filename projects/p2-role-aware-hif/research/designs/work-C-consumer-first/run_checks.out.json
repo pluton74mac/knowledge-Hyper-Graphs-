@@ -1,0 +1,86 @@
+{
+ "c1_record_schema_errors": {},
+ "literal_errors": {},
+ "hif_full": {
+  "network-type": "undirected",
+  "counts": {
+   "nodes": 39,
+   "edges": 15,
+   "incidences": 45
+  },
+  "vendored_hif_schema_jsonschema": "valid",
+  "vendored_hif_schema_fastjsonschema": "valid",
+  "profile_schema_jsonschema": "valid",
+  "profile_schema_fastjsonschema": "valid",
+  "repeated_pairs": 3
+ },
+ "hif_directed": {
+  "network-type": "directed",
+  "counts": {
+   "nodes": 27,
+   "edges": 7,
+   "incidences": 18
+  },
+  "vendored_hif_schema_jsonschema": "valid",
+  "vendored_hif_schema_fastjsonschema": "valid",
+  "profile_schema_jsonschema": "valid",
+  "profile_schema_fastjsonschema": "valid",
+  "repeated_pairs": 2
+ },
+ "hif_full_import_equals_original": true,
+ "hif_directed_reexport_equal": true,
+ "chain_full": {
+  "xgi_class": "Hypergraph",
+  "xgi_report": {
+   "stale_records_dropped": 0,
+   "unlabelled_memberships_exported_bare": 0
+  },
+  "HIF->XGI->HIF->HNX->HIF equals input (structural)": true,
+  "HIF->HNX->HIF->XGI->HIF equals input (structural)": true,
+  "C1 after chain equals C1 before": true,
+  "hnx_cell_role_f02_metformin": "intervention",
+  "hnx_extra_records_f02_metformin": [
+   "background_therapy"
+  ]
+ },
+ "chain_directed": {
+  "xgi_class": "DiHypergraph",
+  "xgi_report": {
+   "stale_records_dropped": 0,
+   "unlabelled_memberships_exported_bare": 0
+  },
+  "HIF->XGI->HIF->HNX->HIF equals input (structural)": true,
+  "HIF->HNX->HIF->XGI->HIF equals input (structural)": true,
+  "C1 after chain equals C1 before": true,
+  "xgi_TP53_in_tail_and_head": true,
+  "hnx_cell_role_f02_metformin": "intervention",
+  "hnx_extra_records_f02_metformin": [
+   "background_therapy"
+  ]
+ },
+ "library_evidence": {
+  "full": {
+   "input_incidence_records_with_role": 45,
+   "xgi.read_hif->write_hif: records with role": 0,
+   "xgi: incidence records out": 42,
+   "xgi: metadata keys kept": true,
+   "hnx.from_hif->to_hif: returned": null,
+   "hnx: records with role": null,
+   "hnx: incidence records out": null,
+   "hnx: metadata keys out": null
+  },
+  "directed": {
+   "input_incidence_records_with_role": 18,
+   "xgi.read_hif->write_hif: records with role": 0,
+   "xgi: incidence records out": 17,
+   "xgi: metadata keys kept": true,
+   "hnx.from_hif->to_hif: returned": "dict",
+   "hnx: records with role": 16,
+   "hnx: incidence records out": 16,
+   "hnx: metadata keys out": [
+    "default_attrs"
+   ],
+   "hnx second generation to_hif returned": null
+  }
+ }
+}

@@ -4,7 +4,7 @@ type: index
 status: draft
 tags: [ecosystem, software, datasets, benchmarks, standards, community, index]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-24
 ---
 
 # 09 — Ecosystem
@@ -28,8 +28,10 @@ be confirmed it is marked `[unverified]` rather than filled in.
    published with statistics that differ by a factor of two.
 3. **Nothing is being standardised for hypergraphs except a file format.** W3C is standardising
    statement annotation (RDF 1.2), ISO is standardising property graphs (GQL, SQL/PGQ), and HIF —
-   the only hypergraph-native standard — is still at schema version `v0.0` with four competing
-   schema URLs in circulation.
+   the only hypergraph-native standard — carries conflicting version labels (CHANGELOG `v0.0`,
+   schema file `0.1.0`, releases v0.1.0–v0.1.2) and no version field in data files. The "four
+   competing schema URLs" reported earlier turned out to be one repository under three names and
+   two files with identical rules (corrected 2026-09-24).
 4. **Adoption follows packaging, not representation.** Binary-edge GraphRAG has ~40k stars against
    ~450 for hypergraph RAG; but a one-command hypergraph *extraction* tool reached ~4k stars in
    eight months. The bottleneck is developer experience, not expressiveness.

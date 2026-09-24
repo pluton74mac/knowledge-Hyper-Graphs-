@@ -1,0 +1,22 @@
+{
+ "case": "c24-empty-incidences",
+ "description": "the smallest valid HIF document: incidences is an empty array",
+ "input": "lib-cases/c24-empty-incidences.hif.json",
+ "lib": "hypernetx",
+ "lib_version": "2.4.3",
+ "load": {
+  "api": "hnx.from_hif(filename=path)",
+  "ok": false,
+  "returned": "NoneType",
+  "error": {
+   "type": "KeyError",
+   "message": "\"None of [Index(['edge', 'node'], dtype='object')] are in the [columns]\"",
+   "raised_at": "pandas/core/indexes/base.py:6261 in _raise_if_missing: raise KeyError(f\"None of [{key}] are in the [{axis_name}]\")",
+   "library_frame": "hypernetx/hif.py:190 in from_hif: incidences = parts[\"incidences\"][cols]"
+  },
+  "warnings": [
+   "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/lib-cases/c24-empty-incidences.hif.json' mode='r' encoding='utf-8'> (hif.py:147)"
+  ],
+  "seconds": 0.34
+ }
+}

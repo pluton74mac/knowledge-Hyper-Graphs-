@@ -1,0 +1,33 @@
+{
+ "kind": "relation-schema",
+ "format": "khg-relation-schema/1.0.0",
+ "id": "kb-sample",
+ "version": "1.0.0",
+ "label": "Generated from schemas/sample.hif.json (v0)",
+ "entity_types": [
+  {"id": "AdverseEffect"},
+  {"id": "Disease"},
+  {"id": "Document"},
+  {"id": "Dosage"},
+  {"id": "Drug"},
+  {"id": "Organisation"},
+  {"id": "Population"}
+ ],
+ "roles": [
+  {"id": "agent"},
+  {"id": "condition"},
+  {"id": "dosage"},
+  {"id": "effect"},
+  {"id": "end_time"},
+  {"id": "population"},
+  {"id": "publication"},
+  {"id": "publisher"},
+  {"id": "start_time"},
+  {"id": "treatment"}
+ ],
+ "relations": [
+  {"id": "co-administration-causes", "roles": [{"role": "agent", "slot": "core", "fillers": [{"entity": ["Drug"]}], "min": 1, "max": null, "direction": "tail"}, {"role": "effect", "slot": "core", "fillers": [{"entity": ["AdverseEffect"]}], "min": 1, "max": 1, "direction": "head"}]},
+  {"id": "publishes", "roles": [{"role": "publication", "slot": "core", "fillers": [{"entity": ["Document"]}], "min": 1, "max": 1, "direction": "head"}, {"role": "publisher", "slot": "core", "fillers": [{"entity": ["Organisation"]}], "min": 1, "max": 1, "direction": "tail"}]},
+  {"id": "treats", "roles": [{"role": "condition", "slot": "core", "fillers": [{"entity": ["Disease"]}], "min": 1, "max": 1, "direction": "head"}, {"role": "dosage", "slot": "core", "fillers": [{"entity": ["Dosage"]}], "min": 1, "max": 1, "direction": "tail"}, {"role": "population", "slot": "core", "fillers": [{"entity": ["Population"]}], "min": 1, "max": 1, "direction": "tail"}, {"role": "treatment", "slot": "core", "fillers": [{"entity": ["Drug"]}], "min": 1, "max": 1, "direction": "tail"}, {"role": "start_time", "slot": "time", "fillers": [{"literal": "time"}], "min": 0, "max": 1, "direction": "tail"}, {"role": "end_time", "slot": "time", "fillers": [{"literal": "time"}], "min": 0, "max": 1, "direction": "tail"}], "time": {"model": "interval", "start": "start_time", "end": "end_time"}}
+ ]
+}

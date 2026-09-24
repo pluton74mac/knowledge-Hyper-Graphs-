@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:khg:schema:khg-queue:1.0.0",
+  "title": "khg-queue/1.0.0: one line of a C3 queue file (header, queue item, log entry)",
+  "type": "object",
+  "required": ["kind"],
+  "properties": {"kind": {"enum": ["queue-header", "queue-item", "log-entry"], "x-khg-code": "Q-KIND"}},
+  "allOf": [
+    {"if": {"properties": {"kind": {"const": "queue-header"}}}, "then": {"$ref": "#/definitions/header"}},
+    {"if": {"properties": {"kind": {"const": "queue-item"}}}, "then": {"$ref": "#/definitions/item"}},
+    {"if": {"properties": {"kind": {"const": "log-entry"}}}, "then": {"$ref": "#/definitions/log"}}
+  ],
+  "definitions": {
+    "qid": {"type": "string", "pattern": "^q:[0-9A-Za-z._-]{1,64}$"},
+    "lid": {"type": "string", "pattern": "^l:[0-9A-Za-z._-]{1,64}$"},
+    "timestamp": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"},
+    "actor": {"type": "object", "required": ["kind", "id"], "additionalProperties": false,
+              "properties": {"kind": {"enum": ["linter", "person", "agent", "system"]}, "id": {"type": "string", "minLength": 1}}},
+    "header": {
+      "type": "object", "required": ["kind", "format", "record_format", "queue_id"], "additionalProperties": false,
+      "properties": {"kind": {"const": "queue-header"},
+                     "format": {"type": "string", "pattern": "^khg-queue/1\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"},
+                     "record_format": {"type": "string", "pattern": "^khg-record/1\\."},
+                     "queue_id": {"type": "string"}, "created_at": {"$ref": "#/definitions/timestamp"},
+                     "schemas": {"type": "array", "items": {"type": "string"}}}
+    },
+    "run": {
+      "type": "object", "required": ["run_id", "order_id", "position"], "additionalProperties": false,
+      "properties": {"run_id": {"type": "string", "minLength": 1}, "order_id": {"type": "string", "minLength": 1},
+                     "position": {"type": "integer", "minimum": 0}, "seed": {"type": "integer"},
+                     "permutation": {"type": "string"}},
+      "x-khg-code": "Q-RUN"
+    },
+    "item": {
+      "type": "object",
+      "required": ["kind", "qid", "item_kind", "payload", "submitted_at", "submitted_by"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {"const": "queue-item"},
+        "qid": {"$ref": "#/definitions/qid"},
+        "item_kind": {"enum": ["hyperedge", "supersession_proposal", "merge_proposal"], "x-khg-code": "Q-ITEM-KIND"},
+        "submitted_at": {"$ref": "#/definitions/timestamp"},
+        "submitted_by": {"type": "string", "minLength": 1},
+        "run": {"$ref": "#/definitions/run"},
+        "doc": {"type": "object", "required": ["doc", "doc_sha256"], "additionalProperties": false,
+                "properties": {"doc": {"type": "string"}, "doc_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}},
+        "payload": {"type": "object"},
+        "entities": {"type": "array", "items": {"type": "object", "required": ["kind", "id"]}}
+      },
+      "allOf": [
+        {"if": {"properties": {"item_kind": {"const": "hyperedge"}}},
+         "then": {"required": ["run", "doc"],
+                  "properties": {"payload": {"required": ["kind", "id", "relation", "status", "bindings", "evidence"],
+                                             "properties": {"status": {"const": "candidate"},
+                                                            "id": {"type": "string", "pattern": "^cand:"},
+                                                            "evidence": {"type": "array", "minItems": 1}}}},
+                  "x-khg-code": "Q-PAYLOAD"}},
+        {"if": {"properties": {"item_kind": {"const": "supersession_proposal"}}},
+         "then": {"properties": {"payload": {"required": ["superseded", "superseding", "reason", "evidence"]}}, "x-khg-code": "Q-PAYLOAD"}},
+        {"if": {"properties": {"item_kind": {"const": "merge_proposal"}}},
+         "then": {"properties": {"payload": {"required": ["source", "target", "relation"],
+                                             "properties": {"relation": {"enum": ["duplicate", "refinement"]}}}}, "x-khg-code": "Q-PAYLOAD"}}
+      ]
+    },
+    "finding": {
+      "type": "object", "required": ["rule", "rule_version", "severity", "message"], "additionalProperties": false,
+      "properties": {"rule": {"type": "string"}, "rule_version": {"type": "string"},
+                     "severity": {"enum": ["violation", "warning", "info"]},
+                     "path": {"type": "string"}, "value": {}, "message": {"type": "string"},
+                     "proposal": {"$ref": "#/definitions/qid"}}
+    },
+    "log": {
+      "type": "object", "required": ["kind", "lid", "target", "action", "at", "actor", "mode"], "additionalProperties": false,
+      "properties": {
+        "kind": {"const": "log-entry"},
+        "lid": {"$ref": "#/definitions/lid"},
+        "parent": {"anyOf": [{"$ref": "#/definitions/lid"}, {"type": "null"}]},
+        "target": {"$ref": "#/definitions/qid"},
+        "action": {"enum": ["lint", "accept", "reject", "flag", "merge", "verdict", "auto_fix"], "x-khg-code": "Q-LOG-ACTION"},
+        "outcome": {"enum": ["pass", "flag", "reject"]},
+        "at": {"$ref": "#/definitions/timestamp"},
+        "actor": {"$ref": "#/definitions/actor"},
+        "mode": {"enum": ["automatic", "manual", "semi_automatic"]},
+        "findings": {"type": "array", "items": {"$ref": "#/definitions/finding"}},
+        "result": {"type": "string"},
+        "reason": {"type": "string"},
+        "before": {"type": "object"},
+        "after": {"type": "object"},
+        "verdict": {"type": "object", "required": ["unit", "label"], "additionalProperties": false,
+                    "properties": {"unit": {"type": "object", "required": ["core_key", "event_hash"], "additionalProperties": false,
+                                            "properties": {"core_key": {"type": "string"}, "event_hash": {"type": "string"}}},
+                                   "label": {"enum": ["correct", "no_relation", "wrong_relation", "wrong_role", "wrong_filler",
+                                                      "span_boundary", "missing_participant", "negated", "hypothesis", "other"]},
+                                   "binding_refs": {"type": "array", "items": {"type": "string"}},
+                                   "note": {"type": "string"}},
+                    "if": {"properties": {"label": {"const": "other"}}}, "then": {"required": ["note"]}}
+      },
+      "allOf": [
+        {"if": {"properties": {"action": {"const": "lint"}}}, "then": {"required": ["outcome", "findings"]}},
+        {"if": {"properties": {"action": {"enum": ["accept", "merge"]}}}, "then": {"required": ["result"]}},
+        {"if": {"properties": {"action": {"const": "verdict"}}}, "then": {"required": ["verdict"]}}
+      ]
+    }
+  }
+}

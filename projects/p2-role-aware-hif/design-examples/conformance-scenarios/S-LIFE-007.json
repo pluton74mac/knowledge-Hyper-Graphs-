@@ -1,0 +1,139 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-LIFE-007",
+ "title": "retracting a supersession record restores the superseded fact (undo) and drops its status_ref",
+ "requires": [
+  "atomic_writes"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    {
+     "kind": "entity",
+     "id": "ex:MDM2",
+     "types": [
+      "Gene"
+     ],
+     "label": "MDM2"
+    },
+    "@f:reg-1"
+   ]
+  },
+  {
+   "apply": {
+    "op": "supersede",
+    "id": "m:sup-3",
+    "superseded": [
+     "f:reg-1"
+    ],
+    "records": [
+     {
+      "@": "f:reg-1",
+      "set": {
+       "id": "f:reg-2"
+      },
+      "set_binding": {
+       "b3": {
+        "entity": "ex:MDM2"
+       }
+      }
+     }
+    ],
+    "reason": "correction",
+    "evidence": [
+     {
+      "id": "e9",
+      "type": "curated",
+      "mode": "manual",
+      "source": {
+       "doc_id": "doc:scenario"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "when": [
+  {
+   "op": "apply",
+   "args": {
+    "event": {
+     "op": "transition",
+     "targets": [
+      "m:sup-3"
+     ],
+     "to": "retracted",
+     "id": "m:ret-3",
+     "reason": "withdrawn",
+     "evidence": [
+      {
+       "id": "e9",
+       "type": "curated",
+       "mode": "manual",
+       "source": {
+        "doc_id": "doc:scenario"
+       }
+      }
+     ]
+    }
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "f:reg-1",
+      3,
+      "versioned"
+     ],
+     [
+      "m:ret-3",
+      1,
+      "created"
+     ],
+     [
+      "m:sup-3",
+      2,
+      "versioned"
+     ]
+    ]
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:reg-1"
+   },
+   "then": {
+    "select": "status",
+    "equals": "asserted"
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:reg-1"
+   },
+   "then": {
+    "select": "status_ref",
+    "equals": null
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:reg-2"
+   },
+   "then": {
+    "select": "status",
+    "equals": "asserted"
+   }
+  }
+ ],
+ "precedent": [
+  "B S052",
+  "critique SEM-10"
+ ]
+}

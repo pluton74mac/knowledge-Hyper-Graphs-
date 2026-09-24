@@ -1,0 +1,124 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-LIFE-001",
+ "title": "supersede is one event; the walk forward ends at the current belief",
+ "requires": [
+  "atomic_writes"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    {
+     "@": "f:born-skłodowska-kraków",
+     "set": {
+      "status": "asserted"
+     },
+     "drop": [
+      "status_ref"
+     ]
+    }
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "apply",
+   "args": {
+    "event": {
+     "op": "supersede",
+     "id": "m:sup-1",
+     "superseded": [
+      "f:born-skłodowska-kraków"
+     ],
+     "records": [
+      "@f:born-skłodowska-warszawa"
+     ],
+     "reason": "correction",
+     "note": "birthplace is Warsaw, per the curated biography",
+     "evidence": [
+      {
+       "id": "e9",
+       "type": "curated",
+       "mode": "manual",
+       "source": {
+        "doc_id": "doc:scenario"
+       }
+      }
+     ]
+    }
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "f:born-skłodowska-kraków",
+      2,
+      "versioned"
+     ],
+     [
+      "f:born-skłodowska-warszawa",
+      1,
+      "created"
+     ],
+     [
+      "m:sup-1",
+      1,
+      "created"
+     ]
+    ]
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:born-skłodowska-kraków"
+   },
+   "then": {
+    "select": "status_ref",
+    "equals": "m:sup-1"
+   }
+  },
+  {
+   "op": "supersession_walk",
+   "args": {
+    "id": "f:born-skłodowska-kraków"
+   },
+   "then": {
+    "select": "terminal",
+    "equals": [
+     {
+      "id": "f:born-skłodowska-warszawa",
+      "status": "asserted"
+     }
+    ]
+   }
+  },
+  {
+   "op": "find_by_key",
+   "args": {
+    "relation": "born_in",
+    "key": [
+     {
+      "role": "person",
+      "value": {
+       "entity": "ex:Maria_Skłodowska"
+      }
+     }
+    ]
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:born-skłodowska-warszawa"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "A C2-13 passed",
+  "C S-SUP-001 passed"
+ ]
+}

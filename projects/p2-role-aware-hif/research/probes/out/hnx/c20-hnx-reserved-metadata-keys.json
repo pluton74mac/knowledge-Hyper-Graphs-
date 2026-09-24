@@ -1,0 +1,559 @@
+{
+ "case": "c20-hnx-reserved-metadata-keys",
+ "description": "metadata carries the keys HyperNetX interprets (name, default_attrs with a default 'role'); one incidence has no role",
+ "input": "lib-cases/c20-hnx-reserved-metadata-keys.hif.json",
+ "lib": "hypernetx",
+ "lib_version": "2.4.3",
+ "load": {
+  "api": "hnx.from_hif(filename=path)",
+  "ok": true,
+  "returned": "Hypergraph",
+  "error": null,
+  "warnings": [
+   "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/lib-cases/c20-hnx-reserved-metadata-keys.hif.json' mode='r' encoding='u (hif.py:147)"
+  ],
+  "seconds": 0.227
+ },
+ "placement": {
+  "class": "Hypergraph",
+  "H.name": "kb-sample",
+  "incidence_columns (H.incidences.to_dataframe)": [
+   "weight",
+   "direction",
+   "role",
+   "misc_properties"
+  ],
+  "incidence_index_names": [
+   "edges",
+   "nodes"
+  ],
+  "incidences": {
+   "str:f1 | str:drug:metformin": {
+    "weight": 1,
+    "direction": "tail",
+    "role": "treatment",
+    "misc_properties": {}
+   },
+   "str:f1 | str:disease:T2DM": {
+    "weight": 1,
+    "direction": "head",
+    "role": "condition",
+    "misc_properties": {}
+   },
+   "str:f1 | str:pop:adults": {
+    "weight": 1,
+    "direction": "tail",
+    "role": "participant",
+    "misc_properties": {
+     "note": "no role"
+    }
+   }
+  },
+  "cell_accessors": {
+   "str:f1 | str:drug:metformin": {
+    "H.get_cell_properties(e, n)": {
+     "misc_properties": {},
+     "weight": 1,
+     "direction": "tail",
+     "role": "treatment"
+    },
+    "H.get_cell_properties(e, n, 'role')": "treatment"
+   },
+   "str:f1 | str:disease:T2DM": {
+    "H.get_cell_properties(e, n)": {
+     "misc_properties": {},
+     "weight": 1,
+     "direction": "head",
+     "role": "condition"
+    },
+    "H.get_cell_properties(e, n, 'role')": "condition"
+   },
+   "str:f1 | str:pop:adults": {
+    "H.get_cell_properties(e, n)": {
+     "note": "no role",
+     "weight": 1,
+     "direction": "tail",
+     "role": "participant"
+    },
+    "H.get_cell_properties(e, n, 'role')": "participant"
+   }
+  },
+  "node_columns": [
+   "weight",
+   "misc_properties"
+  ],
+  "nodes": {
+   "str:drug:metformin": {
+    "weight": 1,
+    "misc_properties": {
+     "type": "Drug"
+    }
+   },
+   "str:disease:T2DM": {
+    "weight": 1,
+    "misc_properties": {
+     "type": "Disease"
+    }
+   },
+   "str:pop:adults": {
+    "weight": 1,
+    "misc_properties": {}
+   }
+  },
+  "edge_columns": [
+   "weight",
+   "misc_properties"
+  ],
+  "edges": {
+   "str:f1": {
+    "weight": 1,
+    "misc_properties": {
+     "relation": "treats"
+    }
+   }
+  },
+  "node_ids_in_property_store_but_not_in_H.nodes": [],
+  "edge_ids_in_property_store_but_not_in_H.edges": [],
+  "role_strings_found_at": {
+   "condition": [
+    "._E._property_store._data['role'][1]",
+    "._dataframe['role'][1]",
+    ".setsystem['role'][1]"
+   ],
+   "treatment": [
+    "._E._property_store._data['role'][0]",
+    "._dataframe['role'][0]",
+    ".setsystem['role'][0]"
+   ]
+  },
+  "metadata_string_values_found_at": {
+   "reserved keys": [],
+   "kb-sample": [
+    ".name"
+   ]
+  },
+  "constructor_args_kept_on_object": [
+   "aggregate_by",
+   "cell_weight_col",
+   "default_cell_weight",
+   "default_edge_weight",
+   "default_node_weight",
+   "default_weight",
+   "df",
+   "edfp",
+   "edge_col",
+   "edge_properties",
+   "edge_property_type",
+   "edge_propertystore",
+   "edge_weight_prop_col",
+   "incidence_propertystore",
+   "incidence_store",
+   "kwargs",
+   "misc_cell_properties_col",
+   "misc_edge_properties_col",
+   "misc_node_properties_col",
+   "misc_properties_col",
+   "name",
+   "ndfp",
+   "node_col",
+   "node_properties",
+   "node_property_type",
+   "node_propertystore",
+   "node_weight_prop_col",
+   "properties",
+   "self",
+   "setsystem",
+   "setsystem_type",
+   "type_dict",
+   "weight_prop_col"
+  ]
+ },
+ "field_locations": {
+  "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 2/2 role strings",
+  "incidence.direction": "cell property column 'direction'",
+  "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+  "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+  "network-type": "not read (hif.py from_hif never looks at it)",
+  "metadata": "only 'name' -> H.name and 'default_attrs' are used; other keys: found only in .name"
+ },
+ "export": {
+  "api": "hnx.to_hif(H, filename=..., network_type='directed')",
+  "ok": true,
+  "returned": "dict",
+  "error": null,
+  "warnings": [
+   "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/c20-hnx-reserved-metadata-keys.out.hif.json' mode='w' encoding= (hif.py:110)"
+  ],
+  "file_written": "out/hnx/c20-hnx-reserved-metadata-keys.out.hif.json",
+  "strict_json": true,
+  "schema_errors (jsonschema)": []
+ },
+ "export_default_call": {
+  "api": "hnx.to_hif(H, filename=..., network_type='undirected')",
+  "ok": true,
+  "returned": "dict",
+  "error": null,
+  "warnings": [
+   "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/c20-hnx-reserved-metadata-keys.out-default.hif.json' mode='w' e (hif.py:110)"
+  ],
+  "file_written": "out/hnx/c20-hnx-reserved-metadata-keys.out-default.hif.json",
+  "strict_json": true,
+  "schema_errors (jsonschema)": [],
+  "network-type written": "undirected"
+ },
+ "diff": {
+  "top": {
+   "network-type": {
+    "in": "directed",
+    "out": "directed",
+    "status": "preserved"
+   },
+   "metadata": {
+    "keys_lost": [
+     "title"
+    ],
+    "keys_added": [],
+    "keys_changed": [
+     "default_attrs"
+    ],
+    "status": "altered"
+   },
+   "other_top_level_keys_out": []
+  },
+  "incidences": {
+   "str:f1 | str:drug:metformin": {
+    "edge": "str:f1",
+    "node": "str:drug:metformin",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "preserved",
+    "direction": "preserved",
+    "weight": "added",
+    "attrs": "preserved",
+    "status": "present",
+    "roles_in": [
+     "treatment"
+    ],
+    "roles_out": [
+     "treatment"
+    ],
+    "directions_in": [
+     "tail"
+    ],
+    "directions_out": [
+     "tail"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ],
+    "attrs_in": [
+     {
+      "role": "treatment"
+     }
+    ],
+    "attrs_out": [
+     {
+      "role": "treatment"
+     }
+    ]
+   },
+   "str:f1 | str:disease:T2DM": {
+    "edge": "str:f1",
+    "node": "str:disease:T2DM",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "preserved",
+    "direction": "preserved",
+    "weight": "added",
+    "attrs": "preserved",
+    "status": "present",
+    "roles_in": [
+     "condition"
+    ],
+    "roles_out": [
+     "condition"
+    ],
+    "directions_in": [
+     "head"
+    ],
+    "directions_out": [
+     "head"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ],
+    "attrs_in": [
+     {
+      "role": "condition"
+     }
+    ],
+    "attrs_out": [
+     {
+      "role": "condition"
+     }
+    ]
+   },
+   "str:f1 | str:pop:adults": {
+    "edge": "str:f1",
+    "node": "str:pop:adults",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "added",
+    "direction": "preserved",
+    "weight": "added",
+    "attrs": "altered",
+    "status": "present",
+    "roles_in": [
+     "<absent>"
+    ],
+    "roles_out": [
+     "participant"
+    ],
+    "directions_in": [
+     "tail"
+    ],
+    "directions_out": [
+     "tail"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ],
+    "attrs_in": [
+     {
+      "note": "no role"
+     }
+    ],
+    "attrs_out": [
+     {
+      "note": "no role",
+      "role": "participant"
+     }
+    ]
+   }
+  },
+  "nodes": {
+   "str:drug:metformin": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "added",
+    "attrs_in": [
+     {
+      "type": "Drug"
+     }
+    ],
+    "attrs_out": [
+     {
+      "type": "Drug"
+     }
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ]
+   },
+   "str:disease:T2DM": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "added",
+    "attrs_in": [
+     {
+      "type": "Disease"
+     }
+    ],
+    "attrs_out": [
+     {
+      "type": "Disease"
+     }
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ]
+   },
+   "str:pop:adults": {
+    "declared_in": 0,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "added",
+    "weights_in": [],
+    "weights_out": [
+     1
+    ]
+   }
+  },
+  "edges": {
+   "str:f1": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "added",
+    "attrs_in": [
+     {
+      "relation": "treats"
+     }
+    ],
+    "attrs_out": [
+     {
+      "relation": "treats"
+     }
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ]
+   }
+  },
+  "id_type_changes": [],
+  "summary": {
+   "incidence_records": "3 -> 3",
+   "role_records_kept": "2/2",
+   "direction_records_kept": "3/3",
+   "incidence_weight_records_kept": "0/0",
+   "incidence_attrs_records_kept": "2/3",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 3,
+   "nodes": {
+    "declared_in": 2,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {
+     "str:drug:metformin": "added",
+     "str:disease:T2DM": "added",
+     "str:pop:adults": "added"
+    },
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 1,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {
+     "str:f1": "added"
+    },
+    "new_out": []
+   },
+   "network_type": "preserved (directed -> directed)",
+   "metadata": "altered",
+   "metadata_keys_lost": [
+    "title"
+   ],
+   "metadata_keys_added": [],
+   "id_type_changes": 0
+  }
+ },
+ "gen2": {
+  "load_error": null,
+  "load_returned": "Hypergraph",
+  "export": {
+   "api": "hnx.to_hif(H, filename=..., network_type='directed')",
+   "ok": false,
+   "returned": "NoneType",
+   "error": null,
+   "warnings": [],
+   "unvalidated_error": null,
+   "unvalidated_output": "out/hnx/c20-hnx-reserved-metadata-keys.out2.unvalidated.hif.json",
+   "why_invalid (jsonschema on unvalidated output)": [
+    "incidences/0/direction: 'nil' is not one of ['head', 'tail']",
+    "incidences/1/direction: 'nil' is not one of ['head', 'tail']",
+    "incidences/2/direction: 'nil' is not one of ['head', 'tail']"
+   ]
+  },
+  "diff_gen1_gen2_summary": {
+   "incidence_records": "3 -> 3",
+   "role_records_kept": "3/3",
+   "direction_records_kept": "0/3",
+   "incidence_weight_records_kept": "3/3",
+   "incidence_attrs_records_kept": "3/3",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 0,
+   "nodes": {
+    "declared_in": 3,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 1,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "network_type": "preserved (directed -> directed)",
+   "metadata": "preserved",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [],
+   "id_type_changes": 0
+  },
+  "diff_input_gen2_summary": {
+   "incidence_records": "3 -> 3",
+   "role_records_kept": "2/2",
+   "direction_records_kept": "0/3",
+   "incidence_weight_records_kept": "0/0",
+   "incidence_attrs_records_kept": "2/3",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 3,
+   "nodes": {
+    "declared_in": 2,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {
+     "str:drug:metformin": "added",
+     "str:disease:T2DM": "added",
+     "str:pop:adults": "added"
+    },
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 1,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {
+     "str:f1": "added"
+    },
+    "new_out": []
+   },
+   "network_type": "preserved (directed -> directed)",
+   "metadata": "altered",
+   "metadata_keys_lost": [
+    "title"
+   ],
+   "metadata_keys_added": [],
+   "id_type_changes": 0
+  },
+  "gen2_incidence_columns": [
+   "weight",
+   "direction",
+   "role",
+   "misc_properties"
+  ]
+ }
+}

@@ -1,0 +1,39 @@
+meta-schemas are valid draft-07:
+  OK khg-document-1.0.0.json
+  OK khg-hif-profile-1.0.0.json
+  OK khg-queue-1.0.0.json
+  OK khg-schema-1.0.0.json
+1. relation-type schema documents:
+  OK  jsonschema / OK  fastjsonschema : gate-demo.schema.json
+  OK  jsonschema / OK  fastjsonschema : builtin.schema.json
+2. C1 document:
+  OK  jsonschema / OK  fastjsonschema : gate-fixture.khg.json
+3. HIF export:
+  OK  jsonschema / OK  fastjsonschema : gate-fixture.hif.json vs vendored HIF 0.1.0
+  OK  jsonschema / OK  fastjsonschema : gate-fixture.hif.json vs KHG HIF profile
+   network-type=directed nodes=30 edges=12 incidences=34
+   repeated (edge,node) pairs: {'f3|ex:TP53': ['regulator', 'target'], 'f5|ex:YYZ': ['stop', 'stop']}
+4. fold/unfold round trip:
+   from_hif(to_hif(doc)) == canonical(doc): True
+5. identity keys, arity (C1 definition) and distinct participants:
+   f1   treats                    arity=4 participants=4 content=sha256:65f4cbe86735 core=sha256:a8603e53b358 key=sha256:900216d650f9 events=['sha256:b19a09026fc0']
+   f10  chief-executive           arity=2 participants=2 content=sha256:f9f92f8c35ca core=sha256:f9f92f8c35ca key=sha256:3b7d0853f49b events=['sha256:b5abceb0721c']
+   f11  chief-executive           arity=2 participants=2 content=sha256:a2519af1a9f3 core=sha256:a2519af1a9f3 key=sha256:3b7d0853f49b events=[]
+   f2   co-administration-causes  arity=3 participants=3 content=sha256:1d675495a1de core=sha256:1d675495a1de key=- events=[]
+   f3   regulates                 arity=3 participants=2 content=sha256:0e154c5254a0 core=sha256:d36459d0bd4f key=- events=[]
+   f4   regulates                 arity=2 participants=2 content=sha256:50f9bc7ce829 core=sha256:50f9bc7ce829 key=- events=[]
+   f5   flight                    arity=5 participants=4 content=sha256:c744a672ec85 core=sha256:b6f31ce3a03c key=- events=[]
+   f6   population                arity=3 participants=3 content=sha256:dbd237bfb43b core=sha256:ce14abb9d309 key=sha256:a584f85ba860 events=[]
+   f8   catalysed-by              arity=1 participants=1 content=sha256:e222c6356889 core=sha256:e222c6356889 key=- events=[]
+   f9   asserts                   arity=2 participants=2 content=sha256:8971137b9d72 core=sha256:8971137b9d72 key=- events=[]
+   g1   catalysed-by              arity=1 participants=1 content=sha256:13255672407e core=sha256:13255672407e key=- events=[]
+   s1   khg:supersedes            arity=3 participants=3 content=sha256:ea95dfc543bd core=sha256:72331659f9cd key=- events=[]
+P6 hypergraph (core+qualifier, domain relations):
+   asserts ['asserter', 'statement']
+   catalysed-by ['catalyst', 'reaction']
+   chief-executive ['organisation', 'person']
+   co-administration-causes ['agent', 'effect']
+   flight ['carrier', 'flight-number', 'stop']
+   population ['count', 'place', 'point-in-time']
+   regulates ['context', 'regulator', 'target']
+   treats ['condition', 'dosage', 'population', 'treatment']

@@ -1,0 +1,68 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-TIME-008",
+ "title": "an end-only (until) fact has no definite validity: the start is unknown",
+ "requires": [
+  "literal_values",
+  "valid_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    {
+     "@": "f:king-13",
+     "drop_bindings": [
+      "b3"
+     ]
+    }
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "incident",
+   "args": {
+    "node": "ex:KingOfFrance",
+    "where": {
+     "as_of": "+1620-01-01T00:00:00Z"
+    }
+   },
+   "then": {
+    "select": "ids",
+    "equals": []
+   }
+  },
+  {
+   "op": "incident",
+   "args": {
+    "node": "ex:KingOfFrance",
+    "where": {
+     "as_of": "+1620-01-01T00:00:00Z",
+     "valid_mode": "possible"
+    }
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:king-13"
+    ]
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:king-13"
+   },
+   "then": {
+    "select": "derived.valid_time.kind",
+    "equals": "until"
+   }
+  }
+ ],
+ "precedent": [
+  "critique SEM-08"
+ ]
+}

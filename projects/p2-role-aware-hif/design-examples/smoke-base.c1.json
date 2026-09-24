@@ -1,0 +1,27 @@
+{
+ "header": {"kind": "header", "format": "khg-record/1.0.0", "document_id": "p2-smoke-base", "schema": {"id": "p2-gate", "version": "1.0.0", "sha256": "sha256:cadd01cd3d37e09337d2fe70bd5572a32dff4a7d6f4a0ac26845c6c27d0e194d"}, "content": "snapshot", "complete": true},
+ "records": [
+  {"kind": "entity", "id": "ex:AirCanada", "types": ["Airline"], "label": "Air Canada"},
+  {"kind": "entity", "id": "ex:Chronicler_Ødegård", "types": ["Person"], "label": "Ødegård the chronicler"},
+  {"kind": "entity", "id": "ex:HeLa", "types": ["CellLine"], "label": "HeLa"},
+  {"kind": "entity", "id": "ex:KingOfFrance", "types": ["Position"], "label": "King of France"},
+  {"kind": "entity", "id": "ex:Kraków", "types": ["Place"], "label": "Kraków"},
+  {"kind": "entity", "id": "ex:LouisXIII", "types": ["Person"], "label": "Louis XIII"},
+  {"kind": "entity", "id": "ex:LouisXIV", "types": ["Person"], "label": "Louis XIV"},
+  {"kind": "entity", "id": "ex:Maria_Skłodowska", "types": ["Person"], "label": "Maria Skłodowska"},
+  {"kind": "entity", "id": "ex:Mazarin", "types": ["Person"], "label": "Jules Mazarin"},
+  {"kind": "entity", "id": "ex:Paris", "types": ["Place"], "label": "Paris"},
+  {"kind": "entity", "id": "ex:Pierre_Curie", "types": ["Person"], "label": "Pierre Curie"},
+  {"kind": "entity", "id": "ex:R-hydrolysis-7", "types": ["Reaction"], "label": "hydrolysis reaction 7"},
+  {"kind": "entity", "id": "ex:TP53", "types": ["Gene"], "label": "TP53", "extensions": {"hif:weight": 3}},
+  {"kind": "entity", "id": "ex:Warszawa", "types": ["Place"], "label": "Warszawa"},
+  {"kind": "entity", "id": "ex:YUL", "types": ["Airport"], "label": "Montréal–Trudeau"},
+  {"kind": "entity", "id": "ex:YYZ", "types": ["Airport"], "label": "Toronto Pearson"},
+  {"kind": "entity", "id": "ex:anonymous_scribe", "types": ["Person"], "label": "an anonymous scribe"},
+  {"kind": "entity", "id": "ex:hypoglycaemia", "types": ["Outcome"], "label": "hypoglycaemia"},
+  {"kind": "entity", "id": "ex:insulin", "types": ["Drug"], "label": "insulin"},
+  {"kind": "entity", "id": "ex:metformin", "types": ["Drug"], "label": "metformin"},
+  {"kind": "entity", "id": "ex:Łódź", "types": ["Place"], "label": "Łódź"},
+  {"kind": "entity", "id": "ex:東京駅", "types": ["Station"], "label": "Tokyo Station"}
+ ]
+}

@@ -120,6 +120,11 @@ update. What the owner builds with what was learned is a separate matter, decide
 | C4 | Corpus: gold facts, split, question sets | P3a | Corpus version with changelog; each project records the version it was scored on |
 | C5 | Scorers: extraction, retrieval, memory, completion | P2, question sets from P3a | With C1 |
 
+An implementation of C2 passes its conformance test when no applicable scenario fails; a scenario is
+inapplicable only through a capability flag the implementation declares absent, and each such scenario is
+reported as a fidelity loss. The contracts are specified in
+[p2-role-aware-hif/DESIGN.md](p2-role-aware-hif/DESIGN.md).
+
 Contracts are versioned, not frozen. A change ships with its migration and reruns the gate of every
 consumer. Each project records the contract versions it consumed.
 
@@ -137,7 +142,7 @@ consumer. Each project records the contract versions it consumed.
 
 | Id | Project | Phase | Kind | Gate | Base updated | Publication | Contracts consumed |
 |---|---|---|---|---|---|---|---|
-| P2 | Role-aware HIF and shared contracts | 0 | capability | not started | | | |
+| P2 | Role-aware HIF and shared contracts | 0 | capability | passed | 2026-09-24 | | none (produces C1 khg-record/1.0.0, C2 khg-store/1.0.0, C3 khg-queue/1.0.0, C5 khg-scorers/1.0.0) |
 | P3a | Clean n-ary corpus | 0 | capability (data) | not started | | | |
 | P1 | Format and store bake-off | 1 | finding | not started | | | |
 | P3b | Completion replication | 1 | finding | not started | | | |

@@ -1,0 +1,93 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-KEY-005",
+ "title": "a deprecated fact never collides and is hidden by default",
+ "requires": [
+  "key_constraint",
+  "literal_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    "@f:pop-łódź-2019",
+    "@f:pop-łódź-2019-dep"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "find_by_key",
+   "args": {
+    "relation": "population",
+    "key": [
+     {
+      "role": "place",
+      "value": {
+       "entity": "ex:Łódź"
+      }
+     },
+     {
+      "role": "point_in_time",
+      "value": {
+       "literal": {
+        "datatype": "time",
+        "time": "+2019-00-00T00:00:00Z",
+        "precision": 9
+       }
+      }
+     }
+    ]
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:pop-łódź-2019"
+    ]
+   }
+  },
+  {
+   "op": "find_by_key",
+   "args": {
+    "relation": "population",
+    "key": [
+     {
+      "role": "place",
+      "value": {
+       "entity": "ex:Łódź"
+      }
+     },
+     {
+      "role": "point_in_time",
+      "value": {
+       "literal": {
+        "datatype": "time",
+        "time": "+2019-00-00T00:00:00Z",
+        "precision": 9
+       }
+      }
+     }
+    ],
+    "where": {
+     "rank": [
+      "preferred",
+      "normal",
+      "deprecated"
+     ]
+    }
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:pop-łódź-2019",
+     "f:pop-łódź-2019-dep"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "standards and consumers rulings (rank-aware invariant)"
+ ]
+}

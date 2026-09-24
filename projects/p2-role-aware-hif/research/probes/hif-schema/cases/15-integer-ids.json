@@ -1,0 +1,48 @@
+{
+  "network-type": "directed",
+  "nodes": [
+    {
+      "node": 1
+    },
+    {
+      "node": 2
+    },
+    {
+      "node": 3
+    }
+  ],
+  "edges": [
+    {
+      "edge": 10,
+      "attrs": {
+        "relation": "treats"
+      }
+    }
+  ],
+  "incidences": [
+    {
+      "edge": 10,
+      "node": 1,
+      "direction": "tail",
+      "attrs": {
+        "role": "treatment"
+      }
+    },
+    {
+      "edge": 10,
+      "node": 2,
+      "direction": "head",
+      "attrs": {
+        "role": "condition"
+      }
+    },
+    {
+      "edge": 10,
+      "node": 3,
+      "direction": "tail",
+      "attrs": {
+        "role": "dosage"
+      }
+    }
+  ]
+}

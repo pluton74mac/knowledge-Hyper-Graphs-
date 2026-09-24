@@ -1,0 +1,68 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-TIME-011",
+ "title": "precision 6 is an ordinal millennium; precision 8 is a decade",
+ "requires": [
+  "literal_values",
+  "valid_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    {
+     "@": "f:married-curie",
+     "set_binding": {
+      "b3": {
+       "literal": {
+        "datatype": "time",
+        "time": "+2000-00-00T00:00:00Z",
+        "precision": 6
+       }
+      },
+      "b4": {
+       "literal": {
+        "datatype": "time",
+        "time": "+2025-00-00T00:00:00Z",
+        "precision": 8
+       }
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "get",
+   "args": {
+    "id": "f:married-curie"
+   },
+   "then": {
+    "select": "derived.valid_time.possible",
+    "equals": [
+     "+1001-01-01T00:00:00Z",
+     "+2030-01-01T00:00:00Z"
+    ]
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:married-curie"
+   },
+   "then": {
+    "select": "derived.valid_time.definite",
+    "equals": [
+     "+2001-01-01T00:00:00Z",
+     "+2020-01-01T00:00:00Z"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "critique CONS-01 (precision 6 and 8)"
+ ]
+}

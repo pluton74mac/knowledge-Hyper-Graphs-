@@ -1,0 +1,112 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-VER-003",
+ "title": "adding an end date is a refinement; changing a core binding is refused",
+ "requires": [
+  "literal_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    {
+     "@": "f:king-13",
+     "drop_bindings": [
+      "b4"
+     ]
+    }
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:king-13",
+      "set_evidence": {
+       "e1": {
+        "supports": [
+         "b1",
+         "b2",
+         "b3"
+        ]
+       }
+      },
+      "add_evidence": [
+       {
+        "id": "e9",
+        "type": "curated",
+        "mode": "manual",
+        "source": {
+         "doc_id": "doc:scenario"
+        },
+        "supports": [
+         "b4"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "f:king-13",
+      2,
+      "versioned"
+     ]
+    ]
+   }
+  },
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:king-13",
+      "set_binding": {
+       "b1": {
+        "entity": "ex:LouisXIV"
+       }
+      },
+      "set_evidence": {
+       "e1": {
+        "supports": [
+         "b1",
+         "b2",
+         "b3"
+        ]
+       }
+      },
+      "add_evidence": [
+       {
+        "id": "e9",
+        "type": "curated",
+        "mode": "manual",
+        "source": {
+         "doc_id": "doc:scenario"
+        },
+        "supports": [
+         "b4"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "then": {
+    "error": "KHG-D013"
+   }
+  }
+ ],
+ "precedent": [
+  "B C2-S012 passed",
+  "A C2-18 passed",
+  "judge probe: C accepted Bob for Alice as version 2"
+ ]
+}

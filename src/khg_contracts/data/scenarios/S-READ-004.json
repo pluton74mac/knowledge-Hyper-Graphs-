@@ -1,0 +1,44 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-READ-004",
+ "title": "the status filter can include superseded facts",
+ "requires": [
+  "goals",
+  "literal_values",
+  "nesting",
+  "ordered_roles",
+  "special_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "load": "@fixture"
+  }
+ ],
+ "when": [
+  {
+   "op": "incident",
+   "args": {
+    "node": "ex:Maria_Skłodowska",
+    "where": {
+     "status": [
+      "asserted",
+      "superseded"
+     ]
+    }
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:born-skłodowska-kraków",
+     "f:born-skłodowska-warszawa",
+     "f:married-curie"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "A C2-07 passed"
+ ]
+}

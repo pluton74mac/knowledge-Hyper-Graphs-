@@ -1,0 +1,86 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-LIFE-004",
+ "title": "a superseding fact must be asserted when the event runs, so events cannot form a cycle",
+ "requires": [
+  "atomic_writes"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    {
+     "@": "f:born-skłodowska-kraków",
+     "set": {
+      "status": "asserted"
+     },
+     "drop": [
+      "status_ref"
+     ]
+    }
+   ]
+  },
+  {
+   "apply": {
+    "op": "supersede",
+    "id": "m:sup-1",
+    "superseded": [
+     "f:born-skłodowska-kraków"
+    ],
+    "records": [
+     "@f:born-skłodowska-warszawa"
+    ],
+    "reason": "correction",
+    "note": "birthplace is Warsaw, per the curated biography",
+    "evidence": [
+     {
+      "id": "e9",
+      "type": "curated",
+      "mode": "manual",
+      "source": {
+       "doc_id": "doc:scenario"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "when": [
+  {
+   "op": "apply",
+   "args": {
+    "event": {
+     "op": "supersede",
+     "id": "m:sup-2",
+     "superseded": [
+      "f:born-skłodowska-warszawa"
+     ],
+     "superseding": [
+      "f:born-skłodowska-kraków"
+     ],
+     "reason": "correction",
+     "evidence": [
+      {
+       "id": "e9",
+       "type": "curated",
+       "mode": "manual",
+       "source": {
+        "doc_id": "doc:scenario"
+       }
+      }
+     ]
+    }
+   },
+   "then": {
+    "error": "KHG-D011"
+   }
+  }
+ ],
+ "precedent": [
+  "B S053 (cycle, KHG-D012 stays a container check)",
+  "C S-SUP-003",
+  "critique SEM-11"
+ ]
+}

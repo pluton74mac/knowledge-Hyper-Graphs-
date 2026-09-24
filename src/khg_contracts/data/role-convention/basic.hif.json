@@ -1,0 +1,40 @@
+{
+ "network-type": "undirected",
+ "metadata": {
+  "role-convention": "1.0.0",
+  "role-vocabulary": {
+   "buyer": {
+    "label": "buyer"
+   },
+   "seller": {
+    "label": "seller"
+   },
+   "item": {
+    "label": "item sold"
+   }
+  }
+ },
+ "incidences": [
+  {
+   "edge": "sale-1",
+   "node": "alice",
+   "attrs": {
+    "role": "buyer"
+   }
+  },
+  {
+   "edge": "sale-1",
+   "node": "bob",
+   "attrs": {
+    "role": "seller"
+   }
+  },
+  {
+   "edge": "sale-1",
+   "node": "book-7",
+   "attrs": {
+    "role": "item"
+   }
+  }
+ ]
+}

@@ -1,0 +1,1673 @@
+{
+ "header": {
+  "kind": "header",
+  "format": "khg-record/1.0.0",
+  "document_id": "p2-gate-fixture",
+  "schema": {
+   "id": "p2-gate",
+   "version": "1.0.0",
+   "sha256": "sha256:cadd01cd3d37e09337d2fe70bd5572a32dff4a7d6f4a0ac26845c6c27d0e194d"
+  },
+  "content": "snapshot",
+  "complete": true,
+  "extensions": {
+   "hif:metadata": {
+    "title": "P2 gate fixture (adversarial)"
+   }
+  }
+ },
+ "records": [
+  {
+   "kind": "entity",
+   "id": "ex:AirCanada",
+   "types": [
+    "Airline"
+   ],
+   "label": "Air Canada"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:Chronicler_Ødegård",
+   "types": [
+    "Person"
+   ],
+   "label": "Ødegård the chronicler"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:HeLa",
+   "types": [
+    "CellLine"
+   ],
+   "label": "HeLa"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:KingOfFrance",
+   "types": [
+    "Position"
+   ],
+   "label": "King of France"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:Kraków",
+   "types": [
+    "Place"
+   ],
+   "label": "Kraków"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:LouisXIII",
+   "types": [
+    "Person"
+   ],
+   "label": "Louis XIII"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:LouisXIV",
+   "types": [
+    "Person"
+   ],
+   "label": "Louis XIV"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:Maria_Skłodowska",
+   "types": [
+    "Person"
+   ],
+   "label": "Maria Skłodowska"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:Mazarin",
+   "types": [
+    "Person"
+   ],
+   "label": "Jules Mazarin"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:Paris",
+   "types": [
+    "Place"
+   ],
+   "label": "Paris"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:Pierre_Curie",
+   "types": [
+    "Person"
+   ],
+   "label": "Pierre Curie"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:R-hydrolysis-7",
+   "types": [
+    "Reaction"
+   ],
+   "label": "hydrolysis reaction 7"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:TP53",
+   "types": [
+    "Gene"
+   ],
+   "label": "TP53",
+   "extensions": {
+    "hif:weight": 3
+   }
+  },
+  {
+   "kind": "entity",
+   "id": "ex:Warszawa",
+   "types": [
+    "Place"
+   ],
+   "label": "Warszawa"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:YUL",
+   "types": [
+    "Airport"
+   ],
+   "label": "Montréal–Trudeau"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:YYZ",
+   "types": [
+    "Airport"
+   ],
+   "label": "Toronto Pearson"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:anonymous_scribe",
+   "types": [
+    "Person"
+   ],
+   "label": "an anonymous scribe"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:hypoglycaemia",
+   "types": [
+    "Outcome"
+   ],
+   "label": "hypoglycaemia"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:insulin",
+   "types": [
+    "Drug"
+   ],
+   "label": "insulin"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:metformin",
+   "types": [
+    "Drug"
+   ],
+   "label": "metformin"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:Łódź",
+   "types": [
+    "Place"
+   ],
+   "label": "Łódź"
+  },
+  {
+   "kind": "entity",
+   "id": "ex:東京駅",
+   "types": [
+    "Station"
+   ],
+   "label": "Tokyo Station"
+  },
+  {
+   "kind": "hyperedge",
+   "id": "f:born-louis14-paris",
+   "relation": "born_in",
+   "status": "quoted",
+   "bindings": [
+    {
+     "bid": "b2",
+     "role": "birthplace",
+     "value": {
+      "entity": "ex:Paris"
+     }
+    },
+    {
+     "bid": "b1",
+     "role": "person",
+     "value": {
+      "entity": "ex:LouisXIV"
+     }
+    }
+   ],
+   "rank": "normal",
+   "visibility": "visible",
+   "derived": {
+    "arity": 2,
+    "core_arity": 2,
+    "statement_arity": 2,
+    "distinct_fillers": 2,
+    "content_key": "sha256:df92d889fc3c4b621bc4fd2d9252204b67c0e9229c0418d3340ea4e5068df87b",
+    "core_key": "sha256:951db995a22e618dc5420592db3e82bf1ff9a29835cf4a0757e6abb44808d2f2",
+    "key_digest": "sha256:cb883cd1ea7a2a2831e8a5221ef68c9845be93579ca95a5f8b5f32b634a511c1",
+    "valid_time": {
+     "kind": "invariant",
+     "definite": [
+      null,
+      null
+     ],
+     "possible": [
+      null,
+      null
+     ]
+    }
+   }
+  },
+  {
+   "kind": "hyperedge",
+   "id": "f:born-scribe",
+   "relation": "born_in",
+   "status": "asserted",
+   "bindings": [
+    {
+     "bid": "b2",
+     "role": "birthplace",
+     "value": {
+      "special": "somevalue"
+     }
+    },
+    {
+     "bid": "b1",
+     "role": "person",
+     "value": {
+      "entity": "ex:anonymous_scribe"
+     }
+    }
+   ],
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "curated",
+     "mode": "manual",
+     "source": {
+      "doc_id": "doc:scriptorium-notes"
+     },
+     "supports": [
+      "b1",
+      "b2"
+     ]
+    }
+   ],
+   "rank": "normal",
+   "visibility": "visible",
+   "derived": {
+    "arity": 2,
+    "core_arity": 2,
+    "statement_arity": 2,
+    "distinct_fillers": 2,
+    "content_key": "sha256:82f112ebd8e154b27eca18bd1156d9443ea948be047397881c31f2ebde78ca07",
+    "core_key": "sha256:c074944939ed1148054257798dba4de81b9b40ea5937176d3b641ca190a748d0",
+    "key_digest": "sha256:02c538d0ab6ccb0e1dc984fb957224180372bc2c829a6f2c777194d9a7177d97",
+    "valid_time": {
+     "kind": "invariant",
+     "definite": [
+      null,
+      null
+     ],
+     "possible": [
+      null,
+      null
+     ]
+    }
+   }
+  },
+  {
+   "kind": "hyperedge",
+   "id": "f:born-skłodowska-kraków",
+   "relation": "born_in",
+   "status": "superseded",
+   "bindings": [
+    {
+     "bid": "b2",
+     "role": "birthplace",
+     "value": {
+      "entity": "ex:Kraków"
+     }
+    },
+    {
+     "bid": "b1",
+     "role": "person",
+     "value": {
+      "entity": "ex:Maria_Skłodowska"
+     }
+    }
+   ],
+   "status_ref": "m:sup-1",
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "extracted",
+     "mode": "automatic",
+     "source": {
+      "doc_id": "doc:curie-wrong",
+      "doc_sha256": "sha256:685ed4266cfa7fb0429dee59b9feaa3cefde8894ac6556dce24e1894504a7a0d"
+     },
+     "selectors": [
+      {
+       "type": "quote",
+       "exact": "Maria Skłodowska was born in Kraków",
+       "prefix": "",
+       "suffix": "."
+      },
+      {
+       "type": "position",
+       "start": 0,
+       "end": 35
+      }
+     ],
+     "activity": {
+      "agent": "p2-fixture-extractor",
+      "agent_version": "0.0.1",
+      "model": "none",
+      "run_id": "fixture-run-1"
+     },
+     "event_hash": "sha256:8b599a516787cb80778d875faf091249745d212631ad697a087299bce618a02f",
+     "supports": [
+      "b1",
+      "b2"
+     ]
+    }
+   ],
+   "rank": "normal",
+   "visibility": "visible",
+   "derived": {
+    "arity": 2,
+    "core_arity": 2,
+    "statement_arity": 2,
+    "distinct_fillers": 2,
+    "content_key": "sha256:d9a2658de0515d274d8f4fe43ca4a0f9f7bf891ef3c3f045d899bd0bbc363ecb",
+    "core_key": "sha256:71548e8f244822e9d15aff6c0d57e7645705af3197ca9ec0ba1dcb452247af28",
+    "key_digest": "sha256:951a7bba11cca1f6c84ede16cd78c9502d08b7ab45060ff462b2ba4f0eea045c",
+    "valid_time": {
+     "kind": "invariant",
+     "definite": [
+      null,
+      null
+     ],
+     "possible": [
+      null,
+      null
+     ]
+    }
+   }
+  },
+  {
+   "kind": "hyperedge",
+   "id": "f:born-skłodowska-warszawa",
+   "relation": "born_in",
+   "status": "asserted",
+   "bindings": [
+    {
+     "bid": "b2",
+     "role": "birthplace",
+     "value": {
+      "entity": "ex:Warszawa"
+     }
+    },
+    {
+     "bid": "b1",
+     "role": "person",
+     "value": {
+      "entity": "ex:Maria_Skłodowska"
+     }
+    }
+   ],
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "curated",
+     "mode": "manual",
+     "source": {
+      "doc_id": "doc:biography"
+     },
+     "supports": [
+      "b1",
+      "b2"
+     ]
+    }
+   ],
+   "rank": "normal",
+   "visibility": "visible",
+   "derived": {
+    "arity": 2,
+    "core_arity": 2,
+    "statement_arity": 2,
+    "distinct_fillers": 2,
+    "content_key": "sha256:4aa58b51415f8bf3c3c4ad29621a617123f98d7251d9531e432bec2f537c1b52",
+    "core_key": "sha256:779ce307ca29fcb0d7ce8fea52918ed062b4f8cc356a1b62b3ec20e98949bb9e",
+    "key_digest": "sha256:951a7bba11cca1f6c84ede16cd78c9502d08b7ab45060ff462b2ba4f0eea045c",
+    "valid_time": {
+     "kind": "invariant",
+     "definite": [
+      null,
+      null
+     ],
+     "possible": [
+      null,
+      null
+     ]
+    }
+   }
+  },
+  {
+   "kind": "hyperedge",
+   "id": "f:cat-7",
+   "relation": "catalysed_by",
+   "status": "asserted",
+   "bindings": [
+    {
+     "bid": "b2",
+     "role": "catalyst",
+     "value": {
+      "special": "novalue"
+     }
+    },
+    {
+     "bid": "b1",
+     "role": "reaction",
+     "value": {
+      "entity": "ex:R-hydrolysis-7"
+     }
+    }
+   ],
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "curated",
+     "mode": "manual",
+     "source": {
+      "doc_id": "doc:lab-notebook-7"
+     },
+     "supports": [
+      "b1",
+      "b2"
+     ]
+    }
+   ],
+   "rank": "normal",
+   "visibility": "visible",
+   "derived": {
+    "arity": 1,
+    "core_arity": 1,
+    "statement_arity": 1,
+    "distinct_fillers": 1,
+    "content_key": "sha256:0eb6bb71ea77e466c0af6d101b55b62f1872ded932b9acd5b9bda655a9db2ace",
+    "core_key": "sha256:d00052d4a5f4054ec6f4a413d9a6c327f9e284eebcd01b1c498882c06b1c2bf8",
+    "key_digest": null,
+    "valid_time": {
+     "kind": "timeless",
+     "definite": [
+      null,
+      null
+     ],
+     "possible": [
+      null,
+      null
+     ]
+    }
+   }
+  },
+  {
+   "kind": "hyperedge",
+   "id": "f:claim-1",
+   "relation": "claims",
+   "status": "asserted",
+   "bindings": [
+    {
+     "bid": "b2",
+     "role": "claim",
+     "value": {
+      "fact": "f:born-louis14-paris"
+     }
+    },
+    {
+     "bid": "b1",
+     "role": "claimant",
+     "value": {
+      "entity": "ex:Chronicler_Ødegård"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "point_in_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1700-00-00T00:00:00Z",
+       "precision": 9,
+       "calendar": "julian"
+      }
+     }
+    }
+   ],
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "curated",
+     "mode": "manual",
+     "source": {
+      "doc_id": "doc:chronicle-1700"
+     },
+     "supports": [
+      "b1",
+      "b2",
+      "b3"
+     ]
+    }
+   ],
+   "rank": "normal",
+   "visibility": "visible",
+   "derived": {
+    "arity": 3,
+    "core_arity": 2,
+    "statement_arity": 3,
+    "distinct_fillers": 3,
+    "content_key": "sha256:7eafd5c0ed2b129c4a907a681f999f4097aeb5f3135140573942ea342abba32e",
+    "core_key": "sha256:21c14a21649c9805c42651dcc468013f879e1601cb623dc13dcb21e19885ce6c",
+    "key_digest": null,
+    "valid_time": {
+     "kind": "invariant",
+     "definite": [
+      null,
+      null
+     ],
+     "possible": [
+      null,
+      null
+     ]
+    }
+   }
+  },
+  {
+   "kind": "hyperedge",
+   "id": "f:coadmin-1",
+   "relation": "co_administration_causes",
+   "status": "asserted",
+   "bindings": [
+    {
+     "bid": "b1",
+     "role": "agent",
+     "value": {
+      "entity": "ex:insulin"
+     },
+     "extensions": {
+      "hif:weight": 0.25
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "agent",
+     "value": {
+      "entity": "ex:metformin"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "effect",
+     "value": {
+      "entity": "ex:hypoglycaemia"
+     }
+    }
+   ],
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "extracted",
+     "mode": "automatic",
+     "source": {
+      "doc_id": "doc:coadmin-note",
+      "doc_sha256": "sha256:242a3e2542b83f98e5adfa478e9d7ef5aa909708f7e184e88f51e5b09ff17368"
+     },
+     "selectors": [
+      {
+       "type": "quote",
+       "exact": "Metformin taken together with insulin can cause hypoglycaemia",
+       "prefix": "",
+       "suffix": "."
+      },
+      {
+       "type": "position",
+       "start": 0,
+       "end": 61
+      }
+     ],
+     "activity": {
+      "agent": "p2-fixture-extractor",
+      "agent_version": "0.0.1",
+      "model": "none",
+      "run_id": "fixture-run-1"
+     },
+     "confidence": {
+      "value": 7.5,
+      "scale": "llm-0-10"
+     },
+     "event_hash": "sha256:4ee38cb8eca2607e3f5f1a1411160729165f9bbbd5b4d8f5e274934ab5ab1b8a",
+     "supports": [
+      "b1",
+      "b2",
+      "b3"
+     ]
+    },
+    {
+     "id": "e2",
+     "type": "curated",
+     "mode": "manual",
+     "source": {
+      "doc_id": "doc:insulin-label"
+     },
+     "supports": [
+      "b1",
+      "b3"
+     ]
+    }
+   ],
+   "confidence": {
+    "value": 0.9,
+    "scale": "probability",
+    "scorer": {
+     "name": "fixture-belief",
+     "version": "0"
+    }
+   },
+   "rank": "normal",
+   "visibility": "visible",
+   "derived": {
+    "arity": 3,
+    "core_arity": 3,
+    "statement_arity": 3,
+    "distinct_fillers": 3,
+    "content_key": "sha256:2e1fa91042a796eb31b92e9f4256b4b62dfe65225ccd1ff88ec8cb795c0aeaa2",
+    "core_key": "sha256:6a8684bfec617930d21d2b243cbd115a6242dee92dcddff41f60b1760699288f",
+    "key_digest": null,
+    "valid_time": {
+     "kind": "timeless",
+     "definite": [
+      null,
+      null
+     ],
+     "possible": [
+      null,
+      null
+     ]
+    }
+   }
+  },
+  {
+   "kind": "hyperedge",
+   "id": "f:king-13",
+   "relation": "position_held",
+   "status": "asserted",
+   "bindings": [
+    {
+     "bid": "b4",
+     "role": "end_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1643-05-14T00:00:00Z",
+       "precision": 11,
+       "calendar": "gregorian"
+      }
+     }
+    },
+    {
+     "bid": "b1",
+     "role": "holder",
+     "value": {
+      "entity": "ex:LouisXIII"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "position",
+     "value": {
+      "entity": "ex:KingOfFrance"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1610-05-14T00:00:00Z",
+       "precision": 11,
+       "calendar": "gregorian"
+      }
+     }
+    }
+   ],
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "curated",
+     "mode": "manual",
+     "source": {
+      "doc_id": "doc:regnal-list"
+     },
+     "supports": [
+      "b1",
+      "b2",
+      "b3",
+      "b4"
+     ]
+    }
+   ],
+   "rank": "normal",
+   "visibility": "visible",
+   "derived": {
+    "arity": 2,
+    "core_arity": 2,
+    "statement_arity": 4,
+    "distinct_fillers": 2,
+    "content_key": "sha256:c82c9a137a581143d1ec1fc6af710f115e5cc7b6f50559eaaf9290a4fa307abd",
+    "core_key": "sha256:ed80ce32fee7e17e5f0528a56f7159e11e75d1778ba5d5152cf34902f786d01d",
+    "key_digest": "sha256:19b896a4c419199eeb0922934472e2ff229771ce0d87bcdf97bc79033ba64a96",
+    "valid_time": {
+     "kind": "period",
+     "end": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1643-05-14T00:00:00Z",
+       "precision": 11,
+       "calendar": "gregorian"
+      }
+     },
+     "start": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1610-05-14T00:00:00Z",
+       "precision": 11,
+       "calendar": "gregorian"
+      }
+     },
+     "definite": [
+      "+1610-05-15T00:00:00Z",
+      "+1643-05-14T00:00:00Z"
+     ],
+     "possible": [
+      "+1610-05-14T00:00:00Z",
+      "+1643-05-15T00:00:00Z"
+     ]
+    }
+   }
+  },
+  {
+   "kind": "hyperedge",
+   "id": "f:king-14",
+   "relation": "position_held",
+   "status": "asserted",
+   "bindings": [
+    {
+     "bid": "b4",
+     "role": "end_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1715-09-01T00:00:00Z",
+       "precision": 11,
+       "calendar": "gregorian"
+      }
+     }
+    },
+    {
+     "bid": "b1",
+     "role": "holder",
+     "value": {
+      "entity": "ex:LouisXIV"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "position",
+     "value": {
+      "entity": "ex:KingOfFrance"
+     }
+    },
+    {
+     "bid": "b5",
+     "role": "replaces",
+     "value": {
+      "entity": "ex:LouisXIII"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1643-05-14T00:00:00Z",
+       "precision": 11,
+       "calendar": "gregorian"
+      }
+     }
+    }
+   ],
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "curated",
+     "mode": "manual",
+     "source": {
+      "doc_id": "doc:regnal-list"
+     },
+     "supports": [
+      "b1",
+      "b2",
+      "b3",
+      "b4"
+     ]
+    },
+    {
+     "id": "e2",
+     "type": "extracted",
+     "mode": "automatic",
+     "source": {
+      "doc_id": "doc:louis-bio",
+      "doc_sha256": "sha256:56940b729460cb9a75d5d63ab1f907a502fef80530b4aabff2cd8e9c28a44b2f"
+     },
+     "selectors": [
+      {
+       "type": "quote",
+       "exact": "Louis XIV succeeded his father Louis XIII",
+       "prefix": "",
+       "suffix": " as King of "
+      },
+      {
+       "type": "position",
+       "start": 0,
+       "end": 41
+      }
+     ],
+     "activity": {
+      "agent": "p2-fixture-extractor",
+      "agent_version": "0.0.1",
+      "model": "none",
+      "run_id": "fixture-run-1"
+     },
+     "supports": [
+      "b1",
+      "b5"
+     ],
+     "event_hash": "sha256:87eaf6a24f9088334f463104155187b658be6cb501f09fd6acfe8641a987b18d"
+    }
+   ],
+   "rank": "normal",
+   "visibility": "visible",
+   "derived": {
+    "arity": 3,
+    "core_arity": 2,
+    "statement_arity": 5,
+    "distinct_fillers": 3,
+    "content_key": "sha256:2706f2b5162301565965492815a53ac7f16064ea742b03756cadbbafefd9d76b",
+    "core_key": "sha256:5779b98f13640fbf96488b9834c5ce7e10f02902541882a23c2d43f84f93e916",
+    "key_digest": "sha256:19b896a4c419199eeb0922934472e2ff229771ce0d87bcdf97bc79033ba64a96",
+    "valid_time": {
+     "kind": "period",
+     "end": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1715-09-01T00:00:00Z",
+       "precision": 11,
+       "calendar": "gregorian"
+      }
+     },
+     "start": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1643-05-14T00:00:00Z",
+       "precision": 11,
+       "calendar": "gregorian"
+      }
+     },
+     "definite": [
+      "+1643-05-15T00:00:00Z",
+      "+1715-09-01T00:00:00Z"
+     ],
+     "possible": [
+      "+1643-05-14T00:00:00Z",
+      "+1715-09-02T00:00:00Z"
+     ]
+    }
+   }
+  },
+  {
+   "kind": "hyperedge",
+   "id": "f:loop-yyz",
+   "relation": "flies_between",
+   "status": "asserted",
+   "bindings": [
+    {
+     "bid": "b1",
+     "role": "carrier",
+     "value": {
+      "entity": "ex:AirCanada"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "destination",
+     "value": {
+      "entity": "ex:YYZ"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "origin",
+     "value": {
+      "entity": "ex:YYZ"
+     }
+    }
+   ],
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "curated",
+     "mode": "manual",
+     "source": {
+      "doc_id": "doc:sightseeing-flight"
+     },
+     "supports": [
+      "b1",
+      "b2",
+      "b3"
+     ]
+    }
+   ],
+   "rank": "normal",
+   "visibility": "visible",
+   "derived": {
+    "arity": 3,
+    "core_arity": 3,
+    "statement_arity": 3,
+    "distinct_fillers": 2,
+    "content_key": "sha256:196b135bdbabedf87dfdfaafb6de08caa05bb4e13b404866f63a992b3996e1e3",
+    "core_key": "sha256:2aa477542f7ed11e5d5e6eee431e409fcef1a9dd4a536e9bb6f02a20df9c212e",
+    "key_digest": null,
+    "valid_time": {
+     "kind": "timeless",
+     "definite": [
+      null,
+      null
+     ],
+     "possible": [
+      null,
+      null
+     ]
+    }
+   }
+  },
+  {
+   "kind": "hyperedge",
+   "id": "f:married-curie",
+   "relation": "married",
+   "status": "asserted",
+   "bindings": [
+    {
+     "bid": "b4",
+     "role": "end_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1906-04-19T00:00:00Z",
+       "precision": 11,
+       "calendar": "gregorian"
+      }
+     }
+    },
+    {
+     "bid": "b1",
+     "role": "spouse",
+     "value": {
+      "entity": "ex:Maria_Skłodowska"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "spouse",
+     "value": {
+      "entity": "ex:Pierre_Curie"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1895-07-26T00:00:00Z",
+       "precision": 11,
+       "calendar": "gregorian"
+      }
+     }
+    }
+   ],
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "curated",
+     "mode": "manual",
+     "source": {
+      "doc_id": "doc:biography"
+     },
+     "supports": [
+      "b1",
+      "b2",
+      "b3",
+      "b4"
+     ]
+    }
+   ],
+   "rank": "normal",
+   "visibility": "visible",
+   "derived": {
+    "arity": 2,
+    "core_arity": 2,
+    "statement_arity": 4,
+    "distinct_fillers": 2,
+    "content_key": "sha256:644997ac7ddbf79d8e94bd690cae8c0cee714de760add2a48bcbef49c4afcef6",
+    "core_key": "sha256:7033c2a33b10f7a3525f502740cd848a42d881809536af1839926cddece645de",
+    "key_digest": null,
+    "valid_time": {
+     "kind": "period",
+     "end": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1906-04-19T00:00:00Z",
+       "precision": 11,
+       "calendar": "gregorian"
+      }
+     },
+     "start": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1895-07-26T00:00:00Z",
+       "precision": 11,
+       "calendar": "gregorian"
+      }
+     },
+     "definite": [
+      "+1895-07-27T00:00:00Z",
+      "+1906-04-19T00:00:00Z"
+     ],
+     "possible": [
+      "+1895-07-26T00:00:00Z",
+      "+1906-04-20T00:00:00Z"
+     ]
+    }
+   }
+  },
+  {
+   "kind": "hyperedge",
+   "id": "f:pop-łódź-2019",
+   "relation": "population",
+   "status": "asserted",
+   "bindings": [
+    {
+     "bid": "b1",
+     "role": "place",
+     "value": {
+      "entity": "ex:Łódź"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "point_in_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2019-00-00T00:00:00Z",
+       "precision": 9,
+       "calendar": "gregorian"
+      }
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "quantity",
+     "value": {
+      "literal": {
+       "datatype": "quantity",
+       "amount": "+679941",
+       "unit": "1"
+      }
+     }
+    }
+   ],
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "imported",
+     "mode": "automatic",
+     "source": {
+      "doc_id": "doc:stat-yearbook-2020"
+     },
+     "reference": [
+      {
+       "role": "point_in_time",
+       "value": {
+        "literal": {
+         "datatype": "time",
+         "time": "+2020-00-00T00:00:00Z",
+         "precision": 9
+        }
+       }
+      }
+     ],
+     "supports": [
+      "b1",
+      "b2",
+      "b3"
+     ]
+    }
+   ],
+   "rank": "normal",
+   "visibility": "visible",
+   "derived": {
+    "arity": 3,
+    "core_arity": 2,
+    "statement_arity": 3,
+    "distinct_fillers": 3,
+    "content_key": "sha256:17a6c753c47f45740a7c6590d2a804a30b2805c4a64e5e03237c26cc21f4a866",
+    "core_key": "sha256:9fda73500946ac3ac4db01c041f890ad30908c86fd80b348c445930e94148c76",
+    "key_digest": "sha256:a673846d26a2b964e781679a6b6c2ec47252e57d9be1b147a2d06f1e85b4452d",
+    "valid_time": {
+     "kind": "invariant",
+     "definite": [
+      null,
+      null
+     ],
+     "possible": [
+      null,
+      null
+     ]
+    }
+   }
+  },
+  {
+   "kind": "hyperedge",
+   "id": "f:pop-łódź-2019-dep",
+   "relation": "population",
+   "status": "asserted",
+   "bindings": [
+    {
+     "bid": "b1",
+     "role": "place",
+     "value": {
+      "entity": "ex:Łódź"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "point_in_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2019-00-00T00:00:00Z",
+       "precision": 9,
+       "calendar": "gregorian"
+      }
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "quantity",
+     "value": {
+      "literal": {
+       "datatype": "quantity",
+       "amount": "+685285",
+       "unit": "1"
+      }
+     }
+    }
+   ],
+   "rank": "deprecated",
+   "rank_reason": [
+    "wd:Q41755623"
+   ],
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "imported",
+     "mode": "automatic",
+     "source": {
+      "doc_id": "doc:old-estimate"
+     },
+     "supports": [
+      "b1",
+      "b2",
+      "b3"
+     ]
+    }
+   ],
+   "visibility": "visible",
+   "derived": {
+    "arity": 3,
+    "core_arity": 2,
+    "statement_arity": 3,
+    "distinct_fillers": 3,
+    "content_key": "sha256:cdbf3ee133a0ab3a08fe6967a1d45c57815136e52b9b5ea6ef61b24dbb98168c",
+    "core_key": "sha256:7b4df3114930a36591ae83441ccdd71971236d344d7c18e38225d5fbb8503404",
+    "key_digest": "sha256:a673846d26a2b964e781679a6b6c2ec47252e57d9be1b147a2d06f1e85b4452d",
+    "valid_time": {
+     "kind": "invariant",
+     "definite": [
+      null,
+      null
+     ],
+     "possible": [
+      null,
+      null
+     ]
+    }
+   }
+  },
+  {
+   "kind": "hyperedge",
+   "id": "f:reg-1",
+   "relation": "regulates",
+   "status": "asserted",
+   "bindings": [
+    {
+     "bid": "b1",
+     "role": "context",
+     "value": {
+      "entity": "ex:HeLa"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "regulator",
+     "value": {
+      "entity": "ex:TP53"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "target",
+     "value": {
+      "entity": "ex:TP53"
+     },
+     "extensions": {
+      "ex:curation": {
+       "checked": true,
+       "by": [
+        "curator:a",
+        "curator:b"
+       ]
+      }
+     }
+    }
+   ],
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "curated",
+     "mode": "manual",
+     "source": {
+      "doc_id": "doc:review-p53"
+     },
+     "supports": [
+      "b1",
+      "b2",
+      "b3"
+     ]
+    }
+   ],
+   "extensions": {
+    "hif:weight": 0.5
+   },
+   "rank": "normal",
+   "visibility": "visible",
+   "derived": {
+    "arity": 3,
+    "core_arity": 2,
+    "statement_arity": 3,
+    "distinct_fillers": 2,
+    "content_key": "sha256:ff8b17dd21b3dca402e73e38daf3d17e66505bf2826657a679e49eff14a62ed8",
+    "core_key": "sha256:251c1d89bdb80a0acd99dcea7da75ce0f323db4bdc99bb486501e05497906158",
+    "key_digest": null,
+    "valid_time": {
+     "kind": "invariant",
+     "definite": [
+      null,
+      null
+     ],
+     "possible": [
+      null,
+      null
+     ]
+    }
+   }
+  },
+  {
+   "kind": "hyperedge",
+   "id": "f:route-1",
+   "relation": "flight_route",
+   "status": "asserted",
+   "bindings": [
+    {
+     "bid": "b1",
+     "role": "carrier",
+     "value": {
+      "entity": "ex:AirCanada"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "stop",
+     "value": {
+      "entity": "ex:YYZ"
+     },
+     "position": 1
+    },
+    {
+     "bid": "b3",
+     "role": "stop",
+     "value": {
+      "entity": "ex:YUL"
+     },
+     "position": 2
+    },
+    {
+     "bid": "b4",
+     "role": "stop",
+     "value": {
+      "entity": "ex:YYZ"
+     },
+     "position": 3
+    }
+   ],
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "extracted",
+     "mode": "automatic",
+     "source": {
+      "doc_id": "doc:route-note",
+      "doc_sha256": "sha256:8b395a98af191e8344b7feeb58aa893408f6ff9ae0cb4a2eb91add710f7e94c4"
+     },
+     "selectors": [
+      {
+       "type": "quote",
+       "exact": "Toronto → Montréal → Toronto",
+       "prefix": "anada flies ",
+       "suffix": " every day."
+      },
+      {
+       "type": "position",
+       "start": 29,
+       "end": 57
+      }
+     ],
+     "activity": {
+      "agent": "p2-fixture-extractor",
+      "agent_version": "0.0.1",
+      "model": "none",
+      "run_id": "fixture-run-1"
+     },
+     "event_hash": "sha256:24fd8e742587e8838772bb3b65dac106a564dbeafa258297616717fa32bbfbd9",
+     "supports": [
+      "b1",
+      "b2",
+      "b3",
+      "b4"
+     ]
+    }
+   ],
+   "source_text": "Note by 𠮷田: Air Canada flies Toronto → Montréal → Toronto every day.",
+   "extensions": {
+    "hif:weight": 2
+   },
+   "rank": "normal",
+   "visibility": "visible",
+   "derived": {
+    "arity": 4,
+    "core_arity": 4,
+    "statement_arity": 4,
+    "distinct_fillers": 3,
+    "content_key": "sha256:434815622cccc5b15f4ad834fd86d7fbe906f8b804bc73ed170c2e58be3d3034",
+    "core_key": "sha256:216b9e141e1d5993d68b9f5ebfc996b11822afa15cf0a608b27eb551f8e035c5",
+    "key_digest": null,
+    "valid_time": {
+     "kind": "timeless",
+     "definite": [
+      null,
+      null
+     ],
+     "possible": [
+      null,
+      null
+     ]
+    }
+   }
+  },
+  {
+   "kind": "hyperedge",
+   "id": "f:station-東京",
+   "relation": "station_profile",
+   "status": "asserted",
+   "bindings": [
+    {
+     "bid": "b7",
+     "role": "active",
+     "value": {
+      "literal": {
+       "datatype": "boolean",
+       "value": true
+      }
+     }
+    },
+    {
+     "bid": "b4",
+     "role": "code",
+     "value": {
+      "literal": {
+       "datatype": "string",
+       "value": "TYO"
+      }
+     }
+    },
+    {
+     "bid": "b5",
+     "role": "elevation",
+     "value": {
+      "literal": {
+       "datatype": "quantity",
+       "amount": "+3.5",
+       "unit": "wd:Q11573",
+       "lower": "+3",
+       "upper": "+4"
+      }
+     }
+    },
+    {
+     "bid": "b8",
+     "role": "homepage",
+     "value": {
+      "literal": {
+       "datatype": "iri",
+       "value": "https://www.tokyostationcity.com/"
+      }
+     }
+    },
+    {
+     "bid": "b9",
+     "role": "location",
+     "value": {
+      "literal": {
+       "datatype": "geo",
+       "lat": "+35.6812",
+       "lon": "+139.7671",
+       "precision": "+0.0001",
+       "globe": "wd:Q2"
+      }
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "name",
+     "value": {
+      "literal": {
+       "datatype": "lang_string",
+       "value": "Tokyo Station",
+       "lang": "en"
+      }
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "name",
+     "value": {
+      "literal": {
+       "datatype": "lang_string",
+       "value": "東京駅",
+       "lang": "ja"
+      }
+     }
+    },
+    {
+     "bid": "b6",
+     "role": "opened",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1914-12-20T00:00:00Z",
+       "precision": 11,
+       "calendar": "gregorian"
+      }
+     }
+    },
+    {
+     "bid": "b1",
+     "role": "station",
+     "value": {
+      "entity": "ex:東京駅"
+     }
+    }
+   ],
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "curated",
+     "mode": "manual",
+     "source": {
+      "doc_id": "doc:station-guide"
+     },
+     "supports": [
+      "b1",
+      "b2",
+      "b3",
+      "b4",
+      "b5",
+      "b6",
+      "b7",
+      "b8",
+      "b9"
+     ]
+    }
+   ],
+   "rank": "normal",
+   "visibility": "visible",
+   "derived": {
+    "arity": 9,
+    "core_arity": 1,
+    "statement_arity": 9,
+    "distinct_fillers": 9,
+    "content_key": "sha256:2e5c6ed52a0b2f0633cfdcfacdaf5bf6a593192ffb664a93d42a1ba188babbe2",
+    "core_key": "sha256:2bd0e1ea33455ea6c095b24b4baec0ec9e33165f39dd5878cb931bab099a422a",
+    "key_digest": null,
+    "valid_time": {
+     "kind": "timeless",
+     "definite": [
+      null,
+      null
+     ],
+     "possible": [
+      null,
+      null
+     ]
+    }
+   }
+  },
+  {
+   "kind": "hyperedge",
+   "id": "g:who-1774",
+   "relation": "position_held",
+   "status": "goal",
+   "bindings": [
+    {
+     "bid": "b1",
+     "role": "holder",
+     "value": {
+      "unbound": {
+       "var": "who",
+       "expect": {
+        "entity_types": [
+         "Person"
+        ]
+       }
+      }
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "position",
+     "value": {
+      "entity": "ex:KingOfFrance"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1774-05-10T00:00:00Z",
+       "precision": 11,
+       "calendar": "gregorian"
+      }
+     }
+    }
+   ],
+   "goal": {
+    "brief": "Who became King of France on 10 May 1774?",
+    "owner": "agent:history-desk"
+   },
+   "rank": "normal",
+   "visibility": "visible",
+   "derived": {
+    "n_bound": 2,
+    "n_unbound": 1
+   }
+  },
+  {
+   "kind": "hyperedge",
+   "id": "m:sup-1",
+   "relation": "khg:supersedes",
+   "status": "asserted",
+   "bindings": [
+    {
+     "bid": "b2",
+     "role": "khg:superseded",
+     "value": {
+      "fact": "f:born-skłodowska-kraków"
+     }
+    },
+    {
+     "bid": "b1",
+     "role": "khg:superseding",
+     "value": {
+      "fact": "f:born-skłodowska-warszawa"
+     }
+    }
+   ],
+   "reason": "correction",
+   "note": "birthplace is Warsaw, per the curated biography",
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "curated",
+     "mode": "manual",
+     "source": {
+      "doc_id": "doc:biography"
+     },
+     "supports": [
+      "b1",
+      "b2"
+     ]
+    }
+   ],
+   "rank": "normal",
+   "visibility": "visible"
+  }
+ ]
+}

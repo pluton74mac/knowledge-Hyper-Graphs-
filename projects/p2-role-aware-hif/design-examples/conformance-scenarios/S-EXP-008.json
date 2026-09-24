@@ -1,0 +1,49 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-EXP-008",
+ "title": "a write whose transaction time precedes the store's latest is refused",
+ "requires": [
+  "atomic_writes",
+  "transaction_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    "@f:reg-1"
+   ],
+   "at": "2026-10-01T00:00:05Z"
+  }
+ ],
+ "when": [
+  {
+   "op": "apply",
+   "args": {
+    "event": {
+     "op": "add_evidence",
+     "target": "f:reg-1",
+     "evidence": [
+      {
+       "id": "e9",
+       "type": "curated",
+       "mode": "manual",
+       "source": {
+        "doc_id": "doc:scenario"
+       }
+      }
+     ]
+    }
+   },
+   "then": {
+    "error": "KHG-D018"
+   },
+   "at": "2026-10-01T00:00:04Z"
+  }
+ ],
+ "precedent": [
+  "A C2-25",
+  "C C-TX-ORDER"
+ ]
+}

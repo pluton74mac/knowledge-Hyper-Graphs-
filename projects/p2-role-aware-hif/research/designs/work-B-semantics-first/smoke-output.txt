@@ -1,0 +1,29 @@
+== smoke test: queue -> structural lint -> store -> export
+   lint: linted pass []
+   accept: accepted {'store_ids': ['f:king-14'], 'tx': 3}
+   export khg-json valid: True | export HIF valid (vendored, profile): True True
+   exported records == fixture records (ignoring store-assigned version/recorded_at): True
+   action log: [('l-000001', 'submit', None, 'pending', 'agent'), ('l-000002', 'lint', 'pending', 'linted', 'linter'), ('l-000003', 'accept', 'linted', 'accepted', 'person')]
+== scenarios
+   PASS S-ASAT-01 as-at before the supersession sees the old belief: got 'asserted'
+   PASS S-ASAT-02 as-at now sees the revision: got 'superseded'
+   PASS S-WALK-01 forward walk: got [{'from': 'f:born-skłodowska-kraków', 'via': 'm:sup-1', 'reason': 'correction', 'to': ['f:born-skłodowska-warszawa']}]
+   PASS S-WALK-02 backward walk: got [['f:born-skłodowska-kraków']]
+   PASS S-KEY-01 key timeline ordered by start: got ['f:king-13', 'f:king-14']
+   PASS S-KEY-02 by_key as of 1650-01-01: got ['f:king-14']
+   PASS S-KEY-03 overlapping put is refused atomically: got 'KHG-D016'
+   PASS S-KEY-04 refused put wrote nothing: got None
+   PASS S-ID-01 changing a core binding in a new version is refused: got 'KHG-D013'
+   PASS S-ID-02 appending evidence makes a new version: got 'versioned'
+   PASS S-ID-03 identical put is a no-op: got 'noop'
+   PASS S-Q-01 a candidate cannot enter the store: got 'KHG-D017'
+   PASS S-INC-01 incident on TP53 (both roles, one fact): got ['f:reg-1']
+   PASS S-INC-02 incident on TP53 as target: got ['f:reg-1']
+   PASS S-INC-03 default status filter hides superseded and quoted: got ['f:born-skłodowska-warszawa']
+   PASS S-INC-04 incident on a fact (nesting): got ['f:claim-1']
+   PASS S-FIND-01 at_least with a repeated role: got ['f:coadmin-1']
+   PASS S-FIND-02 exact rejects a partial pattern: got []
+== C3 records: khg-queue/1.0.0 under jsonschema and fastjsonschema, and the fold over the log
+   PASS S-Q-02 queue item, 3 log entries and a verdict are valid under both validators: got True
+   PASS S-Q-03 the log folds without a Q005/Q007: got []
+   PASS S-Q-04 the verdict's keys equal the design's example (§7.3): got ('sha256:187ca682671fd4daaa6944fced4e05b7b9198b6bf0b4c29e6bb402d61bf9ecd2', 'sha256:852ea9ca3abcc722e33e903dcdab88f5895cef077241fdf339ee1db0aeb55524')

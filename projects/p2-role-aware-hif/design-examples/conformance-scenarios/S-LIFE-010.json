@@ -1,0 +1,49 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-LIFE-010",
+ "title": "a goal with an unbound slot cannot become asserted",
+ "requires": [
+  "goals",
+  "literal_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    "@g:who-1774"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "apply",
+   "args": {
+    "event": {
+     "op": "transition",
+     "targets": [
+      "g:who-1774"
+     ],
+     "to": "asserted",
+     "evidence": [
+      {
+       "id": "e9",
+       "type": "curated",
+       "mode": "manual",
+       "source": {
+        "doc_id": "doc:scenario"
+       }
+      }
+     ]
+    }
+   },
+   "then": {
+    "error": "KHG-C005"
+   }
+  }
+ ],
+ "precedent": [
+  "C S-LIFE-002"
+ ]
+}

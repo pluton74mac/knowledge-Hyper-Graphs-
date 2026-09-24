@@ -1,0 +1,18 @@
+{
+  "khg_scenario": "khg-scenario/1.0.0",
+  "id": "C2-S040",
+  "title": "a put that leaves two asserted facts on one temporal key with definitely overlapping valid time is refused atomically",
+  "requires": ["key_constraint", "atomic_batch", "valid_time"],
+  "schema": "p2-gate.schema.json",
+  "given": [
+    {"at": "2026-10-01T00:00:01Z", "put": ["@fixture:ex:LouisXIII", "@fixture:ex:LouisXIV", "@fixture:ex:KingOfFrance", "@fixture:f:king-13"]}
+  ],
+  "when": [
+    {"op": "put", "args": {"records": [{"@fixture": "f:king-14", "set": {"id": "f:king-14b"},
+                                        "set_binding": {"b3": {"literal": {"datatype": "time", "time": "+1640-01-01T00:00:00Z", "precision": 11}}}}]},
+     "then": {"error": "KHG-D016"}},
+    {"op": "get", "args": {"id": "f:king-14b"}, "then": {"equals": null}},
+    {"op": "by_key", "args": {"relation": "position_held", "key_bindings": [{"role": "position", "value": {"entity": "ex:KingOfFrance"}}]},
+     "then": {"select": "ids", "equals": ["f:king-13"]}}
+  ]
+}

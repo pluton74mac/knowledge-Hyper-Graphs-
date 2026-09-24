@@ -1,0 +1,635 @@
+{
+ "$schema": "http://json-schema.org/draft-07/schema#",
+ "$id": "urn:khg-contracts:schema:c1-document:1.0.0",
+ "title": "KHG contracts C1 document 1.0.0 (JSON container; JSONL lines use #/definitions/node, #/definitions/edge and a first line {\"metadata\": ...})",
+ "type": "object",
+ "required": [
+  "metadata",
+  "edges"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "metadata": {
+   "$ref": "#/definitions/metadata"
+  },
+  "nodes": {
+   "type": "array",
+   "items": {
+    "$ref": "#/definitions/node"
+   }
+  },
+  "edges": {
+   "type": "array",
+   "items": {
+    "$ref": "#/definitions/edge"
+   }
+  }
+ },
+ "definitions": {
+  "binding": {
+   "type": "object",
+   "required": [
+    "role"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "role": {
+     "$ref": "#/definitions/name"
+    },
+    "node": {
+     "$ref": "#/definitions/id"
+    },
+    "literal": {
+     "$ref": "#/definitions/literal"
+    },
+    "edge": {
+     "$ref": "#/definitions/id"
+    },
+    "special": {
+     "enum": [
+      "somevalue",
+      "novalue",
+      "unbound"
+     ]
+    },
+    "direction": {
+     "$ref": "#/definitions/direction"
+    },
+    "position": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "evidence": {
+     "type": "array",
+     "minItems": 1,
+     "uniqueItems": true,
+     "items": {
+      "type": "string",
+      "minLength": 1
+     }
+    },
+    "attrs": {
+     "type": "object",
+     "propertyNames": {
+      "not": {
+       "enum": [
+        "role",
+        "position",
+        "evidence"
+       ]
+      }
+     }
+    },
+    "weight": {
+     "type": "number"
+    }
+   },
+   "oneOf": [
+    {
+     "required": [
+      "node"
+     ]
+    },
+    {
+     "required": [
+      "literal"
+     ]
+    },
+    {
+     "required": [
+      "edge"
+     ]
+    },
+    {
+     "required": [
+      "special"
+     ]
+    }
+   ]
+  },
+  "confidence": {
+   "type": "object",
+   "required": [
+    "value",
+    "scale"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "value": {
+     "type": "number"
+    },
+    "scale": {
+     "enum": [
+      "probability",
+      "score"
+     ]
+    },
+    "min": {
+     "type": "number"
+    },
+    "max": {
+     "type": "number"
+    }
+   },
+   "if": {
+    "properties": {
+     "scale": {
+      "const": "score"
+     }
+    }
+   },
+   "then": {
+    "required": [
+     "min",
+     "max"
+    ]
+   },
+   "else": {
+    "properties": {
+     "value": {
+      "minimum": 0,
+      "maximum": 1
+     }
+    },
+    "not": {
+     "anyOf": [
+      {
+       "required": [
+        "min"
+       ]
+      },
+      {
+       "required": [
+        "max"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  "datetime": {
+   "type": "string",
+   "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]{1,6})?Z$"
+  },
+  "decimal": {
+   "type": "string",
+   "pattern": "^(0|-?[1-9][0-9]*|-?(0|[1-9][0-9]*)\\.[0-9]*[1-9])$"
+  },
+  "direction": {
+   "enum": [
+    "tail",
+    "head"
+   ]
+  },
+  "edge": {
+   "type": "object",
+   "required": [
+    "edge",
+    "relation",
+    "status",
+    "bindings"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "edge": {
+     "$ref": "#/definitions/id"
+    },
+    "relation": {
+     "$ref": "#/definitions/name"
+    },
+    "status": {
+     "$ref": "#/definitions/status"
+    },
+    "bindings": {
+     "type": "array",
+     "minItems": 1,
+     "items": {
+      "$ref": "#/definitions/binding"
+     }
+    },
+    "valid": {
+     "$ref": "#/definitions/valid"
+    },
+    "evidence": {
+     "type": "array",
+     "items": {
+      "$ref": "#/definitions/evidence"
+     }
+    },
+    "rank": {
+     "enum": [
+      "preferred",
+      "normal",
+      "deprecated"
+     ]
+    },
+    "visibility": {
+     "enum": [
+      "visible",
+      "suppressed"
+     ]
+    },
+    "recorded": {
+     "$ref": "#/definitions/datetime"
+    },
+    "schema": {
+     "$ref": "#/definitions/schemaRef"
+    },
+    "superseded-by": {
+     "type": "array",
+     "minItems": 1,
+     "uniqueItems": true,
+     "items": {
+      "$ref": "#/definitions/id"
+     }
+    },
+    "attrs": {
+     "type": "object",
+     "propertyNames": {
+      "not": {
+       "enum": [
+        "relation",
+        "status",
+        "valid",
+        "evidence",
+        "rank",
+        "visibility",
+        "recorded",
+        "schema",
+        "superseded-by"
+       ]
+      }
+     }
+    },
+    "weight": {
+     "type": "number"
+    }
+   },
+   "if": {
+    "properties": {
+     "status": {
+      "const": "superseded"
+     }
+    }
+   },
+   "then": {
+    "required": [
+     "superseded-by"
+    ]
+   },
+   "else": {
+    "not": {
+     "required": [
+      "superseded-by"
+     ]
+    }
+   }
+  },
+  "evidence": {
+   "type": "object",
+   "required": [
+    "id",
+    "type"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string",
+     "minLength": 1
+    },
+    "type": {
+     "enum": [
+      "curated",
+      "imported",
+      "extracted",
+      "inferred"
+     ]
+    },
+    "source": {
+     "type": "string",
+     "minLength": 1
+    },
+    "digest": {
+     "type": "string",
+     "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "exact": {
+     "type": "string",
+     "minLength": 1
+    },
+    "prefix": {
+     "type": "string"
+    },
+    "suffix": {
+     "type": "string"
+    },
+    "start": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "end": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "reference": {
+     "type": "array",
+     "minItems": 1,
+     "items": {
+      "$ref": "#/definitions/binding"
+     }
+    },
+    "agent": {
+     "type": "string",
+     "minLength": 1
+    },
+    "version": {
+     "type": "string",
+     "minLength": 1
+    },
+    "run": {
+     "type": "string",
+     "minLength": 1
+    },
+    "model": {
+     "type": "string",
+     "minLength": 1
+    },
+    "prompt": {
+     "type": "string",
+     "minLength": 1
+    },
+    "params": {
+     "type": "object"
+    },
+    "confidence": {
+     "$ref": "#/definitions/confidence"
+    }
+   },
+   "dependencies": {
+    "start": [
+     "end",
+     "digest",
+     "exact"
+    ],
+    "end": [
+     "start"
+    ],
+    "prefix": [
+     "exact"
+    ],
+    "suffix": [
+     "exact"
+    ]
+   }
+  },
+  "id": {
+   "type": "string",
+   "minLength": 1,
+   "pattern": "^(?!_:)[^\\u0000-\\u001f\\u007f]+$"
+  },
+  "literal": {
+   "type": "object",
+   "required": [
+    "datatype",
+    "value"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "datatype": {
+     "enum": [
+      "string",
+      "text",
+      "iri",
+      "quantity",
+      "time"
+     ]
+    },
+    "value": {
+     "type": "string"
+    },
+    "lang": {
+     "type": "string",
+     "pattern": "^[A-Za-z]{2,3}(-[A-Za-z0-9]{1,8})*$"
+    },
+    "unit": {
+     "type": "string",
+     "minLength": 1
+    },
+    "lower": {
+     "$ref": "#/definitions/decimal"
+    },
+    "upper": {
+     "$ref": "#/definitions/decimal"
+    },
+    "calendar": {
+     "enum": [
+      "julian"
+     ]
+    }
+   },
+   "allOf": [
+    {
+     "if": {
+      "properties": {
+       "datatype": {
+        "const": "quantity"
+       }
+      }
+     },
+     "then": {
+      "required": [
+       "unit"
+      ],
+      "properties": {
+       "value": {
+        "$ref": "#/definitions/decimal"
+       }
+      }
+     },
+     "else": {
+      "not": {
+       "anyOf": [
+        {
+         "required": [
+          "unit"
+         ]
+        },
+        {
+         "required": [
+          "lower"
+         ]
+        },
+        {
+         "required": [
+          "upper"
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "datatype": {
+        "const": "text"
+       }
+      }
+     },
+     "then": {
+      "required": [
+       "lang"
+      ]
+     },
+     "else": {
+      "not": {
+       "required": [
+        "lang"
+       ]
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "datatype": {
+        "const": "time"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "value": {
+        "$ref": "#/definitions/timeValue"
+       }
+      }
+     },
+     "else": {
+      "not": {
+       "required": [
+        "calendar"
+       ]
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "datatype": {
+        "const": "iri"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "value": {
+        "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+       }
+      }
+     }
+    }
+   ]
+  },
+  "metadata": {
+   "type": "object",
+   "required": [
+    "khg-profile",
+    "khg-schema"
+   ],
+   "properties": {
+    "khg-profile": {
+     "$ref": "#/definitions/profileVersion"
+    },
+    "khg-schema": {
+     "$ref": "#/definitions/schemaRef"
+    }
+   },
+   "propertyNames": {
+    "not": {
+     "enum": [
+      "role-convention",
+      "hif-schema",
+      "hif-schema-sha256"
+     ]
+    }
+   }
+  },
+  "name": {
+   "type": "string",
+   "pattern": "^(?!_:)[^\\s/:\\u0000-\\u001f\\u007f]+(:[^\\s/:\\u0000-\\u001f\\u007f]+)?$"
+  },
+  "node": {
+   "type": "object",
+   "required": [
+    "node"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "node": {
+     "$ref": "#/definitions/id"
+    },
+    "types": {
+     "type": "array",
+     "uniqueItems": true,
+     "items": {
+      "$ref": "#/definitions/name"
+     }
+    },
+    "label": {
+     "type": "string"
+    },
+    "attrs": {
+     "type": "object",
+     "propertyNames": {
+      "not": {
+       "enum": [
+        "types",
+        "label",
+        "literal",
+        "special",
+        "edge"
+       ]
+      }
+     }
+    },
+    "weight": {
+     "type": "number"
+    }
+   }
+  },
+  "profileVersion": {
+   "type": "string",
+   "pattern": "^1\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+  },
+  "schemaRef": {
+   "type": "string",
+   "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*/(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+  },
+  "status": {
+   "enum": [
+    "asserted",
+    "superseded",
+    "retracted",
+    "goal",
+    "candidate"
+   ]
+  },
+  "timeValue": {
+   "type": "string",
+   "pattern": "^-?([0-9]{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]Z)?)?)?|[0-9]{3}X|[0-9]{2}XX|[0-9]XXX)$"
+  },
+  "valid": {
+   "type": "object",
+   "minProperties": 1,
+   "additionalProperties": false,
+   "properties": {
+    "from": {
+     "$ref": "#/definitions/timeValue"
+    },
+    "until": {
+     "$ref": "#/definitions/timeValue"
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,38 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-READ-001",
+ "title": "incident is complete and in id order; goals are not asserted",
+ "requires": [
+  "goals",
+  "literal_values",
+  "nesting",
+  "ordered_roles",
+  "special_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "load": "@fixture"
+  }
+ ],
+ "when": [
+  {
+   "op": "incident",
+   "args": {
+    "node": "ex:KingOfFrance"
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:king-13",
+     "f:king-14"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "A C2-04 passed",
+  "C S-INC-001 passed"
+ ]
+}

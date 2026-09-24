@@ -5,7 +5,7 @@ folder, created from `_template/`, and links back to the `kb/` notes it depends 
 
 | Project | Status | One-line goal |
 |---|---|---|
-| _(none yet)_ | | |
+| [P2 Role-aware HIF and shared contracts](p2-role-aware-hif/) | gate passed 2026-09-24; release pending | A `roles` convention for HIF, validator and loaders, plus contracts C1, C2, C3, C5 for the programme |
 
 ## Candidate vectors (to be confirmed with the repository owner)
 

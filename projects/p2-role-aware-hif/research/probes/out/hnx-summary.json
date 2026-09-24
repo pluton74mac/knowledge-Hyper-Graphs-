@@ -1,0 +1,2333 @@
+{
+ "env": {
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "jsonschema": "4.26.0",
+  "pandas": "2.3.3",
+  "numpy": "2.4.6",
+  "fastjsonschema": "2.22.2",
+  "requests": "2.34.2",
+  "hypernetx": "2.4.3",
+  "preferred_encoding": "utf-8",
+  "schema_url": "https://raw.githubusercontent.com/pszufe/HIF_validators/main/schemas/hif_schema_v0.1.0.json",
+  "source_sha256": {
+   "hypernetx/hif.py": "ca44b6efeeb34f2f2adf0038d2048e069a289f6c3705532c0d80deb7d68cea0e",
+   "hypernetx/classes/hypergraph.py": "56a3021339341389d275d97b310bd107d9b295b409ac9312d4396e0d4cec662e",
+   "hypernetx/classes/factory.py": "b1a0d669ba536ef461e7ee96110c7fd31824a6ca9480696298bf236b253fea0e",
+   "hypernetx/classes/property_store.py": "10c843ee3fda9ba2e1c8d9567fdc52b4127b2baf00fa5a91b15cc74cccc8c28c",
+   "hypernetx/classes/hyp_view.py": "091cc5c6d14db97c98268d2f1bb73721f3a2f2b7b5d7f4353577a6eb347e35d5",
+   "hypernetx/classes/incidence_store.py": "c2adf1785df11abe18d6f091d8d2442a22b253b1ebe42c6a8840b04b56a600a1"
+  }
+ },
+ "cases": {
+  "c00-sample-directed": {
+   "load": "ok",
+   "export": "ok",
+   "export_default_call_network_type": "undirected",
+   "export_default_call_ok": true,
+   "diff": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "9/9",
+    "direction_records_kept": "9/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "9/9",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 9,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:dose:500mg-bid": "added",
+      "str:pop:adults": "added",
+      "str:drug:insulin": "added",
+      "str:effect:hypoglycemia": "added",
+      "str:org:ADA": "added",
+      "str:doc:guideline-2024": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 8/8 role strings",
+    "incidence.direction": "cell property column 'direction'",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "only 'name' -> H.name and 'default_attrs' are used; other keys: not stored"
+   },
+   "gen2": {
+    "export_ok": false,
+    "gen1_vs_gen2": {
+     "incidence_records": "9 -> 9",
+     "role_records_kept": "9/9",
+     "direction_records_kept": "0/9",
+     "incidence_weight_records_kept": "9/9",
+     "incidence_attrs_records_kept": "9/9",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 8,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 3,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (directed -> directed)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "9/9",
+    "input_vs_gen2_direction": "0/9"
+   }
+  },
+  "c01-sample-undirected": {
+   "load": "ok",
+   "export": "ok",
+   "diff": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "9/9",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "9/9",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 9,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:dose:500mg-bid": "added",
+      "str:pop:adults": "added",
+      "str:drug:insulin": "added",
+      "str:effect:hypoglycemia": "added",
+      "str:org:ADA": "added",
+      "str:doc:guideline-2024": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 8/8 role strings",
+    "incidence.direction": "n/a",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "only 'name' -> H.name and 'default_attrs' are used; other keys: not stored"
+   },
+   "gen2": {
+    "export_ok": true,
+    "gen1_vs_gen2": {
+     "incidence_records": "9 -> 9",
+     "role_records_kept": "9/9",
+     "direction_records_kept": "0/0",
+     "incidence_weight_records_kept": "9/9",
+     "incidence_attrs_records_kept": "9/9",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 8,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 3,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (undirected -> undirected)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "9/9",
+    "input_vs_gen2_direction": "0/0"
+   }
+  },
+  "c02-undirected-with-direction": {
+   "load": "ok",
+   "export": "ok",
+   "diff": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "9/9",
+    "direction_records_kept": "9/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "9/9",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 9,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:dose:500mg-bid": "added",
+      "str:pop:adults": "added",
+      "str:drug:insulin": "added",
+      "str:effect:hypoglycemia": "added",
+      "str:org:ADA": "added",
+      "str:doc:guideline-2024": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 8/8 role strings",
+    "incidence.direction": "cell property column 'direction'",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "only 'name' -> H.name and 'default_attrs' are used; other keys: not stored"
+   },
+   "gen2": {
+    "export_ok": false,
+    "gen1_vs_gen2": {
+     "incidence_records": "9 -> 9",
+     "role_records_kept": "9/9",
+     "direction_records_kept": "0/9",
+     "incidence_weight_records_kept": "9/9",
+     "incidence_attrs_records_kept": "9/9",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 8,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 3,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (undirected -> undirected)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "9/9",
+    "input_vs_gen2_direction": "0/9"
+   }
+  },
+  "c03-no-network-type": {
+   "load": "ok",
+   "export": "ok",
+   "diff": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "9/9",
+    "direction_records_kept": "9/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "9/9",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 9,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:dose:500mg-bid": "added",
+      "str:pop:adults": "added",
+      "str:drug:insulin": "added",
+      "str:effect:hypoglycemia": "added",
+      "str:org:ADA": "added",
+      "str:doc:guideline-2024": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "added (<absent> -> undirected)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 8/8 role strings",
+    "incidence.direction": "cell property column 'direction'",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "only 'name' -> H.name and 'default_attrs' are used; other keys: not stored"
+   },
+   "gen2": {
+    "export_ok": false,
+    "gen1_vs_gen2": {
+     "incidence_records": "9 -> 9",
+     "role_records_kept": "9/9",
+     "direction_records_kept": "0/9",
+     "incidence_weight_records_kept": "9/9",
+     "incidence_attrs_records_kept": "9/9",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 8,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 3,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (undirected -> undirected)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "9/9",
+    "input_vs_gen2_direction": "0/9"
+   }
+  },
+  "c04-asc": {
+   "load": "ok",
+   "export": "ok",
+   "export_default_call_network_type": "undirected",
+   "export_default_call_ok": true,
+   "diff": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "9/9",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "9/9",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 9,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:dose:500mg-bid": "added",
+      "str:pop:adults": "added",
+      "str:drug:insulin": "added",
+      "str:effect:hypoglycemia": "added",
+      "str:org:ADA": "added",
+      "str:doc:guideline-2024": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (asc -> asc)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 8/8 role strings",
+    "incidence.direction": "n/a",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "only 'name' -> H.name and 'default_attrs' are used; other keys: not stored"
+   },
+   "gen2": {
+    "export_ok": true,
+    "gen1_vs_gen2": {
+     "incidence_records": "9 -> 9",
+     "role_records_kept": "9/9",
+     "direction_records_kept": "0/0",
+     "incidence_weight_records_kept": "9/9",
+     "incidence_attrs_records_kept": "9/9",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 8,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 3,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (asc -> asc)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "9/9",
+    "input_vs_gen2_direction": "0/0"
+   }
+  },
+  "c05-two-roles-same-direction": {
+   "load": "ok",
+   "export": "ok",
+   "export_default_call_network_type": "undirected",
+   "export_default_call_ok": true,
+   "diff": {
+    "incidence_records": "4 -> 3",
+    "role_records_kept": "3/4",
+    "direction_records_kept": "3/4",
+    "incidence_weight_records_kept": "1/2",
+    "incidence_attrs_records_kept": "3/4",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 1,
+    "weights_added_on_incidences": 2,
+    "nodes": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:drug:insulin": "added",
+      "str:outcome:HbA1c": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:t1": "added"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "altered",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 3/4 role strings",
+    "incidence.direction": "cell property column 'direction'",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "n/a"
+   },
+   "gen2": {
+    "export_ok": false,
+    "gen1_vs_gen2": {
+     "incidence_records": "3 -> 3",
+     "role_records_kept": "3/3",
+     "direction_records_kept": "0/3",
+     "incidence_weight_records_kept": "3/3",
+     "incidence_attrs_records_kept": "3/3",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 3,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 1,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (directed -> directed)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "3/4",
+    "input_vs_gen2_direction": "0/4"
+   }
+  },
+  "c06-two-roles-different-direction": {
+   "load": "ok",
+   "export": "ok",
+   "export_default_call_network_type": "undirected",
+   "export_default_call_ok": true,
+   "diff": {
+    "incidence_records": "3 -> 2",
+    "role_records_kept": "2/3",
+    "direction_records_kept": "2/3",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "2/3",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 1,
+    "weights_added_on_incidences": 2,
+    "nodes": {
+     "declared_in": 0,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:gene:TP53": "added",
+      "str:cell:HeLa": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:r1": "added"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "altered",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 2/3 role strings",
+    "incidence.direction": "cell property column 'direction'",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "n/a"
+   },
+   "gen2": {
+    "export_ok": false,
+    "gen1_vs_gen2": {
+     "incidence_records": "2 -> 2",
+     "role_records_kept": "2/2",
+     "direction_records_kept": "0/2",
+     "incidence_weight_records_kept": "2/2",
+     "incidence_attrs_records_kept": "2/2",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 2,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 1,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (directed -> directed)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "2/3",
+    "input_vs_gen2_direction": "0/3"
+   }
+  },
+  "c07-two-roles-undirected": {
+   "load": "ok",
+   "export": "ok",
+   "diff": {
+    "incidence_records": "4 -> 3",
+    "role_records_kept": "3/4",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "1/2",
+    "incidence_attrs_records_kept": "3/4",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 1,
+    "weights_added_on_incidences": 2,
+    "nodes": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:drug:insulin": "added",
+      "str:outcome:HbA1c": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:t1": "added"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "altered",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 3/4 role strings",
+    "incidence.direction": "n/a",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "n/a"
+   },
+   "gen2": {
+    "export_ok": true,
+    "gen1_vs_gen2": {
+     "incidence_records": "3 -> 3",
+     "role_records_kept": "3/3",
+     "direction_records_kept": "0/0",
+     "incidence_weight_records_kept": "3/3",
+     "incidence_attrs_records_kept": "3/3",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 3,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 1,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (undirected -> undirected)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "3/4",
+    "input_vs_gen2_direction": "0/0"
+   }
+  },
+  "c08-isolated-nodes": {
+   "load": "ok",
+   "export": "ok",
+   "export_default_call_network_type": "undirected",
+   "export_default_call_ok": true,
+   "diff": {
+    "incidence_records": "2 -> 2",
+    "role_records_kept": "2/2",
+    "direction_records_kept": "2/2",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "2/2",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 2,
+    "nodes": {
+     "declared_in": 4,
+     "missing_out": [
+      "str:iso:bare",
+      "str:iso:with-attrs"
+     ],
+     "attrs_not_preserved": {
+      "str:iso:with-attrs": "lost"
+     },
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "added"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 2/2 role strings",
+    "incidence.direction": "cell property column 'direction'",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "only 'name' -> H.name and 'default_attrs' are used; other keys: not stored"
+   },
+   "gen2": {
+    "export_ok": false,
+    "gen1_vs_gen2": {
+     "incidence_records": "2 -> 2",
+     "role_records_kept": "2/2",
+     "direction_records_kept": "0/2",
+     "incidence_weight_records_kept": "2/2",
+     "incidence_attrs_records_kept": "2/2",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 2,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 1,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (directed -> directed)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "2/2",
+    "input_vs_gen2_direction": "0/2"
+   }
+  },
+  "c09-empty-edges": {
+   "load": "ok",
+   "export": "ok",
+   "export_default_call_network_type": "undirected",
+   "export_default_call_ok": true,
+   "diff": {
+    "incidence_records": "2 -> 2",
+    "role_records_kept": "2/2",
+    "direction_records_kept": "2/2",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "2/2",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 2,
+    "nodes": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [
+      "str:e:empty-bare",
+      "str:e:empty-with-attrs"
+     ],
+     "attrs_not_preserved": {
+      "str:e:empty-with-attrs": "lost"
+     },
+     "weight_not_preserved": {
+      "str:f1": "added"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 2/2 role strings",
+    "incidence.direction": "cell property column 'direction'",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "only 'name' -> H.name and 'default_attrs' are used; other keys: not stored"
+   },
+   "gen2": {
+    "export_ok": false,
+    "gen1_vs_gen2": {
+     "incidence_records": "2 -> 2",
+     "role_records_kept": "2/2",
+     "direction_records_kept": "0/2",
+     "incidence_weight_records_kept": "2/2",
+     "incidence_attrs_records_kept": "2/2",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 2,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 1,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (directed -> directed)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "2/2",
+    "input_vs_gen2_direction": "0/2"
+   }
+  },
+  "c10-nested-fact": {
+   "load": "ok",
+   "export": "ok",
+   "export_default_call_network_type": "undirected",
+   "export_default_call_ok": true,
+   "diff": {
+    "incidence_records": "4 -> 4",
+    "role_records_kept": "4/4",
+    "direction_records_kept": "4/4",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "4/4",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 4,
+    "nodes": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "added",
+      "str:org:ADA": "added",
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "added",
+      "str:m1": "added"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "altered",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 4/4 role strings",
+    "incidence.direction": "cell property column 'direction'",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "n/a"
+   },
+   "gen2": {
+    "export_ok": false,
+    "gen1_vs_gen2": {
+     "incidence_records": "4 -> 4",
+     "role_records_kept": "4/4",
+     "direction_records_kept": "0/4",
+     "incidence_weight_records_kept": "4/4",
+     "incidence_attrs_records_kept": "4/4",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 4,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 2,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (directed -> directed)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "4/4",
+    "input_vs_gen2_direction": "0/4"
+   }
+  },
+  "c11-integer-ids": {
+   "load": "ok",
+   "export": "ok",
+   "export_default_call_network_type": "undirected",
+   "export_default_call_ok": true,
+   "diff": {
+    "incidence_records": "4 -> 4",
+    "role_records_kept": "4/4",
+    "direction_records_kept": "4/4",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "4/4",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 4,
+    "nodes": {
+     "declared_in": 4,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "int:0": "added",
+      "int:1": "added",
+      "int:2": "added",
+      "int:3": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "int:0": "added",
+      "int:1": "added"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "altered",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 2/2 role strings",
+    "incidence.direction": "cell property column 'direction'",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "n/a"
+   },
+   "gen2": {
+    "export_ok": false,
+    "gen1_vs_gen2": {
+     "incidence_records": "4 -> 4",
+     "role_records_kept": "4/4",
+     "direction_records_kept": "0/4",
+     "incidence_weight_records_kept": "4/4",
+     "incidence_attrs_records_kept": "4/4",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 4,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 2,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (directed -> directed)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "4/4",
+    "input_vs_gen2_direction": "0/4"
+   }
+  },
+  "c12-mixed-int-str-ids": {
+   "load": "ok",
+   "export": "ok",
+   "diff": {
+    "incidence_records": "4 -> 4",
+    "role_records_kept": "4/4",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "4/4",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 4,
+    "nodes": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "int:1": "added",
+      "str:1": "added",
+      "str:x": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "int:1": "added",
+      "str:1": "added"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "altered",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 4/4 role strings",
+    "incidence.direction": "n/a",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "n/a"
+   },
+   "gen2": {
+    "export_ok": true,
+    "gen1_vs_gen2": {
+     "incidence_records": "4 -> 4",
+     "role_records_kept": "4/4",
+     "direction_records_kept": "0/0",
+     "incidence_weight_records_kept": "4/4",
+     "incidence_attrs_records_kept": "4/4",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 3,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 2,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (undirected -> undirected)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "4/4",
+    "input_vs_gen2_direction": "0/0"
+   }
+  },
+  "c13-unicode-ids": {
+   "load": "ok",
+   "export": "ok",
+   "export_default_call_network_type": "undirected",
+   "export_default_call_ok": true,
+   "diff": {
+    "incidence_records": "5 -> 5",
+    "role_records_kept": "5/5",
+    "direction_records_kept": "5/5",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "5/5",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 5,
+    "nodes": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:药物:二甲双胍": "added",
+      "str:é": "added",
+      "str:é": "added",
+      "str:🧪 sample #42": "added",
+      "str:maladie:diabète type 2": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:事实-1": "added"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "altered",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 5/5 role strings",
+    "incidence.direction": "cell property column 'direction'",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "n/a"
+   },
+   "gen2": {
+    "export_ok": false,
+    "gen1_vs_gen2": {
+     "incidence_records": "5 -> 5",
+     "role_records_kept": "5/5",
+     "direction_records_kept": "0/5",
+     "incidence_weight_records_kept": "5/5",
+     "incidence_attrs_records_kept": "5/5",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 5,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 1,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (directed -> directed)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "5/5",
+    "input_vs_gen2_direction": "0/5"
+   }
+  },
+  "c14-directed-missing-direction": {
+   "load": "ok",
+   "export": "returned NoneType; schema errors on unvalidated output: [\"incidences/2/direction: 'nil' is not one of ['head', 'tail']\"]",
+   "export_default_call_network_type": "undirected",
+   "export_default_call_ok": false,
+   "diff": {
+    "incidence_records": "3 -> 3",
+    "role_records_kept": "3/3",
+    "direction_records_kept": "2/2",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "3/3",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 3,
+    "nodes": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:pop:adults": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "added"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 3/3 role strings",
+    "incidence.direction": "cell property column 'direction'",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "only 'name' -> H.name and 'default_attrs' are used; other keys: not stored"
+   }
+  },
+  "c15-incidence-attrs-absent-or-empty": {
+   "load": "ok",
+   "export": "ok",
+   "export_default_call_network_type": "undirected",
+   "export_default_call_ok": true,
+   "diff": {
+    "incidence_records": "3 -> 3",
+    "role_records_kept": "1/1",
+    "direction_records_kept": "3/3",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "1/1",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 3,
+    "nodes": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:pop:adults": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "added"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 1/1 role strings",
+    "incidence.direction": "cell property column 'direction'",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "only 'name' -> H.name and 'default_attrs' are used; other keys: not stored"
+   },
+   "gen2": {
+    "export_ok": false,
+    "gen1_vs_gen2": {
+     "incidence_records": "3 -> 3",
+     "role_records_kept": "1/1",
+     "direction_records_kept": "0/3",
+     "incidence_weight_records_kept": "3/3",
+     "incidence_attrs_records_kept": "1/1",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 3,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 1,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (directed -> directed)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "1/1",
+    "input_vs_gen2_direction": "0/3"
+   }
+  },
+  "c16-attr-value-shapes": {
+   "load": "ok",
+   "export": "ok",
+   "export_default_call_network_type": "undirected",
+   "export_default_call_ok": true,
+   "diff": {
+    "incidence_records": "2 -> 2",
+    "role_records_kept": "2/2",
+    "direction_records_kept": "2/2",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "2/2",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 2,
+    "nodes": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "added"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "big",
+     "empty_list",
+     "empty_obj",
+     "evidence",
+     "flag",
+     "label",
+     "note",
+     "qualifiers",
+     "tiny",
+     "title",
+     "zero"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 2/2 role strings",
+    "incidence.direction": "cell property column 'direction'",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "only 'name' -> H.name and 'default_attrs' are used; other keys: not stored"
+   },
+   "gen2": {
+    "export_ok": false,
+    "gen1_vs_gen2": {
+     "incidence_records": "2 -> 2",
+     "role_records_kept": "2/2",
+     "direction_records_kept": "0/2",
+     "incidence_weight_records_kept": "2/2",
+     "incidence_attrs_records_kept": "2/2",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 2,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 1,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (directed -> directed)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "2/2",
+    "input_vs_gen2_direction": "0/2"
+   }
+  },
+  "c17-weights-everywhere": {
+   "load": "ok",
+   "export": "ok",
+   "export_default_call_network_type": "undirected",
+   "export_default_call_ok": true,
+   "diff": {
+    "incidence_records": "2 -> 2",
+    "role_records_kept": "2/2",
+    "direction_records_kept": "2/2",
+    "incidence_weight_records_kept": "2/2",
+    "incidence_attrs_records_kept": "2/2",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 2/2 role strings",
+    "incidence.direction": "cell property column 'direction'",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "only 'name' -> H.name and 'default_attrs' are used; other keys: not stored"
+   },
+   "gen2": {
+    "export_ok": false,
+    "gen1_vs_gen2": {
+     "incidence_records": "2 -> 2",
+     "role_records_kept": "2/2",
+     "direction_records_kept": "0/2",
+     "incidence_weight_records_kept": "2/2",
+     "incidence_attrs_records_kept": "2/2",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 2,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 1,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (directed -> directed)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "2/2",
+    "input_vs_gen2_direction": "0/2"
+   }
+  },
+  "c18-weight-key-inside-attrs": {
+   "load": "ok",
+   "export": "ok",
+   "export_default_call_network_type": "undirected",
+   "export_default_call_ok": true,
+   "diff": {
+    "incidence_records": "2 -> 2",
+    "role_records_kept": "2/2",
+    "direction_records_kept": "2/2",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "2/2",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 2,
+    "nodes": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "added"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 2/2 role strings",
+    "incidence.direction": "cell property column 'direction'",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "only 'name' -> H.name and 'default_attrs' are used; other keys: not stored"
+   },
+   "gen2": {
+    "export_ok": false,
+    "gen1_vs_gen2": {
+     "incidence_records": "2 -> 2",
+     "role_records_kept": "2/2",
+     "direction_records_kept": "0/2",
+     "incidence_weight_records_kept": "2/2",
+     "incidence_attrs_records_kept": "2/2",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 2,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 1,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (directed -> directed)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "2/2",
+    "input_vs_gen2_direction": "0/2"
+   }
+  },
+  "c19-duplicate-node-edge-records": {
+   "load": "ok",
+   "export": "ok",
+   "diff": {
+    "incidence_records": "2 -> 2",
+    "role_records_kept": "2/2",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "2/2",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 2,
+    "nodes": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {
+      "str:n1": "first declaration kept"
+     },
+     "weight_not_preserved": {
+      "str:n1": "added",
+      "str:n2": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {
+      "str:e1": "first declaration kept"
+     },
+     "weight_not_preserved": {
+      "str:e1": "added"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "altered",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 2/2 role strings",
+    "incidence.direction": "n/a",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "n/a"
+   },
+   "gen2": {
+    "export_ok": true,
+    "gen1_vs_gen2": {
+     "incidence_records": "2 -> 2",
+     "role_records_kept": "2/2",
+     "direction_records_kept": "0/0",
+     "incidence_weight_records_kept": "2/2",
+     "incidence_attrs_records_kept": "2/2",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 2,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 1,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (undirected -> undirected)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "2/2",
+    "input_vs_gen2_direction": "0/0"
+   }
+  },
+  "c20-hnx-reserved-metadata-keys": {
+   "load": "ok",
+   "export": "ok",
+   "export_default_call_network_type": "undirected",
+   "export_default_call_ok": true,
+   "diff": {
+    "incidence_records": "3 -> 3",
+    "role_records_kept": "2/2",
+    "direction_records_kept": "3/3",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "2/3",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 3,
+    "nodes": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:pop:adults": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "added"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "altered",
+    "metadata_keys_lost": [
+     "title"
+    ],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 2/2 role strings",
+    "incidence.direction": "cell property column 'direction'",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "only 'name' -> H.name and 'default_attrs' are used; other keys: found only in .name"
+   },
+   "gen2": {
+    "export_ok": false,
+    "gen1_vs_gen2": {
+     "incidence_records": "3 -> 3",
+     "role_records_kept": "3/3",
+     "direction_records_kept": "0/3",
+     "incidence_weight_records_kept": "3/3",
+     "incidence_attrs_records_kept": "3/3",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 3,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 1,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (directed -> directed)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "2/2",
+    "input_vs_gen2_direction": "0/3"
+   }
+  },
+  "c21-node-attr-key-equals-python-parameter": {
+   "load": "ok",
+   "export": "ok",
+   "export_default_call_network_type": "undirected",
+   "export_default_call_ok": true,
+   "diff": {
+    "incidence_records": "2 -> 2",
+    "role_records_kept": "2/2",
+    "direction_records_kept": "2/2",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "2/2",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 2,
+    "nodes": {
+     "declared_in": 3,
+     "missing_out": [
+      "str:iso:shadow"
+     ],
+     "attrs_not_preserved": {
+      "str:iso:shadow": "lost"
+     },
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "added"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 2/2 role strings",
+    "incidence.direction": "cell property column 'direction'",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "only 'name' -> H.name and 'default_attrs' are used; other keys: not stored"
+   },
+   "gen2": {
+    "export_ok": false,
+    "gen1_vs_gen2": {
+     "incidence_records": "2 -> 2",
+     "role_records_kept": "2/2",
+     "direction_records_kept": "0/2",
+     "incidence_weight_records_kept": "2/2",
+     "incidence_attrs_records_kept": "2/2",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 2,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 1,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (directed -> directed)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "2/2",
+    "input_vs_gen2_direction": "0/2"
+   }
+  },
+  "c22-nan-in-attrs": {
+   "load": "ok",
+   "export": "ok",
+   "export_default_call_network_type": "undirected",
+   "export_default_call_ok": true,
+   "diff": {
+    "incidence_records": "2 -> 2",
+    "role_records_kept": "2/2",
+    "direction_records_kept": "2/2",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "2/2",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 2,
+    "nodes": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "added"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 2/2 role strings",
+    "incidence.direction": "cell property column 'direction'",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "only 'name' -> H.name and 'default_attrs' are used; other keys: not stored"
+   },
+   "gen2": {
+    "export_ok": false,
+    "gen1_vs_gen2": {
+     "incidence_records": "2 -> 2",
+     "role_records_kept": "2/2",
+     "direction_records_kept": "0/2",
+     "incidence_weight_records_kept": "2/2",
+     "incidence_attrs_records_kept": "2/2",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 2,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 1,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (directed -> directed)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "2/2",
+    "input_vs_gen2_direction": "0/2"
+   }
+  },
+  "c23-big-int-ids": {
+   "load": "ok",
+   "export": "ok",
+   "diff": {
+    "incidence_records": "3 -> 3",
+    "role_records_kept": "3/3",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "3/3",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 3,
+    "nodes": {
+     "declared_in": 0,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "int:18446744073709551621": "added",
+      "int:9007199254740993": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 0,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "int:9223372036854775807": "added",
+      "int:9223372036854775808": "added"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "altered",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 3/3 role strings",
+    "incidence.direction": "n/a",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "n/a"
+   },
+   "gen2": {
+    "export_ok": true,
+    "gen1_vs_gen2": {
+     "incidence_records": "3 -> 3",
+     "role_records_kept": "3/3",
+     "direction_records_kept": "0/0",
+     "incidence_weight_records_kept": "3/3",
+     "incidence_attrs_records_kept": "3/3",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 2,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 2,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (undirected -> undirected)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "3/3",
+    "input_vs_gen2_direction": "0/0"
+   }
+  },
+  "c24-empty-incidences": {
+   "load": "returned NoneType; ERROR KeyError: \"None of [Index(['edge', 'node'], dtype='object')] are in the [columns]\" @ pandas/core/indexes/base.py:6261 in _raise_if_missing: raise KeyError(f\"None of [{key}] are in the [{axis_name}]\")"
+  },
+  "c26-edge-attr-key-equals-python-parameter": {
+   "load": "ok",
+   "export": "ok",
+   "export_default_call_network_type": "undirected",
+   "export_default_call_ok": true,
+   "diff": {
+    "incidence_records": "2 -> 2",
+    "role_records_kept": "2/2",
+    "direction_records_kept": "2/2",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "2/2",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 2,
+    "nodes": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 2,
+     "missing_out": [
+      "str:e:shadow"
+     ],
+     "attrs_not_preserved": {
+      "str:e:shadow": "lost"
+     },
+     "weight_not_preserved": {
+      "str:f1": "added"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "cell property store H.incidences.property_store (misc_properties): 2/2 role strings",
+    "incidence.direction": "cell property column 'direction'",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "only 'name' -> H.name and 'default_attrs' are used; other keys: not stored"
+   },
+   "gen2": {
+    "export_ok": false,
+    "gen1_vs_gen2": {
+     "incidence_records": "2 -> 2",
+     "role_records_kept": "2/2",
+     "direction_records_kept": "0/2",
+     "incidence_weight_records_kept": "2/2",
+     "incidence_attrs_records_kept": "2/2",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 2,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 1,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (directed -> directed)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "2/2",
+    "input_vs_gen2_direction": "0/2"
+   }
+  },
+  "c25-plain-no-attrs": {
+   "load": "ok",
+   "export": "ok",
+   "diff": {
+    "incidence_records": "4 -> 4",
+    "role_records_kept": "0/0",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/0",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 4,
+    "nodes": {
+     "declared_in": 0,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:a": "added",
+      "str:b": "added",
+      "str:c": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 0,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:e1": "added",
+      "str:e2": "added"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "altered",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "n/a",
+    "incidence.direction": "n/a",
+    "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+    "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+    "network-type": "not read (hif.py from_hif never looks at it)",
+    "metadata": "n/a"
+   },
+   "gen2": {
+    "export_ok": true,
+    "gen1_vs_gen2": {
+     "incidence_records": "4 -> 4",
+     "role_records_kept": "0/0",
+     "direction_records_kept": "0/0",
+     "incidence_weight_records_kept": "4/4",
+     "incidence_attrs_records_kept": "0/0",
+     "pairs_lost": 0,
+     "pairs_new": 0,
+     "pairs_count_changed": 0,
+     "weights_added_on_incidences": 0,
+     "nodes": {
+      "declared_in": 3,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "edges": {
+      "declared_in": 2,
+      "missing_out": [],
+      "attrs_not_preserved": {},
+      "weight_not_preserved": {},
+      "new_out": []
+     },
+     "network_type": "preserved (undirected -> undirected)",
+     "metadata": "preserved",
+     "metadata_keys_lost": [],
+     "metadata_keys_added": [],
+     "id_type_changes": 0
+    },
+    "input_vs_gen2_roles": "0/0",
+    "input_vs_gen2_direction": "0/0"
+   }
+  }
+ }
+}

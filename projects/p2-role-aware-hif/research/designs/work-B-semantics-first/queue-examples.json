@@ -1,0 +1,221 @@
+{
+ "item": {
+  "kind": "queue_item",
+  "khg_queue": "khg-queue/1.0.0",
+  "item_id": "q-000001",
+  "item_kind": "new_fact",
+  "payload": {
+   "kind": "fact",
+   "id": "f:king-14",
+   "relation": "position_held",
+   "status": "candidate",
+   "bindings": [
+    {
+     "bid": "b1",
+     "role": "holder",
+     "value": {
+      "entity": "ex:LouisXIV"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "position",
+     "value": {
+      "entity": "ex:KingOfFrance"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1643-05-14T00:00:00Z",
+       "precision": 11
+      }
+     }
+    },
+    {
+     "bid": "b4",
+     "role": "end_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1715-09-01T00:00:00Z",
+       "precision": 11
+      }
+     }
+    },
+    {
+     "bid": "b5",
+     "role": "replaces",
+     "value": {
+      "entity": "ex:LouisXIII"
+     }
+    }
+   ],
+   "evidence": [
+    {
+     "id": "e1",
+     "type": "curated",
+     "mode": "manual",
+     "source": {
+      "doc_id": "doc:regnal-list"
+     },
+     "supports": [
+      "b1",
+      "b2",
+      "b3",
+      "b4"
+     ]
+    },
+    {
+     "id": "e2",
+     "type": "extracted",
+     "mode": "automatic",
+     "source": {
+      "doc_id": "doc:louis-bio",
+      "doc_sha256": "sha256:56940b729460cb9a75d5d63ab1f907a502fef80530b4aabff2cd8e9c28a44b2f"
+     },
+     "selectors": [
+      {
+       "type": "quote",
+       "exact": "Louis XIV succeeded his father Louis XIII",
+       "prefix": "",
+       "suffix": " as King of "
+      },
+      {
+       "type": "position",
+       "start": 0,
+       "end": 41
+      }
+     ],
+     "activity": {
+      "agent": "p2-fixture-extractor",
+      "agent_version": "0.0.1",
+      "model": "none",
+      "run_id": "fixture-run-1"
+     },
+     "supports": [
+      "b1",
+      "b5"
+     ]
+    }
+   ]
+  },
+  "extraction": {
+   "run_id": "smoke-1",
+   "order_id": "o1",
+   "position": 0,
+   "seed": 0,
+   "extractor": {
+    "name": "p2-fixture-extractor",
+    "version": "0.0.1"
+   },
+   "doc": {
+    "doc_id": "doc:louis-bio"
+   }
+  },
+  "keys": {
+   "content_key": "sha256:187ca682671fd4daaa6944fced4e05b7b9198b6bf0b4c29e6bb402d61bf9ecd2",
+   "core_key": "sha256:5779b98f13640fbf96488b9834c5ce7e10f02902541882a23c2d43f84f93e916",
+   "key_digest": "sha256:19b896a4c419199eeb0922934472e2ff229771ce0d87bcdf97bc79033ba64a96"
+  },
+  "submitted_at": "2026-10-01T00:00:03Z"
+ },
+ "log": [
+  {
+   "kind": "log_entry",
+   "log_id": "l-000001",
+   "parent_log_id": null,
+   "target": {
+    "item_id": "q-000001"
+   },
+   "action": "submit",
+   "state_before": null,
+   "state_after": "pending",
+   "actor": {
+    "type": "agent",
+    "id": "p2-fixture-extractor",
+    "version": "0.0.1"
+   },
+   "at": "2026-10-01T00:00:04Z"
+  },
+  {
+   "kind": "log_entry",
+   "log_id": "l-000002",
+   "parent_log_id": "l-000001",
+   "target": {
+    "item_id": "q-000001"
+   },
+   "action": "lint",
+   "state_before": "pending",
+   "state_after": "linted",
+   "actor": {
+    "type": "linter",
+    "id": "khg-structural-lint",
+    "version": "1.0.0"
+   },
+   "at": "2026-10-01T00:00:05Z",
+   "rule_set": {
+    "id": "structural",
+    "version": "1.0.0"
+   },
+   "findings": [],
+   "outcome": "pass"
+  },
+  {
+   "kind": "log_entry",
+   "log_id": "l-000003",
+   "parent_log_id": "l-000002",
+   "target": {
+    "item_id": "q-000001"
+   },
+   "action": "accept",
+   "state_before": "linted",
+   "state_after": "accepted",
+   "actor": {
+    "type": "person",
+    "id": "curator:smoke",
+    "version": null
+   },
+   "at": "2026-10-01T00:00:07Z",
+   "result": {
+    "store_ids": [
+     "f:king-14"
+    ],
+    "tx": 3
+   },
+   "before": null,
+   "after": {
+    "id": "f:king-14",
+    "version": 1
+   },
+   "plan_hash": "sha256:e5f3862166987cd0eed58b29b165d383d57d39467674020b2589cbafa2e1e32a"
+  }
+ ],
+ "verdict": {
+  "kind": "verdict",
+  "verdict_id": "v-000001",
+  "item_id": "q-000001",
+  "evidence_id": "e2",
+  "content_key": "sha256:187ca682671fd4daaa6944fced4e05b7b9198b6bf0b4c29e6bb402d61bf9ecd2",
+  "event_hash": "sha256:852ea9ca3abcc722e33e903dcdab88f5895cef077241fdf339ee1db0aeb55524",
+  "label": "correct",
+  "bindings": [
+   {
+    "bid": "b1",
+    "label": "correct"
+   },
+   {
+    "bid": "b5",
+    "label": "correct"
+   }
+  ],
+  "curator": {
+   "type": "person",
+   "id": "curator:smoke"
+  },
+  "at": "2026-10-01T00:01:00Z"
+ }
+}

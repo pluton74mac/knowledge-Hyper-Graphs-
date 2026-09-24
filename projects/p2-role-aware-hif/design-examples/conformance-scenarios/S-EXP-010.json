@@ -1,0 +1,37 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-EXP-010",
+ "title": "transaction time increases per store: a new id cannot be written before another id's latest",
+ "requires": [
+  "atomic_writes",
+  "transaction_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    "@f:reg-1"
+   ],
+   "at": "2026-10-01T00:00:05Z"
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     "@f:coadmin-1"
+    ]
+   },
+   "then": {
+    "error": "KHG-D018"
+   },
+   "at": "2026-10-01T00:00:04Z"
+  }
+ ],
+ "precedent": [
+  "critique SEM-14"
+ ]
+}

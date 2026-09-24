@@ -1,0 +1,46 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-VER-006",
+ "title": "superseded content is frozen",
+ "requires": [
+  "goals",
+  "literal_values",
+  "nesting",
+  "ordered_roles",
+  "special_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "load": "@fixture"
+  }
+ ],
+ "when": [
+  {
+   "op": "apply",
+   "args": {
+    "event": {
+     "op": "add_evidence",
+     "target": "f:born-skłodowska-kraków",
+     "evidence": [
+      {
+       "id": "e9",
+       "type": "curated",
+       "mode": "manual",
+       "source": {
+        "doc_id": "doc:scenario"
+       }
+      }
+     ]
+    }
+   },
+   "then": {
+    "error": "KHG-D013"
+   }
+  }
+ ],
+ "precedent": [
+  "B S015"
+ ]
+}

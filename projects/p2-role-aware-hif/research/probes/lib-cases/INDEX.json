@@ -1,0 +1,110 @@
+{
+ "c00-sample-directed": {
+  "description": "schemas/sample.hif.json verbatim: directed, 8 nodes with attrs, 3 weighted edges with attrs, 9 role-labelled incidences with direction, nested metadata",
+  "strict_json": true
+ },
+ "c01-sample-undirected": {
+  "description": "the sample with network-type undirected and every direction field removed",
+  "strict_json": true
+ },
+ "c02-undirected-with-direction": {
+  "description": "the sample with network-type undirected but direction fields kept",
+  "strict_json": true
+ },
+ "c03-no-network-type": {
+  "description": "the sample with the network-type key removed (direction fields kept)",
+  "strict_json": true
+ },
+ "c04-asc": {
+  "description": "the sample declared as an abstract simplicial complex (network-type asc), direction removed",
+  "strict_json": true
+ },
+ "c05-two-roles-same-direction": {
+  "description": "one node plays two roles in one directed edge, both on the tail: two incidence records for the same (edge, node) pair with different roles and different incidence weights",
+  "strict_json": true
+ },
+ "c06-two-roles-different-direction": {
+  "description": "one node plays two roles in one directed edge, once on the tail (regulator) and once on the head (target): gene autoregulation",
+  "strict_json": true
+ },
+ "c07-two-roles-undirected": {
+  "description": "c05 in an undirected network (no direction fields)",
+  "strict_json": true
+ },
+ "c08-isolated-nodes": {
+  "description": "two declared nodes that occur in no incidence, one with attrs and one without",
+  "strict_json": true
+ },
+ "c09-empty-edges": {
+  "description": "two declared edges that have no incidences, one with attrs and one without",
+  "strict_json": true
+ },
+ "c10-nested-fact": {
+  "description": "a nested fact: edge id f1 is also used as a node id, a participant of edge m1 (an assertion about f1)",
+  "strict_json": true
+ },
+ "c11-integer-ids": {
+  "description": "integer node and edge ids; edge id 0 equals node id 0",
+  "strict_json": true
+ },
+ "c12-mixed-int-str-ids": {
+  "description": "the integer 1 and the string \"1\" used as two different node ids, and as two different edge ids",
+  "strict_json": true
+ },
+ "c13-unicode-ids": {
+  "description": "non-ASCII node, edge and role strings; NFC and NFD spellings of 'e-acute' as two distinct nodes",
+  "strict_json": true
+ },
+ "c14-directed-missing-direction": {
+  "description": "network-type directed but one incidence has no direction field (schema-valid)",
+  "strict_json": true
+ },
+ "c15-incidence-attrs-absent-or-empty": {
+  "description": "incidences with attrs {role}, with attrs {} and with no attrs key",
+  "strict_json": true
+ },
+ "c16-attr-value-shapes": {
+  "description": "attrs (on nodes, edges, incidences and metadata) holding lists, nested dicts, null, booleans, non-ASCII text, empty list/object, an integer above 2^53 and a tiny float",
+  "strict_json": true
+ },
+ "c17-weights-everywhere": {
+  "description": "record-level weight on nodes, edges and incidences",
+  "strict_json": true
+ },
+ "c18-weight-key-inside-attrs": {
+  "description": "no record-level weight anywhere, but a key named 'weight' inside node, edge and incidence attrs",
+  "strict_json": true
+ },
+ "c19-duplicate-node-edge-records": {
+  "description": "node n1 and edge e1 each declared twice with different attrs (upstream calls this HIF-compliant)",
+  "strict_json": true
+ },
+ "c20-hnx-reserved-metadata-keys": {
+  "description": "metadata carries the keys HyperNetX interprets (name, default_attrs with a default 'role'); one incidence has no role",
+  "strict_json": true
+ },
+ "c21-node-attr-key-equals-python-parameter": {
+  "description": "an isolated node whose attrs contain the key 'node' (the name of the XGI add_node parameter)",
+  "strict_json": true
+ },
+ "c22-nan-in-attrs": {
+  "description": "a NaN value in node and incidence attrs (not strict JSON; Python's json accepts it)",
+  "strict_json": false
+ },
+ "c23-big-int-ids": {
+  "description": "integer ids at and beyond 2^53 and 2^63",
+  "strict_json": true
+ },
+ "c24-empty-incidences": {
+  "description": "the smallest valid HIF document: incidences is an empty array",
+  "strict_json": true
+ },
+ "c26-edge-attr-key-equals-python-parameter": {
+  "description": "an empty edge whose attrs contain the keys 'members' and 'idx' (XGI add_edge parameter names)",
+  "strict_json": true
+ },
+ "c25-plain-no-attrs": {
+  "description": "an undirected hypergraph with no attrs, weights, nodes or edges arrays",
+  "strict_json": true
+ }
+}

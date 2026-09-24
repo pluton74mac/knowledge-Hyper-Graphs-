@@ -1,0 +1,61 @@
+{
+ "edges": [
+  {
+   "edge": "r1",
+   "weight": 1,
+   "attrs": {
+    "relation": "regulates"
+   }
+  }
+ ],
+ "nodes": [
+  {
+   "node": "gene:TP53",
+   "weight": 1,
+   "attrs": {}
+  },
+  {
+   "node": "cell:HeLa",
+   "weight": 1,
+   "attrs": {}
+  }
+ ],
+ "incidences": [
+  {
+   "edge": "r1",
+   "node": "gene:TP53",
+   "weight": 1,
+   "direction": "nil",
+   "attrs": {
+    "role": "regulator"
+   }
+  },
+  {
+   "edge": "r1",
+   "node": "cell:HeLa",
+   "weight": 1,
+   "direction": "nil",
+   "attrs": {
+    "role": "context"
+   }
+  }
+ ],
+ "network-type": "directed",
+ "metadata": {
+  "default_attrs": {
+   "nodes": {
+    "weight": 1,
+    "attrs": {}
+   },
+   "edges": {
+    "weight": 1,
+    "attrs": {}
+   },
+   "incidences": {
+    "weight": 1,
+    "direction": null,
+    "attrs": {}
+   }
+  }
+ }
+}

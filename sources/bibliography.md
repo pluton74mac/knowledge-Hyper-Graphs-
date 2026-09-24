@@ -440,10 +440,9 @@ documentation and specification entries give the date they were checked. Compile
 ## Hypergraph interchange: the HIF standard
 
 - Coll, M., Joslyn, C. A., Landry, N. W., Lotito, Q. F., Myers, A., Pickard, J., Praggastis, B., Szufel, P. "HIF: The hypergraph interchange format for higher-order networks." *Network Science* 13, e21, 2025. https://doi.org/10.1017/nws.2025.10018
-- HIF-standard repository: README, `schemas/hif_schema.json` (JSON Schema draft-07), `schemas/CHANGELOG.md` (single entry, v0.0). Checked 2026-09-20. https://github.com/pszufe/HIF-standard
-- HIF-standard organisation mirror (README byte-identical to the above on 2026-09-20). https://github.com/HIF-org/HIF-standard
+- HIF-standard repository: README, `schemas/hif_schema.json` and `schemas/hif_schema_v0.1.0.json` (JSON Schema draft-07, identical validation rules), `schemas/CHANGELOG.md` (single entry, v0.0), `CITATION.cff`, `tests/`. Checked 2026-09-20; cloned in full 2026-09-23 at HEAD `b691a3d2ec32100c0229ebe1151e9afad015c356` (2026-03-19, 139 commits). https://github.com/HIF-org/HIF-standard — canonical home (corrected 2026-09-24: not a mirror). The same repository is reachable by GitHub redirect under its earlier names, https://github.com/pszufe/HIF-standard and https://github.com/pszufe/HIF_validators
 - HIF Zenodo record, DOI 10.5281/zenodo.15802759. https://doi.org/10.5281/zenodo.15802759
-- HIF validators repository (target of the schema `$id`). https://github.com/pszufe/HIF_validators
+- `pszufe/HIF_validators` is the original name of the HIF-standard repository, not a separate validators repository (corrected 2026-09-24). The `$id` of `hif_schema.json`, `https://raw.githubusercontent.com/pszufe/HIF_validators/main/schemas/schema.json`, returns 404 because the file was renamed 21 minutes after that `$id` was written (commits `58447e4`, `6ffdb48`, `c8e2d4f`, 2025-05-02).
 - "A Blue Start: A large-scale pairwise and higher-order social network dataset." arXiv:2505.11608. https://arxiv.org/abs/2505.11608
 - "Efficient Gillespie algorithms for spreading phenomena in large and heterogeneous higher-order networks." arXiv:2509.20174. https://arxiv.org/abs/2509.20174
 
@@ -569,6 +568,21 @@ documentation and specification entries give the date they were checked. Compile
 
 - `jsonschema` 4.26.0 (Python), Draft-07 validator, used on [`schemas/sample.hif.json`](../../schemas/sample.hif.json) on 2026-09-20: 0 errors. https://pypi.org/project/jsonschema/
 - `pyoxigraph` 0.5.11, used to parse [`schemas/sample-n-ary-fact.ttl`](../../schemas/sample-n-ary-fact.ttl) on 2026-09-20: 32 quads, no errors. https://pypi.org/project/pyoxigraph/
+
+## Added by project P2 (2026-09-24) — HIF re-checked from primary sources
+
+Cited by [`kb/04-storage-and-formats/hif-hypergraph-interchange-format.md`](../../kb/04-storage-and-formats/hif-hypergraph-interchange-format.md)
+§0–§7 and §10, as corrected on 2026-09-24.
+
+- Coll, M., Joslyn, C. A., Landry, N. W., Lotito, Q. F., Myers, A., Pickard, J., Praggastis, B., Szufel, P. "HIF: The hypergraph interchange format for higher-order networks." arXiv:2507.11520, v1 2025-07-15, v2 2026-01-30 (typeset in the journal template; page numbers in the KB refer to v2). https://arxiv.org/abs/2507.11520
+- Crossref metadata for DOI 10.1017/nws.2025.10018: online publication 2025-12-11, licence CC BY 4.0, author affiliations. Checked 2026-09-24. https://api.crossref.org/works/10.1017/nws.2025.10018
+- HIF Zenodo versions: v0.1.0, 2025-07-04, https://doi.org/10.5281/zenodo.15802760 ; v0.1.1, 2025-10-02, https://doi.org/10.5281/zenodo.17251025 ; v0.1.2, 2025-10-03, https://doi.org/10.5281/zenodo.17257719 (archive `pszufe/HIF-standard-v0.1.2.zip`, both schema files byte-identical to HEAD). Version list checked through the Zenodo API 2026-09-24.
+- HIF-standard issues [#2](https://github.com/HIF-org/HIF-standard/issues/2) (repository name, 2024-07-26), [#51](https://github.com/HIF-org/HIF-standard/issues/51) (v2 goals, 2025-11-21), [#55](https://github.com/HIF-org/HIF-standard/issues/55) ("v1 released … HIF v2, in current development", 2025-12-09), and pull request [#34](https://github.com/HIF-org/HIF-standard/pull/34) ("Split schema title and version", merged 2025-05-02). Read via WebFetch 2026-09-23; issue comment threads not fully readable `[unverified]`.
+- GitHub Docs. "Renaming a repository" and "Transferring a repository" (redirects stop if the old name is reused). Read 2026-09-23. https://docs.github.com/en/repositories/creating-and-managing-repositories/renaming-a-repository ; https://docs.github.com/en/repositories/creating-and-managing-repositories/transferring-a-repository
+- JSON Schema draft 2019-09 release notes (`unevaluatedProperties` is new in 2019-09, so draft-07 validators ignore it). https://json-schema.org/draft/2019-09/release-notes
+- P2 research report 02, "What the HIF standard says today, from primary sources" (2026-09-23), with vendored schema snapshots, 36 validation cases and results. [projects/p2-role-aware-hif/research/02-hif-standard.md](../../projects/p2-role-aware-hif/research/02-hif-standard.md)
+- P2 research report 03, "XGI and HyperNetX HIF input and output, probed" (2026-09-23). [projects/p2-role-aware-hif/research/03-library-probes.md](../../projects/p2-role-aware-hif/research/03-library-probes.md)
+- P2 design, §4 (`role-convention` 1.0.0, `khg-hif/1.0.0`), §5 (loaders), §12.3 (upstream proposal); library evidence file. [projects/p2-role-aware-hif/DESIGN.md](../../projects/p2-role-aware-hif/DESIGN.md) ; [tests/evidence/library-hif-evidence.json](../../tests/evidence/library-hif-evidence.json)
 
 ## 05-query-embeddings-reasoning
 
@@ -1689,6 +1703,22 @@ the `[unverified]` list in [`books-surveys-and-courses.md`](../../kb/09-ecosyste
 - PyPI JSON API, `ontomem` 0.6.0, Apache-2.0, "a self-consolidating memory layer for AI agents with schema-first design, intelligent merging, and hybrid search capabilities" — the entity/hyperedge merge layer Hyper-Extract depends on (`MergeStrategy.LLM.BALANCED` by default for graph and hypergraph types). Queried 2026-09-21. https://pypi.org/project/ontomem/
 - Hyper-Extract documentation site and AtomGit mirror, as linked from the README (docs at `yifanfeng97.github.io/Hyper-Extract/latest/`; mirror at `atomgit.com/yifanfeng97/Hyper-Extract`). Recorded from the README, not independently fetched, 2026-09-21. `[unverified]`
 
+## Added by project P2 (2026-09-24) — HIF input and output of XGI and HyperNetX, probed
+
+Cited by [`kb/09-ecosystem/software-libraries.md`](../../kb/09-ecosystem/software-libraries.md) §1 and §8 and
+[`kb/09-ecosystem/standards-bodies-and-specifications.md`](../../kb/09-ecosystem/standards-bodies-and-specifications.md) §4.
+Corrects section 8 above in one point: `hypernetx.from_hif()` returns an undirected hypergraph but keeps `direction`
+as an opaque incidence column (it is not dropped). The `$id` 404 and the other URLs are one repository under three
+names and two schema files with identical rules, not competing schemas.
+
+- XGI source at release tag v0.10.2 (`xgi/readwrite/hif.py`, `xgi/convert/hif_dict.py`, `xgi/core/hypergraph.py`, `xgi/core/dihypergraph.py`, `xgi/convert/bipartite_edges.py`, `xgi/convert/higher_order_network.py`), byte-identical to the PyPI wheel uploaded 2026-05-15; checked 2026-09-23. https://github.com/xgi-org/xgi/tree/v0.10.2 ; https://pypi.org/project/xgi/0.10.2/
+- HyperNetX source at release tag v2.4.3 (`hypernetx/hif.py`, `hypernetx/classes/factory.py`, `hypernetx/classes/hypergraph.py`, `hypernetx/classes/property_store.py`, `hypernetx/classes/hyp_view.py`), byte-identical to the PyPI wheel uploaded 2026-07-23 (declares `pandas<3.0.0`); checked 2026-09-23. https://github.com/pnnl/HyperNetX/tree/v2.4.3 ; https://pypi.org/project/hypernetx/2.4.3/
+- HyperNetX issue #171, "Code Fails on Import if Internet Connection is Disrupted" (opened 2025-10-21, open on 2026-09-23). https://github.com/pnnl/HyperNetX/issues/171
+- HIF-standard issue #55 (maintainers' "v1"/"v2" wording, 2025-12-09) and Zenodo releases v0.1.0–v0.1.2. https://github.com/HIF-org/HIF-standard/issues/55 ; https://doi.org/10.5281/zenodo.17257719
+- P2 research report 03, "XGI and HyperNetX HIF input and output, probed" (probes run 2026-09-23, Python 3.11.15, 27 cases). [projects/p2-role-aware-hif/research/03-library-probes.md](../../projects/p2-role-aware-hif/research/03-library-probes.md)
+- P2 research report 02, "What the HIF standard says today, from primary sources" (2026-09-23). [projects/p2-role-aware-hif/research/02-hif-standard.md](../../projects/p2-role-aware-hif/research/02-hif-standard.md)
+- P2 library evidence, `library-hif-evidence.json`: the libraries' own HIF functions, run offline, on four role-carrying files. [tests/evidence/library-hif-evidence.json](../../tests/evidence/library-hif-evidence.json)
+
 ## 10-comparative-and-critique
 
 Bibliography for `kb/10-comparative-and-critique/`. Compiled 2026-09-20. Grouped by topic; every
@@ -1851,6 +1881,7 @@ repository pages on the same date.
 - https://github.com/hypergraphdb/hypergraphdb — 02-knowledge-representation, 04-storage-and-formats, 07-applications, 08-history-and-frontier, 09-ecosystem
 - https://github.com/opencog/atomspace — 02-knowledge-representation, 04-storage-and-formats, 07-applications, 09-ecosystem, 10-comparative-and-critique
 - https://www.ijcai.org/Proceedings/16/Papers/188.pdf — 01-foundations, 02-knowledge-representation, 08-history-and-frontier, 09-ecosystem, 10-comparative-and-critique
+- https://arxiv.org/abs/2507.11520 — 01-foundations, 04-storage-and-formats, 08-history-and-frontier, 10-comparative-and-critique
 - https://arxiv.org/abs/2510.12434 — 05-query-embeddings-reasoning, 07-applications, 08-history-and-frontier, 10-comparative-and-critique
 - https://doi.org/10.1038/s41467-026-71411-1 — 04-storage-and-formats, 05-query-embeddings-reasoning, 08-history-and-frontier, 09-ecosystem
 - https://github.com/HIF-org/HIF-standard — 02-knowledge-representation, 04-storage-and-formats, 08-history-and-frontier, 09-ecosystem
@@ -1874,7 +1905,6 @@ repository pages on the same date.
 - https://arxiv.org/abs/2501.13956 — 03-construction, 07-applications, 08-history-and-frontier
 - https://arxiv.org/abs/2504.16537 — 05-query-embeddings-reasoning, 07-applications, 08-history-and-frontier
 - https://arxiv.org/abs/2506.05690 — 07-applications, 08-history-and-frontier, 10-comparative-and-critique
-- https://arxiv.org/abs/2507.11520 — 01-foundations, 08-history-and-frontier, 10-comparative-and-critique
 - https://arxiv.org/abs/2508.03280 — 02-knowledge-representation, 05-query-embeddings-reasoning, 08-history-and-frontier
 - https://arxiv.org/abs/2601.17755 — 05-query-embeddings-reasoning, 07-applications, 08-history-and-frontier
 - https://arxiv.org/abs/2602.14470 — 05-query-embeddings-reasoning, 07-applications, 08-history-and-frontier
@@ -1978,10 +2008,12 @@ repository pages on the same date.
 - https://doi.org/10.18653/v1/2021.findings-acl.35 — 05-query-embeddings-reasoning, 09-ecosystem
 - https://doi.org/10.21105/joss.05162 — 04-storage-and-formats, 09-ecosystem
 - https://doi.org/10.5281/zenodo.15802759 — 04-storage-and-formats, 09-ecosystem
+- https://doi.org/10.5281/zenodo.17257719 — 04-storage-and-formats, 09-ecosystem
 - https://en.wikipedia.org/wiki/Hypergraph — 01-foundations, 02-knowledge-representation
 - https://exascale.info/assets/pdf/rosso2020www.pdf — 02-knowledge-representation, 10-comparative-and-critique
 - https://export.arxiv.org/api/query — 03-construction, 08-history-and-frontier
 - https://github.com/DimitrisAlivas/StarQE — 05-query-embeddings-reasoning, 07-applications
+- https://github.com/HIF-org/HIF-standard/issues/55 — 04-storage-and-formats, 09-ecosystem
 - https://github.com/HxyScotthuang/HYPER — 05-query-embeddings-reasoning, 08-history-and-frontier
 - https://github.com/JiyaoWei/LP_NKGs — 05-query-embeddings-reasoning, 08-history-and-frontier
 - https://github.com/eXascaleInfolab/HINGE_code — 05-query-embeddings-reasoning, 10-comparative-and-critique
@@ -2021,4 +2053,4 @@ repository pages on the same date.
 - https://www.wikidata.org/wiki/Help:Statements — 02-knowledge-representation, 06-visualization
 - https://www.wikidata.org/wiki/Wikidata:Data_model — 02-knowledge-representation, 06-visualization
 
-_990 distinct URLs; 183 shared across sections._
+_1007 distinct URLs; 185 shared across sections._

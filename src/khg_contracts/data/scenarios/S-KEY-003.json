@@ -1,0 +1,49 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-KEY-003",
+ "title": "find_by_key with as_of returns the holder at that time",
+ "requires": [
+  "goals",
+  "literal_values",
+  "nesting",
+  "ordered_roles",
+  "special_values",
+  "valid_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "load": "@fixture"
+  }
+ ],
+ "when": [
+  {
+   "op": "find_by_key",
+   "args": {
+    "relation": "position_held",
+    "key": [
+     {
+      "role": "position",
+      "value": {
+       "entity": "ex:KingOfFrance"
+      }
+     }
+    ],
+    "where": {
+     "as_of": "+1700-01-01T00:00:00Z"
+    }
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:king-14"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "C S-KEY-001 passed",
+  "B S042"
+ ]
+}

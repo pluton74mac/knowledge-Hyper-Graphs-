@@ -1,0 +1,98 @@
+{
+ "trace_id": "p3a-mt-0007",
+ "qset_version": "p3a-memory/1.0.0",
+ "split": "test",
+ "schema": "gate-demo/1.0.0",
+ "steps": [
+  {
+   "step": 1,
+   "at": "2026-01-10T09:00:00Z",
+   "text": "Alice became CEO of Acme in May 2019.",
+   "put": [
+    {
+     "edge": "h1",
+     "relation": "chief-executive",
+     "status": "asserted",
+     "bindings": [
+      {
+       "role": "organisation",
+       "node": "ex:acme"
+      },
+      {
+       "role": "person",
+       "node": "ex:alice"
+      }
+     ],
+     "valid": {
+      "from": "2019-05"
+     },
+     "evidence": [
+      {
+       "id": "e1",
+       "type": "curated",
+       "source": "trace:p3a-mt-0007#1"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "step": 2,
+   "at": "2026-02-02T09:00:00Z",
+   "text": "Bob took over as CEO of Acme on 1 January 2026.",
+   "put": [
+    {
+     "edge": "h2",
+     "relation": "chief-executive",
+     "status": "asserted",
+     "bindings": [
+      {
+       "role": "organisation",
+       "node": "ex:acme"
+      },
+      {
+       "role": "person",
+       "node": "ex:bob"
+      }
+     ],
+     "valid": {
+      "from": "2026-01-01"
+     },
+     "evidence": [
+      {
+       "id": "e1",
+       "type": "curated",
+       "source": "trace:p3a-mt-0007#2"
+      }
+     ]
+    },
+    {
+     "edge": "h1",
+     "relation": "chief-executive",
+     "status": "asserted",
+     "bindings": [
+      {
+       "role": "organisation",
+       "node": "ex:acme"
+      },
+      {
+       "role": "person",
+       "node": "ex:alice"
+      }
+     ],
+     "valid": {
+      "from": "2019-05",
+      "until": "2026-01-01"
+     },
+     "evidence": [
+      {
+       "id": "e1",
+       "type": "curated",
+       "source": "trace:p3a-mt-0007#1"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

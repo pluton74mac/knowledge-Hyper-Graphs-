@@ -1,0 +1,1131 @@
+{
+ "format": "khg-store-scenario/1.0.0",
+ "scenarios": [
+  {
+   "id": "S-PUT-001",
+   "title": "put of an identical record is a no-op",
+   "given": [
+    {
+     "fixture": [
+      "cell:HeLa",
+      "disease:T1DM",
+      "disease:T2DM",
+      "doc:soc-2024",
+      "doc:trial-report-1998",
+      "drug:insulin",
+      "drug:metformin",
+      "effect:hypoglycaemia",
+      "gene:TP53",
+      "org:ADA",
+      "org:Acme",
+      "outcome:HbA1c",
+      "pop:adults",
+      "x:Alice",
+      "x:Bob",
+      "x:Louis_XIV",
+      "x:ORD",
+      "x:R1",
+      "x:Roi_de_France",
+      "x:YYZ",
+      "x:Zoë",
+      "x:Zürich",
+      "x:air-canada",
+      "x:Москва",
+      "khg:f02-trial"
+     ]
+    }
+   ],
+   "when": {
+    "op": "put",
+    "args": {
+     "record": "fixture:khg:f02-trial"
+    }
+   },
+   "then": {
+    "result": {
+     "created": false,
+     "version": 1
+    }
+   }
+  },
+  {
+   "id": "S-PUT-002",
+   "title": "put of changed content appends an immutable version; get(as_at) sees the old one",
+   "requires": [
+    "temporal_tx",
+    "special_values",
+    "literal_values"
+   ],
+   "given": [
+    {
+     "fixture": [
+      "cell:HeLa",
+      "disease:T1DM",
+      "disease:T2DM",
+      "doc:soc-2024",
+      "doc:trial-report-1998",
+      "drug:insulin",
+      "drug:metformin",
+      "effect:hypoglycaemia",
+      "gene:TP53",
+      "org:ADA",
+      "org:Acme",
+      "outcome:HbA1c",
+      "pop:adults",
+      "x:Alice",
+      "x:Bob",
+      "x:Louis_XIV",
+      "x:ORD",
+      "x:R1",
+      "x:Roi_de_France",
+      "x:YYZ",
+      "x:Zoë",
+      "x:Zürich",
+      "x:air-canada",
+      "x:Москва",
+      "khg:f09-married"
+     ]
+    },
+    {
+     "put": {
+      "patch": "khg:f09-married",
+      "set": {
+       "rank": "normal"
+      },
+      "drop": [
+       "rank_reason"
+      ]
+     }
+    }
+   ],
+   "when": {
+    "op": "get",
+    "args": {
+     "id": "khg:f09-married",
+     "as_at": "2026-09-23T10:00:00Z"
+    }
+   },
+   "then": {
+    "result": {
+     "version": 1,
+     "rank": "deprecated"
+    }
+   },
+   "side_effects": [
+    {
+     "op": "get",
+     "args": {
+      "id": "khg:f09-married"
+     },
+     "then": {
+      "result": {
+       "version": 2,
+       "rank": "normal"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "S-PUT-003",
+   "title": "a candidate cannot be put into the store",
+   "given": [
+    {
+     "fixture": [
+      "cell:HeLa",
+      "disease:T1DM",
+      "disease:T2DM",
+      "doc:soc-2024",
+      "doc:trial-report-1998",
+      "drug:insulin",
+      "drug:metformin",
+      "effect:hypoglycaemia",
+      "gene:TP53",
+      "org:ADA",
+      "org:Acme",
+      "outcome:HbA1c",
+      "pop:adults",
+      "x:Alice",
+      "x:Bob",
+      "x:Louis_XIV",
+      "x:ORD",
+      "x:R1",
+      "x:Roi_de_France",
+      "x:YYZ",
+      "x:Zoë",
+      "x:Zürich",
+      "x:air-canada",
+      "x:Москва"
+     ]
+    }
+   ],
+   "when": {
+    "op": "put",
+    "args": {
+     "record": {
+      "patch": "khg:f02-trial",
+      "set": {
+       "status": "candidate"
+      }
+     }
+    }
+   },
+   "then": {
+    "error": "TRANSITION"
+   }
+  },
+  {
+   "id": "S-PUT-004",
+   "title": "an unbound value is accepted in a goal and rejected in an asserted fact",
+   "requires": [
+    "special_values"
+   ],
+   "given": [
+    {
+     "fixture": [
+      "cell:HeLa",
+      "disease:T1DM",
+      "disease:T2DM",
+      "doc:soc-2024",
+      "doc:trial-report-1998",
+      "drug:insulin",
+      "drug:metformin",
+      "effect:hypoglycaemia",
+      "gene:TP53",
+      "org:ADA",
+      "org:Acme",
+      "outcome:HbA1c",
+      "pop:adults",
+      "x:Alice",
+      "x:Bob",
+      "x:Louis_XIV",
+      "x:ORD",
+      "x:R1",
+      "x:Roi_de_France",
+      "x:YYZ",
+      "x:Zoë",
+      "x:Zürich",
+      "x:air-canada",
+      "x:Москва",
+      "khg:f14-goal"
+     ]
+    }
+   ],
+   "when": {
+    "op": "put",
+    "args": {
+     "record": {
+      "patch": "khg:f14-goal",
+      "set": {
+       "id": "khg:f15",
+       "status": "asserted",
+       "evidence": [
+        {
+         "eid": "ev1",
+         "type": "curated",
+         "mode": "manual",
+         "source": {
+          "doc": "doc:acme-pr-2021"
+         },
+         "activity": {
+          "agent": "curator:reviewer-1"
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   "then": {
+    "error": "VALIDATION",
+    "codes": [
+     "S-UNBOUND"
+    ]
+   }
+  },
+  {
+   "id": "S-INC-001",
+   "title": "incident: every hyperedge in which the node fills a role, ordered by id, default filter",
+   "requires": [
+    "special_values",
+    "literal_values"
+   ],
+   "given": [
+    {
+     "fixture": [
+      "cell:HeLa",
+      "disease:T1DM",
+      "disease:T2DM",
+      "doc:soc-2024",
+      "doc:trial-report-1998",
+      "drug:insulin",
+      "drug:metformin",
+      "effect:hypoglycaemia",
+      "gene:TP53",
+      "org:ADA",
+      "org:Acme",
+      "outcome:HbA1c",
+      "pop:adults",
+      "x:Alice",
+      "x:Bob",
+      "x:Louis_XIV",
+      "x:ORD",
+      "x:R1",
+      "x:Roi_de_France",
+      "x:YYZ",
+      "x:Zoë",
+      "x:Zürich",
+      "x:air-canada",
+      "x:Москва",
+      "khg:f01-treats",
+      "khg:f02-trial",
+      "khg:f04-coadmin",
+      "khg:f14-goal"
+     ]
+    }
+   ],
+   "when": {
+    "op": "incident",
+    "args": {
+     "node": "drug:metformin"
+    }
+   },
+   "then": {
+    "ids": [
+     "khg:f01-treats",
+     "khg:f02-trial",
+     "khg:f04-coadmin"
+    ]
+   }
+  },
+  {
+   "id": "S-INC-002",
+   "title": "incident with a role filter; a node in two roles of one fact is returned once",
+   "given": [
+    {
+     "fixture": [
+      "cell:HeLa",
+      "disease:T1DM",
+      "disease:T2DM",
+      "doc:soc-2024",
+      "doc:trial-report-1998",
+      "drug:insulin",
+      "drug:metformin",
+      "effect:hypoglycaemia",
+      "gene:TP53",
+      "org:ADA",
+      "org:Acme",
+      "outcome:HbA1c",
+      "pop:adults",
+      "x:Alice",
+      "x:Bob",
+      "x:Louis_XIV",
+      "x:ORD",
+      "x:R1",
+      "x:Roi_de_France",
+      "x:YYZ",
+      "x:Zoë",
+      "x:Zürich",
+      "x:air-canada",
+      "x:Москва",
+      "khg:f02-trial",
+      "khg:f04-coadmin"
+     ]
+    }
+   ],
+   "when": {
+    "op": "incident",
+    "args": {
+     "node": "drug:metformin",
+     "role": "background_therapy"
+    }
+   },
+   "then": {
+    "ids": [
+     "khg:f02-trial"
+    ]
+   }
+  },
+  {
+   "id": "S-INC-003",
+   "title": "incident on a hyperedge id returns the facts that reference it (nesting)",
+   "requires": [
+    "nesting"
+   ],
+   "given": [
+    {
+     "fixture": [
+      "cell:HeLa",
+      "disease:T1DM",
+      "disease:T2DM",
+      "doc:soc-2024",
+      "doc:trial-report-1998",
+      "drug:insulin",
+      "drug:metformin",
+      "effect:hypoglycaemia",
+      "gene:TP53",
+      "org:ADA",
+      "org:Acme",
+      "outcome:HbA1c",
+      "pop:adults",
+      "x:Alice",
+      "x:Bob",
+      "x:Louis_XIV",
+      "x:ORD",
+      "x:R1",
+      "x:Roi_de_France",
+      "x:YYZ",
+      "x:Zoë",
+      "x:Zürich",
+      "x:air-canada",
+      "x:Москва",
+      "khg:f02-trial",
+      "khg:f13-reported"
+     ]
+    }
+   ],
+   "when": {
+    "op": "incident",
+    "args": {
+     "node": "khg:f02-trial"
+    }
+   },
+   "then": {
+    "ids": [
+     "khg:f13-reported"
+    ]
+   }
+  },
+  {
+   "id": "S-INC-004",
+   "title": "incident with where.status includes goals; pagination is stable",
+   "requires": [
+    "special_values",
+    "literal_values"
+   ],
+   "given": [
+    {
+     "fixture": [
+      "cell:HeLa",
+      "disease:T1DM",
+      "disease:T2DM",
+      "doc:soc-2024",
+      "doc:trial-report-1998",
+      "drug:insulin",
+      "drug:metformin",
+      "effect:hypoglycaemia",
+      "gene:TP53",
+      "org:ADA",
+      "org:Acme",
+      "outcome:HbA1c",
+      "pop:adults",
+      "x:Alice",
+      "x:Bob",
+      "x:Louis_XIV",
+      "x:ORD",
+      "x:R1",
+      "x:Roi_de_France",
+      "x:YYZ",
+      "x:Zoë",
+      "x:Zürich",
+      "x:air-canada",
+      "x:Москва",
+      "khg:f01-treats",
+      "khg:f14-goal"
+     ]
+    }
+   ],
+   "when": {
+    "op": "incident",
+    "args": {
+     "node": "disease:T1DM",
+     "where": {
+      "status": [
+       "asserted",
+       "goal"
+      ]
+     },
+     "limit": 1
+    }
+   },
+   "then": {
+    "ids": [
+     "khg:f14-goal"
+    ]
+   }
+  },
+  {
+   "id": "S-FIND-001",
+   "title": "find at_least: a repeated role is matched as a multiset",
+   "given": [
+    {
+     "fixture": [
+      "cell:HeLa",
+      "disease:T1DM",
+      "disease:T2DM",
+      "doc:soc-2024",
+      "doc:trial-report-1998",
+      "drug:insulin",
+      "drug:metformin",
+      "effect:hypoglycaemia",
+      "gene:TP53",
+      "org:ADA",
+      "org:Acme",
+      "outcome:HbA1c",
+      "pop:adults",
+      "x:Alice",
+      "x:Bob",
+      "x:Louis_XIV",
+      "x:ORD",
+      "x:R1",
+      "x:Roi_de_France",
+      "x:YYZ",
+      "x:Zoë",
+      "x:Zürich",
+      "x:air-canada",
+      "x:Москва",
+      "khg:f04-coadmin",
+      "khg:f02-trial"
+     ]
+    }
+   ],
+   "when": {
+    "op": "find",
+    "args": {
+     "relation": "co_administration_causes",
+     "pattern": [
+      {
+       "role": "agent",
+       "value": {
+        "entity": "drug:insulin"
+       }
+      },
+      {
+       "role": "agent",
+       "value": {
+        "entity": "drug:metformin"
+       }
+      }
+     ]
+    }
+   },
+   "then": {
+    "ids": [
+     "khg:f04-coadmin"
+    ]
+   }
+  },
+  {
+   "id": "S-FIND-002",
+   "title": "find exact: the pattern must equal the whole binding multiset",
+   "given": [
+    {
+     "fixture": [
+      "cell:HeLa",
+      "disease:T1DM",
+      "disease:T2DM",
+      "doc:soc-2024",
+      "doc:trial-report-1998",
+      "drug:insulin",
+      "drug:metformin",
+      "effect:hypoglycaemia",
+      "gene:TP53",
+      "org:ADA",
+      "org:Acme",
+      "outcome:HbA1c",
+      "pop:adults",
+      "x:Alice",
+      "x:Bob",
+      "x:Louis_XIV",
+      "x:ORD",
+      "x:R1",
+      "x:Roi_de_France",
+      "x:YYZ",
+      "x:Zoë",
+      "x:Zürich",
+      "x:air-canada",
+      "x:Москва",
+      "khg:f04-coadmin"
+     ]
+    }
+   ],
+   "when": {
+    "op": "find",
+    "args": {
+     "relation": "co_administration_causes",
+     "match": "exact",
+     "pattern": [
+      {
+       "role": "agent",
+       "value": {
+        "entity": "drug:insulin"
+       }
+      },
+      {
+       "role": "agent",
+       "value": {
+        "entity": "drug:metformin"
+       }
+      }
+     ]
+    }
+   },
+   "then": {
+    "ids": []
+   }
+  },
+  {
+   "id": "S-FIND-003",
+   "title": "find on a typed literal compares datatype and precision",
+   "requires": [
+    "literal_values"
+   ],
+   "given": [
+    {
+     "fixture": [
+      "cell:HeLa",
+      "disease:T1DM",
+      "disease:T2DM",
+      "doc:soc-2024",
+      "doc:trial-report-1998",
+      "drug:insulin",
+      "drug:metformin",
+      "effect:hypoglycaemia",
+      "gene:TP53",
+      "org:ADA",
+      "org:Acme",
+      "outcome:HbA1c",
+      "pop:adults",
+      "x:Alice",
+      "x:Bob",
+      "x:Louis_XIV",
+      "x:ORD",
+      "x:R1",
+      "x:Roi_de_France",
+      "x:YYZ",
+      "x:Zoë",
+      "x:Zürich",
+      "x:air-canada",
+      "x:Москва",
+      "khg:f07-zurich"
+     ]
+    }
+   ],
+   "when": {
+    "op": "find",
+    "args": {
+     "relation": "population_count",
+     "pattern": [
+      {
+       "role": "point_in_time",
+       "value": {
+        "literal": "2023",
+        "datatype": "time",
+        "precision": "day"
+       }
+      }
+     ]
+    }
+   },
+   "then": {
+    "ids": []
+   }
+  },
+  {
+   "id": "S-KEY-001",
+   "title": "find_by_key with as_of returns the fact valid at that instant",
+   "requires": [
+    "temporal_valid",
+    "key_index",
+    "literal_values"
+   ],
+   "given": [
+    {
+     "fixture": [
+      "cell:HeLa",
+      "disease:T1DM",
+      "disease:T2DM",
+      "doc:soc-2024",
+      "doc:trial-report-1998",
+      "drug:insulin",
+      "drug:metformin",
+      "effect:hypoglycaemia",
+      "gene:TP53",
+      "org:ADA",
+      "org:Acme",
+      "outcome:HbA1c",
+      "pop:adults",
+      "x:Alice",
+      "x:Bob",
+      "x:Louis_XIV",
+      "x:ORD",
+      "x:R1",
+      "x:Roi_de_France",
+      "x:YYZ",
+      "x:Zoë",
+      "x:Zürich",
+      "x:air-canada",
+      "x:Москва",
+      "khg:f06-louis"
+     ]
+    }
+   ],
+   "when": {
+    "op": "find_by_key",
+    "args": {
+     "relation": "position_held",
+     "key": [
+      {
+       "role": "position",
+       "value": {
+        "entity": "x:Roi_de_France"
+       }
+      }
+     ],
+     "where": {
+      "as_of": "1700"
+     }
+    }
+   },
+   "then": {
+    "ids": [
+     "khg:f06-louis"
+    ]
+   },
+   "side_effects": [
+    {
+     "op": "find_by_key",
+     "args": {
+      "relation": "position_held",
+      "key": [
+       {
+        "role": "position",
+        "value": {
+         "entity": "x:Roi_de_France"
+        }
+       }
+      ],
+      "where": {
+       "as_of": "1715-09-01"
+      }
+     },
+     "then": {
+      "ids": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "S-KEY-002",
+   "title": "a key collision is never resolved silently: KeyCollision with the declared policy",
+   "requires": [
+    "key_index"
+   ],
+   "given": [
+    {
+     "fixture": [
+      "cell:HeLa",
+      "disease:T1DM",
+      "disease:T2DM",
+      "doc:soc-2024",
+      "doc:trial-report-1998",
+      "drug:insulin",
+      "drug:metformin",
+      "effect:hypoglycaemia",
+      "gene:TP53",
+      "org:ADA",
+      "org:Acme",
+      "outcome:HbA1c",
+      "pop:adults",
+      "x:Alice",
+      "x:Bob",
+      "x:Louis_XIV",
+      "x:ORD",
+      "x:R1",
+      "x:Roi_de_France",
+      "x:YYZ",
+      "x:Zoë",
+      "x:Zürich",
+      "x:air-canada",
+      "x:Москва",
+      "khg:f12-ceo-bob"
+     ]
+    }
+   ],
+   "when": {
+    "op": "put",
+    "args": {
+     "record": "fixture:khg:f11-ceo-alice"
+    }
+   },
+   "then": {
+    "error": "KEY_COLLISION",
+    "info": {
+     "conflicts": [
+      "khg:f12-ceo-bob"
+     ],
+     "suggested": "supersede"
+    }
+   }
+  },
+  {
+   "id": "S-SUP-001",
+   "title": "supersede is atomic: record, status, pointer; the walk terminates at the current belief",
+   "requires": [
+    "atomic_events",
+    "key_index"
+   ],
+   "given": [
+    {
+     "fixture": [
+      "cell:HeLa",
+      "disease:T1DM",
+      "disease:T2DM",
+      "doc:soc-2024",
+      "doc:trial-report-1998",
+      "drug:insulin",
+      "drug:metformin",
+      "effect:hypoglycaemia",
+      "gene:TP53",
+      "org:ADA",
+      "org:Acme",
+      "outcome:HbA1c",
+      "pop:adults",
+      "x:Alice",
+      "x:Bob",
+      "x:Louis_XIV",
+      "x:ORD",
+      "x:R1",
+      "x:Roi_de_France",
+      "x:YYZ",
+      "x:Zoë",
+      "x:Zürich",
+      "x:air-canada",
+      "x:Москва",
+      "khg:f11-ceo-alice"
+     ]
+    },
+    {
+     "apply": {
+      "op": "supersede",
+      "id": "khg:s01",
+      "superseded": [
+       "khg:f11-ceo-alice"
+      ],
+      "record": "fixture:khg:f12-ceo-bob",
+      "reason": "incorrect",
+      "evidence": [
+       {
+        "eid": "ev1",
+        "type": "curated",
+        "mode": "manual",
+        "source": {
+         "doc": "doc:acme-pr-2021"
+        },
+        "activity": {
+         "agent": "curator:reviewer-1"
+        }
+       }
+      ],
+      "actor": "curator:reviewer-1"
+     }
+    }
+   ],
+   "when": {
+    "op": "supersession_walk",
+    "args": {
+     "id": "khg:f11-ceo-alice"
+    }
+   },
+   "then": {
+    "result": {
+     "terminal": [
+      "khg:f12-ceo-bob"
+     ]
+    }
+   },
+   "side_effects": [
+    {
+     "op": "get",
+     "args": {
+      "id": "khg:f11-ceo-alice"
+     },
+     "then": {
+      "result": {
+       "status": "superseded",
+       "version": 2,
+       "superseded_by": [
+        "khg:f12-ceo-bob"
+       ]
+      }
+     }
+    },
+    {
+     "op": "find_by_key",
+     "args": {
+      "relation": "chief_executive",
+      "key": [
+       {
+        "role": "organisation",
+        "value": {
+         "entity": "org:Acme"
+        }
+       }
+      ]
+     },
+     "then": {
+      "ids": [
+       "khg:f12-ceo-bob"
+      ]
+     }
+    },
+    {
+     "op": "supersession_walk",
+     "args": {
+      "id": "khg:f12-ceo-bob",
+      "direction": "backward"
+     },
+     "then": {
+      "result": {
+       "terminal": [
+        "khg:f11-ceo-alice"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "S-TIME-001",
+   "title": "end_validity closes valid time in a new version; status stays asserted (world change, not supersession)",
+   "requires": [
+    "temporal_valid",
+    "temporal_tx",
+    "key_index"
+   ],
+   "given": [
+    {
+     "fixture": [
+      "cell:HeLa",
+      "disease:T1DM",
+      "disease:T2DM",
+      "doc:soc-2024",
+      "doc:trial-report-1998",
+      "drug:insulin",
+      "drug:metformin",
+      "effect:hypoglycaemia",
+      "gene:TP53",
+      "org:ADA",
+      "org:Acme",
+      "outcome:HbA1c",
+      "pop:adults",
+      "x:Alice",
+      "x:Bob",
+      "x:Louis_XIV",
+      "x:ORD",
+      "x:R1",
+      "x:Roi_de_France",
+      "x:YYZ",
+      "x:Zoë",
+      "x:Zürich",
+      "x:air-canada",
+      "x:Москва",
+      "khg:f12-ceo-bob"
+     ]
+    },
+    {
+     "apply": {
+      "op": "end_validity",
+      "target": "khg:f12-ceo-bob",
+      "to": "2025-12-31",
+      "end_cause": "wd:Q24637",
+      "actor": "curator:reviewer-1"
+     }
+    }
+   ],
+   "when": {
+    "op": "find_by_key",
+    "args": {
+     "relation": "chief_executive",
+     "key": [
+      {
+       "role": "organisation",
+       "value": {
+        "entity": "org:Acme"
+       }
+      }
+     ],
+     "where": {
+      "as_of": "2026-06-01"
+     }
+    }
+   },
+   "then": {
+    "ids": []
+   },
+   "side_effects": [
+    {
+     "op": "get",
+     "args": {
+      "id": "khg:f12-ceo-bob"
+     },
+     "then": {
+      "result": {
+       "status": "asserted",
+       "version": 2,
+       "valid_time": {
+        "from": "2019-01-01",
+        "to": "2025-12-31",
+        "end_cause": "wd:Q24637"
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "S-LIFE-001",
+   "title": "the transition table forbids asserted -> goal",
+   "given": [
+    {
+     "fixture": [
+      "cell:HeLa",
+      "disease:T1DM",
+      "disease:T2DM",
+      "doc:soc-2024",
+      "doc:trial-report-1998",
+      "drug:insulin",
+      "drug:metformin",
+      "effect:hypoglycaemia",
+      "gene:TP53",
+      "org:ADA",
+      "org:Acme",
+      "outcome:HbA1c",
+      "pop:adults",
+      "x:Alice",
+      "x:Bob",
+      "x:Louis_XIV",
+      "x:ORD",
+      "x:R1",
+      "x:Roi_de_France",
+      "x:YYZ",
+      "x:Zoë",
+      "x:Zürich",
+      "x:air-canada",
+      "x:Москва",
+      "khg:f02-trial"
+     ]
+    }
+   ],
+   "when": {
+    "op": "apply",
+    "args": {
+     "event": {
+      "op": "transition",
+      "target": "khg:f02-trial",
+      "to": "goal"
+     }
+    }
+   },
+   "then": {
+    "error": "TRANSITION"
+   }
+  },
+  {
+   "id": "S-EXP-001",
+   "title": "the gate fixture rebuilt through put and one supersede event exports equal to it",
+   "requires": [
+    "atomic_events",
+    "history_export",
+    "key_index",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values",
+    "temporal_tx",
+    "temporal_valid"
+   ],
+   "given": [
+    {
+     "fixture": "all"
+    }
+   ],
+   "when": {
+    "op": "export",
+    "args": {
+     "format": "khg-jsonl"
+    }
+   },
+   "then": {
+    "container_equals": "fixture:gate"
+   }
+  },
+  {
+   "id": "S-EXP-002",
+   "title": "load keeps versions and transaction times: load of the gate container exports equal to it",
+   "requires": [
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "given": [
+    {
+     "load": "fixture:gate"
+    }
+   ],
+   "when": {
+    "op": "export",
+    "args": {
+     "format": "khg-jsonl"
+    }
+   },
+   "then": {
+    "container_equals": "fixture:gate"
+   },
+   "side_effects": [
+    {
+     "op": "get",
+     "args": {
+      "id": "khg:f11-ceo-alice"
+     },
+     "then": {
+      "result": {
+       "version": 2,
+       "status": "superseded",
+       "recorded_at": "2026-09-23T11:00:00Z",
+       "change": {
+        "op": "supersede",
+        "ref": "khg:s01"
+       }
+      }
+     }
+    },
+    {
+     "op": "supersession_walk",
+     "args": {
+      "id": "khg:f11-ceo-alice"
+     },
+     "then": {
+      "result": {
+       "terminal": [
+        "khg:f12-ceo-bob"
+       ]
+      }
+     }
+    },
+    {
+     "op": "incident",
+     "args": {
+      "node": "gene:TP53"
+     },
+     "then": {
+      "ids": [
+       "khg:f03-regulates"
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

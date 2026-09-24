@@ -1,0 +1,144 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-KEY-007",
+ "title": "close_older on a succession: the caller ends the older fact at the newer start, then puts",
+ "requires": [
+  "key_constraint",
+  "literal_values",
+  "valid_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    {
+     "@": "f:king-13",
+     "drop_bindings": [
+      "b4"
+     ]
+    }
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     "@f:king-14"
+    ]
+   },
+   "then": {
+    "error": "KHG-D016",
+    "info": {
+     "collisions": [
+      {
+       "record": "f:king-14",
+       "policy": "close_older",
+       "conflicts": [
+        {
+         "id": "f:king-13",
+         "in_batch": false,
+         "shape": "succession",
+         "class": "distinct",
+         "action": "close_older"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "op": "apply",
+   "args": {
+    "event": {
+     "op": "end_validity",
+     "target": "f:king-13",
+     "end": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1643-05-14T00:00:00Z",
+       "precision": 11
+      }
+     },
+     "evidence": [
+      {
+       "id": "e9",
+       "type": "inferred",
+       "mode": "automatic",
+       "source": {
+        "doc_id": "doc:regnal-list"
+       },
+       "inference": {
+        "rule": "close_older",
+        "from": [
+         "f:king-14"
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "f:king-13",
+      2,
+      "versioned"
+     ]
+    ]
+   }
+  },
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     "@f:king-14"
+    ]
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "f:king-14",
+      1,
+      "created"
+     ]
+    ]
+   }
+  },
+  {
+   "op": "find_by_key",
+   "args": {
+    "relation": "position_held",
+    "key": [
+     {
+      "role": "position",
+      "value": {
+       "entity": "ex:KingOfFrance"
+      }
+     }
+    ],
+    "where": {
+     "as_of": "+1700-01-01T00:00:00Z"
+    }
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:king-14"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "B S044",
+  "A C2-11 passed (reported, not rewritten)",
+  "C §1.4 (P7)",
+  "critique SEM-04"
+ ]
+}

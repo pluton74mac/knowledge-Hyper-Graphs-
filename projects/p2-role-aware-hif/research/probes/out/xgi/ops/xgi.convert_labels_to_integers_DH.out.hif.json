@@ -1,0 +1,151 @@
+{
+  "metadata": {
+    "title": "Sample knowledge hypergraph in HIF (Hypergraph Interchange Format)",
+    "description": "Three n-ary facts from a toy biomedical knowledge base. Each hyperedge is one fact; each incidence carries the role the entity plays in that fact. Directed: 'tail' incidences are the inputs/subjects of the relation, 'head' incidences are the outputs/objects.",
+    "schema": "https://raw.githubusercontent.com/pszufe/HIF-standard/main/schemas/hif_schema.json",
+    "created": "2026-09-19",
+    "kb-section": "kb/04-storage-and-formats",
+    "conventions": {
+      "edge.attrs.relation": "the relation (predicate) type of the n-ary fact",
+      "incidence.attrs.role": "the role the node plays in the fact (qualifier-style roles allowed)",
+      "edge.attrs.source": "provenance pointer for the fact",
+      "edge.attrs.valid-from": "ISO-8601 date the fact became valid"
+    }
+  },
+  "network-type": "directed",
+  "nodes": [
+    {
+      "attrs": {
+        "type": "Drug",
+        "label": "drug:metformin"
+      },
+      "node": 0
+    },
+    {
+      "attrs": {
+        "type": "Disease",
+        "label": "disease:T2DM"
+      },
+      "node": 1
+    },
+    {
+      "attrs": {
+        "type": "Dosage",
+        "label": "dose:500mg-bid"
+      },
+      "node": 2
+    },
+    {
+      "attrs": {
+        "type": "Population",
+        "label": "pop:adults"
+      },
+      "node": 3
+    },
+    {
+      "attrs": {
+        "type": "Drug",
+        "label": "drug:insulin"
+      },
+      "node": 4
+    },
+    {
+      "attrs": {
+        "type": "AdverseEffect",
+        "label": "effect:hypoglycemia"
+      },
+      "node": 5
+    },
+    {
+      "attrs": {
+        "type": "Organisation",
+        "label": "org:ADA"
+      },
+      "node": 6
+    },
+    {
+      "attrs": {
+        "type": "Document",
+        "label": "doc:guideline-2024"
+      },
+      "node": 7
+    }
+  ],
+  "edges": [
+    {
+      "attrs": {
+        "relation": "treats",
+        "arity": 4,
+        "source": "doc:guideline-2024",
+        "valid-from": "2024-01-01",
+        "label": "f1"
+      },
+      "edge": 0
+    },
+    {
+      "attrs": {
+        "relation": "co-administration-causes",
+        "arity": 3,
+        "source": "doc:guideline-2024",
+        "label": "f2"
+      },
+      "edge": 1
+    },
+    {
+      "attrs": {
+        "relation": "publishes",
+        "arity": 2,
+        "source": "doc:guideline-2024",
+        "label": "f3"
+      },
+      "edge": 2
+    }
+  ],
+  "incidences": [
+    {
+      "edge": 0,
+      "node": 0,
+      "direction": "tail"
+    },
+    {
+      "edge": 0,
+      "node": 2,
+      "direction": "tail"
+    },
+    {
+      "edge": 0,
+      "node": 3,
+      "direction": "tail"
+    },
+    {
+      "edge": 0,
+      "node": 1,
+      "direction": "head"
+    },
+    {
+      "edge": 1,
+      "node": 0,
+      "direction": "tail"
+    },
+    {
+      "edge": 1,
+      "node": 4,
+      "direction": "tail"
+    },
+    {
+      "edge": 1,
+      "node": 5,
+      "direction": "head"
+    },
+    {
+      "edge": 2,
+      "node": 6,
+      "direction": "tail"
+    },
+    {
+      "edge": 2,
+      "node": 7,
+      "direction": "head"
+    }
+  ]
+}

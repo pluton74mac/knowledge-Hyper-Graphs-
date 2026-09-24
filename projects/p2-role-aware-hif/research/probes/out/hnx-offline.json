@@ -1,0 +1,51 @@
+{
+ "env": {
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "jsonschema": "4.26.0",
+  "pandas": "2.3.3",
+  "numpy": "2.4.6",
+  "fastjsonschema": "2.22.2",
+  "requests": "2.34.2",
+  "hypernetx": "2.4.3",
+  "preferred_encoding": "utf-8",
+  "schema_url": "https://raw.githubusercontent.com/pszufe/HIF_validators/main/schemas/hif_schema_v0.1.0.json",
+  "source_sha256": {
+   "hypernetx/hif.py": "ca44b6efeeb34f2f2adf0038d2048e069a289f6c3705532c0d80deb7d68cea0e",
+   "hypernetx/classes/hypergraph.py": "56a3021339341389d275d97b310bd107d9b295b409ac9312d4396e0d4cec662e",
+   "hypernetx/classes/factory.py": "b1a0d669ba536ef461e7ee96110c7fd31824a6ca9480696298bf236b253fea0e",
+   "hypernetx/classes/property_store.py": "10c843ee3fda9ba2e1c8d9567fdc52b4127b2baf00fa5a91b15cc74cccc8c28c",
+   "hypernetx/classes/hyp_view.py": "091cc5c6d14db97c98268d2f1bb73721f3a2f2b7b5d7f4353577a6eb347e35d5",
+   "hypernetx/classes/incidence_store.py": "c2adf1785df11abe18d6f091d8d2442a22b253b1ebe42c6a8840b04b56a600a1"
+  }
+ },
+ "offline": {
+  "hnx.from_hif(hif=doc) with network disabled": {
+   "type": "ConnectionError",
+   "message": "probe: network disabled",
+   "raised_at": "hypernetx/hif.py:136 in from_hif: resp = requests.get(schema_url)",
+   "library_frame": "hypernetx/hif.py:136 in from_hif: resp = requests.get(schema_url)"
+  },
+  "hnx.to_hif(H) with network disabled": {
+   "type": "ConnectionError",
+   "message": "probe: network disabled",
+   "raised_at": "hypernetx/hif.py:63 in to_hif: resp = requests.get(schema_url)",
+   "library_frame": "hypernetx/hif.py:63 in to_hif: resp = requests.get(schema_url)"
+  },
+  "hnx.Hypergraph(DataFrame(incidences), ...) with network disabled": {
+   "ok": true,
+   "role of (f1, drug:metformin)": "treatment"
+  },
+  "seconds for one networked from_hif(hif=sample)": 0.407,
+  "seconds per schema GET (mean of 3)": 0.355,
+  "schema_url": "https://raw.githubusercontent.com/pszufe/HIF_validators/main/schemas/hif_schema_v0.1.0.json",
+  "fresh interpreter, proxy variables -> 127.0.0.1:9 (closed)": {
+   "returncode": 0,
+   "stdout": [
+    "import ok 2.04 s",
+    "from_hif raised ProxyError"
+   ],
+   "stderr_tail": []
+  }
+ }
+}

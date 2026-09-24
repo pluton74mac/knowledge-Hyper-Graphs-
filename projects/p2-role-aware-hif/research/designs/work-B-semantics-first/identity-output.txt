@@ -1,0 +1,39 @@
+C1       refines            arity 2->2   vt unstated->period   core_key= True  key= True  | refine: e gets a new version with n's content and the union of evidence
+C1r      generalises        arity 2->2   vt period->unstated   core_key= True  key= True  | support: n's evidence appended to e, supports mapped to e's bindings
+C1c-i    refines            arity 3->3   vt unstated->unstated core_key= False key= None  | refine: e gets a new version with n's content and the union of evidence
+C1c-ii   refines            arity 2->3   vt unstated->unstated core_key= True  key= None  | refine: e gets a new version with n's content and the union of evidence
+C2a      distinct           arity 3->3   vt invariant->invariant core_key= False key= False | distinct: insert n
+C2a-naive key_conflict       arity 3->3   vt invariant->invariant core_key= False key= True  | dispute: khg:disputes record; both disputed
+C2b      distinct           arity 3->3   vt invariant->invariant core_key= False key= False | distinct: insert n
+C2b'     distinct           arity 2->2   vt invariant->invariant core_key= False key= None  | distinct: insert n
+C2c      distinct           arity 2->2   vt period->since      core_key= True  key= None  | distinct: insert n
+C2c-k    key_timeline       arity 2->2   vt period->since      core_key= True  key= True  | distinct facts on the same key timeline
+C3a      key_conflict       arity 2->2   vt since->since       core_key= False key= True  | succession: close e (end := start of the other; inferred evidence); status unchanged
+C3b      key_conflict       arity 2->2   vt since->since       core_key= False key= True  | dispute (close_older not applicable: starts unknown/unordered or older already ended)
+C3c      negation_conflict  arity 1->2   vt unstated->unstated core_key= False key= None  | dispute: khg:disputes record; both disputed
+C4a      key_conflict       arity 4->5   vt since->since       core_key= False key= True  | succession: close e (end := start of the other; inferred evidence); status unchanged
+C4a-u    key_conflict       arity 4->5   vt unstated->unstated core_key= False key= True  | dispute (close_older not applicable: starts unknown/unordered or older already ended)
+C4a-o    refines            arity 4->5   vt unstated->unstated core_key= False key= True  | refine: e gets a new version with n's content and the union of evidence
+C4b      refines            arity 2->4   vt invariant->invariant core_key= True  key= None  | refine: e gets a new version with n's content and the union of evidence
+I5       duplicate          arity 2->2   vt unstated->unstated core_key= True  key= None  | merge-evidence: n's evidence appended to e (new version of e, same content)
+I6       distinct           arity 3->3   vt unstated->unstated core_key= True  key= None  | distinct: insert n
+I7       distinct           arity 2->2   vt unstated->unstated core_key= False key= None  | distinct: insert n
+I8       duplicate          arity 3->3   vt unstated->unstated core_key= True  key= None  | merge-evidence: n's evidence appended to e (new version of e, same content)
+I11      refines            arity 3->3   vt invariant->invariant core_key= True  key= None  | refine: e gets a new version with n's content and the union of evidence
+I11-x    distinct           arity 3->3   vt invariant->invariant core_key= True  key= None  | distinct: insert n
+I12      refines            arity 2->2   vt unstated->unstated core_key= False key= None  | refine: e gets a new version with n's content and the union of evidence
+I14      distinct           arity 3->3   vt invariant->invariant core_key= True  key= None  | distinct: insert n
+X1       key_timeline       arity 2->2   vt period->since      core_key= False key= True  | distinct facts on the same key timeline (possible overlap only: info)
+X2       key_conflict       arity 2->2   vt period->since      core_key= False key= True  | dispute (close_older not applicable: starts unknown/unordered or older already ended)
+X3       key_conflict       arity 2->2   vt unstated->unstated core_key= False key= True  | dispute (close_older not applicable: starts unknown/unordered or older already ended)
+X4       key_conflict       arity 2->2   vt since->since       core_key= False key= True  | succession: close n (end := start of the other; inferred evidence); status unchanged
+X5       negation_conflict  arity 1->2   vt unstated->unstated core_key= False key= None  | dispute: khg:disputes record; both disputed
+X6       distinct           arity 2->3   vt unstated->unstated core_key= False key= None  | distinct: insert n
+X7       refines            arity 2->3   vt unstated->unstated core_key= False key= None  | refine: e gets a new version with n's content and the union of evidence
+X8       distinct           arity 2->2   vt unstated->unstated core_key= False key= None  | distinct: insert n
+X9       generalises        arity 2->2   vt period->unstated   core_key= True  key= None  | support: n's evidence appended to e, supports mapped to e's bindings
+-- policy variants of C3a (key {organisation}, temporal):
+   on_collision=supersede  -> key_conflict: supersession: e superseded by n (reason correction); khg:supersedes record
+   on_collision=dispute    -> key_conflict: dispute: khg:disputes record; both disputed
+   on_collision=reject     -> key_conflict: reject: put refused (KHG-D016)
+-- store-level: undated marriage vs {m1 1990-1995, m2 2001-}: ['generalises', 'generalises'] => ambiguous generalisation: needs_review

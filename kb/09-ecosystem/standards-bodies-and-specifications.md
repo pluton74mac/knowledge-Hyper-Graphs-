@@ -4,7 +4,7 @@ type: survey
 status: draft
 tags: [ecosystem, standards, W3C, RDF-1.2, SPARQL-1.2, GQL, SQL-PGQ, HIF, LDBC, PG-Schema, openCypher]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-24
 ---
 
 # Standards bodies and specifications
@@ -131,33 +131,50 @@ The only interchange standard that treats a hyperedge as primitive.
 archived on Zenodo ([10.5281/zenodo.15802759](https://doi.org/10.5281/zenodo.15802759));
 maintained by pull request at [HIF-org/HIF-standard](https://github.com/HIF-org/HIF-standard)
 (MIT, 36 stars, last commit 2026-03-19). The schema `CHANGELOG.md` lists exactly one entry,
-**v0.0**, "Initial schema for the Hypergraph Interchange Format (HIF) standard".
+**v0.0**, "Initial schema for the Hypergraph Interchange Format (HIF) standard". The other version
+labels disagree with it: the versioned schema file says `0.1.0`, `CITATION.cff` says `0.1.0`, the
+Zenodo releases are v0.1.0, v0.1.1 and v0.1.2 (2025-07-04 to 2025-10-03), and the maintainers call
+the current state "v1" and are planning a "v2" for temporal hypergraphs and a columnar format
+(issue [#55](https://github.com/HIF-org/HIF-standard/issues/55); all checked 2026-09-23 by P2,
+[report 02 §4](../../projects/p2-role-aware-hif/research/02-hif-standard.md)).
 
-**A concrete versioning problem, verified 2026-09-20.** Three different URLs are in circulation
-for "the" HIF schema, and all three resolve with HTTP 200:
+**The schema URLs, corrected 2026-09-24.** The 2026-09-20 reading of this section counted three
+schema URLs plus a fourth, 404, `$id` as competing identities. P2's full clone of the repository
+showed that they are one repository under three names and two files with identical rules
+([report 02 §2.1, §4.4](../../projects/p2-role-aware-hif/research/02-hif-standard.md)):
 
-| URL | Where it is used |
-|---|---|
-| `https://raw.githubusercontent.com/HIF-org/HIF-standard/main/schemas/hif_schema.json` | the current repository |
-| `https://raw.githubusercontent.com/pszufe/HIF-standard/main/schemas/hif_schema.json` | the validator snippets in the current README, and this repository's own [../../schemas/sample.hif.json](../../schemas/sample.hif.json) |
-| `https://raw.githubusercontent.com/pszufe/HIF_validators/main/schemas/hif_schema_v0.1.0.json` | fetched at run time by `hypernetx.hif.schema_url` in HyperNetX 2.4.3 |
+| URL | HTTP (2026-09-23) | What it is |
+|---|---|---|
+| `https://raw.githubusercontent.com/HIF-org/HIF-standard/main/schemas/hif_schema.json` | 200 | the moving `latest` file under the current name |
+| `https://raw.githubusercontent.com/pszufe/HIF-standard/main/schemas/hif_schema.json` | 200, same bytes | the same file through GitHub's rename and transfer redirect; used by the README's validator snippets and this repository's [../../schemas/sample.hif.json](../../schemas/sample.hif.json) |
+| `https://raw.githubusercontent.com/pszufe/HIF_validators/main/schemas/hif_schema_v0.1.0.json` | 200 | the *versioned* file (`"version": "0.1.0"`) under the repository's original name; fetched at run time by `hypernetx.hif.schema_url` in HyperNetX 2.4.3 |
+| `https://raw.githubusercontent.com/pszufe/HIF_validators/main/schemas/schema.json` | 404 | the `$id` of `hif_schema.json`: a path that existed for about 21 minutes on 2025-05-02, before a rename; the other file's `$id` was corrected and this one was not |
 
-The published schema's own `$id` is a *fourth* string,
-`https://raw.githubusercontent.com/pszufe/HIF_validators/main/schemas/schema.json`, which returns
-**404**. The schema declares `"version": "latest"` rather than a version number.
+`hif_schema.json` and `hif_schema_v0.1.0.json` differ only in `$id` and `version`, and their
+validation rules have not changed since 2024-10-03. The `version` value is an annotation, not a
+JSON Schema keyword, so it describes the schema document and has no effect on validation.
 
-**Analysis.** The format itself is sound and genuinely cross-library, but its *identity* is not
-yet pinned: a file that validates today may validate against a different document tomorrow, and
-a tool cannot ask "which HIF version is this?" because the schema does not carry one. Pinning a
-versioned, immutable schema URL (and putting a `version` field in the file, not in the schema)
-would be the single highest-value change to HIF. Until then, any pipeline should vendor the
-schema it validates against. Full discussion of the format in
-[../04-storage-and-formats/hif-hypergraph-interchange-format.md](../04-storage-and-formats/hif-hypergraph-interchange-format.md).
+**Analysis.** The format itself is sound and genuinely cross-library, and its current rules are
+stable. The identity problem is narrower than it first looked, but real. `hif_schema.json` is by
+design the moving `latest` file, so every tool that fetches it will change rules silently when v2
+ships. The old names resolve only through GitHub redirects. And a data file cannot say which
+version it follows: a top-level `version` key fails validation, so under the current rules a
+declaration can live only in `metadata`. Until upstream adds a data-file version marker (a v2
+ask in P2's drafted proposal), a pipeline should vendor `hif_schema_v0.1.0.json`, pin it by commit
+URL and sha256, and validate offline, which is what P2's package does. Full discussion in
+[../04-storage-and-formats/hif-hypergraph-interchange-format.md](../04-storage-and-formats/hif-hypergraph-interchange-format.md) §0, §3 and §4.
 
 **What HIF does not model.** No relation type, no role, no schema or type system, no provenance
 model. Roles can only live in `incidences[].attrs` by convention — the convention this repository
-uses in [../../schemas/sample.hif.json](../../schemas/sample.hif.json) — and no library
-interprets them.
+uses in [../../schemas/sample.hif.json](../../schemas/sample.hif.json). The paper's own example of
+an incidence attribute is a role, `{"role": "PI"}`, but no library interprets roles: XGI 0.10.2
+drops them on read and HyperNetX 2.4.3 keeps them as opaque cell properties
+([software-libraries.md](software-libraries.md) §1). Project P2 has defined `role-convention`
+1.0.0, a v1-compatible convention (role in `attrs.role`, one incidence record per role binding,
+a `metadata` declaration), with loaders that keep roles through both libraries; the upstream
+proposal is drafted and not yet filed
+([../04-storage-and-formats/hif-hypergraph-interchange-format.md](../04-storage-and-formats/hif-hypergraph-interchange-format.md) §10;
+[projects/p2-role-aware-hif/](../../projects/p2-role-aware-hif/)).
 
 ---
 
@@ -200,7 +217,7 @@ paper's abstract and metadata, 2026-09-20).
 
 | Need | Standard that covers it | Standard that does not |
 |---|---|---|
-| serialise a hypergraph between tools | **HIF** (v0.0, JSON Schema) | RDF, GQL, SQL/PGQ |
+| serialise a hypergraph between tools | **HIF** (schema 0.1.0, labelled v0.0 in its CHANGELOG; JSON Schema) | RDF, GQL, SQL/PGQ |
 | say something *about* a fact | **RDF 1.2** triple terms (CR Snapshot, 2026-04-07) | GQL, SQL/PGQ |
 | n-ary fact with named roles as a primitive | **none** — TypeQL is a vendor language, not a standard | RDF 1.2, GQL, SQL/PGQ, openCypher, PG-Schema |
 | schema / type system over n-ary facts | **none** | HIF (no types at all), PG-Schema (binary only) |
@@ -220,5 +237,8 @@ hypergraphs in 2026, and it is why so much of the field ships bespoke JSON. Rela
 - Coll, M., Joslyn, C. A., Landry, N. W., Lotito, Q. F., Myers, A., Pickard, J., Praggastis, B., Szufel, P. (2025). *HIF: The hypergraph interchange format for higher-order networks.* Network Science 13, e21. <https://doi.org/10.1017/nws.2025.10018>
 - HIF-standard repository: README, `schemas/hif_schema.json`, `schemas/CHANGELOG.md`, Zenodo DOI badge. <https://github.com/HIF-org/HIF-standard>, checked 2026-09-20. Schema URL resolution (three HTTP 200s, one 404 for the `$id`) tested with `curl` on 2026-09-20.
 - HyperNetX 2.4.3, `hypernetx.hif.schema_url`, inspected in a local virtualenv on 2026-09-20.
+- HIF-standard issue #55 (v1/v2 wording, 2025-12-09). <https://github.com/HIF-org/HIF-standard/issues/55> (read 2026-09-23)
+- HIF Zenodo releases v0.1.0 <https://doi.org/10.5281/zenodo.15802760>, v0.1.1 <https://doi.org/10.5281/zenodo.17251025>, v0.1.2 <https://doi.org/10.5281/zenodo.17257719> (version list checked through the Zenodo API 2026-09-24)
+- P2 research report 02, *What the HIF standard says today, from primary sources* (this repository, 2026-09-23): full clone of the HIF repository, schema history, URL status. [projects/p2-role-aware-hif/research/02-hif-standard.md](../../projects/p2-role-aware-hif/research/02-hif-standard.md)
 - Graph Data Council (formerly Linked Data Benchmark Council). <https://ldbcouncil.org/> and <https://ldbcouncil.org/benchmarks/>, checked 2026-09-20.
 - Angles, R., Bonifati, A., Dumbrava, S. et al. (2023). *PG-Schema: Schemas for Property Graphs.* Proc. ACM Manag. Data 1(2). <https://doi.org/10.1145/3589778>; preprint <https://arxiv.org/abs/2211.10962>, checked 2026-09-20.

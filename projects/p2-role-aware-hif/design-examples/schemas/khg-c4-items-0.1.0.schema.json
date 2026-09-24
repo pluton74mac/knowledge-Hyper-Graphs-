@@ -1,0 +1,1214 @@
+{
+ "$schema": "http://json-schema.org/draft-07/schema#",
+ "$id": "tag:khg-contracts,2026:schema/khg-c4-items/0.1.0",
+ "title": "C4 question-set lines khg-c4-items/0.1.0 (layer I, draft); C1 values and records by $ref to khg-record",
+ "type": "object",
+ "required": [
+  "kind"
+ ],
+ "properties": {
+  "kind": {
+   "enum": [
+    "c4-header",
+    "c4-extraction-doc",
+    "c4-completion-query",
+    "c4-retrieval-question",
+    "c4-memory-trace",
+    "c4-memory-question",
+    "c4-split-manifest"
+   ],
+   "x-khg-code": "KHG-I001"
+  }
+ },
+ "allOf": [
+  {
+   "if": {
+    "properties": {
+     "kind": {
+      "const": "c4-header",
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     }
+    },
+    "required": [
+     "kind"
+    ],
+    "x-khg-code": {
+     "default": "KHG-I002"
+    }
+   },
+   "then": {
+    "required": [
+     "kind",
+     "format",
+     "qset",
+     "record_format",
+     "schema"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "kind": {},
+     "format": {
+      "type": "string",
+      "pattern": "^khg-c4-items/[0-9]+\\.[0-9]+\\.[0-9]+(?!\\n)$",
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "qset": {
+      "type": "string",
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "record_format": {
+      "const": "khg-record/1.0.0",
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "schema": {
+      "type": "object",
+      "required": [
+       "id",
+       "version",
+       "sha256"
+      ],
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "created_by": {
+      "type": "string",
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "created_at": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/timestamp"
+     }
+    },
+    "x-khg-code": {
+     "default": "KHG-I002"
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "kind": {
+      "const": "c4-extraction-doc",
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     }
+    },
+    "required": [
+     "kind"
+    ],
+    "x-khg-code": {
+     "default": "KHG-I002"
+    }
+   },
+   "then": {
+    "type": "object",
+    "required": [
+     "kind",
+     "id",
+     "qset",
+     "split",
+     "doc_id",
+     "text",
+     "text_sha256",
+     "annotation",
+     "gold"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "kind": {
+      "enum": [
+       "c4-header",
+       "c4-extraction-doc",
+       "c4-completion-query",
+       "c4-retrieval-question",
+       "c4-memory-trace",
+       "c4-memory-question",
+       "c4-split-manifest"
+      ],
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "id": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/id"
+     },
+     "qset": {
+      "type": "string",
+      "minLength": 1,
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "split": {
+      "enum": [
+       "train",
+       "valid",
+       "test"
+      ],
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "doc_id": {
+      "type": "string",
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "text": {
+      "type": "string",
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "text_sha256": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/sha256"
+     },
+     "annotation": {
+      "type": "object",
+      "required": [
+       "guideline"
+      ],
+      "properties": {
+       "guideline": {
+        "type": "string",
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "annotators": {
+        "type": "integer",
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "adjudicated": {
+        "type": "boolean",
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       }
+      },
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "gold": {
+      "type": "array",
+      "items": {
+       "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/hyperedge"
+      },
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "entities": {
+      "type": "array",
+      "items": {
+       "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/entity"
+      },
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     }
+    },
+    "x-khg-code": {
+     "default": "KHG-I002"
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "kind": {
+      "const": "c4-completion-query",
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     }
+    },
+    "required": [
+     "kind"
+    ],
+    "x-khg-code": {
+     "default": "KHG-I002"
+    }
+   },
+   "then": {
+    "type": "object",
+    "required": [
+     "kind",
+     "id",
+     "qset",
+     "split",
+     "qid",
+     "fact_id",
+     "relation",
+     "arity",
+     "model_arity",
+     "target",
+     "context",
+     "candidate_universe"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "kind": {
+      "enum": [
+       "c4-header",
+       "c4-extraction-doc",
+       "c4-completion-query",
+       "c4-retrieval-question",
+       "c4-memory-trace",
+       "c4-memory-question",
+       "c4-split-manifest"
+      ],
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "id": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/id"
+     },
+     "qset": {
+      "type": "string",
+      "minLength": 1,
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "split": {
+      "enum": [
+       "train",
+       "valid",
+       "test"
+      ],
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "qid": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/id"
+     },
+     "fact_id": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/id"
+     },
+     "relation": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/vocab_id"
+     },
+     "arity": {
+      "type": "integer",
+      "minimum": 0,
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "model_arity": {
+      "type": "integer",
+      "minimum": 0,
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "target": {
+      "type": "object",
+      "required": [
+       "bid",
+       "role",
+       "slot",
+       "value"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "bid": {
+        "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/bid"
+       },
+       "role": {
+        "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/vocab_id"
+       },
+       "slot": {
+        "enum": [
+         "core",
+         "qualifier"
+        ],
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "value": {
+        "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/value"
+       }
+      },
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "context": {
+      "type": "array",
+      "items": {
+       "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/binding"
+      },
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "candidate_universe": {
+      "type": "object",
+      "required": [
+       "kind"
+      ],
+      "properties": {
+       "kind": {
+        "enum": [
+         "entities_of_type",
+         "list"
+        ],
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "types": {
+        "type": "array",
+        "items": {
+         "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/vocab_id"
+        },
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "ids": {
+        "type": "array",
+        "items": {
+         "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/id"
+        },
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       }
+      },
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     }
+    },
+    "x-khg-code": {
+     "default": "KHG-I002"
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "kind": {
+      "const": "c4-retrieval-question",
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     }
+    },
+    "required": [
+     "kind"
+    ],
+    "x-khg-code": {
+     "default": "KHG-I002"
+    }
+   },
+   "then": {
+    "type": "object",
+    "required": [
+     "kind",
+     "id",
+     "qset",
+     "split",
+     "qid",
+     "type",
+     "text",
+     "anchors",
+     "answer",
+     "support",
+     "hops",
+     "source_class",
+     "answerable",
+     "where"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "kind": {
+      "enum": [
+       "c4-header",
+       "c4-extraction-doc",
+       "c4-completion-query",
+       "c4-retrieval-question",
+       "c4-memory-trace",
+       "c4-memory-question",
+       "c4-split-manifest"
+      ],
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "id": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/id"
+     },
+     "qset": {
+      "type": "string",
+      "minLength": 1,
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "split": {
+      "enum": [
+       "train",
+       "valid",
+       "test"
+      ],
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "qid": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/id"
+     },
+     "type": {
+      "enum": [
+       "single_hop",
+       "multi_hop",
+       "temporal",
+       "comparison",
+       "aggregation"
+      ],
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "text": {
+      "type": "string",
+      "minLength": 1,
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "anchors": {
+      "type": "array",
+      "items": {
+       "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/id"
+      },
+      "minItems": 1,
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "answer": {
+      "type": "object",
+      "required": [
+       "values"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "values": {
+        "type": "array",
+        "items": {
+         "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/value"
+        },
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "text": {
+        "type": "string",
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       }
+      },
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "support": {
+      "type": "object",
+      "required": [
+       "sets"
+      ],
+      "properties": {
+       "sets": {
+        "type": "array",
+        "items": {
+         "type": "array",
+         "items": {
+          "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/id"
+         },
+         "x-khg-code": {
+          "default": "KHG-I002"
+         }
+        },
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       }
+      },
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "hops": {
+      "type": "integer",
+      "minimum": 1,
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "source_class": {
+      "type": "string",
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "answerable": {
+      "type": "boolean",
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "where": {
+      "type": "object",
+      "required": [
+       "as_of",
+       "valid_mode",
+       "rank",
+       "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "as_of": {
+        "anyOf": [
+         {
+          "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/instant"
+         },
+         {
+          "type": "null",
+          "x-khg-code": {
+           "default": "KHG-I002"
+          }
+         }
+        ],
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "valid_mode": {
+        "enum": [
+         "definite",
+         "possible"
+        ],
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "rank": {
+        "type": "array",
+        "items": {
+         "enum": [
+          "preferred",
+          "normal",
+          "deprecated"
+         ],
+         "x-khg-code": {
+          "default": "KHG-I002"
+         }
+        },
+        "minItems": 1,
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "status": {
+        "type": "array",
+        "items": {
+         "enum": [
+          "candidate",
+          "asserted",
+          "disputed",
+          "superseded",
+          "retracted",
+          "quoted",
+          "goal"
+         ],
+         "x-khg-code": {
+          "default": "KHG-I002"
+         }
+        },
+        "minItems": 1,
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       }
+      },
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "provenance": {
+      "type": "object",
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     }
+    },
+    "x-khg-code": {
+     "default": "KHG-I002"
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "kind": {
+      "const": "c4-memory-trace",
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     }
+    },
+    "required": [
+     "kind"
+    ],
+    "x-khg-code": {
+     "default": "KHG-I002"
+    }
+   },
+   "then": {
+    "type": "object",
+    "required": [
+     "kind",
+     "id",
+     "qset",
+     "split",
+     "trace_id",
+     "entities",
+     "events"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "kind": {
+      "enum": [
+       "c4-header",
+       "c4-extraction-doc",
+       "c4-completion-query",
+       "c4-retrieval-question",
+       "c4-memory-trace",
+       "c4-memory-question",
+       "c4-split-manifest"
+      ],
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "id": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/id"
+     },
+     "qset": {
+      "type": "string",
+      "minLength": 1,
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "split": {
+      "enum": [
+       "train",
+       "valid",
+       "test"
+      ],
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "trace_id": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/id"
+     },
+     "entities": {
+      "type": "array",
+      "items": {
+       "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/entity"
+      },
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "events": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+       "type": "object",
+       "required": [
+        "step",
+        "tx_time"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "step": {
+         "type": "integer",
+         "minimum": 1,
+         "x-khg-code": {
+          "default": "KHG-I002"
+         }
+        },
+        "tx_time": {
+         "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/timestamp"
+        },
+        "put": {
+         "type": "array",
+         "items": {
+          "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/hyperedge"
+         },
+         "minItems": 1,
+         "x-khg-code": {
+          "default": "KHG-I002"
+         }
+        },
+        "apply": {
+         "type": "object",
+         "required": [
+          "op"
+         ],
+         "x-khg-code": {
+          "default": "KHG-I002"
+         }
+        }
+       },
+       "oneOf": [
+        {
+         "required": [
+          "put"
+         ],
+         "x-khg-code": {
+          "default": "KHG-I002"
+         }
+        },
+        {
+         "required": [
+          "apply"
+         ],
+         "x-khg-code": {
+          "default": "KHG-I002"
+         }
+        }
+       ],
+       "x-khg-code": {
+        "default": "KHG-I002"
+       }
+      },
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     }
+    },
+    "x-khg-code": {
+     "default": "KHG-I002"
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "kind": {
+      "const": "c4-memory-question",
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     }
+    },
+    "required": [
+     "kind"
+    ],
+    "x-khg-code": {
+     "default": "KHG-I002"
+    }
+   },
+   "then": {
+    "allOf": [
+     {
+      "type": "object",
+      "required": [
+       "kind",
+       "id",
+       "qset",
+       "split",
+       "qid",
+       "trace_id",
+       "ask_after_step",
+       "subtype",
+       "text",
+       "relation",
+       "key",
+       "target_role",
+       "where",
+       "answer",
+       "disputed_values",
+       "support",
+       "answerable"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "kind": {
+        "enum": [
+         "c4-header",
+         "c4-extraction-doc",
+         "c4-completion-query",
+         "c4-retrieval-question",
+         "c4-memory-trace",
+         "c4-memory-question",
+         "c4-split-manifest"
+        ],
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "id": {
+        "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/id"
+       },
+       "qset": {
+        "type": "string",
+        "minLength": 1,
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "split": {
+        "enum": [
+         "train",
+         "valid",
+         "test"
+        ],
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "qid": {
+        "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/id"
+       },
+       "trace_id": {
+        "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/id"
+       },
+       "ask_after_step": {
+        "type": "integer",
+        "minimum": 1,
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "subtype": {
+        "enum": [
+         "current_value",
+         "past_value",
+         "future_value",
+         "abstention"
+        ],
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "text": {
+        "type": "string",
+        "minLength": 1,
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "relation": {
+        "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/vocab_id"
+       },
+       "key": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+         "type": "object",
+         "required": [
+          "role",
+          "value"
+         ],
+         "additionalProperties": false,
+         "properties": {
+          "role": {
+           "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/vocab_id"
+          },
+          "value": {
+           "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/value"
+          }
+         },
+         "x-khg-code": {
+          "default": "KHG-I002"
+         }
+        },
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "target_role": {
+        "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/vocab_id"
+       },
+       "where": {
+        "type": "object",
+        "required": [
+         "as_of",
+         "valid_mode",
+         "rank",
+         "status"
+        ],
+        "additionalProperties": false,
+        "properties": {
+         "as_of": {
+          "anyOf": [
+           {
+            "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/instant"
+           },
+           {
+            "type": "null",
+            "x-khg-code": {
+             "default": "KHG-I002"
+            }
+           }
+          ],
+          "x-khg-code": {
+           "default": "KHG-I002"
+          }
+         },
+         "valid_mode": {
+          "enum": [
+           "definite",
+           "possible"
+          ],
+          "x-khg-code": {
+           "default": "KHG-I002"
+          }
+         },
+         "rank": {
+          "type": "array",
+          "items": {
+           "enum": [
+            "preferred",
+            "normal",
+            "deprecated"
+           ],
+           "x-khg-code": {
+            "default": "KHG-I002"
+           }
+          },
+          "minItems": 1,
+          "x-khg-code": {
+           "default": "KHG-I002"
+          }
+         },
+         "status": {
+          "type": "array",
+          "items": {
+           "enum": [
+            "candidate",
+            "asserted",
+            "disputed",
+            "superseded",
+            "retracted",
+            "quoted",
+            "goal"
+           ],
+           "x-khg-code": {
+            "default": "KHG-I002"
+           }
+          },
+          "minItems": 1,
+          "x-khg-code": {
+           "default": "KHG-I002"
+          }
+         }
+        },
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "answer": {
+        "type": "object",
+        "required": [
+         "values"
+        ],
+        "additionalProperties": false,
+        "properties": {
+         "values": {
+          "type": "array",
+          "items": {
+           "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/value"
+          },
+          "x-khg-code": {
+           "default": "KHG-I002"
+          }
+         },
+         "text": {
+          "type": "string",
+          "x-khg-code": {
+           "default": "KHG-I002"
+          }
+         }
+        },
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "stale_values": {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "required": [
+          "value",
+          "kind"
+         ],
+         "additionalProperties": false,
+         "properties": {
+          "value": {
+           "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/value"
+          },
+          "kind": {
+           "enum": [
+            "expired",
+            "revised"
+           ],
+           "x-khg-code": {
+            "default": "KHG-I002"
+           }
+          }
+         },
+         "x-khg-code": {
+          "default": "KHG-I002"
+         }
+        },
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "future_values": {
+        "type": "array",
+        "items": {
+         "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/value"
+        },
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "disputed_values": {
+        "type": "array",
+        "items": {
+         "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/value"
+        },
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "support": {
+        "type": "array",
+        "items": {
+         "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/id"
+        },
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "answerable": {
+        "type": "boolean",
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       },
+       "tolerance": {
+        "type": "object",
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
+       }
+      },
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     {
+      "required": [
+       "stale_values",
+       "future_values"
+      ],
+      "x-khg-code": "KHG-I004"
+     }
+    ]
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "kind": {
+      "const": "c4-split-manifest",
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     }
+    },
+    "required": [
+     "kind"
+    ],
+    "x-khg-code": {
+     "default": "KHG-I002"
+    }
+   },
+   "then": {
+    "required": [
+     "kind",
+     "id",
+     "qset",
+     "splits"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "kind": {},
+     "id": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/id"
+     },
+     "qset": {
+      "type": "string",
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     },
+     "splits": {
+      "type": "object",
+      "additionalProperties": {
+       "enum": [
+        "train",
+        "valid",
+        "test"
+       ],
+       "x-khg-code": {
+        "default": "KHG-I002"
+       }
+      },
+      "x-khg-code": {
+       "default": "KHG-I002"
+      }
+     }
+    },
+    "x-khg-code": {
+     "default": "KHG-I002"
+    }
+   }
+  }
+ ],
+ "x-khg-code": {
+  "default": "KHG-I002"
+ }
+}

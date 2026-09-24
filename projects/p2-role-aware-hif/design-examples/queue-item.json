@@ -1,0 +1,29 @@
+{
+ "kind": "queue-item",
+ "qid": "q:p2-smoke.000001",
+ "item_kind": "hyperedge",
+ "submitted_at": "2026-10-01T00:00:03Z",
+ "submitted_by": "p2-fixture-extractor/0.0.1",
+ "run": {"run_id": "fixture-run-1", "order_id": "o1", "position": 0, "seed": 0, "temperature": 0},
+ "doc": {"doc_id": "doc:louis-bio", "doc_sha256": "sha256:56940b729460cb9a75d5d63ab1f907a502fef80530b4aabff2cd8e9c28a44b2f"},
+ "payload": {
+  "kind": "hyperedge",
+  "id": "cand:p2-smoke.000001",
+  "relation": "position_held",
+  "status": "candidate",
+  "bindings": [
+   {"bid": "b4", "role": "end_time", "value": {"literal": {"datatype": "time", "time": "+1715-09-01T00:00:00Z", "precision": 11, "calendar": "gregorian"}}},
+   {"bid": "b1", "role": "holder", "value": {"entity": "ex:LouisXIV"}},
+   {"bid": "b2", "role": "position", "value": {"entity": "ex:KingOfFrance"}},
+   {"bid": "b5", "role": "replaces", "value": {"entity": "ex:LouisXIII"}},
+   {"bid": "b3", "role": "start_time", "value": {"literal": {"datatype": "time", "time": "+1643-05-14T00:00:00Z", "precision": 11, "calendar": "gregorian"}}}
+  ],
+  "evidence": [
+   {"id": "e1", "type": "curated", "mode": "manual", "source": {"doc_id": "doc:regnal-list"}, "supports": ["b1", "b2", "b3", "b4"]},
+   {"id": "e2", "type": "extracted", "mode": "automatic", "source": {"doc_id": "doc:louis-bio", "doc_sha256": "sha256:56940b729460cb9a75d5d63ab1f907a502fef80530b4aabff2cd8e9c28a44b2f"}, "selectors": [{"type": "quote", "exact": "Louis XIV succeeded his father Louis XIII", "prefix": "", "suffix": " as King of "}, {"type": "position", "start": 0, "end": 41}], "activity": {"agent": "p2-fixture-extractor", "agent_version": "0.0.1", "model": "none", "run_id": "fixture-run-1"}, "supports": ["b1", "b5"], "event_hash": "sha256:87eaf6a24f9088334f463104155187b658be6cb501f09fd6acfe8641a987b18d"}
+  ],
+  "rank": "normal",
+  "visibility": "visible"
+ },
+ "keys": {"content_key": "sha256:2706f2b5162301565965492815a53ac7f16064ea742b03756cadbbafefd9d76b", "core_key": "sha256:5779b98f13640fbf96488b9834c5ce7e10f02902541882a23c2d43f84f93e916", "key_digest": "sha256:19b896a4c419199eeb0922934472e2ff229771ce0d87bcdf97bc79033ba64a96"}
+}

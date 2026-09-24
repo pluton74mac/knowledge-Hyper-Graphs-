@@ -1,0 +1,396 @@
+{
+ "case": "c12-mixed-int-str-ids",
+ "description": "the integer 1 and the string \"1\" used as two different node ids, and as two different edge ids",
+ "input": "lib-cases/c12-mixed-int-str-ids.hif.json",
+ "lib": "xgi",
+ "lib_version": "0.10.2",
+ "load": {
+  "api": "xgi.read_hif(path)",
+  "ok": true,
+  "error": null,
+  "warnings": [],
+  "class": "Hypergraph"
+ },
+ "placement": {
+  "class": "Hypergraph",
+  "num_nodes": 3,
+  "num_edges": 2,
+  "net_attr (H._net_attr)": {},
+  "node_attrs (H.nodes[n])": {
+   "int:1": {
+    "kind": "int"
+   },
+   "str:1": {
+    "kind": "str"
+   },
+   "str:x": {}
+  },
+  "edge_attrs (H.edges[e])": {
+   "int:1": {
+    "kind": "int"
+   },
+   "str:1": {
+    "kind": "str"
+   }
+  },
+  "edge_members": {
+   "int:1": {
+    "members": [
+     "int:1",
+     "str:1"
+    ]
+   },
+   "str:1": {
+    "members": [
+     "int:1",
+     "str:x"
+    ]
+   }
+  },
+  "role_strings_in_object_state": {
+   "int-in-int": [],
+   "int-in-str": [],
+   "str-in-int": [],
+   "x-in-str": []
+  },
+  "record_weight_values_in_object_state": [],
+  "record_weight_values_searched": []
+ },
+ "field_locations": {
+  "incidence.attrs (role)": "found for 0/4 role strings",
+  "incidence.direction": "n/a",
+  "record-level weight values": "n/a",
+  "network-type": "class Hypergraph",
+  "metadata": "n/a"
+ },
+ "export": {
+  "api": "xgi.write_hif(H, path)",
+  "ok": true,
+  "error": null,
+  "warnings": [],
+  "output": "out/xgi/c12-mixed-int-str-ids.out.hif.json",
+  "strict_json": true,
+  "schema_errors": [],
+  "top_level_keys": [
+   "edges",
+   "incidences",
+   "metadata",
+   "network-type",
+   "nodes"
+  ],
+  "n_node_records": 2,
+  "n_edge_records": 2,
+  "to_hif_dict_equals_file": true
+ },
+ "diff": {
+  "top": {
+   "network-type": {
+    "in": "undirected",
+    "out": "undirected",
+    "status": "preserved"
+   },
+   "metadata": {
+    "keys_lost": [],
+    "keys_added": [],
+    "keys_changed": [],
+    "status": "preserved"
+   },
+   "other_top_level_keys_out": []
+  },
+  "incidences": {
+   "int:1 | int:1": {
+    "edge": "int:1",
+    "node": "int:1",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "int-in-int"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "int-in-int"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   },
+   "int:1 | str:1": {
+    "edge": "int:1",
+    "node": "str:1",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "str-in-int"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "str-in-int"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   },
+   "str:1 | int:1": {
+    "edge": "str:1",
+    "node": "int:1",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "int-in-str"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "int-in-str"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   },
+   "str:1 | str:x": {
+    "edge": "str:1",
+    "node": "str:x",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "x-in-str"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "x-in-str"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   }
+  },
+  "nodes": {
+   "int:1": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved",
+    "attrs_in": [
+     {
+      "kind": "int"
+     }
+    ],
+    "attrs_out": [
+     {
+      "kind": "int"
+     }
+    ]
+   },
+   "str:1": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved",
+    "attrs_in": [
+     {
+      "kind": "str"
+     }
+    ],
+    "attrs_out": [
+     {
+      "kind": "str"
+     }
+    ]
+   },
+   "str:x": {
+    "declared_in": 0,
+    "declared_out": 0,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved"
+   }
+  },
+  "edges": {
+   "int:1": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved",
+    "attrs_in": [
+     {
+      "kind": "int"
+     }
+    ],
+    "attrs_out": [
+     {
+      "kind": "int"
+     }
+    ]
+   },
+   "str:1": {
+    "declared_in": 1,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved",
+    "attrs_in": [
+     {
+      "kind": "str"
+     }
+    ],
+    "attrs_out": [
+     {
+      "kind": "str"
+     }
+    ]
+   }
+  },
+  "id_type_changes": [],
+  "summary": {
+   "incidence_records": "4 -> 4",
+   "role_records_kept": "0/4",
+   "direction_records_kept": "0/0",
+   "incidence_weight_records_kept": "0/0",
+   "incidence_attrs_records_kept": "0/4",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 0,
+   "nodes": {
+    "declared_in": 2,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 2,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "network_type": "preserved (undirected -> undirected)",
+   "metadata": "preserved",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [],
+   "id_type_changes": 0
+  }
+ },
+ "gen2": {
+  "load_error": null,
+  "export_error": null,
+  "idempotent (gen1 == gen2 structurally)": true,
+  "diff_gen1_gen2_summary": {
+   "incidence_records": "4 -> 4",
+   "role_records_kept": "0/0",
+   "direction_records_kept": "0/0",
+   "incidence_weight_records_kept": "0/0",
+   "incidence_attrs_records_kept": "0/0",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 0,
+   "nodes": {
+    "declared_in": 2,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 2,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "network_type": "preserved (undirected -> undirected)",
+   "metadata": "preserved",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [],
+   "id_type_changes": 0
+  }
+ }
+}

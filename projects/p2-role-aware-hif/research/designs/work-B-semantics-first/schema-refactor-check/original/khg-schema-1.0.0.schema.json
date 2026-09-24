@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "tag:khg-contracts,2026:schema/khg-schema/1.0.0",
+  "title": "KHG relation-type schema document, language khg-schema/1.0.0 (structural layer)",
+  "type": "object",
+  "required": ["khg_schema", "id", "version", "roles", "relations"],
+  "additionalProperties": false,
+  "properties": {
+    "khg_schema": {"const": "khg-schema/1.0.0"},
+    "id": {"$ref": "#/definitions/vocab_id"},
+    "version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"},
+    "label": {"type": "string"},
+    "description": {"type": "string"},
+    "entity_types": {"type": "array", "items": {
+      "type": "object", "required": ["id"], "additionalProperties": false,
+      "properties": {"id": {"$ref": "#/definitions/vocab_id"}, "label": {"type": "string"},
+                     "parents": {"type": "array", "items": {"$ref": "#/definitions/vocab_id"}, "uniqueItems": true},
+                     "mappings": {"$ref": "#/definitions/mappings"}}}},
+    "confidence_scales": {"type": "array", "items": {
+      "type": "object", "required": ["id", "kind"], "additionalProperties": false,
+      "properties": {"id": {"$ref": "#/definitions/vocab_id"}, "kind": {"enum": ["probability", "bounded", "ordinal"]},
+                     "min": {"type": "number"}, "max": {"type": "number"},
+                     "levels": {"type": "array", "items": {"type": "string"}, "minItems": 2},
+                     "description": {"type": "string"}}}},
+    "roles": {"type": "array", "items": {
+      "type": "object", "required": ["id"], "additionalProperties": false,
+      "properties": {"id": {"$ref": "#/definitions/vocab_id"}, "label": {"type": "string"}, "description": {"type": "string"},
+                     "aliases": {"type": "array", "items": {"type": "string"}}, "mappings": {"$ref": "#/definitions/mappings"}}}},
+    "relations": {"type": "array", "items": {"$ref": "#/definitions/relation"}}
+  },
+  "definitions": {
+    "vocab_id": {"type": "string", "pattern": "^[^\\s\\x00-\\x1f\\x7f/]{1,256}$"},
+    "mappings": {"type": "object", "propertyNames": {"pattern": "^[a-z][a-z0-9-]*$"},
+                 "additionalProperties": {"type": "string"}},
+    "filler": {
+      "oneOf": [
+        {"type": "object", "required": ["entity"], "additionalProperties": false,
+         "properties": {"entity": {"type": "array", "items": {"$ref": "#/definitions/vocab_id"}, "uniqueItems": true}}},
+        {"type": "object", "required": ["literal"], "additionalProperties": false,
+         "properties": {"literal": {"enum": ["time", "quantity", "string", "lang_string", "boolean", "iri", "geo"]},
+                        "precision_min": {"type": "integer", "minimum": 0, "maximum": 14},
+                        "units": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true}}},
+        {"type": "object", "required": ["fact"], "additionalProperties": false,
+         "properties": {"fact": {"type": "array", "items": {"$ref": "#/definitions/vocab_id"}, "uniqueItems": true}}}
+      ]
+    },
+    "usage": {
+      "type": "object", "required": ["role", "slot", "fillers", "min", "max"], "additionalProperties": false,
+      "properties": {
+        "role": {"$ref": "#/definitions/vocab_id"},
+        "slot": {"enum": ["core", "qualifier", "time", "meta"]},
+        "fillers": {"type": "array", "items": {"$ref": "#/definitions/filler"}, "minItems": 1},
+        "min": {"type": "integer", "minimum": 0},
+        "max": {"type": ["integer", "null"], "minimum": 1},
+        "ordered": {"type": "boolean"},
+        "complete": {"type": "boolean"},
+        "direction": {"enum": ["tail", "head"]},
+        "somevalue": {"type": "boolean"},
+        "novalue": {"type": "boolean"},
+        "label": {"type": "string"},
+        "aliases": {"type": "array", "items": {"type": "string"}}
+      },
+      "allOf": [
+        {"if": {"properties": {"complete": {"const": true}}, "required": ["complete"]}, "then": {"properties": {"min": {"minimum": 1}}}},
+        {"if": {"properties": {"slot": {"const": "time"}}}, "then": {"properties": {"max": {"const": 1},
+                                                                                     "fillers": {"maxItems": 1, "items": {"required": ["literal"], "properties": {"literal": {"const": "time"}}}}}}}
+      ]
+    },
+    "constraint": {
+      "oneOf": [
+        {"type": "object", "required": ["type", "roles"], "additionalProperties": false,
+         "properties": {"type": {"enum": ["must_differ", "must_agree", "excludes", "at_least_one_of"]},
+                        "roles": {"type": "array", "items": {"$ref": "#/definitions/vocab_id"}, "minItems": 2, "uniqueItems": true},
+                        "severity": {"enum": ["violation", "warning"]}}},
+        {"type": "object", "required": ["type", "if", "then"], "additionalProperties": false,
+         "properties": {"type": {"const": "requires"}, "if": {"$ref": "#/definitions/vocab_id"},
+                        "then": {"type": "array", "items": {"$ref": "#/definitions/vocab_id"}, "minItems": 1},
+                        "severity": {"enum": ["violation", "warning"]}}}
+      ]
+    },
+    "relation": {
+      "type": "object", "required": ["id", "roles"], "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/definitions/vocab_id"},
+        "label": {"type": "string"},
+        "description": {"type": "string"},
+        "kind": {"enum": ["fact", "rule"]},
+        "roles": {"type": "array", "items": {"$ref": "#/definitions/usage"}, "minItems": 1},
+        "primary": {"type": "object", "required": ["subject", "object"], "additionalProperties": false,
+                    "properties": {"subject": {"$ref": "#/definitions/vocab_id"}, "object": {"$ref": "#/definitions/vocab_id"}}},
+        "time": {"oneOf": [
+          {"type": "object", "required": ["model", "start", "end"], "additionalProperties": false,
+           "properties": {"model": {"const": "interval"}, "start": {"$ref": "#/definitions/vocab_id"}, "end": {"$ref": "#/definitions/vocab_id"}}},
+          {"type": "object", "required": ["model"], "additionalProperties": false,
+           "properties": {"model": {"enum": ["invariant", "unstated"]}}}
+        ]},
+        "key": {"type": "object", "required": ["roles", "temporal", "on_collision"], "additionalProperties": false,
+                "properties": {"roles": {"type": "array", "items": {"$ref": "#/definitions/vocab_id"}, "minItems": 1, "uniqueItems": true},
+                               "temporal": {"type": "boolean"},
+                               "on_collision": {"enum": ["close_older", "supersede", "dispute", "reject"]}}},
+        "constraints": {"type": "array", "items": {"$ref": "#/definitions/constraint"}},
+        "mappings": {"$ref": "#/definitions/mappings"},
+        "aliases": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

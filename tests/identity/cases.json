@@ -1,0 +1,3162 @@
+{
+ "description": "The identity table of [DB §2.19]: the 37 rows that DB's run_identity.py computed (34 pairs and three policy variants of case 3a), as the tests of identity.relate (DESIGN §2.9, §10.5).",
+ "source": [
+  "projects/p2-role-aware-hif/research/designs/design-B-semantics-first.md §2.19",
+  "projects/p2-role-aware-hif/research/designs/work-B-semantics-first/run_identity.py",
+  "projects/p2-role-aware-hif/research/designs/work-B-semantics-first/identity-results.json"
+ ],
+ "ruling": "DESIGN §2.9: under the §2.6 ruling (the bound table: undated facts have no definite validity, so they never collide on a temporal key), X3 and C4a-u are key_timeline; DB recorded key_conflict.",
+ "fields": {
+  "relations": "relation declarations of khg-relation-schema/1.0.0, by the name DB gave each variant",
+  "relation": "the declaration that decides the case; a test schema holds it alone",
+  "on_collision": "a policy that overrides the declaration's (the three variants of case 3a)",
+  "existing": "the bindings of the stored fact b (asserted)",
+  "incoming": "the bindings of the incoming fact a (asserted)",
+  "label": "identity.relate(a, b, schema=...)",
+  "db_label": "the relation DB computed",
+  "action": "the §2.5 action of the one conflict record.keys.collisions reports when a is written beside b; null when a write collides with nothing",
+  "schema_error": "the M code load_schema reports for the case's schema (the relation is then used unchecked)",
+  "db_outcome": "DB's outcome column"
+ },
+ "relations": {
+  "position_held": {
+   "id": "position_held",
+   "time": {
+    "model": "interval",
+    "start": "start_time",
+    "end": "end_time"
+   },
+   "key": {
+    "roles": [
+     "position"
+    ],
+    "temporal": true,
+    "on_collision": "close_older"
+   },
+   "roles": [
+    {
+     "role": "holder",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "position",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "start_time",
+     "slot": "time",
+     "fillers": [
+      {
+       "literal": "time"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    },
+    {
+     "role": "end_time",
+     "slot": "time",
+     "fillers": [
+      {
+       "literal": "time"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  },
+  "treats_req": {
+   "id": "treats",
+   "roles": [
+    {
+     "role": "drug",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "condition",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "population",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    }
+   ]
+  },
+  "treats_qual": {
+   "id": "treats",
+   "roles": [
+    {
+     "role": "drug",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "condition",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "population",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  },
+  "population": {
+   "id": "population",
+   "time": {
+    "model": "invariant"
+   },
+   "key": {
+    "roles": [
+     "place",
+     "point_in_time"
+    ],
+    "temporal": false,
+    "on_collision": "dispute"
+   },
+   "roles": [
+    {
+     "role": "place",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "quantity",
+     "slot": "core",
+     "fillers": [
+      {
+       "literal": "quantity"
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "point_in_time",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "time"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  },
+  "population_naive": {
+   "id": "population",
+   "time": {
+    "model": "invariant"
+   },
+   "key": {
+    "roles": [
+     "place"
+    ],
+    "temporal": false,
+    "on_collision": "dispute"
+   },
+   "roles": [
+    {
+     "role": "place",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "quantity",
+     "slot": "core",
+     "fillers": [
+      {
+       "literal": "quantity"
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "point_in_time",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "time"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  },
+  "defeated": {
+   "id": "defeated",
+   "time": {
+    "model": "invariant"
+   },
+   "key": {
+    "roles": [
+     "event"
+    ],
+    "temporal": false,
+    "on_collision": "dispute"
+   },
+   "roles": [
+    {
+     "role": "winner",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "loser",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "event",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  },
+  "spouse": {
+   "id": "spouse",
+   "time": {
+    "model": "interval",
+    "start": "start_time",
+    "end": "end_time"
+   },
+   "roles": [
+    {
+     "role": "person",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "spouse",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "start_time",
+     "slot": "time",
+     "fillers": [
+      {
+       "literal": "time"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    },
+    {
+     "role": "end_time",
+     "slot": "time",
+     "fillers": [
+      {
+       "literal": "time"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  },
+  "spouse_keyed": {
+   "id": "spouse",
+   "time": {
+    "model": "interval",
+    "start": "start_time",
+    "end": "end_time"
+   },
+   "key": {
+    "roles": [
+     "person"
+    ],
+    "temporal": true,
+    "on_collision": "close_older"
+   },
+   "roles": [
+    {
+     "role": "person",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "spouse",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "start_time",
+     "slot": "time",
+     "fillers": [
+      {
+       "literal": "time"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    },
+    {
+     "role": "end_time",
+     "slot": "time",
+     "fillers": [
+      {
+       "literal": "time"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  },
+  "ceo": {
+   "id": "chief_executive",
+   "time": {
+    "model": "interval",
+    "start": "start_time",
+    "end": "end_time"
+   },
+   "key": {
+    "roles": [
+     "organisation"
+    ],
+    "temporal": true,
+    "on_collision": "close_older"
+   },
+   "roles": [
+    {
+     "role": "organisation",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "person",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "start_time",
+     "slot": "time",
+     "fillers": [
+      {
+       "literal": "time"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    },
+    {
+     "role": "end_time",
+     "slot": "time",
+     "fillers": [
+      {
+       "literal": "time"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  },
+  "catalysed_by": {
+   "id": "catalysed_by",
+   "roles": [
+    {
+     "role": "reaction",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "catalyst",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": null
+    }
+   ]
+  },
+  "committee_complete": {
+   "id": "committee",
+   "time": {
+    "model": "interval",
+    "start": "start_time",
+    "end": "end_time"
+   },
+   "key": {
+    "roles": [
+     "body"
+    ],
+    "temporal": true,
+    "on_collision": "close_older"
+   },
+   "roles": [
+    {
+     "role": "body",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "member",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": null,
+     "complete": true
+    },
+    {
+     "role": "start_time",
+     "slot": "time",
+     "fillers": [
+      {
+       "literal": "time"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    },
+    {
+     "role": "end_time",
+     "slot": "time",
+     "fillers": [
+      {
+       "literal": "time"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  },
+  "committee_open": {
+   "id": "committee",
+   "time": {
+    "model": "interval",
+    "start": "start_time",
+    "end": "end_time"
+   },
+   "key": {
+    "roles": [
+     "body"
+    ],
+    "temporal": true,
+    "on_collision": "close_older"
+   },
+   "roles": [
+    {
+     "role": "body",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "member",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": null
+    },
+    {
+     "role": "start_time",
+     "slot": "time",
+     "fillers": [
+      {
+       "literal": "time"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    },
+    {
+     "role": "end_time",
+     "slot": "time",
+     "fillers": [
+      {
+       "literal": "time"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  },
+  "founding": {
+   "id": "founding",
+   "time": {
+    "model": "invariant"
+   },
+   "roles": [
+    {
+     "role": "founder",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": null
+    },
+    {
+     "role": "organisation",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "point_in_time",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "time"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    },
+    {
+     "role": "location",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  },
+  "treats_src": {
+   "id": "treats",
+   "roles": [
+    {
+     "role": "drug",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "condition",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "source",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 0,
+     "max": null
+    }
+   ]
+  },
+  "rel_ab": {
+   "id": "rel",
+   "roles": [
+    {
+     "role": "a",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "b",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    }
+   ]
+  },
+  "co_authors": {
+   "id": "co_authors",
+   "roles": [
+    {
+     "role": "author",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 2,
+     "max": null
+    }
+   ]
+  },
+  "award": {
+   "id": "award_received",
+   "time": {
+    "model": "invariant"
+   },
+   "roles": [
+    {
+     "role": "recipient",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "award",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "point_in_time",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "time"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  },
+  "route_complete": {
+   "id": "route",
+   "roles": [
+    {
+     "role": "stop",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 2,
+     "max": null,
+     "ordered": true,
+     "complete": true
+    }
+   ]
+  },
+  "route_open": {
+   "id": "route",
+   "roles": [
+    {
+     "role": "stop",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": []
+      }
+     ],
+     "min": 2,
+     "max": null,
+     "ordered": true
+    }
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "C1",
+   "ref": "§6.1 case 1",
+   "description": "refinement: dates added to an undated position",
+   "relation": "position_held",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "holder",
+     "value": {
+      "entity": "LouisXIV"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "position",
+     "value": {
+      "entity": "KingOfFrance"
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "holder",
+     "value": {
+      "entity": "LouisXIV"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "position",
+     "value": {
+      "entity": "KingOfFrance"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1643-05-14T00:00:00Z",
+       "precision": 11
+      }
+     }
+    },
+    {
+     "bid": "b4",
+     "role": "end_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1715-09-01T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "label": "refines",
+   "db_label": "refines",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "refine: e gets a new version with n's content and the union of evidence"
+  },
+  {
+   "id": "C1r",
+   "ref": "§6.1 case 1, other order",
+   "description": "the undated report arrives second",
+   "relation": "position_held",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "holder",
+     "value": {
+      "entity": "LouisXIV"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "position",
+     "value": {
+      "entity": "KingOfFrance"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1643-05-14T00:00:00Z",
+       "precision": 11
+      }
+     }
+    },
+    {
+     "bid": "b4",
+     "role": "end_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1715-09-01T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "holder",
+     "value": {
+      "entity": "LouisXIV"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "position",
+     "value": {
+      "entity": "KingOfFrance"
+     }
+    }
+   ],
+   "label": "generalises",
+   "db_label": "generalises",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "support: n's evidence appended to e, supports mapped to e's bindings"
+  },
+  {
+   "id": "C1c-i",
+   "ref": "§6.1 counter-case, population required core",
+   "description": "stored with population=somevalue (the only asserted form), then specified",
+   "relation": "treats_req",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "drug",
+     "value": {
+      "entity": "metformin"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "condition",
+     "value": {
+      "entity": "T2DM"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "population",
+     "value": {
+      "special": "somevalue"
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "drug",
+     "value": {
+      "entity": "metformin"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "condition",
+     "value": {
+      "entity": "T2DM"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "population",
+     "value": {
+      "entity": "adults"
+     }
+    }
+   ],
+   "label": "refines",
+   "db_label": "refines",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "refine: e gets a new version with n's content and the union of evidence"
+  },
+  {
+   "id": "C1c-ii",
+   "ref": "§6.1 counter-case, population as qualifier",
+   "description": "population added as a qualifier",
+   "relation": "treats_qual",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "drug",
+     "value": {
+      "entity": "metformin"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "condition",
+     "value": {
+      "entity": "T2DM"
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "drug",
+     "value": {
+      "entity": "metformin"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "condition",
+     "value": {
+      "entity": "T2DM"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "population",
+     "value": {
+      "entity": "adults"
+     }
+    }
+   ],
+   "label": "refines",
+   "db_label": "refines",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "refine: e gets a new version with n's content and the union of evidence"
+  },
+  {
+   "id": "C2a",
+   "ref": "§6.2 case 2a",
+   "description": "population, key {place, point_in_time}, two census years",
+   "relation": "population",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "place",
+     "value": {
+      "entity": "CityX"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "quantity",
+     "value": {
+      "literal": {
+       "datatype": "quantity",
+       "amount": "+1000",
+       "unit": "1"
+      }
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "point_in_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2019-00-00T00:00:00Z",
+       "precision": 9
+      }
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "place",
+     "value": {
+      "entity": "CityX"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "quantity",
+     "value": {
+      "literal": {
+       "datatype": "quantity",
+       "amount": "+1200",
+       "unit": "1"
+      }
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "point_in_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2023-00-00T00:00:00Z",
+       "precision": 9
+      }
+     }
+    }
+   ],
+   "label": "distinct",
+   "db_label": "distinct",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "distinct: insert n"
+  },
+  {
+   "id": "C2a-naive",
+   "ref": "§6.2 case 2a with a naive key",
+   "description": "same pair under key {place}",
+   "relation": "population_naive",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "place",
+     "value": {
+      "entity": "CityX"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "quantity",
+     "value": {
+      "literal": {
+       "datatype": "quantity",
+       "amount": "+1000",
+       "unit": "1"
+      }
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "point_in_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2019-00-00T00:00:00Z",
+       "precision": 9
+      }
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "place",
+     "value": {
+      "entity": "CityX"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "quantity",
+     "value": {
+      "literal": {
+       "datatype": "quantity",
+       "amount": "+1200",
+       "unit": "1"
+      }
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "point_in_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2023-00-00T00:00:00Z",
+       "precision": 9
+      }
+     }
+    }
+   ],
+   "label": "key_conflict",
+   "db_label": "key_conflict",
+   "action": "dispute",
+   "schema_error": null,
+   "db_outcome": "dispute: khg:disputes record; both disputed"
+  },
+  {
+   "id": "C2b",
+   "ref": "§6.2 case 2b",
+   "description": "roles swapped, different events",
+   "relation": "defeated",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "winner",
+     "value": {
+      "entity": "P"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "loser",
+     "value": {
+      "entity": "Q"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "event",
+     "value": {
+      "entity": "E1"
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "winner",
+     "value": {
+      "entity": "Q"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "loser",
+     "value": {
+      "entity": "P"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "event",
+     "value": {
+      "entity": "E2"
+     }
+    }
+   ],
+   "label": "distinct",
+   "db_label": "distinct",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "distinct: insert n"
+  },
+  {
+   "id": "C2b'",
+   "ref": "§6.2 case 2b without events",
+   "description": "roles swapped, no event qualifier",
+   "relation": "defeated",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "winner",
+     "value": {
+      "entity": "P"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "loser",
+     "value": {
+      "entity": "Q"
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "winner",
+     "value": {
+      "entity": "Q"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "loser",
+     "value": {
+      "entity": "P"
+     }
+    }
+   ],
+   "label": "distinct",
+   "db_label": "distinct",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "distinct: insert n"
+  },
+  {
+   "id": "C2c",
+   "ref": "§6.2 case 2c",
+   "description": "same couple, disjoint periods, no key",
+   "relation": "spouse",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "person",
+     "value": {
+      "entity": "P"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "spouse",
+     "value": {
+      "entity": "Q"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1990-00-00T00:00:00Z",
+       "precision": 9
+      }
+     }
+    },
+    {
+     "bid": "b4",
+     "role": "end_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1995-00-00T00:00:00Z",
+       "precision": 9
+      }
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "person",
+     "value": {
+      "entity": "P"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "spouse",
+     "value": {
+      "entity": "Q"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2001-00-00T00:00:00Z",
+       "precision": 9
+      }
+     }
+    }
+   ],
+   "label": "distinct",
+   "db_label": "distinct",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "distinct: insert n"
+  },
+  {
+   "id": "C2c-k",
+   "ref": "§6.2 case 2c, keyed",
+   "description": "same couple, disjoint periods, key {person} temporal",
+   "relation": "spouse_keyed",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "person",
+     "value": {
+      "entity": "P"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "spouse",
+     "value": {
+      "entity": "Q"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1990-00-00T00:00:00Z",
+       "precision": 9
+      }
+     }
+    },
+    {
+     "bid": "b4",
+     "role": "end_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1995-00-00T00:00:00Z",
+       "precision": 9
+      }
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "person",
+     "value": {
+      "entity": "P"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "spouse",
+     "value": {
+      "entity": "Q"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2001-00-00T00:00:00Z",
+       "precision": 9
+      }
+     }
+    }
+   ],
+   "label": "key_timeline",
+   "db_label": "key_timeline",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "distinct facts on the same key timeline"
+  },
+  {
+   "id": "C3a",
+   "ref": "§6.3 case 3a",
+   "description": "new CEO from a later date, older open-ended",
+   "relation": "ceo",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "organisation",
+     "value": {
+      "entity": "O"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "person",
+     "value": {
+      "entity": "X"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2019-01-01T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "organisation",
+     "value": {
+      "entity": "O"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "person",
+     "value": {
+      "entity": "Y"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2021-06-01T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "label": "key_conflict",
+   "db_label": "key_conflict",
+   "action": "close_older",
+   "schema_error": null,
+   "db_outcome": "succession: close e (end := start of the other; inferred evidence); status unchanged"
+  },
+  {
+   "id": "C3b",
+   "ref": "§6.3 case 3b",
+   "description": "two CEOs claiming the same start",
+   "relation": "ceo",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "organisation",
+     "value": {
+      "entity": "O"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "person",
+     "value": {
+      "entity": "X"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2019-01-01T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "organisation",
+     "value": {
+      "entity": "O"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "person",
+     "value": {
+      "entity": "Y"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2019-01-01T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "label": "key_conflict",
+   "db_label": "key_conflict",
+   "action": "dispute",
+   "schema_error": null,
+   "db_outcome": "dispute (close_older not applicable: starts unknown/unordered or older already ended)"
+  },
+  {
+   "id": "C3c",
+   "ref": "§6.3 case 3c",
+   "description": "no catalyst vs a catalyst",
+   "relation": "catalysed_by",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "reaction",
+     "value": {
+      "entity": "R"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "catalyst",
+     "value": {
+      "special": "novalue"
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "reaction",
+     "value": {
+      "entity": "R"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "catalyst",
+     "value": {
+      "entity": "C"
+     }
+    }
+   ],
+   "label": "negation_conflict",
+   "db_label": "negation_conflict",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "dispute: khg:disputes record; both disputed"
+  },
+  {
+   "id": "C4a",
+   "ref": "§6.4 case 4a (option ii)",
+   "description": "committee gains a member on 2025-03-01; member role complete",
+   "relation": "committee_complete",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "body",
+     "value": {
+      "entity": "C"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "member",
+     "value": {
+      "entity": "m1"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "member",
+     "value": {
+      "entity": "m2"
+     }
+    },
+    {
+     "bid": "b4",
+     "role": "member",
+     "value": {
+      "entity": "m3"
+     }
+    },
+    {
+     "bid": "b5",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2024-01-01T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "body",
+     "value": {
+      "entity": "C"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "member",
+     "value": {
+      "entity": "m1"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "member",
+     "value": {
+      "entity": "m2"
+     }
+    },
+    {
+     "bid": "b4",
+     "role": "member",
+     "value": {
+      "entity": "m3"
+     }
+    },
+    {
+     "bid": "b5",
+     "role": "member",
+     "value": {
+      "entity": "m4"
+     }
+    },
+    {
+     "bid": "b6",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2025-03-01T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "label": "key_conflict",
+   "db_label": "key_conflict",
+   "action": "close_older",
+   "schema_error": null,
+   "db_outcome": "succession: close e (end := start of the other; inferred evidence); status unchanged"
+  },
+  {
+   "id": "C4a-u",
+   "ref": "§6.4 case 4a, undated reports",
+   "description": "undated 3-member vs 4-member composition; member role complete",
+   "relation": "committee_complete",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "body",
+     "value": {
+      "entity": "C"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "member",
+     "value": {
+      "entity": "m1"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "member",
+     "value": {
+      "entity": "m2"
+     }
+    },
+    {
+     "bid": "b4",
+     "role": "member",
+     "value": {
+      "entity": "m3"
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "body",
+     "value": {
+      "entity": "C"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "member",
+     "value": {
+      "entity": "m1"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "member",
+     "value": {
+      "entity": "m2"
+     }
+    },
+    {
+     "bid": "b4",
+     "role": "member",
+     "value": {
+      "entity": "m3"
+     }
+    },
+    {
+     "bid": "b5",
+     "role": "member",
+     "value": {
+      "entity": "m4"
+     }
+    }
+   ],
+   "label": "key_timeline",
+   "db_label": "key_conflict",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "dispute (close_older not applicable: starts unknown/unordered or older already ended)"
+  },
+  {
+   "id": "C4a-o",
+   "ref": "§6.4 case 4a, undated, open role",
+   "description": "same pair, member role NOT complete (reads 'includes')",
+   "relation": "committee_open",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "body",
+     "value": {
+      "entity": "C"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "member",
+     "value": {
+      "entity": "m1"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "member",
+     "value": {
+      "entity": "m2"
+     }
+    },
+    {
+     "bid": "b4",
+     "role": "member",
+     "value": {
+      "entity": "m3"
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "body",
+     "value": {
+      "entity": "C"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "member",
+     "value": {
+      "entity": "m1"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "member",
+     "value": {
+      "entity": "m2"
+     }
+    },
+    {
+     "bid": "b4",
+     "role": "member",
+     "value": {
+      "entity": "m3"
+     }
+    },
+    {
+     "bid": "b5",
+     "role": "member",
+     "value": {
+      "entity": "m4"
+     }
+    }
+   ],
+   "label": "refines",
+   "db_label": "refines",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "refine: e gets a new version with n's content and the union of evidence"
+  },
+  {
+   "id": "C4b",
+   "ref": "§6.4 case 4b",
+   "description": "founding: binary report, then with date and place",
+   "relation": "founding",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "founder",
+     "value": {
+      "entity": "Musk"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "organisation",
+     "value": {
+      "entity": "SpaceX"
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "founder",
+     "value": {
+      "entity": "Musk"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "organisation",
+     "value": {
+      "entity": "SpaceX"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "point_in_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2002-00-00T00:00:00Z",
+       "precision": 9
+      }
+     }
+    },
+    {
+     "bid": "b4",
+     "role": "location",
+     "value": {
+      "entity": "Hawthorne"
+     }
+    }
+   ],
+   "label": "refines",
+   "db_label": "refines",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "refine: e gets a new version with n's content and the union of evidence"
+  },
+  {
+   "id": "I5",
+   "ref": "§6.5 I5",
+   "description": "paraphrase: same content, different sentence",
+   "relation": "rel_ab",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "a",
+     "value": {
+      "entity": "X"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "b",
+     "value": {
+      "entity": "Y"
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "a",
+     "value": {
+      "entity": "X"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "b",
+     "value": {
+      "entity": "Y"
+     }
+    }
+   ],
+   "label": "duplicate",
+   "db_label": "duplicate",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "merge-evidence: n's evidence appended to e (new version of e, same content)"
+  },
+  {
+   "id": "I6",
+   "ref": "§6.5 I6 (bad schema)",
+   "description": "provenance modelled as a role 'source'",
+   "relation": "treats_src",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "drug",
+     "value": {
+      "entity": "metformin"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "condition",
+     "value": {
+      "entity": "T2DM"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "source",
+     "value": {
+      "entity": "doc1"
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "drug",
+     "value": {
+      "entity": "metformin"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "condition",
+     "value": {
+      "entity": "T2DM"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "source",
+     "value": {
+      "entity": "doc2"
+     }
+    }
+   ],
+   "label": "distinct",
+   "db_label": "distinct",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "distinct: insert n"
+  },
+  {
+   "id": "I7",
+   "ref": "§6.5 I7",
+   "description": "same member set, roles exchanged",
+   "relation": "rel_ab",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "a",
+     "value": {
+      "entity": "X"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "b",
+     "value": {
+      "entity": "Y"
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "a",
+     "value": {
+      "entity": "Y"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "b",
+     "value": {
+      "entity": "X"
+     }
+    }
+   ],
+   "label": "distinct",
+   "db_label": "distinct",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "distinct: insert n"
+  },
+  {
+   "id": "I8",
+   "ref": "§6.5 I8",
+   "description": "permuted fillers of an interchangeable role",
+   "relation": "co_authors",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "author",
+     "value": {
+      "entity": "A"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "author",
+     "value": {
+      "entity": "B"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "author",
+     "value": {
+      "entity": "C"
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "author",
+     "value": {
+      "entity": "C"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "author",
+     "value": {
+      "entity": "A"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "author",
+     "value": {
+      "entity": "B"
+     }
+    }
+   ],
+   "label": "duplicate",
+   "db_label": "duplicate",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "merge-evidence: n's evidence appended to e (new version of e, same content)"
+  },
+  {
+   "id": "I11",
+   "ref": "§6.5 I11",
+   "description": "year-precision date then day-precision date",
+   "relation": "award",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "recipient",
+     "value": {
+      "entity": "E"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "award",
+     "value": {
+      "entity": "N"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "point_in_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1921-00-00T00:00:00Z",
+       "precision": 9
+      }
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "recipient",
+     "value": {
+      "entity": "E"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "award",
+     "value": {
+      "entity": "N"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "point_in_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1921-05-02T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "label": "refines",
+   "db_label": "refines",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "refine: e gets a new version with n's content and the union of evidence"
+  },
+  {
+   "id": "I11-x",
+   "ref": "§6.5 I11, contradicting days",
+   "description": "two different days",
+   "relation": "award",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "recipient",
+     "value": {
+      "entity": "E"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "award",
+     "value": {
+      "entity": "N"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "point_in_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1921-05-02T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "recipient",
+     "value": {
+      "entity": "E"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "award",
+     "value": {
+      "entity": "N"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "point_in_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1921-06-02T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "label": "distinct",
+   "db_label": "distinct",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "distinct: insert n"
+  },
+  {
+   "id": "I12",
+   "ref": "§6.5 I12",
+   "description": "somevalue, then a witness",
+   "relation": "spouse",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "person",
+     "value": {
+      "entity": "P"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "spouse",
+     "value": {
+      "special": "somevalue"
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "person",
+     "value": {
+      "entity": "P"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "spouse",
+     "value": {
+      "entity": "Q"
+     }
+    }
+   ],
+   "label": "refines",
+   "db_label": "refines",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "refine: e gets a new version with n's content and the union of evidence"
+  },
+  {
+   "id": "I14",
+   "ref": "§6.5 I14",
+   "description": "same main triple, different point_in_time, no key",
+   "relation": "award",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "recipient",
+     "value": {
+      "entity": "E"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "award",
+     "value": {
+      "entity": "N"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "point_in_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1921-00-00T00:00:00Z",
+       "precision": 9
+      }
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "recipient",
+     "value": {
+      "entity": "E"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "award",
+     "value": {
+      "entity": "N"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "point_in_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1922-00-00T00:00:00Z",
+       "precision": 9
+      }
+     }
+    }
+   ],
+   "label": "distinct",
+   "db_label": "distinct",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "distinct: insert n"
+  },
+  {
+   "id": "X1",
+   "ref": "extra",
+   "description": "year-precision handover (X until 2021, Y since 2021)",
+   "relation": "ceo",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "organisation",
+     "value": {
+      "entity": "O"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "person",
+     "value": {
+      "entity": "X"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2019-00-00T00:00:00Z",
+       "precision": 9
+      }
+     }
+    },
+    {
+     "bid": "b4",
+     "role": "end_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2021-00-00T00:00:00Z",
+       "precision": 9
+      }
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "organisation",
+     "value": {
+      "entity": "O"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "person",
+     "value": {
+      "entity": "Y"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2021-00-00T00:00:00Z",
+       "precision": 9
+      }
+     }
+    }
+   ],
+   "label": "key_timeline",
+   "db_label": "key_timeline",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "distinct facts on the same key timeline (possible overlap only: info)"
+  },
+  {
+   "id": "X2",
+   "ref": "extra",
+   "description": "older CEO already has an end that overlaps the newer",
+   "relation": "ceo",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "organisation",
+     "value": {
+      "entity": "O"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "person",
+     "value": {
+      "entity": "X"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2019-01-01T00:00:00Z",
+       "precision": 11
+      }
+     }
+    },
+    {
+     "bid": "b4",
+     "role": "end_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2023-01-01T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "organisation",
+     "value": {
+      "entity": "O"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "person",
+     "value": {
+      "entity": "Y"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2021-06-01T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "label": "key_conflict",
+   "db_label": "key_conflict",
+   "action": "dispute",
+   "schema_error": null,
+   "db_outcome": "dispute (close_older not applicable: starts unknown/unordered or older already ended)"
+  },
+  {
+   "id": "X3",
+   "ref": "extra",
+   "description": "two undated CEO claims",
+   "relation": "ceo",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "organisation",
+     "value": {
+      "entity": "O"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "person",
+     "value": {
+      "entity": "X"
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "organisation",
+     "value": {
+      "entity": "O"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "person",
+     "value": {
+      "entity": "Y"
+     }
+    }
+   ],
+   "label": "key_timeline",
+   "db_label": "key_conflict",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "dispute (close_older not applicable: starts unknown/unordered or older already ended)"
+  },
+  {
+   "id": "X4",
+   "ref": "extra",
+   "description": "backfill: an older, open-ended CEO arrives after the newer",
+   "relation": "ceo",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "organisation",
+     "value": {
+      "entity": "O"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "person",
+     "value": {
+      "entity": "Y"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2021-06-01T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "organisation",
+     "value": {
+      "entity": "O"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "person",
+     "value": {
+      "entity": "X"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2019-01-01T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "label": "key_conflict",
+   "db_label": "key_conflict",
+   "action": "close_incoming",
+   "schema_error": null,
+   "db_outcome": "succession: close n (end := start of the other; inferred evidence); status unchanged"
+  },
+  {
+   "id": "X5",
+   "ref": "extra",
+   "description": "novalue vs somevalue",
+   "relation": "catalysed_by",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "reaction",
+     "value": {
+      "entity": "R"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "catalyst",
+     "value": {
+      "special": "novalue"
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "reaction",
+     "value": {
+      "entity": "R"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "catalyst",
+     "value": {
+      "special": "somevalue"
+     }
+    }
+   ],
+   "label": "negation_conflict",
+   "db_label": "negation_conflict",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "dispute: khg:disputes record; both disputed"
+  },
+  {
+   "id": "X6",
+   "ref": "extra",
+   "description": "ordered complete route: a stop appended",
+   "relation": "route_complete",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "stop",
+     "value": {
+      "entity": "YYZ"
+     },
+     "position": 1
+    },
+    {
+     "bid": "b2",
+     "role": "stop",
+     "value": {
+      "entity": "YUL"
+     },
+     "position": 2
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "stop",
+     "value": {
+      "entity": "YYZ"
+     },
+     "position": 1
+    },
+    {
+     "bid": "b2",
+     "role": "stop",
+     "value": {
+      "entity": "YUL"
+     },
+     "position": 2
+    },
+    {
+     "bid": "b3",
+     "role": "stop",
+     "value": {
+      "entity": "YYZ"
+     },
+     "position": 3
+    }
+   ],
+   "label": "distinct",
+   "db_label": "distinct",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "distinct: insert n"
+  },
+  {
+   "id": "X7",
+   "ref": "extra",
+   "description": "ordered open route: a stop appended",
+   "relation": "route_open",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "stop",
+     "value": {
+      "entity": "YYZ"
+     },
+     "position": 1
+    },
+    {
+     "bid": "b2",
+     "role": "stop",
+     "value": {
+      "entity": "YUL"
+     },
+     "position": 2
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "stop",
+     "value": {
+      "entity": "YYZ"
+     },
+     "position": 1
+    },
+    {
+     "bid": "b2",
+     "role": "stop",
+     "value": {
+      "entity": "YUL"
+     },
+     "position": 2
+    },
+    {
+     "bid": "b3",
+     "role": "stop",
+     "value": {
+      "entity": "YYZ"
+     },
+     "position": 3
+    }
+   ],
+   "label": "refines",
+   "db_label": "refines",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "refine: e gets a new version with n's content and the union of evidence"
+  },
+  {
+   "id": "X8",
+   "ref": "extra",
+   "description": "ordered route: stops reordered",
+   "relation": "route_open",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "stop",
+     "value": {
+      "entity": "YYZ"
+     },
+     "position": 1
+    },
+    {
+     "bid": "b2",
+     "role": "stop",
+     "value": {
+      "entity": "YUL"
+     },
+     "position": 2
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "stop",
+     "value": {
+      "entity": "YUL"
+     },
+     "position": 1
+    },
+    {
+     "bid": "b2",
+     "role": "stop",
+     "value": {
+      "entity": "YYZ"
+     },
+     "position": 2
+    }
+   ],
+   "label": "distinct",
+   "db_label": "distinct",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "distinct: insert n"
+  },
+  {
+   "id": "X9",
+   "ref": "extra",
+   "description": "undated marriage vs a dated one (one candidate target)",
+   "relation": "spouse",
+   "on_collision": null,
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "person",
+     "value": {
+      "entity": "P"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "spouse",
+     "value": {
+      "entity": "Q"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1990-00-00T00:00:00Z",
+       "precision": 9
+      }
+     }
+    },
+    {
+     "bid": "b4",
+     "role": "end_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1995-00-00T00:00:00Z",
+       "precision": 9
+      }
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "person",
+     "value": {
+      "entity": "P"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "spouse",
+     "value": {
+      "entity": "Q"
+     }
+    }
+   ],
+   "label": "generalises",
+   "db_label": "generalises",
+   "action": null,
+   "schema_error": null,
+   "db_outcome": "support: n's evidence appended to e, supports mapped to e's bindings"
+  },
+  {
+   "id": "C3a-supersede",
+   "ref": "§6.3 case 3a, policy supersede",
+   "description": "case 3a under on_collision supersede",
+   "relation": "ceo",
+   "on_collision": "supersede",
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "organisation",
+     "value": {
+      "entity": "O"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "person",
+     "value": {
+      "entity": "X"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2019-01-01T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "organisation",
+     "value": {
+      "entity": "O"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "person",
+     "value": {
+      "entity": "Y"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2021-06-01T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "label": "key_conflict",
+   "db_label": "key_conflict",
+   "action": "supersede",
+   "schema_error": "KHG-M017",
+   "db_outcome": "supersession: e superseded by n (reason correction); khg:supersedes record"
+  },
+  {
+   "id": "C3a-dispute",
+   "ref": "§6.3 case 3a, policy dispute",
+   "description": "case 3a under on_collision dispute",
+   "relation": "ceo",
+   "on_collision": "dispute",
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "organisation",
+     "value": {
+      "entity": "O"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "person",
+     "value": {
+      "entity": "X"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2019-01-01T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "organisation",
+     "value": {
+      "entity": "O"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "person",
+     "value": {
+      "entity": "Y"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2021-06-01T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "label": "key_conflict",
+   "db_label": "key_conflict",
+   "action": "dispute",
+   "schema_error": null,
+   "db_outcome": "dispute: khg:disputes record; both disputed"
+  },
+  {
+   "id": "C3a-reject",
+   "ref": "§6.3 case 3a, policy reject",
+   "description": "case 3a under on_collision reject",
+   "relation": "ceo",
+   "on_collision": "reject",
+   "existing": [
+    {
+     "bid": "b1",
+     "role": "organisation",
+     "value": {
+      "entity": "O"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "person",
+     "value": {
+      "entity": "X"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2019-01-01T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "incoming": [
+    {
+     "bid": "b1",
+     "role": "organisation",
+     "value": {
+      "entity": "O"
+     }
+    },
+    {
+     "bid": "b2",
+     "role": "person",
+     "value": {
+      "entity": "Y"
+     }
+    },
+    {
+     "bid": "b3",
+     "role": "start_time",
+     "value": {
+      "literal": {
+       "datatype": "time",
+       "time": "+2021-06-01T00:00:00Z",
+       "precision": 11
+      }
+     }
+    }
+   ],
+   "label": "key_conflict",
+   "db_label": "key_conflict",
+   "action": "reject",
+   "schema_error": null,
+   "db_outcome": "reject: put refused (KHG-D016)"
+  }
+ ]
+}

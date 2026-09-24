@@ -1,0 +1,32 @@
+{
+ "network-type": "directed",
+ "metadata": {
+  "role-convention": "1.0.0"
+ },
+ "incidences": [
+  {
+   "edge": "reg-1",
+   "node": "TP53",
+   "direction": "tail",
+   "attrs": {
+    "role": "regulator"
+   }
+  },
+  {
+   "edge": "reg-1",
+   "node": "TP53",
+   "direction": "head",
+   "attrs": {
+    "role": "target"
+   }
+  },
+  {
+   "edge": "reg-1",
+   "node": "HeLa",
+   "direction": "tail",
+   "attrs": {
+    "role": "context"
+   }
+  }
+ ]
+}

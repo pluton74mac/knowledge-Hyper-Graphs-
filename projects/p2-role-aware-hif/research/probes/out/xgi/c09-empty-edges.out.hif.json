@@ -1,0 +1,49 @@
+{
+  "metadata": {
+    "title": "mini"
+  },
+  "network-type": "directed",
+  "nodes": [
+    {
+      "attrs": {
+        "type": "Drug"
+      },
+      "node": "drug:metformin"
+    },
+    {
+      "attrs": {
+        "type": "Disease"
+      },
+      "node": "disease:T2DM"
+    }
+  ],
+  "edges": [
+    {
+      "attrs": {
+        "relation": "treats"
+      },
+      "edge": "f1"
+    },
+    {
+      "edge": "e:empty-bare"
+    },
+    {
+      "attrs": {
+        "relation": "retracted-fact"
+      },
+      "edge": "e:empty-with-attrs"
+    }
+  ],
+  "incidences": [
+    {
+      "edge": "f1",
+      "node": "drug:metformin",
+      "direction": "tail"
+    },
+    {
+      "edge": "f1",
+      "node": "disease:T2DM",
+      "direction": "head"
+    }
+  ]
+}

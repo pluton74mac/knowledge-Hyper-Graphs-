@@ -1,0 +1,132 @@
+{
+ "khg-schema": "kb-sample/1.0.0",
+ "khg-profile": "1.0.0",
+ "label": "inferred from schemas/sample.hif.json",
+ "types": {
+  "AdverseEffect": {
+   "label": "AdverseEffect"
+  },
+  "Disease": {
+   "label": "Disease"
+  },
+  "Document": {
+   "label": "Document"
+  },
+  "Dosage": {
+   "label": "Dosage"
+  },
+  "Drug": {
+   "label": "Drug"
+  },
+  "Organisation": {
+   "label": "Organisation"
+  },
+  "Population": {
+   "label": "Population"
+  }
+ },
+ "roles": {
+  "agent": {
+   "label": "agent"
+  },
+  "condition": {
+   "label": "condition"
+  },
+  "dosage": {
+   "label": "dosage"
+  },
+  "effect": {
+   "label": "effect"
+  },
+  "population": {
+   "label": "population"
+  },
+  "publication": {
+   "label": "publication"
+  },
+  "publisher": {
+   "label": "publisher"
+  },
+  "treatment": {
+   "label": "treatment"
+  }
+ },
+ "relations": {
+  "co-administration-causes": {
+   "roles": {
+    "agent": {
+     "slot": "core",
+     "types": [
+      "Drug"
+     ],
+     "max": null,
+     "direction": "tail"
+    },
+    "effect": {
+     "slot": "core",
+     "types": [
+      "AdverseEffect"
+     ],
+     "max": 1,
+     "direction": "head"
+    }
+   }
+  },
+  "publishes": {
+   "roles": {
+    "publisher": {
+     "slot": "core",
+     "types": [
+      "Organisation"
+     ],
+     "max": 1,
+     "direction": "tail"
+    },
+    "publication": {
+     "slot": "core",
+     "types": [
+      "Document"
+     ],
+     "max": 1,
+     "direction": "head"
+    }
+   }
+  },
+  "treats": {
+   "roles": {
+    "treatment": {
+     "slot": "core",
+     "types": [
+      "Drug"
+     ],
+     "max": 1,
+     "direction": "tail"
+    },
+    "condition": {
+     "slot": "core",
+     "types": [
+      "Disease"
+     ],
+     "max": 1,
+     "direction": "head"
+    },
+    "dosage": {
+     "slot": "core",
+     "types": [
+      "Dosage"
+     ],
+     "max": 1,
+     "direction": "tail"
+    },
+    "population": {
+     "slot": "core",
+     "types": [
+      "Population"
+     ],
+     "max": 1,
+     "direction": "tail"
+    }
+   }
+  }
+ }
+}

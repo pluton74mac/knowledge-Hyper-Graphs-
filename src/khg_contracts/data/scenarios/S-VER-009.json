@@ -1,0 +1,121 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-VER-009",
+ "title": "end_validity may replace a novalue end (a world change): the status stays asserted",
+ "requires": [
+  "literal_values",
+  "special_values",
+  "valid_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    {
+     "@": "f:king-13",
+     "set_binding": {
+      "b4": {
+       "special": "novalue"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "apply",
+   "args": {
+    "event": {
+     "op": "end_validity",
+     "target": "f:king-13",
+     "end": {
+      "literal": {
+       "datatype": "time",
+       "time": "+1643-05-14T00:00:00Z",
+       "precision": 11
+      }
+     },
+     "end_cause": {
+      "entity": "ex:LouisXIV"
+     },
+     "evidence": [
+      {
+       "id": "e9",
+       "type": "curated",
+       "mode": "manual",
+       "source": {
+        "doc_id": "doc:scenario"
+       }
+      }
+     ]
+    }
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "f:king-13",
+      2,
+      "versioned"
+     ]
+    ]
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:king-13"
+   },
+   "then": {
+    "select": "status",
+    "equals": "asserted"
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:king-13"
+   },
+   "then": {
+    "select": "binding.b4.value",
+    "equals": {
+     "literal": {
+      "datatype": "time",
+      "time": "+1643-05-14T00:00:00Z",
+      "precision": 11,
+      "calendar": "gregorian"
+     }
+    }
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:king-13"
+   },
+   "then": {
+    "select": "binding.b5.role",
+    "equals": "khg:end_cause"
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:king-13"
+   },
+   "then": {
+    "select": "evidence.e9.supports",
+    "equals": [
+     "b4",
+     "b5"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "critique SEM-01, SEM-06 (R04 M4 end_cause)"
+ ]
+}

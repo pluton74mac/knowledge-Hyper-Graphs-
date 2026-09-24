@@ -1,0 +1,45 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-KEY-002",
+ "title": "find_by_key without as_of returns the key's timeline in id order",
+ "requires": [
+  "goals",
+  "literal_values",
+  "nesting",
+  "ordered_roles",
+  "special_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "load": "@fixture"
+  }
+ ],
+ "when": [
+  {
+   "op": "find_by_key",
+   "args": {
+    "relation": "position_held",
+    "key": [
+     {
+      "role": "position",
+      "value": {
+       "entity": "ex:KingOfFrance"
+      }
+     }
+    ]
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:king-13",
+     "f:king-14"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "B S041"
+ ]
+}

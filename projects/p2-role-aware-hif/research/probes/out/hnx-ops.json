@@ -1,0 +1,1834 @@
+{
+ "env": {
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "jsonschema": "4.26.0",
+  "pandas": "2.3.3",
+  "numpy": "2.4.6",
+  "fastjsonschema": "2.22.2",
+  "requests": "2.34.2",
+  "hypernetx": "2.4.3",
+  "preferred_encoding": "utf-8",
+  "schema_url": "https://raw.githubusercontent.com/pszufe/HIF_validators/main/schemas/hif_schema_v0.1.0.json",
+  "source_sha256": {
+   "hypernetx/hif.py": "ca44b6efeeb34f2f2adf0038d2048e069a289f6c3705532c0d80deb7d68cea0e",
+   "hypernetx/classes/hypergraph.py": "56a3021339341389d275d97b310bd107d9b295b409ac9312d4396e0d4cec662e",
+   "hypernetx/classes/factory.py": "b1a0d669ba536ef461e7ee96110c7fd31824a6ca9480696298bf236b253fea0e",
+   "hypernetx/classes/property_store.py": "10c843ee3fda9ba2e1c8d9567fdc52b4127b2baf00fa5a91b15cc74cccc8c28c",
+   "hypernetx/classes/hyp_view.py": "091cc5c6d14db97c98268d2f1bb73721f3a2f2b7b5d7f4353577a6eb347e35d5",
+   "hypernetx/classes/incidence_store.py": "c2adf1785df11abe18d6f091d8d2442a22b253b1ebe42c6a8840b04b56a600a1"
+  }
+ },
+ "ops": [
+  {
+   "op": "H.clone()",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "returned": "Hypergraph",
+   "compare": {
+    "cells_compared": 9,
+    "role_same": 9,
+    "direction_same": 9,
+    "cells_lost": [],
+    "cells_new": [],
+    "role_changed": {},
+    "direction_changed": {},
+    "cells_new_detail": {},
+    "nodes_attrs_same": "8/8 surviving",
+    "nodes_missing": [],
+    "nodes_new": [],
+    "edges_attrs_same": "3/3 surviving",
+    "edges_missing": [],
+    "edges_new": [],
+    "name_after": "None_clone"
+   },
+   "export": {
+    "api": "hnx.to_hif(H, filename=..., network_type='directed')",
+    "ok": true,
+    "returned": "dict",
+    "error": null,
+    "warnings": [
+     "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/ops/H.clone.out.hif.json' mode='w' encoding='utf-8'> (hif.py:110)"
+    ],
+    "file_written": "out/hnx/ops/H.clone.out.hif.json",
+    "strict_json": true,
+    "schema_errors (jsonschema)": []
+   },
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "9/9",
+    "direction_records_kept": "9/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "9/9",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 9,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:dose:500mg-bid": "added",
+      "str:pop:adults": "added",
+      "str:drug:insulin": "added",
+      "str:effect:hypoglycemia": "added",
+      "str:org:ADA": "added",
+      "str:doc:guideline-2024": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs",
+     "name"
+    ],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "H.restrict_to_nodes([metformin, T2DM, insulin])",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "returned": "Hypergraph",
+   "compare": {
+    "cells_compared": 4,
+    "role_same": 4,
+    "direction_same": 4,
+    "cells_lost": [
+     "str:f1 | str:dose:500mg-bid",
+     "str:f1 | str:pop:adults",
+     "str:f2 | str:effect:hypoglycemia",
+     "str:f3 | str:org:ADA",
+     "str:f3 | str:doc:guideline-2024"
+    ],
+    "cells_new": [],
+    "role_changed": {},
+    "direction_changed": {},
+    "cells_new_detail": {},
+    "nodes_attrs_same": "3/3 surviving",
+    "nodes_missing": [
+     "str:doc:guideline-2024",
+     "str:dose:500mg-bid",
+     "str:effect:hypoglycemia",
+     "str:org:ADA",
+     "str:pop:adults"
+    ],
+    "nodes_new": [],
+    "edges_attrs_same": "2/2 surviving",
+    "edges_missing": [
+     "str:f3"
+    ],
+    "edges_new": [],
+    "name_after": null
+   },
+   "export": {
+    "api": "hnx.to_hif(H, filename=..., network_type='directed')",
+    "ok": true,
+    "returned": "dict",
+    "error": null,
+    "warnings": [
+     "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/ops/H.restrict_to_nodes_metformin_T2DM_insulin.out.hif.json' mo (hif.py:110)"
+    ],
+    "file_written": "out/hnx/ops/H.restrict_to_nodes_metformin_T2DM_insulin.out.hif.json",
+    "strict_json": true,
+    "schema_errors (jsonschema)": []
+   },
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 4",
+    "role_records_kept": "4/9",
+    "direction_records_kept": "4/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "4/9",
+    "pairs_lost": 5,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 4,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [
+      "str:doc:guideline-2024",
+      "str:dose:500mg-bid",
+      "str:effect:hypoglycemia",
+      "str:org:ADA",
+      "str:pop:adults"
+     ],
+     "attrs_not_preserved": {
+      "str:dose:500mg-bid": "lost",
+      "str:pop:adults": "lost",
+      "str:effect:hypoglycemia": "lost",
+      "str:org:ADA": "lost",
+      "str:doc:guideline-2024": "lost"
+     },
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:drug:insulin": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [
+      "str:f3"
+     ],
+     "attrs_not_preserved": {
+      "str:f3": "lost"
+     },
+     "weight_not_preserved": {
+      "str:f3": "lost"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "H.restrict_to_edges([f1, f3])",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "returned": "Hypergraph",
+   "compare": {
+    "cells_compared": 6,
+    "role_same": 6,
+    "direction_same": 6,
+    "cells_lost": [
+     "str:f2 | str:drug:metformin",
+     "str:f2 | str:drug:insulin",
+     "str:f2 | str:effect:hypoglycemia"
+    ],
+    "cells_new": [],
+    "role_changed": {},
+    "direction_changed": {},
+    "cells_new_detail": {},
+    "nodes_attrs_same": "6/6 surviving",
+    "nodes_missing": [
+     "str:drug:insulin",
+     "str:effect:hypoglycemia"
+    ],
+    "nodes_new": [],
+    "edges_attrs_same": "2/2 surviving",
+    "edges_missing": [
+     "str:f2"
+    ],
+    "edges_new": [],
+    "name_after": null
+   },
+   "export": {
+    "api": "hnx.to_hif(H, filename=..., network_type='directed')",
+    "ok": true,
+    "returned": "dict",
+    "error": null,
+    "warnings": [
+     "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/ops/H.restrict_to_edges_f1_f3.out.hif.json' mode='w' encoding=' (hif.py:110)"
+    ],
+    "file_written": "out/hnx/ops/H.restrict_to_edges_f1_f3.out.hif.json",
+    "strict_json": true,
+    "schema_errors (jsonschema)": []
+   },
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 6",
+    "role_records_kept": "6/9",
+    "direction_records_kept": "6/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "6/9",
+    "pairs_lost": 3,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 6,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [
+      "str:drug:insulin",
+      "str:effect:hypoglycemia"
+     ],
+     "attrs_not_preserved": {
+      "str:drug:insulin": "lost",
+      "str:effect:hypoglycemia": "lost"
+     },
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:dose:500mg-bid": "added",
+      "str:pop:adults": "added",
+      "str:org:ADA": "added",
+      "str:doc:guideline-2024": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [
+      "str:f2"
+     ],
+     "attrs_not_preserved": {
+      "str:f2": "lost"
+     },
+     "weight_not_preserved": {
+      "str:f2": "lost"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "H.add_incidence('f1', 'pop:children', role='population')",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "returned": "Hypergraph",
+   "compare": {
+    "cells_compared": 9,
+    "role_same": 9,
+    "direction_same": 9,
+    "cells_lost": [],
+    "cells_new": [
+     "str:f1 | str:pop:children"
+    ],
+    "role_changed": {},
+    "direction_changed": {},
+    "cells_new_detail": {
+     "str:f1 | str:pop:children": {
+      "role": "population",
+      "direction": null,
+      "weight": 1.0
+     }
+    },
+    "nodes_attrs_same": "8/8 surviving",
+    "nodes_missing": [],
+    "nodes_new": [
+     "str:pop:children"
+    ],
+    "edges_attrs_same": "3/3 surviving",
+    "edges_missing": [],
+    "edges_new": [],
+    "name_after": null
+   },
+   "export": {
+    "api": "hnx.to_hif(H, filename=..., network_type='directed')",
+    "ok": false,
+    "returned": "NoneType",
+    "error": null,
+    "warnings": [],
+    "unvalidated_error": null,
+    "unvalidated_output": "out/hnx/ops/H.add_incidence_f1_pop_children_role_population.out.unvalidated.hif.json",
+    "why_invalid (jsonschema on unvalidated output)": [
+     "incidences/9/direction: 'nil' is not one of ['head', 'tail']"
+    ]
+   },
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 10",
+    "role_records_kept": "9/9",
+    "direction_records_kept": "9/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "9/9",
+    "pairs_lost": 0,
+    "pairs_new": 1,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 9,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:dose:500mg-bid": "added",
+      "str:pop:adults": "added",
+      "str:drug:insulin": "added",
+      "str:effect:hypoglycemia": "added",
+      "str:org:ADA": "added",
+      "str:doc:guideline-2024": "added"
+     },
+     "new_out": [
+      "str:pop:children"
+     ]
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "H.add_incidence('f1', 'pop:children', role=..., direction='tail')",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "returned": "Hypergraph",
+   "compare": {
+    "cells_compared": 9,
+    "role_same": 9,
+    "direction_same": 9,
+    "cells_lost": [],
+    "cells_new": [
+     "str:f1 | str:pop:children"
+    ],
+    "role_changed": {},
+    "direction_changed": {},
+    "cells_new_detail": {
+     "str:f1 | str:pop:children": {
+      "role": "population",
+      "direction": "tail",
+      "weight": 1.0
+     }
+    },
+    "nodes_attrs_same": "8/8 surviving",
+    "nodes_missing": [],
+    "nodes_new": [
+     "str:pop:children"
+    ],
+    "edges_attrs_same": "3/3 surviving",
+    "edges_missing": [],
+    "edges_new": [],
+    "name_after": null
+   },
+   "export": {
+    "api": "hnx.to_hif(H, filename=..., network_type='directed')",
+    "ok": true,
+    "returned": "dict",
+    "error": null,
+    "warnings": [
+     "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/ops/H.add_incidence_f1_pop_children_role_..._direction_tail.out (hif.py:110)"
+    ],
+    "file_written": "out/hnx/ops/H.add_incidence_f1_pop_children_role_..._direction_tail.out.hif.json",
+    "strict_json": true,
+    "schema_errors (jsonschema)": []
+   },
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 10",
+    "role_records_kept": "9/9",
+    "direction_records_kept": "9/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "9/9",
+    "pairs_lost": 0,
+    "pairs_new": 1,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 9,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:dose:500mg-bid": "added",
+      "str:pop:adults": "added",
+      "str:drug:insulin": "added",
+      "str:effect:hypoglycemia": "added",
+      "str:org:ADA": "added",
+      "str:doc:guideline-2024": "added"
+     },
+     "new_out": [
+      "str:pop:children"
+     ]
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "H.add_edge('f4', relation=...) (no incidences)",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "returned": "Hypergraph",
+   "compare": {
+    "cells_compared": 9,
+    "role_same": 9,
+    "direction_same": 9,
+    "cells_lost": [],
+    "cells_new": [],
+    "role_changed": {},
+    "direction_changed": {},
+    "cells_new_detail": {},
+    "nodes_attrs_same": "8/8 surviving",
+    "nodes_missing": [],
+    "nodes_new": [],
+    "edges_attrs_same": "3/3 surviving",
+    "edges_missing": [],
+    "edges_new": [],
+    "name_after": null
+   },
+   "export": {
+    "api": "hnx.to_hif(H, filename=..., network_type='directed')",
+    "ok": true,
+    "returned": "dict",
+    "error": null,
+    "warnings": [
+     "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/ops/H.add_edge_f4_relation_..._no_incidences.out.hif.json' mode (hif.py:110)"
+    ],
+    "file_written": "out/hnx/ops/H.add_edge_f4_relation_..._no_incidences.out.hif.json",
+    "strict_json": true,
+    "schema_errors (jsonschema)": []
+   },
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "9/9",
+    "direction_records_kept": "9/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "9/9",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 9,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:dose:500mg-bid": "added",
+      "str:pop:adults": "added",
+      "str:drug:insulin": "added",
+      "str:effect:hypoglycemia": "added",
+      "str:org:ADA": "added",
+      "str:doc:guideline-2024": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "H.add_node('drug:new', type=...) (no incidences)",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "returned": "Hypergraph",
+   "compare": {
+    "cells_compared": 9,
+    "role_same": 9,
+    "direction_same": 9,
+    "cells_lost": [],
+    "cells_new": [],
+    "role_changed": {},
+    "direction_changed": {},
+    "cells_new_detail": {},
+    "nodes_attrs_same": "8/8 surviving",
+    "nodes_missing": [],
+    "nodes_new": [],
+    "edges_attrs_same": "3/3 surviving",
+    "edges_missing": [],
+    "edges_new": [],
+    "name_after": null
+   },
+   "export": {
+    "api": "hnx.to_hif(H, filename=..., network_type='directed')",
+    "ok": true,
+    "returned": "dict",
+    "error": null,
+    "warnings": [
+     "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/ops/H.add_node_drug_new_type_..._no_incidences.out.hif.json' mo (hif.py:110)"
+    ],
+    "file_written": "out/hnx/ops/H.add_node_drug_new_type_..._no_incidences.out.hif.json",
+    "strict_json": true,
+    "schema_errors (jsonschema)": []
+   },
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "9/9",
+    "direction_records_kept": "9/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "9/9",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 9,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:dose:500mg-bid": "added",
+      "str:pop:adults": "added",
+      "str:drug:insulin": "added",
+      "str:effect:hypoglycemia": "added",
+      "str:org:ADA": "added",
+      "str:doc:guideline-2024": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "H.remove_nodes('dose:500mg-bid')",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "returned": "Hypergraph",
+   "compare": {
+    "cells_compared": 8,
+    "role_same": 8,
+    "direction_same": 8,
+    "cells_lost": [
+     "str:f1 | str:dose:500mg-bid"
+    ],
+    "cells_new": [],
+    "role_changed": {},
+    "direction_changed": {},
+    "cells_new_detail": {},
+    "nodes_attrs_same": "7/7 surviving",
+    "nodes_missing": [
+     "str:dose:500mg-bid"
+    ],
+    "nodes_new": [],
+    "edges_attrs_same": "3/3 surviving",
+    "edges_missing": [],
+    "edges_new": [],
+    "name_after": null
+   },
+   "export": {
+    "api": "hnx.to_hif(H, filename=..., network_type='directed')",
+    "ok": true,
+    "returned": "dict",
+    "error": null,
+    "warnings": [
+     "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/ops/H.remove_nodes_dose_500mg-bid.out.hif.json' mode='w' encodi (hif.py:110)"
+    ],
+    "file_written": "out/hnx/ops/H.remove_nodes_dose_500mg-bid.out.hif.json",
+    "strict_json": true,
+    "schema_errors (jsonschema)": []
+   },
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 8",
+    "role_records_kept": "8/9",
+    "direction_records_kept": "8/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "8/9",
+    "pairs_lost": 1,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 8,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [
+      "str:dose:500mg-bid"
+     ],
+     "attrs_not_preserved": {
+      "str:dose:500mg-bid": "lost"
+     },
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:pop:adults": "added",
+      "str:drug:insulin": "added",
+      "str:effect:hypoglycemia": "added",
+      "str:org:ADA": "added",
+      "str:doc:guideline-2024": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "H.remove_edges('f2')",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "returned": "Hypergraph",
+   "compare": {
+    "cells_compared": 6,
+    "role_same": 6,
+    "direction_same": 6,
+    "cells_lost": [
+     "str:f2 | str:drug:metformin",
+     "str:f2 | str:drug:insulin",
+     "str:f2 | str:effect:hypoglycemia"
+    ],
+    "cells_new": [],
+    "role_changed": {},
+    "direction_changed": {},
+    "cells_new_detail": {},
+    "nodes_attrs_same": "6/6 surviving",
+    "nodes_missing": [
+     "str:drug:insulin",
+     "str:effect:hypoglycemia"
+    ],
+    "nodes_new": [],
+    "edges_attrs_same": "2/2 surviving",
+    "edges_missing": [
+     "str:f2"
+    ],
+    "edges_new": [],
+    "name_after": null
+   },
+   "export": {
+    "api": "hnx.to_hif(H, filename=..., network_type='directed')",
+    "ok": true,
+    "returned": "dict",
+    "error": null,
+    "warnings": [
+     "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/ops/H.remove_edges_f2.out.hif.json' mode='w' encoding='utf-8'> (hif.py:110)"
+    ],
+    "file_written": "out/hnx/ops/H.remove_edges_f2.out.hif.json",
+    "strict_json": true,
+    "schema_errors (jsonschema)": []
+   },
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 6",
+    "role_records_kept": "6/9",
+    "direction_records_kept": "6/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "6/9",
+    "pairs_lost": 3,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 6,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [
+      "str:drug:insulin",
+      "str:effect:hypoglycemia"
+     ],
+     "attrs_not_preserved": {
+      "str:drug:insulin": "lost",
+      "str:effect:hypoglycemia": "lost"
+     },
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:dose:500mg-bid": "added",
+      "str:pop:adults": "added",
+      "str:org:ADA": "added",
+      "str:doc:guideline-2024": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [
+      "str:f2"
+     ],
+     "attrs_not_preserved": {
+      "str:f2": "lost"
+     },
+     "weight_not_preserved": {
+      "str:f2": "lost"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "H.remove_incidences(('f1', 'dose:500mg-bid'))",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "returned": "Hypergraph",
+   "compare": {
+    "cells_compared": 8,
+    "role_same": 8,
+    "direction_same": 8,
+    "cells_lost": [
+     "str:f1 | str:dose:500mg-bid"
+    ],
+    "cells_new": [],
+    "role_changed": {},
+    "direction_changed": {},
+    "cells_new_detail": {},
+    "nodes_attrs_same": "7/7 surviving",
+    "nodes_missing": [
+     "str:dose:500mg-bid"
+    ],
+    "nodes_new": [],
+    "edges_attrs_same": "3/3 surviving",
+    "edges_missing": [],
+    "edges_new": [],
+    "name_after": null
+   },
+   "export": {
+    "api": "hnx.to_hif(H, filename=..., network_type='directed')",
+    "ok": true,
+    "returned": "dict",
+    "error": null,
+    "warnings": [
+     "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/ops/H.remove_incidences_f1_dose_500mg-bid.out.hif.json' mode='w (hif.py:110)"
+    ],
+    "file_written": "out/hnx/ops/H.remove_incidences_f1_dose_500mg-bid.out.hif.json",
+    "strict_json": true,
+    "schema_errors (jsonschema)": []
+   },
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 8",
+    "role_records_kept": "8/9",
+    "direction_records_kept": "8/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "8/9",
+    "pairs_lost": 1,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 8,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [
+      "str:dose:500mg-bid"
+     ],
+     "attrs_not_preserved": {
+      "str:dose:500mg-bid": "lost"
+     },
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:pop:adults": "added",
+      "str:drug:insulin": "added",
+      "str:effect:hypoglycemia": "added",
+      "str:org:ADA": "added",
+      "str:doc:guideline-2024": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "H.dual()",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "returned": "Hypergraph",
+   "compare": {
+    "cells_compared": 0,
+    "role_same": 0,
+    "direction_same": 0,
+    "cells_lost": [
+     "str:f1 | str:drug:metformin",
+     "str:f1 | str:disease:T2DM",
+     "str:f1 | str:dose:500mg-bid",
+     "str:f1 | str:pop:adults",
+     "str:f2 | str:drug:metformin",
+     "str:f2 | str:drug:insulin",
+     "str:f2 | str:effect:hypoglycemia",
+     "str:f3 | str:org:ADA",
+     "str:f3 | str:doc:guideline-2024"
+    ],
+    "cells_new": [
+     "str:disease:T2DM | str:f1",
+     "str:doc:guideline-2024 | str:f3",
+     "str:dose:500mg-bid | str:f1",
+     "str:drug:insulin | str:f2",
+     "str:drug:metformin | str:f1",
+     "str:drug:metformin | str:f2",
+     "str:effect:hypoglycemia | str:f2",
+     "str:org:ADA | str:f3",
+     "str:pop:adults | str:f1"
+    ],
+    "role_changed": {},
+    "direction_changed": {},
+    "cells_new_detail": {
+     "str:disease:T2DM | str:f1": {
+      "role": "condition",
+      "direction": "head",
+      "weight": 1
+     },
+     "str:doc:guideline-2024 | str:f3": {
+      "role": "publication",
+      "direction": "head",
+      "weight": 1
+     },
+     "str:dose:500mg-bid | str:f1": {
+      "role": "dosage",
+      "direction": "tail",
+      "weight": 1
+     },
+     "str:drug:insulin | str:f2": {
+      "role": "agent",
+      "direction": "tail",
+      "weight": 1
+     },
+     "str:drug:metformin | str:f1": {
+      "role": "treatment",
+      "direction": "tail",
+      "weight": 1
+     },
+     "str:drug:metformin | str:f2": {
+      "role": "agent",
+      "direction": "tail",
+      "weight": 1
+     }
+    },
+    "nodes_attrs_same": "0/0 surviving",
+    "nodes_missing": [
+     "str:disease:T2DM",
+     "str:doc:guideline-2024",
+     "str:dose:500mg-bid",
+     "str:drug:insulin",
+     "str:drug:metformin",
+     "str:effect:hypoglycemia",
+     "str:org:ADA",
+     "str:pop:adults"
+    ],
+    "nodes_new": [
+     "str:f1",
+     "str:f2",
+     "str:f3"
+    ],
+    "edges_attrs_same": "0/0 surviving",
+    "edges_missing": [
+     "str:f1",
+     "str:f2",
+     "str:f3"
+    ],
+    "edges_new": [
+     "str:disease:T2DM",
+     "str:doc:guideline-2024",
+     "str:dose:500mg-bid",
+     "str:drug:insulin",
+     "str:drug:metformin",
+     "str:effect:hypoglycemia",
+     "str:org:ADA",
+     "str:pop:adults"
+    ],
+    "name_after": "None_dual"
+   },
+   "export": {
+    "api": "hnx.to_hif(H, filename=..., network_type='directed')",
+    "ok": true,
+    "returned": "dict",
+    "error": null,
+    "warnings": [
+     "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/ops/H.dual.out.hif.json' mode='w' encoding='utf-8'> (hif.py:110)"
+    ],
+    "file_written": "out/hnx/ops/H.dual.out.hif.json",
+    "strict_json": true,
+    "schema_errors (jsonschema)": []
+   },
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "0/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 9,
+    "pairs_new": 9,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [
+      "str:disease:T2DM",
+      "str:doc:guideline-2024",
+      "str:dose:500mg-bid",
+      "str:drug:insulin",
+      "str:drug:metformin",
+      "str:effect:hypoglycemia",
+      "str:org:ADA",
+      "str:pop:adults"
+     ],
+     "attrs_not_preserved": {
+      "str:drug:metformin": "lost",
+      "str:disease:T2DM": "lost",
+      "str:dose:500mg-bid": "lost",
+      "str:pop:adults": "lost",
+      "str:drug:insulin": "lost",
+      "str:effect:hypoglycemia": "lost",
+      "str:org:ADA": "lost",
+      "str:doc:guideline-2024": "lost"
+     },
+     "weight_not_preserved": {},
+     "new_out": [
+      "str:f1",
+      "str:f2",
+      "str:f3"
+     ]
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [
+      "str:f1",
+      "str:f2",
+      "str:f3"
+     ],
+     "attrs_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": [
+      "str:disease:T2DM",
+      "str:doc:guideline-2024",
+      "str:dose:500mg-bid",
+      "str:drug:insulin",
+      "str:drug:metformin",
+      "str:effect:hypoglycemia",
+      "str:org:ADA",
+      "str:pop:adults"
+     ]
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs",
+     "name"
+    ],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "H.collapse_nodes()",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "returned": "Hypergraph",
+   "compare": {
+    "cells_compared": 5,
+    "role_same": 4,
+    "direction_same": 4,
+    "cells_lost": [
+     "str:f1 | str:dose:500mg-bid",
+     "str:f1 | str:pop:adults",
+     "str:f2 | str:effect:hypoglycemia",
+     "str:f3 | str:org:ADA"
+    ],
+    "cells_new": [],
+    "role_changed": {
+     "str:f3 | str:doc:guideline-2024": {
+      "before": "publication",
+      "after": "publisher"
+     }
+    },
+    "direction_changed": {
+     "str:f3 | str:doc:guideline-2024": {
+      "before": "head",
+      "after": "tail"
+     }
+    },
+    "cells_new_detail": {},
+    "nodes_attrs_same": "0/4 surviving",
+    "nodes_missing": [
+     "str:dose:500mg-bid",
+     "str:effect:hypoglycemia",
+     "str:org:ADA",
+     "str:pop:adults"
+    ],
+    "nodes_new": [],
+    "edges_attrs_same": "3/3 surviving",
+    "edges_missing": [],
+    "edges_new": [],
+    "name_after": null
+   },
+   "export": {
+    "api": "hnx.to_hif(H, filename=..., network_type='directed')",
+    "ok": true,
+    "returned": "dict",
+    "error": null,
+    "warnings": [
+     "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/ops/H.collapse_nodes.out.hif.json' mode='w' encoding='utf-8'> (hif.py:110)"
+    ],
+    "file_written": "out/hnx/ops/H.collapse_nodes.out.hif.json",
+    "strict_json": true,
+    "schema_errors (jsonschema)": []
+   },
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 5",
+    "role_records_kept": "4/9",
+    "direction_records_kept": "4/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "4/9",
+    "pairs_lost": 4,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 5,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [
+      "str:dose:500mg-bid",
+      "str:effect:hypoglycemia",
+      "str:org:ADA",
+      "str:pop:adults"
+     ],
+     "attrs_not_preserved": {
+      "str:drug:metformin": "altered",
+      "str:disease:T2DM": "altered",
+      "str:dose:500mg-bid": "lost",
+      "str:pop:adults": "lost",
+      "str:drug:insulin": "altered",
+      "str:effect:hypoglycemia": "lost",
+      "str:org:ADA": "lost",
+      "str:doc:guideline-2024": "altered"
+     },
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:drug:insulin": "added",
+      "str:doc:guideline-2024": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "H.collapse_nodes_and_edges()",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "returned": "Hypergraph",
+   "compare": {
+    "cells_compared": 5,
+    "role_same": 4,
+    "direction_same": 4,
+    "cells_lost": [
+     "str:f1 | str:dose:500mg-bid",
+     "str:f1 | str:pop:adults",
+     "str:f2 | str:effect:hypoglycemia",
+     "str:f3 | str:org:ADA"
+    ],
+    "cells_new": [],
+    "role_changed": {
+     "str:f3 | str:doc:guideline-2024": {
+      "before": "publication",
+      "after": "publisher"
+     }
+    },
+    "direction_changed": {
+     "str:f3 | str:doc:guideline-2024": {
+      "before": "head",
+      "after": "tail"
+     }
+    },
+    "cells_new_detail": {},
+    "nodes_attrs_same": "0/4 surviving",
+    "nodes_missing": [
+     "str:dose:500mg-bid",
+     "str:effect:hypoglycemia",
+     "str:org:ADA",
+     "str:pop:adults"
+    ],
+    "nodes_new": [],
+    "edges_attrs_same": "0/3 surviving",
+    "edges_missing": [],
+    "edges_new": [],
+    "name_after": null
+   },
+   "export": {
+    "api": "hnx.to_hif(H, filename=..., network_type='directed')",
+    "ok": true,
+    "returned": "dict",
+    "error": null,
+    "warnings": [
+     "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/ops/H.collapse_nodes_and_edges.out.hif.json' mode='w' encoding= (hif.py:110)"
+    ],
+    "file_written": "out/hnx/ops/H.collapse_nodes_and_edges.out.hif.json",
+    "strict_json": true,
+    "schema_errors (jsonschema)": []
+   },
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 5",
+    "role_records_kept": "4/9",
+    "direction_records_kept": "4/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "4/9",
+    "pairs_lost": 4,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 5,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [
+      "str:dose:500mg-bid",
+      "str:effect:hypoglycemia",
+      "str:org:ADA",
+      "str:pop:adults"
+     ],
+     "attrs_not_preserved": {
+      "str:drug:metformin": "altered",
+      "str:disease:T2DM": "altered",
+      "str:dose:500mg-bid": "lost",
+      "str:pop:adults": "lost",
+      "str:drug:insulin": "altered",
+      "str:effect:hypoglycemia": "lost",
+      "str:org:ADA": "lost",
+      "str:doc:guideline-2024": "altered"
+     },
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:drug:insulin": "added",
+      "str:doc:guideline-2024": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {
+      "str:f1": "altered",
+      "str:f2": "altered",
+      "str:f3": "altered"
+     },
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "H.collapse_edges() after adding f1-copy (same members, different roles)",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "returned": "Hypergraph",
+   "compare": {
+    "cells_compared": 9,
+    "role_same": 9,
+    "direction_same": 9,
+    "cells_lost": [],
+    "cells_new": [],
+    "role_changed": {},
+    "direction_changed": {},
+    "cells_new_detail": {},
+    "nodes_attrs_same": "8/8 surviving",
+    "nodes_missing": [],
+    "nodes_new": [],
+    "edges_attrs_same": "0/3 surviving",
+    "edges_missing": [],
+    "edges_new": [],
+    "name_after": null
+   },
+   "export": {
+    "api": "hnx.to_hif(H, filename=..., network_type='directed')",
+    "ok": true,
+    "returned": "dict",
+    "error": null,
+    "warnings": [
+     "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/ops/H.collapse_edges_after_adding_f1-copy_same_members_differen (hif.py:110)"
+    ],
+    "file_written": "out/hnx/ops/H.collapse_edges_after_adding_f1-copy_same_members_different_roles.out.hif.json",
+    "strict_json": true,
+    "schema_errors (jsonschema)": []
+   },
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "9/9",
+    "direction_records_kept": "9/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "9/9",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 9,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:dose:500mg-bid": "added",
+      "str:pop:adults": "added",
+      "str:drug:insulin": "added",
+      "str:effect:hypoglycemia": "added",
+      "str:org:ADA": "added",
+      "str:doc:guideline-2024": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {
+      "str:f1": "altered",
+      "str:f2": "altered",
+      "str:f3": "altered"
+     },
+     "weight_not_preserved": {
+      "str:f1": "altered"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "H.rename(nodes={'drug:metformin': 'drug:MET'})",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "returned": "Hypergraph",
+   "compare": {
+    "cells_compared": 7,
+    "role_same": 7,
+    "direction_same": 7,
+    "cells_lost": [
+     "str:f1 | str:drug:metformin",
+     "str:f2 | str:drug:metformin"
+    ],
+    "cells_new": [
+     "str:f1 | str:drug:MET",
+     "str:f2 | str:drug:MET"
+    ],
+    "role_changed": {},
+    "direction_changed": {},
+    "cells_new_detail": {
+     "str:f1 | str:drug:MET": {
+      "role": "treatment",
+      "direction": "tail",
+      "weight": 1
+     },
+     "str:f2 | str:drug:MET": {
+      "role": "agent",
+      "direction": "tail",
+      "weight": 1
+     }
+    },
+    "nodes_attrs_same": "7/7 surviving",
+    "nodes_missing": [
+     "str:drug:metformin"
+    ],
+    "nodes_new": [
+     "str:drug:MET"
+    ],
+    "edges_attrs_same": "3/3 surviving",
+    "edges_missing": [],
+    "edges_new": [],
+    "name_after": null
+   },
+   "export": {
+    "api": "hnx.to_hif(H, filename=..., network_type='directed')",
+    "ok": true,
+    "returned": "dict",
+    "error": null,
+    "warnings": [
+     "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/ops/H.rename_nodes_drug_metformin_drug_MET.out.hif.json' mode=' (hif.py:110)"
+    ],
+    "file_written": "out/hnx/ops/H.rename_nodes_drug_metformin_drug_MET.out.hif.json",
+    "strict_json": true,
+    "schema_errors (jsonschema)": []
+   },
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "7/9",
+    "direction_records_kept": "7/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "7/9",
+    "pairs_lost": 2,
+    "pairs_new": 2,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 7,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [
+      "str:drug:metformin"
+     ],
+     "attrs_not_preserved": {
+      "str:drug:metformin": "lost"
+     },
+     "weight_not_preserved": {
+      "str:disease:T2DM": "added",
+      "str:dose:500mg-bid": "added",
+      "str:pop:adults": "added",
+      "str:drug:insulin": "added",
+      "str:effect:hypoglycemia": "added",
+      "str:org:ADA": "added",
+      "str:doc:guideline-2024": "added"
+     },
+     "new_out": [
+      "str:drug:MET"
+     ]
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "H.sum(H2) where H2 has (f1, metformin) with another role",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "returned": "Hypergraph",
+   "compare": {
+    "cells_compared": 9,
+    "role_same": 9,
+    "direction_same": 9,
+    "cells_lost": [],
+    "cells_new": [
+     "str:f9 | str:drug:metformin"
+    ],
+    "role_changed": {},
+    "direction_changed": {},
+    "cells_new_detail": {
+     "str:f9 | str:drug:metformin": {
+      "role": "agent",
+      "direction": "tail",
+      "weight": 1
+     }
+    },
+    "nodes_attrs_same": "8/8 surviving",
+    "nodes_missing": [],
+    "nodes_new": [],
+    "edges_attrs_same": "3/3 surviving",
+    "edges_missing": [],
+    "edges_new": [
+     "str:f9"
+    ],
+    "name_after": null
+   },
+   "export": {
+    "api": "hnx.to_hif(H, filename=..., network_type='directed')",
+    "ok": true,
+    "returned": "dict",
+    "error": null,
+    "warnings": [
+     "FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To  (hif.py:39)",
+     "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/ops/H.sum_H2_where_H2_has_f1_metformin_with_another_role.out.hi (hif.py:110)"
+    ],
+    "file_written": "out/hnx/ops/H.sum_H2_where_H2_has_f1_metformin_with_another_role.out.hif.json",
+    "strict_json": true,
+    "schema_errors (jsonschema)": []
+   },
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 10",
+    "role_records_kept": "9/9",
+    "direction_records_kept": "9/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "9/9",
+    "pairs_lost": 0,
+    "pairs_new": 1,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 9,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:dose:500mg-bid": "added",
+      "str:pop:adults": "added",
+      "str:drug:insulin": "added",
+      "str:effect:hypoglycemia": "added",
+      "str:org:ADA": "added",
+      "str:doc:guideline-2024": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": [
+      "str:f9"
+     ]
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "H.incidences[(e, n)].role = 'primary-treatment'",
+   "ok": true,
+   "error": null,
+   "warnings": [],
+   "returned": "Hypergraph",
+   "compare": {
+    "cells_compared": 9,
+    "role_same": 8,
+    "direction_same": 9,
+    "cells_lost": [],
+    "cells_new": [],
+    "role_changed": {
+     "str:f1 | str:drug:metformin": {
+      "before": "treatment",
+      "after": "primary-treatment"
+     }
+    },
+    "direction_changed": {},
+    "cells_new_detail": {},
+    "nodes_attrs_same": "8/8 surviving",
+    "nodes_missing": [],
+    "nodes_new": [],
+    "edges_attrs_same": "3/3 surviving",
+    "edges_missing": [],
+    "edges_new": [],
+    "name_after": null
+   },
+   "export": {
+    "api": "hnx.to_hif(H, filename=..., network_type='directed')",
+    "ok": true,
+    "returned": "dict",
+    "error": null,
+    "warnings": [
+     "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/ops/H.incidences_e_n_.role_primary-treatment.out.hif.json' mode (hif.py:110)"
+    ],
+    "file_written": "out/hnx/ops/H.incidences_e_n_.role_primary-treatment.out.hif.json",
+    "strict_json": true,
+    "schema_errors (jsonschema)": []
+   },
+   "export_summary_vs_input": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "8/9",
+    "direction_records_kept": "9/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "8/9",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 9,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "added",
+      "str:disease:T2DM": "added",
+      "str:dose:500mg-bid": "added",
+      "str:pop:adults": "added",
+      "str:drug:insulin": "added",
+      "str:effect:hypoglycemia": "added",
+      "str:org:ADA": "added",
+      "str:doc:guideline-2024": "added"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [
+     "default_attrs"
+    ],
+    "id_type_changes": 0
+   }
+  },
+  {
+   "op": "from_hif(c05): which of two records for (t1, drug:metformin) is kept",
+   "cells": {
+    "str:t1 | str:drug:metformin": {
+     "role": "intervention",
+     "direction": "tail",
+     "weight": 0.7
+    },
+    "str:t1 | str:drug:insulin": {
+     "role": "comparator",
+     "direction": "tail",
+     "weight": 1.0
+    },
+    "str:t1 | str:outcome:HbA1c": {
+     "role": "outcome",
+     "direction": "head",
+     "weight": 1.0
+    }
+   }
+  },
+  {
+   "op": "hnx.Hypergraph(df with a duplicate (edge, node) row, aggregate_by='first')",
+   "error": null,
+   "cells": {
+    "str:t1 | str:m": {
+     "role": "intervention",
+     "direction": "<absent>",
+     "weight": 0.7
+    },
+    "str:t1 | str:i": {
+     "role": "comparator",
+     "direction": "<absent>",
+     "weight": 1.0
+    }
+   }
+  },
+  {
+   "op": "hnx.Hypergraph(df with a duplicate (edge, node) row, aggregate_by={'weight': 'sum'})",
+   "error": null,
+   "cells": {
+    "str:t1 | str:m": {
+     "role": "intervention",
+     "direction": "<absent>",
+     "weight": 0.7
+    },
+    "str:t1 | str:i": {
+     "role": "comparator",
+     "direction": "<absent>",
+     "weight": 1.0
+    }
+   }
+  }
+ ]
+}

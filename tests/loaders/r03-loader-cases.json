@@ -1,0 +1,117 @@
+{
+ "format": "khg-r03-cases/1.0.0",
+ "rows": [
+  {
+   "case": "c00-kb-sample",
+   "outcome": "exact"
+  },
+  {
+   "case": "c01-sample-undirected",
+   "outcome": "exact"
+  },
+  {
+   "case": "c02-undirected-with-direction",
+   "outcome": "exact"
+  },
+  {
+   "case": "c03-no-network-type",
+   "outcome": "exact"
+  },
+  {
+   "case": "c04-asc",
+   "outcome": "refused KHG-P007"
+  },
+  {
+   "case": "c05-two-roles-same-direction",
+   "outcome": "exact"
+  },
+  {
+   "case": "c06-two-roles-different-direction",
+   "outcome": "exact"
+  },
+  {
+   "case": "c07-two-roles-undirected",
+   "outcome": "exact"
+  },
+  {
+   "case": "c08-isolated-nodes",
+   "outcome": "exact"
+  },
+  {
+   "case": "c09-empty-edges",
+   "outcome": "exact"
+  },
+  {
+   "case": "c10-nested-fact",
+   "outcome": "exact"
+  },
+  {
+   "case": "c11-integer-ids",
+   "outcome": "exact"
+  },
+  {
+   "case": "c12-mixed-int-str-ids",
+   "outcome": "exact"
+  },
+  {
+   "case": "c13-unicode-ids",
+   "outcome": "exact"
+  },
+  {
+   "case": "c14-directed-missing-direction",
+   "outcome": "refused KHG-P010"
+  },
+  {
+   "case": "c15-incidence-attrs-absent-or-empty",
+   "outcome": "exact"
+  },
+  {
+   "case": "c16-attr-value-shapes",
+   "outcome": "refused KHG-J006 (strict parse)"
+  },
+  {
+   "case": "c17-weights-everywhere",
+   "outcome": "exact"
+  },
+  {
+   "case": "c18-weight-key-inside-attrs",
+   "outcome": "exact"
+  },
+  {
+   "case": "c19-duplicate-node-edge-records",
+   "outcome": "refused KHG-D001"
+  },
+  {
+   "case": "c20-hnx-reserved-metadata-keys",
+   "outcome": "exact"
+  },
+  {
+   "case": "c21-attr-key-equals-python-parameter",
+   "outcome": "exact"
+  },
+  {
+   "case": "c21-node-attr-key-equals-python-parameter",
+   "outcome": "exact"
+  },
+  {
+   "case": "c22-nan-in-attrs",
+   "outcome": "refused KHG-J004 (strict parse)"
+  },
+  {
+   "case": "c23-big-int-ids",
+   "outcome": "refused KHG-J006 (strict parse)"
+  },
+  {
+   "case": "c24-empty-incidences",
+   "outcome": "exact"
+  },
+  {
+   "case": "c25-plain-no-attrs",
+   "outcome": "exact"
+  },
+  {
+   "case": "c26-edge-attr-key-equals-python-parameter",
+   "outcome": "exact"
+  }
+ ]
+}

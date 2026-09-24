@@ -1,0 +1,79 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-EXP-005",
+ "title": "a history export holds every version and reloads to the same store",
+ "requires": [
+  "atomic_writes",
+  "history_export",
+  "literal_values",
+  "transaction_time",
+  "valid_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities"
+   ],
+   "at": "2026-10-01T00:00:01Z"
+  },
+  {
+   "put": [
+    {
+     "@": "f:king-13",
+     "drop_bindings": [
+      "b4"
+     ]
+    }
+   ],
+   "at": "2026-10-01T00:00:02Z"
+  },
+  {
+   "apply": {
+    "op": "end_validity",
+    "target": "f:king-13",
+    "end": {
+     "literal": {
+      "datatype": "time",
+      "time": "+1643-05-14T00:00:00Z",
+      "precision": 11
+     }
+    },
+    "evidence": [
+     {
+      "id": "e9",
+      "type": "curated",
+      "mode": "manual",
+      "source": {
+       "doc_id": "doc:scenario"
+      }
+     }
+    ]
+   },
+   "at": "2026-10-01T00:00:03Z"
+  }
+ ],
+ "when": [
+  {
+   "op": "export",
+   "args": {
+    "format": "khg-jsonl",
+    "content": "history"
+   },
+   "then": {
+    "select": "versions.f:king-13",
+    "equals": [
+     1,
+     2
+    ],
+    "reload_equal": true
+   }
+  }
+ ],
+ "precedent": [
+  "B S063",
+  "A C2-24",
+  "C S-EXP-003"
+ ]
+}

@@ -1,0 +1,29 @@
+{
+ "network-type": "undirected",
+ "metadata": {
+  "role-convention": "1.0.0"
+ },
+ "incidences": [
+  {
+   "edge": "sale-2",
+   "node": "alice",
+   "attrs": {
+    "role": "buyer"
+   }
+  },
+  {
+   "edge": "sale-2",
+   "node": "alice",
+   "attrs": {
+    "role": "payer"
+   }
+  },
+  {
+   "edge": "sale-2",
+   "node": "bob",
+   "attrs": {
+    "role": "seller"
+   }
+  }
+ ]
+}

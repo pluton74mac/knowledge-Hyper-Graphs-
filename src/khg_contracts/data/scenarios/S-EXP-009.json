@@ -1,0 +1,41 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-EXP-009",
+ "title": "a store filled only by put exports its own document id",
+ "requires": [],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    "@f:reg-1"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "export",
+   "args": {
+    "format": "khg-json"
+   },
+   "then": {
+    "select": "header.document_id",
+    "equals": "store:{store_id}"
+   }
+  },
+  {
+   "op": "export",
+   "args": {
+    "format": "khg-json"
+   },
+   "then": {
+    "select": "header.complete",
+    "equals": true
+   }
+  }
+ ],
+ "precedent": [
+  "critique STORE-HEADER"
+ ]
+}

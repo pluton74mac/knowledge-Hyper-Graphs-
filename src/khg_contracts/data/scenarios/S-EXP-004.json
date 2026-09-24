@@ -1,0 +1,74 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-EXP-004",
+ "title": "export as_at reconstructs an earlier snapshot",
+ "requires": [
+  "atomic_writes",
+  "transaction_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities"
+   ],
+   "at": "2026-10-01T00:00:01Z"
+  },
+  {
+   "put": [
+    {
+     "@": "f:born-skłodowska-kraków",
+     "set": {
+      "status": "asserted"
+     },
+     "drop": [
+      "status_ref"
+     ]
+    }
+   ],
+   "at": "2026-10-01T00:00:02Z"
+  },
+  {
+   "apply": {
+    "op": "supersede",
+    "id": "m:sup-1",
+    "superseded": [
+     "f:born-skłodowska-kraków"
+    ],
+    "records": [
+     "@f:born-skłodowska-warszawa"
+    ],
+    "reason": "correction",
+    "note": "birthplace is Warsaw, per the curated biography",
+    "evidence": [
+     {
+      "id": "e9",
+      "type": "curated",
+      "mode": "manual",
+      "source": {
+       "doc_id": "doc:scenario"
+      }
+     }
+    ]
+   },
+   "at": "2026-10-01T00:00:03Z"
+  }
+ ],
+ "when": [
+  {
+   "op": "export",
+   "args": {
+    "format": "khg-json",
+    "as_at": "2026-10-01T00:00:02Z"
+   },
+   "then": {
+    "select": "record.f:born-skłodowska-kraków.status",
+    "equals": "asserted"
+   }
+  }
+ ],
+ "precedent": [
+  "B S062"
+ ]
+}

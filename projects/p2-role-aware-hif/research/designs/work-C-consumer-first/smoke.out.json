@@ -1,0 +1,40 @@
+{
+ "lint_1": [
+  "pass",
+  []
+ ],
+ "accept_1": "khg:f01-treats@1",
+ "lint_2": [
+  "pass",
+  [
+   "L-DUPLICATE"
+  ]
+ ],
+ "merge_2": "khg:f01-treats@2",
+ "lint_3": [
+  "reject",
+  [
+   "R-DERIVED",
+   "S-ROLE",
+   "S-ROLE-MIN"
+  ]
+ ],
+ "states": {
+  "q:p2-smoke.000001": "accepted",
+  "q:p2-smoke.000002": "merged",
+  "q:p2-smoke.000003": "pending",
+  "q:p2-smoke.000004": "rejected"
+ },
+ "store_has_bad_candidate": false,
+ "f01_versions": 2,
+ "f01_evidence_eids": [
+  "ev1",
+  "ev2",
+  "ev3"
+ ],
+ "f01_content_equals_fixture_v1": true,
+ "export_lines": 27,
+ "hif_valid": true,
+ "replay_reproduces_store": true,
+ "queue_lines_valid": true
+}

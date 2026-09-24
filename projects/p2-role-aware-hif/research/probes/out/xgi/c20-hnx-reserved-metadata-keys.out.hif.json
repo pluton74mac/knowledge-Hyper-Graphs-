@@ -1,0 +1,53 @@
+{
+  "metadata": {
+    "title": "reserved keys",
+    "name": "kb-sample",
+    "default_attrs": {
+      "incidences": {
+        "weight": 1,
+        "attrs": {},
+        "role": "participant"
+      }
+    }
+  },
+  "network-type": "directed",
+  "nodes": [
+    {
+      "attrs": {
+        "type": "Drug"
+      },
+      "node": "drug:metformin"
+    },
+    {
+      "attrs": {
+        "type": "Disease"
+      },
+      "node": "disease:T2DM"
+    }
+  ],
+  "edges": [
+    {
+      "attrs": {
+        "relation": "treats"
+      },
+      "edge": "f1"
+    }
+  ],
+  "incidences": [
+    {
+      "edge": "f1",
+      "node": "drug:metformin",
+      "direction": "tail"
+    },
+    {
+      "edge": "f1",
+      "node": "pop:adults",
+      "direction": "tail"
+    },
+    {
+      "edge": "f1",
+      "node": "disease:T2DM",
+      "direction": "head"
+    }
+  ]
+}

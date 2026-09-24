@@ -1,0 +1,49 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-PUT-010",
+ "title": "a value naming a redirected entity is refused (redirects are rewritten in 1.2)",
+ "requires": [
+  "literal_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    {
+     "kind": "entity",
+     "id": "ex:Louis-XIV-dup",
+     "types": [
+      "Person"
+     ],
+     "label": "Louis XIV",
+     "redirect_to": "ex:LouisXIV"
+    }
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:king-14",
+      "set_binding": {
+       "b1": {
+        "entity": "ex:Louis-XIV-dup"
+       }
+      }
+     }
+    ]
+   },
+   "then": {
+    "error": "KHG-D020"
+   }
+  }
+ ],
+ "precedent": [
+  "critique SEM-16 (R01 I10)"
+ ]
+}

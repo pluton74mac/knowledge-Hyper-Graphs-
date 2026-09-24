@@ -1,0 +1,12 @@
+generated schema vs khg-schema/1.0.0: OK
+migrated C1 vs khg-record/1.0.0: OK
+semantic findings: none
+HIF vs vendored schema: OK | vs profile: OK | network-type: directed
+chain C1->HIF->XGI->HIF->HNX->HIF->C1 canonical equality: True
+roles kept: compare
+MIGRATE-W01 treats: edges.attrs.valid-from mapped to a start_time binding (time slot); direction 'tail' chosen by the migration, following the sample's own convention
+MIGRATE-W02 f1: HIF weight 0.95 kept as extensions.hif:weight; not read as confidence (no scale is stated)
+MIGRATE-W02 f2: HIF weight 0.8 kept as extensions.hif:weight; not read as confidence (no scale is stated)
+MIGRATE-W02 f3: HIF weight 1.0 kept as extensions.hif:weight; not read as confidence (no scale is stated)
+MIGRATE-I01 metadata.conventions and metadata.schema (moving 'main' URL) replaced by the khg-hif/1.0.0 declaration block
+MIGRATE-I02 edges.attrs.arity dropped: arity is derived; stored values checked against the derived ones

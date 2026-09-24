@@ -1,0 +1,600 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "tag:khg-contracts,2026:schema/khg-hif/1.0.0",
+  "title": "KHG profile of HIF (khg-hif/1.0.0): the vendored HIF v0.1.0 schema plus constraints on attrs and metadata only",
+  "allOf": [
+    {
+      "$ref": "https://raw.githubusercontent.com/pszufe/HIF_validators/main/schemas/hif_schema_v0.1.0.json"
+    },
+    {
+      "required": [
+        "network-type",
+        "metadata",
+        "nodes",
+        "edges",
+        "incidences"
+      ],
+      "properties": {
+        "network-type": {
+          "enum": [
+            "directed",
+            "undirected"
+          ],
+          "x-khg-code": "KHG-P007"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
+        },
+        "nodes": {
+          "items": {
+            "$ref": "#/definitions/node"
+          }
+        },
+        "edges": {
+          "items": {
+            "$ref": "#/definitions/edge"
+          }
+        },
+        "incidences": {
+          "items": {
+            "$ref": "#/definitions/incidence"
+          }
+        }
+      },
+      "if": {
+        "properties": {
+          "network-type": {
+            "const": "directed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "incidences": {
+            "items": {
+              "required": [
+                "direction"
+              ],
+              "properties": {
+                "attrs": {
+                  "not": {
+                    "required": [
+                      "khg:direction"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-khg-code": "KHG-P010"
+      },
+      "else": {
+        "properties": {
+          "incidences": {
+            "items": {
+              "not": {
+                "required": [
+                  "direction"
+                ]
+              }
+            }
+          }
+        },
+        "x-khg-code": "KHG-P011"
+      },
+      "x-khg-code": {
+        "required": "KHG-P001"
+      }
+    }
+  ],
+  "definitions": {
+    "id": {
+      "type": "string",
+      "pattern": "^[^\\s\\x00-\\x1f\\x7f]{1,512}$",
+      "not": {
+        "type": "string",
+        "pattern": "^_:"
+      },
+      "x-khg-code": {
+        "type": "KHG-P002",
+        "pattern": "KHG-P003",
+        "not": "KHG-P004"
+      }
+    },
+    "vocab_id": {
+      "type": "string",
+      "pattern": "^[^\\s\\x00-\\x1f\\x7f/]{1,256}$"
+    },
+    "metadata": {
+      "required": [
+        "hif-schema",
+        "hif-schema-sha256",
+        "hif-roles-version",
+        "khg-profile",
+        "khg-record",
+        "khg-schema",
+        "khg-schema-sha256",
+        "khg-document-id"
+      ],
+      "properties": {
+        "hif-schema": {
+          "const": "https://raw.githubusercontent.com/HIF-org/HIF-standard/b691a3d2ec32100c0229ebe1151e9afad015c356/schemas/hif_schema_v0.1.0.json"
+        },
+        "hif-schema-sha256": {
+          "const": "639466b7a10de5a734d231d72422f54a5fce4084cb300869012510124c9b2196"
+        },
+        "hif-schema-doi": {
+          "const": "10.5281/zenodo.17257719"
+        },
+        "hif-roles-version": {
+          "type": "string",
+          "pattern": "^1\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+        },
+        "hif-roles-vocabulary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "khg-profile": {
+          "const": "khg-hif/1.0.0"
+        },
+        "khg-record": {
+          "const": "khg-record/1.0.0"
+        },
+        "khg-schema": {
+          "type": "string",
+          "pattern": "^[^\\s/]{1,256}/(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+        },
+        "khg-schema-sha256": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "khg-schema-document": {
+          "type": "object"
+        },
+        "khg-document-id": {
+          "$ref": "#/definitions/id"
+        },
+        "khg-snapshot": {
+          "enum": [
+            "current"
+          ]
+        },
+        "khg-complete": {
+          "type": "boolean"
+        },
+        "khg-created-at": {
+          "type": "string"
+        }
+      },
+      "propertyNames": {
+        "allOf": [
+          {
+            "not": {
+              "const": "default_attrs"
+            }
+          },
+          {
+            "anyOf": [
+              {
+                "not": {
+                  "pattern": "^(khg|hif)-"
+                }
+              },
+              {
+                "enum": [
+                  "hif-schema",
+                  "hif-schema-sha256",
+                  "hif-schema-doi",
+                  "hif-roles-version",
+                  "hif-roles-vocabulary",
+                  "khg-profile",
+                  "khg-record",
+                  "khg-schema",
+                  "khg-schema-sha256",
+                  "khg-schema-document",
+                  "khg-document-id",
+                  "khg-snapshot",
+                  "khg-complete",
+                  "khg-created-at"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "x-khg-code": {
+        "required": "KHG-P001",
+        "propertyNames": "KHG-P008",
+        "properties": "KHG-P009"
+      }
+    },
+    "node": {
+      "required": [
+        "node",
+        "attrs"
+      ],
+      "properties": {
+        "node": {
+          "type": "string",
+          "pattern": "^[^\\s\\x00-\\x1f\\x7f]{1,512}$",
+          "x-khg-code": {
+            "type": "KHG-P002",
+            "pattern": "KHG-P003"
+          }
+        },
+        "attrs": {
+          "required": [
+            "khg:kind"
+          ],
+          "properties": {
+            "khg:kind": {
+              "enum": [
+                "entity",
+                "literal",
+                "somevalue",
+                "novalue",
+                "unbound",
+                "fact-ref"
+              ],
+              "x-khg-code": "KHG-P013"
+            }
+          },
+          "propertyNames": {
+            "anyOf": [
+              {
+                "not": {
+                  "pattern": "^khg:"
+                }
+              },
+              {
+                "enum": [
+                  "khg:kind",
+                  "khg:types",
+                  "khg:label",
+                  "khg:aliases",
+                  "khg:redirect-to",
+                  "khg:extensions",
+                  "khg:literal",
+                  "khg:unbound",
+                  "khg:ref"
+                ]
+              }
+            ]
+          },
+          "x-khg-code": {
+            "required": "KHG-P013",
+            "propertyNames": "KHG-P014"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "attrs": {
+                "properties": {
+                  "khg:kind": {
+                    "const": "entity"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "node": {
+                "$ref": "#/definitions/id"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "node": {
+                "pattern": "^_:(lit|sv|nv|var|ref):[^\\s]+$",
+                "x-khg-code": "KHG-P004"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "attrs": {
+                "properties": {
+                  "khg:kind": {
+                    "const": "literal"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "node": {
+                "pattern": "^_:lit:[0-9a-f]{32}$",
+                "x-khg-code": "KHG-P004"
+              },
+              "attrs": {
+                "required": [
+                  "khg:literal"
+                ],
+                "x-khg-code": "KHG-P013"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "attrs": {
+                "properties": {
+                  "khg:kind": {
+                    "const": "somevalue"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "node": {
+                "pattern": "^_:sv:[0-9a-f]{32}$",
+                "x-khg-code": "KHG-P004"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "attrs": {
+                "properties": {
+                  "khg:kind": {
+                    "const": "novalue"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "node": {
+                "pattern": "^_:nv:[0-9a-f]{32}$",
+                "x-khg-code": "KHG-P004"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "attrs": {
+                "properties": {
+                  "khg:kind": {
+                    "const": "unbound"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "node": {
+                "pattern": "^_:var:[0-9a-f]{32}$",
+                "x-khg-code": "KHG-P004"
+              },
+              "attrs": {
+                "required": [
+                  "khg:unbound"
+                ],
+                "x-khg-code": "KHG-P013"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "attrs": {
+                "properties": {
+                  "khg:kind": {
+                    "const": "fact-ref"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "node": {
+                "pattern": "^_:ref:",
+                "x-khg-code": "KHG-P004"
+              },
+              "attrs": {
+                "required": [
+                  "khg:ref"
+                ],
+                "x-khg-code": "KHG-P013"
+              }
+            }
+          }
+        }
+      ],
+      "x-khg-code": {
+        "required": "KHG-P013"
+      }
+    },
+    "edge": {
+      "required": [
+        "edge",
+        "attrs"
+      ],
+      "properties": {
+        "edge": {
+          "$ref": "#/definitions/id"
+        },
+        "attrs": {
+          "required": [
+            "khg:relation",
+            "khg:status"
+          ],
+          "properties": {
+            "khg:kind": {
+              "enum": [
+                "fact",
+                "rule",
+                "goal",
+                "meta"
+              ],
+              "x-khg-code": "KHG-P013"
+            },
+            "khg:relation": {
+              "$ref": "#/definitions/vocab_id"
+            },
+            "khg:status": {
+              "enum": [
+                "asserted",
+                "disputed",
+                "superseded",
+                "retracted",
+                "quoted",
+                "open",
+                "satisfied",
+                "abandoned"
+              ]
+            },
+            "khg:evidence": {
+              "type": "array"
+            }
+          },
+          "propertyNames": {
+            "anyOf": [
+              {
+                "not": {
+                  "pattern": "^khg:"
+                }
+              },
+              {
+                "enum": [
+                  "khg:kind",
+                  "khg:relation",
+                  "khg:status",
+                  "khg:status-ref",
+                  "khg:rank",
+                  "khg:rank-reason",
+                  "khg:visibility",
+                  "khg:version",
+                  "khg:recorded-at",
+                  "khg:typed-under",
+                  "khg:evidence",
+                  "khg:confidence",
+                  "khg:text",
+                  "khg:goal",
+                  "khg:meta",
+                  "khg:extensions"
+                ]
+              }
+            ]
+          },
+          "allOf": [
+            {
+              "required": [
+                "khg:kind"
+              ],
+              "x-khg-code": "KHG-P013"
+            }
+          ],
+          "x-khg-code": {
+            "required": "KHG-P012",
+            "properties": "KHG-P012",
+            "propertyNames": "KHG-P014"
+          }
+        }
+      },
+      "x-khg-code": {
+        "required": "KHG-P012"
+      }
+    },
+    "incidence": {
+      "required": [
+        "edge",
+        "node",
+        "attrs"
+      ],
+      "properties": {
+        "edge": {
+          "$ref": "#/definitions/id"
+        },
+        "node": {
+          "type": "string",
+          "pattern": "^[^\\s\\x00-\\x1f\\x7f]{1,512}$",
+          "x-khg-code": {
+            "type": "KHG-P002",
+            "pattern": "KHG-P003"
+          }
+        },
+        "attrs": {
+          "required": [
+            "role",
+            "khg:bid"
+          ],
+          "properties": {
+            "role": {
+              "$ref": "#/definitions/vocab_id",
+              "x-khg-code": "KHG-P006"
+            },
+            "role-position": {
+              "type": "integer",
+              "minimum": 1,
+              "x-khg-code": "KHG-P015"
+            },
+            "khg:bid": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.-]{1,64}$",
+              "x-khg-code": "KHG-P005"
+            },
+            "khg:direction": {
+              "enum": [
+                "tail",
+                "head"
+              ],
+              "x-khg-code": "KHG-P011"
+            }
+          },
+          "propertyNames": {
+            "allOf": [
+              {
+                "not": {
+                  "const": "roles"
+                }
+              },
+              {
+                "anyOf": [
+                  {
+                    "not": {
+                      "pattern": "^khg:"
+                    }
+                  },
+                  {
+                    "enum": [
+                      "khg:bid",
+                      "khg:direction"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "x-khg-code": {
+            "required": "KHG-P005",
+            "propertyNames": "KHG-P014"
+          }
+        }
+      },
+      "x-khg-code": {
+        "required": "KHG-P005"
+      }
+    }
+  }
+}

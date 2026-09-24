@@ -4,7 +4,7 @@ type: survey
 status: draft
 tags: [limitations, failure-modes, critique, sparsity, arity, leakage, provenance, query-language, visualisation, cost, versioning, interoperability]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-24
 ---
 
 # Limitations and failure modes
@@ -312,6 +312,15 @@ No published mapping connects HIF to RDF-star or to a role-based n-ary model `[u
 found in the searches run here]`. Consequence: a hypergraph built for RAG cannot be loaded into XGI
 for structural analysis without a bespoke converter that discards the roles, and a hypergraph analysed
 in XGI cannot be published as linked data without a bespoke converter that invents them.
+
+*Update 2026-09-24.* This repository now has one such mapping, not yet published as a package.
+Project P2's record format maps to HIF through `role-convention` 1.0.0 (roles in
+`incidences[].attrs.role`, one incidence per role binding, a `metadata` declaration) and a profile
+for relation types, statuses and provenance. Its loaders take such files through XGI 0.10.2 and
+HyperNetX 2.4.3 and back with every role intact, which the libraries' own HIF readers do not. The
+RDF side of the gap is unchanged. See
+[../04-storage-and-formats/hif-hypergraph-interchange-format.md](../04-storage-and-formats/hif-hypergraph-interchange-format.md) §10
+and [../../projects/p2-role-aware-hif/](../../projects/p2-role-aware-hif/).
 
 **Mitigation.** Store role-based n-ary facts in a schema you control (JSON-LD with a relation-instance
 pattern round-trips to RDF), and generate HIF as a lossy *export* for network analysis rather than

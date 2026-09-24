@@ -1,0 +1,489 @@
+{
+ "case": "c25-plain-no-attrs",
+ "description": "an undirected hypergraph with no attrs, weights, nodes or edges arrays",
+ "input": "lib-cases/c25-plain-no-attrs.hif.json",
+ "lib": "hypernetx",
+ "lib_version": "2.4.3",
+ "load": {
+  "api": "hnx.from_hif(filename=path)",
+  "ok": true,
+  "returned": "Hypergraph",
+  "error": null,
+  "warnings": [
+   "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/lib-cases/c25-plain-no-attrs.hif.json' mode='r' encoding='utf-8'> (hif.py:147)"
+  ],
+  "seconds": 0.406
+ },
+ "placement": {
+  "class": "Hypergraph",
+  "H.name": null,
+  "incidence_columns (H.incidences.to_dataframe)": [
+   "weight",
+   "misc_properties"
+  ],
+  "incidence_index_names": [
+   "edges",
+   "nodes"
+  ],
+  "incidences": {
+   "str:e1 | str:a": {
+    "weight": 1,
+    "misc_properties": {}
+   },
+   "str:e1 | str:b": {
+    "weight": 1,
+    "misc_properties": {}
+   },
+   "str:e2 | str:b": {
+    "weight": 1,
+    "misc_properties": {}
+   },
+   "str:e2 | str:c": {
+    "weight": 1,
+    "misc_properties": {}
+   }
+  },
+  "cell_accessors": {
+   "str:e1 | str:a": {
+    "H.get_cell_properties(e, n)": {
+     "misc_properties": {},
+     "weight": 1
+    },
+    "H.get_cell_properties(e, n, 'role')": null
+   },
+   "str:e1 | str:b": {
+    "H.get_cell_properties(e, n)": {
+     "misc_properties": {},
+     "weight": 1
+    },
+    "H.get_cell_properties(e, n, 'role')": null
+   },
+   "str:e2 | str:b": {
+    "H.get_cell_properties(e, n)": {
+     "misc_properties": {},
+     "weight": 1
+    },
+    "H.get_cell_properties(e, n, 'role')": null
+   },
+   "str:e2 | str:c": {
+    "H.get_cell_properties(e, n)": {
+     "misc_properties": {},
+     "weight": 1
+    },
+    "H.get_cell_properties(e, n, 'role')": null
+   }
+  },
+  "node_columns": [
+   "weight",
+   "misc_properties"
+  ],
+  "nodes": {
+   "str:a": {
+    "weight": 1,
+    "misc_properties": {}
+   },
+   "str:b": {
+    "weight": 1,
+    "misc_properties": {}
+   },
+   "str:c": {
+    "weight": 1,
+    "misc_properties": {}
+   }
+  },
+  "edge_columns": [
+   "weight",
+   "misc_properties"
+  ],
+  "edges": {
+   "str:e1": {
+    "weight": 1,
+    "misc_properties": {}
+   },
+   "str:e2": {
+    "weight": 1,
+    "misc_properties": {}
+   }
+  },
+  "node_ids_in_property_store_but_not_in_H.nodes": [],
+  "edge_ids_in_property_store_but_not_in_H.edges": [],
+  "role_strings_found_at": {},
+  "metadata_string_values_found_at": {},
+  "constructor_args_kept_on_object": [
+   "aggregate_by",
+   "cell_weight_col",
+   "default_cell_weight",
+   "default_edge_weight",
+   "default_node_weight",
+   "default_weight",
+   "df",
+   "edge_col",
+   "edge_properties",
+   "edge_propertystore",
+   "edge_weight_prop_col",
+   "incidence_propertystore",
+   "incidence_store",
+   "kwargs",
+   "misc_cell_properties_col",
+   "misc_edge_properties_col",
+   "misc_node_properties_col",
+   "misc_properties_col",
+   "name",
+   "node_col",
+   "node_properties",
+   "node_propertystore",
+   "node_weight_prop_col",
+   "properties",
+   "self",
+   "setsystem",
+   "setsystem_type",
+   "type_dict",
+   "weight_prop_col"
+  ]
+ },
+ "field_locations": {
+  "incidence.attrs (role)": "n/a",
+  "incidence.direction": "n/a",
+  "incidence.weight": "cell property column 'weight' (default 1 when absent)",
+  "node/edge attrs": "misc_properties column of H.nodes / H.edges property stores",
+  "network-type": "not read (hif.py from_hif never looks at it)",
+  "metadata": "n/a"
+ },
+ "export": {
+  "api": "hnx.to_hif(H, filename=..., network_type='undirected')",
+  "ok": true,
+  "returned": "dict",
+  "error": null,
+  "warnings": [
+   "FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To  (hif.py:39)",
+   "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/c25-plain-no-attrs.out.hif.json' mode='w' encoding='utf-8'> (hif.py:110)"
+  ],
+  "file_written": "out/hnx/c25-plain-no-attrs.out.hif.json",
+  "strict_json": true,
+  "schema_errors (jsonschema)": []
+ },
+ "diff": {
+  "top": {
+   "network-type": {
+    "in": "undirected",
+    "out": "undirected",
+    "status": "preserved"
+   },
+   "metadata": {
+    "keys_lost": [],
+    "keys_added": [
+     "default_attrs"
+    ],
+    "keys_changed": [],
+    "status": "altered"
+   },
+   "other_top_level_keys_out": []
+  },
+  "incidences": {
+   "str:e1 | str:a": {
+    "edge": "str:e1",
+    "node": "str:a",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "preserved",
+    "direction": "preserved",
+    "weight": "added",
+    "attrs": "preserved",
+    "status": "present",
+    "roles_in": [
+     "<absent>"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ]
+   },
+   "str:e1 | str:b": {
+    "edge": "str:e1",
+    "node": "str:b",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "preserved",
+    "direction": "preserved",
+    "weight": "added",
+    "attrs": "preserved",
+    "status": "present",
+    "roles_in": [
+     "<absent>"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ]
+   },
+   "str:e2 | str:b": {
+    "edge": "str:e2",
+    "node": "str:b",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "preserved",
+    "direction": "preserved",
+    "weight": "added",
+    "attrs": "preserved",
+    "status": "present",
+    "roles_in": [
+     "<absent>"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ]
+   },
+   "str:e2 | str:c": {
+    "edge": "str:e2",
+    "node": "str:c",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "preserved",
+    "direction": "preserved",
+    "weight": "added",
+    "attrs": "preserved",
+    "status": "present",
+    "roles_in": [
+     "<absent>"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     1
+    ]
+   }
+  },
+  "nodes": {
+   "str:a": {
+    "declared_in": 0,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "added",
+    "weights_in": [],
+    "weights_out": [
+     1
+    ]
+   },
+   "str:b": {
+    "declared_in": 0,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "added",
+    "weights_in": [],
+    "weights_out": [
+     1
+    ]
+   },
+   "str:c": {
+    "declared_in": 0,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "added",
+    "weights_in": [],
+    "weights_out": [
+     1
+    ]
+   }
+  },
+  "edges": {
+   "str:e1": {
+    "declared_in": 0,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "added",
+    "weights_in": [],
+    "weights_out": [
+     1
+    ]
+   },
+   "str:e2": {
+    "declared_in": 0,
+    "declared_out": 1,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "added",
+    "weights_in": [],
+    "weights_out": [
+     1
+    ]
+   }
+  },
+  "id_type_changes": [],
+  "summary": {
+   "incidence_records": "4 -> 4",
+   "role_records_kept": "0/0",
+   "direction_records_kept": "0/0",
+   "incidence_weight_records_kept": "0/0",
+   "incidence_attrs_records_kept": "0/0",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 4,
+   "nodes": {
+    "declared_in": 0,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {
+     "str:a": "added",
+     "str:b": "added",
+     "str:c": "added"
+    },
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 0,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {
+     "str:e1": "added",
+     "str:e2": "added"
+    },
+    "new_out": []
+   },
+   "network_type": "preserved (undirected -> undirected)",
+   "metadata": "altered",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [
+    "default_attrs"
+   ],
+   "id_type_changes": 0
+  }
+ },
+ "gen2": {
+  "load_error": null,
+  "load_returned": "Hypergraph",
+  "export": {
+   "api": "hnx.to_hif(H, filename=..., network_type='undirected')",
+   "ok": true,
+   "returned": "dict",
+   "error": null,
+   "warnings": [
+    "ResourceWarning: unclosed file <_io.TextIOWrapper name='<repo>/projects/p2-role-aware-hif/research/probes/out/hnx/c25-plain-no-attrs.out2.hif.json' mode='w' encoding='utf-8'> (hif.py:110)"
+   ],
+   "file_written": "out/hnx/c25-plain-no-attrs.out2.hif.json",
+   "strict_json": true,
+   "schema_errors (jsonschema)": []
+  },
+  "diff_gen1_gen2_summary": {
+   "incidence_records": "4 -> 4",
+   "role_records_kept": "0/0",
+   "direction_records_kept": "0/0",
+   "incidence_weight_records_kept": "4/4",
+   "incidence_attrs_records_kept": "0/0",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 0,
+   "nodes": {
+    "declared_in": 3,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 2,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "network_type": "preserved (undirected -> undirected)",
+   "metadata": "preserved",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [],
+   "id_type_changes": 0
+  },
+  "diff_input_gen2_summary": {
+   "incidence_records": "4 -> 4",
+   "role_records_kept": "0/0",
+   "direction_records_kept": "0/0",
+   "incidence_weight_records_kept": "0/0",
+   "incidence_attrs_records_kept": "0/0",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 4,
+   "nodes": {
+    "declared_in": 0,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {
+     "str:a": "added",
+     "str:b": "added",
+     "str:c": "added"
+    },
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 0,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {
+     "str:e1": "added",
+     "str:e2": "added"
+    },
+    "new_out": []
+   },
+   "network_type": "preserved (undirected -> undirected)",
+   "metadata": "altered",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [
+    "default_attrs"
+   ],
+   "id_type_changes": 0
+  },
+  "gen2_incidence_columns": [
+   "weight",
+   "misc_properties"
+  ]
+ }
+}

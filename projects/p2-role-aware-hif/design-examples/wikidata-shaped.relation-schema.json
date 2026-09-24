@@ -1,0 +1,34 @@
+{
+ "kind": "relation-schema",
+ "format": "khg-relation-schema/1.0.0",
+ "id": "wd-shaped",
+ "version": "1.0.0",
+ "label": "Wikidata-shaped schema: global qualifier roles (P580, P582, P585, P1545) shared across relations",
+ "entity_types": [
+  {"id": "Agent"},
+  {"id": "Person", "parents": ["Agent"]},
+  {"id": "Organisation", "parents": ["Agent"]},
+  {"id": "Position"},
+  {"id": "Award"},
+  {"id": "Team"}
+ ],
+ "roles": [
+  {"id": "holder"},
+  {"id": "position"},
+  {"id": "recipient"},
+  {"id": "award"},
+  {"id": "conferrer"},
+  {"id": "member"},
+  {"id": "team"},
+  {"id": "replaces"},
+  {"id": "start_time", "mappings": {"wikidata": "P580"}},
+  {"id": "end_time", "mappings": {"wikidata": "P582"}},
+  {"id": "point_in_time", "mappings": {"wikidata": "P585"}},
+  {"id": "series_ordinal", "mappings": {"wikidata": "P1545"}}
+ ],
+ "relations": [
+  {"id": "position_held", "mappings": {"wikidata": "P39"}, "time": {"model": "interval", "start": "start_time", "end": "end_time"}, "roles": [{"role": "holder", "slot": "core", "fillers": [{"entity": ["Person"]}], "min": 1, "max": 1}, {"role": "position", "slot": "core", "fillers": [{"entity": ["Position"]}], "min": 1, "max": 1}, {"role": "start_time", "slot": "time", "fillers": [{"literal": "time"}], "min": 0, "max": 1}, {"role": "end_time", "slot": "time", "fillers": [{"literal": "time"}], "min": 0, "max": 1}, {"role": "replaces", "slot": "qualifier", "fillers": [{"entity": ["Person"]}], "min": 0, "max": null}, {"role": "series_ordinal", "slot": "qualifier", "fillers": [{"literal": "string"}], "min": 0, "max": 1}]},
+  {"id": "award_received", "mappings": {"wikidata": "P166"}, "time": {"model": "invariant"}, "roles": [{"role": "recipient", "slot": "core", "fillers": [{"entity": ["Agent"]}], "min": 1, "max": 1}, {"role": "award", "slot": "core", "fillers": [{"entity": ["Award"]}], "min": 1, "max": 1}, {"role": "point_in_time", "slot": "qualifier", "fillers": [{"literal": "time"}], "min": 0, "max": 1}, {"role": "conferrer", "slot": "qualifier", "fillers": [{"entity": ["Organisation"]}], "min": 0, "max": 1}, {"role": "series_ordinal", "slot": "qualifier", "fillers": [{"literal": "string"}], "min": 0, "max": 1}]},
+  {"id": "member_of_sports_team", "mappings": {"wikidata": "P54"}, "time": {"model": "interval", "start": "start_time", "end": "end_time"}, "roles": [{"role": "member", "slot": "core", "fillers": [{"entity": ["Person"]}], "min": 1, "max": 1}, {"role": "team", "slot": "core", "fillers": [{"entity": ["Team"]}], "min": 1, "max": 1}, {"role": "start_time", "slot": "time", "fillers": [{"literal": "time"}], "min": 0, "max": 1}, {"role": "end_time", "slot": "time", "fillers": [{"literal": "time"}], "min": 0, "max": 1}, {"role": "point_in_time", "slot": "qualifier", "fillers": [{"literal": "time"}], "min": 0, "max": 1}, {"role": "replaces", "slot": "qualifier", "fillers": [{"entity": ["Person"]}], "min": 0, "max": null}]}
+ ]
+}

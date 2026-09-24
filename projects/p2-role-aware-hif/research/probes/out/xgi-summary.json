@@ -1,0 +1,1169 @@
+{
+ "env": {
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "jsonschema": "4.26.0",
+  "pandas": "2.3.3",
+  "numpy": "2.4.6",
+  "fastjsonschema": "2.22.2",
+  "requests": "2.34.2",
+  "xgi": "0.10.2",
+  "preferred_encoding": "utf-8",
+  "source_sha256": {
+   "xgi/convert/hif_dict.py": "9fd3aa04e38b6e3db3ff040f5e63c8370702958794e3448fa9c0e927d5301ad3",
+   "xgi/readwrite/hif.py": "cd82a90ad217aab590b40f07aaef0f0abf83fd74d932f198af055abb3e05243c",
+   "xgi/core/hypergraph.py": "52dd3bddc0728bac9cc0e9167e45f3f686e0cfda8f36883c81917889caa46f42",
+   "xgi/core/dihypergraph.py": "54193092f8242a754dbccd3633d9110ee0ed7150fca00d546f9281a90817475f",
+   "xgi/core/globalviews.py": "ea757fb377d1a18542a253fc74676f158db8c916f5a226f5a5521884fcabc661",
+   "xgi/utils/utilities.py": "38d27a665336c9c914af21f7ca23fdf2b814efb5f22058a32ec9ae64c4af1279",
+   "xgi/convert/bipartite_edges.py": "bce270b6532e9648114775271c078527d1c0b6a784adb4cf88339f0aa4ea6593",
+   "xgi/convert/higher_order_network.py": "e6217ee1cd4111c16b75067a3548099114422422f5771e16225ef75015cadaa4"
+  }
+ },
+ "cases": {
+  "c00-sample-directed": {
+   "load": "ok",
+   "class": "DiHypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "9/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/8 role strings",
+    "incidence.direction": "DiHypergraph edge 'in' (tail) / 'out' (head) member sets",
+    "record-level weight values": "0/2 found",
+    "network-type": "class DiHypergraph",
+    "metadata": "H._net_attr: all keys"
+   },
+   "gen2_idempotent": true
+  },
+  "c01-sample-undirected": {
+   "load": "ok",
+   "class": "Hypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/8 role strings",
+    "incidence.direction": "n/a",
+    "record-level weight values": "0/2 found",
+    "network-type": "class Hypergraph",
+    "metadata": "H._net_attr: all keys"
+   },
+   "gen2_idempotent": true
+  },
+  "c02-undirected-with-direction": {
+   "load": "ok",
+   "class": "Hypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "0/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/8 role strings",
+    "incidence.direction": "dropped (Hypergraph)",
+    "record-level weight values": "0/2 found",
+    "network-type": "class Hypergraph",
+    "metadata": "H._net_attr: all keys"
+   },
+   "gen2_idempotent": true
+  },
+  "c03-no-network-type": {
+   "load": "ok",
+   "class": "Hypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "9 -> 9",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "0/9",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": []
+    },
+    "network_type": "added (<absent> -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/8 role strings",
+    "incidence.direction": "dropped (Hypergraph)",
+    "record-level weight values": "0/2 found",
+    "network-type": "class Hypergraph",
+    "metadata": "H._net_attr: all keys"
+   },
+   "gen2_idempotent": true
+  },
+  "c04-asc": {
+   "load": "ok",
+   "class": "SimplicialComplex",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "9 -> 39",
+    "role_records_kept": "0/9",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/9",
+    "pairs_lost": 0,
+    "pairs_new": 30,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 8,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "lost",
+      "str:f2": "lost",
+      "str:f3": "lost"
+     },
+     "new_out": [
+      "int:0",
+      "int:1",
+      "int:10",
+      "int:11",
+      "int:12",
+      "int:2",
+      "int:3",
+      "int:4",
+      "int:5",
+      "int:6",
+      "int:7",
+      "int:8",
+      "int:9"
+     ]
+    },
+    "network_type": "preserved (asc -> asc)",
+    "metadata": "lost",
+    "metadata_keys_lost": [
+     "conventions",
+     "created",
+     "description",
+     "kb-section",
+     "schema",
+     "title"
+    ],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/8 role strings",
+    "incidence.direction": "n/a",
+    "record-level weight values": "0/2 found",
+    "network-type": "class SimplicialComplex",
+    "metadata": "H._net_attr: missing ['conventions', 'created', 'description', 'kb-section', 'schema', 'title']"
+   },
+   "gen2_idempotent": true
+  },
+  "c05-two-roles-same-direction": {
+   "load": "ok",
+   "class": "DiHypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "4 -> 3",
+    "role_records_kept": "0/4",
+    "direction_records_kept": "3/4",
+    "incidence_weight_records_kept": "0/2",
+    "incidence_attrs_records_kept": "0/4",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 1,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/4 role strings",
+    "incidence.direction": "DiHypergraph edge 'in' (tail) / 'out' (head) member sets",
+    "record-level weight values": "0/2 found",
+    "network-type": "class DiHypergraph",
+    "metadata": "n/a"
+   },
+   "gen2_idempotent": true
+  },
+  "c06-two-roles-different-direction": {
+   "load": "ok",
+   "class": "DiHypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "3 -> 3",
+    "role_records_kept": "0/3",
+    "direction_records_kept": "3/3",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/3",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 0,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/3 role strings",
+    "incidence.direction": "DiHypergraph edge 'in' (tail) / 'out' (head) member sets",
+    "record-level weight values": "n/a",
+    "network-type": "class DiHypergraph",
+    "metadata": "n/a"
+   },
+   "gen2_idempotent": true
+  },
+  "c07-two-roles-undirected": {
+   "load": "ok",
+   "class": "Hypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "4 -> 3",
+    "role_records_kept": "0/4",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/2",
+    "incidence_attrs_records_kept": "0/4",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 1,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/4 role strings",
+    "incidence.direction": "n/a",
+    "record-level weight values": "0/2 found",
+    "network-type": "class Hypergraph",
+    "metadata": "n/a"
+   },
+   "gen2_idempotent": true
+  },
+  "c08-isolated-nodes": {
+   "load": "ok",
+   "class": "DiHypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "2 -> 2",
+    "role_records_kept": "0/2",
+    "direction_records_kept": "2/2",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/2",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 4,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/2 role strings",
+    "incidence.direction": "DiHypergraph edge 'in' (tail) / 'out' (head) member sets",
+    "record-level weight values": "n/a",
+    "network-type": "class DiHypergraph",
+    "metadata": "H._net_attr: all keys"
+   },
+   "gen2_idempotent": true
+  },
+  "c09-empty-edges": {
+   "load": "ok",
+   "class": "DiHypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "2 -> 2",
+    "role_records_kept": "0/2",
+    "direction_records_kept": "2/2",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/2",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/2 role strings",
+    "incidence.direction": "DiHypergraph edge 'in' (tail) / 'out' (head) member sets",
+    "record-level weight values": "n/a",
+    "network-type": "class DiHypergraph",
+    "metadata": "H._net_attr: all keys"
+   },
+   "gen2_idempotent": true
+  },
+  "c10-nested-fact": {
+   "load": "ok",
+   "class": "DiHypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "4 -> 4",
+    "role_records_kept": "0/4",
+    "direction_records_kept": "4/4",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/4",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/4 role strings",
+    "incidence.direction": "DiHypergraph edge 'in' (tail) / 'out' (head) member sets",
+    "record-level weight values": "n/a",
+    "network-type": "class DiHypergraph",
+    "metadata": "n/a"
+   },
+   "gen2_idempotent": true
+  },
+  "c11-integer-ids": {
+   "load": "ok",
+   "class": "DiHypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "4 -> 4",
+    "role_records_kept": "0/4",
+    "direction_records_kept": "4/4",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/4",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 4,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/2 role strings",
+    "incidence.direction": "DiHypergraph edge 'in' (tail) / 'out' (head) member sets",
+    "record-level weight values": "n/a",
+    "network-type": "class DiHypergraph",
+    "metadata": "n/a"
+   },
+   "gen2_idempotent": true
+  },
+  "c12-mixed-int-str-ids": {
+   "load": "ok",
+   "class": "Hypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "4 -> 4",
+    "role_records_kept": "0/4",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/4",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/4 role strings",
+    "incidence.direction": "n/a",
+    "record-level weight values": "n/a",
+    "network-type": "class Hypergraph",
+    "metadata": "n/a"
+   },
+   "gen2_idempotent": true
+  },
+  "c13-unicode-ids": {
+   "load": "ok",
+   "class": "DiHypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "5 -> 5",
+    "role_records_kept": "0/5",
+    "direction_records_kept": "5/5",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/5",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 3,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/5 role strings",
+    "incidence.direction": "DiHypergraph edge 'in' (tail) / 'out' (head) member sets",
+    "record-level weight values": "n/a",
+    "network-type": "class DiHypergraph",
+    "metadata": "n/a"
+   },
+   "gen2_idempotent": true
+  },
+  "c14-directed-missing-direction": {
+   "load": "ERROR KeyError: 'direction' @ xgi/convert/hif_dict.py:155 in from_hif_dict: d = record[\"direction\"]",
+   "class": null
+  },
+  "c15-incidence-attrs-absent-or-empty": {
+   "load": "ok",
+   "class": "DiHypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "3 -> 3",
+    "role_records_kept": "0/1",
+    "direction_records_kept": "3/3",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/1",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/1 role strings",
+    "incidence.direction": "DiHypergraph edge 'in' (tail) / 'out' (head) member sets",
+    "record-level weight values": "n/a",
+    "network-type": "class DiHypergraph",
+    "metadata": "H._net_attr: all keys"
+   },
+   "gen2_idempotent": true
+  },
+  "c16-attr-value-shapes": {
+   "load": "ok",
+   "class": "DiHypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "2 -> 2",
+    "role_records_kept": "0/2",
+    "direction_records_kept": "2/2",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/2",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/2 role strings",
+    "incidence.direction": "DiHypergraph edge 'in' (tail) / 'out' (head) member sets",
+    "record-level weight values": "n/a",
+    "network-type": "class DiHypergraph",
+    "metadata": "H._net_attr: all keys"
+   },
+   "gen2_idempotent": true
+  },
+  "c17-weights-everywhere": {
+   "load": "ok",
+   "class": "DiHypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "2 -> 2",
+    "role_records_kept": "0/2",
+    "direction_records_kept": "2/2",
+    "incidence_weight_records_kept": "0/2",
+    "incidence_attrs_records_kept": "0/2",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:drug:metformin": "lost",
+      "str:disease:T2DM": "lost"
+     },
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {
+      "str:f1": "lost"
+     },
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/2 role strings",
+    "incidence.direction": "DiHypergraph edge 'in' (tail) / 'out' (head) member sets",
+    "record-level weight values": "0/4 found",
+    "network-type": "class DiHypergraph",
+    "metadata": "H._net_attr: all keys"
+   },
+   "gen2_idempotent": true
+  },
+  "c18-weight-key-inside-attrs": {
+   "load": "ok",
+   "class": "DiHypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "2 -> 2",
+    "role_records_kept": "0/2",
+    "direction_records_kept": "2/2",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/2",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/2 role strings",
+    "incidence.direction": "DiHypergraph edge 'in' (tail) / 'out' (head) member sets",
+    "record-level weight values": "n/a",
+    "network-type": "class DiHypergraph",
+    "metadata": "H._net_attr: all keys"
+   },
+   "gen2_idempotent": true
+  },
+  "c19-duplicate-node-edge-records": {
+   "load": "ok",
+   "class": "Hypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "2 -> 2",
+    "role_records_kept": "0/2",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/2",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {
+      "str:n1": "merged: later declarations update earlier ones"
+     },
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {
+      "str:e1": "merged: later declarations update earlier ones"
+     },
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/2 role strings",
+    "incidence.direction": "n/a",
+    "record-level weight values": "n/a",
+    "network-type": "class Hypergraph",
+    "metadata": "n/a"
+   },
+   "gen2_idempotent": true
+  },
+  "c20-hnx-reserved-metadata-keys": {
+   "load": "ok",
+   "class": "DiHypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "3 -> 3",
+    "role_records_kept": "0/2",
+    "direction_records_kept": "3/3",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/3",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/2 role strings",
+    "incidence.direction": "DiHypergraph edge 'in' (tail) / 'out' (head) member sets",
+    "record-level weight values": "n/a",
+    "network-type": "class DiHypergraph",
+    "metadata": "H._net_attr: all keys"
+   },
+   "gen2_idempotent": true
+  },
+  "c21-node-attr-key-equals-python-parameter": {
+   "load": "ERROR TypeError: DiHypergraph.add_node() got multiple values for argument 'node' @ xgi/convert/hif_dict.py:171 in from_hif_dict: H.add_node(n, **attr)",
+   "class": null
+  },
+  "c22-nan-in-attrs": {
+   "load": "ok",
+   "class": "DiHypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "2 -> 2",
+    "role_records_kept": "0/2",
+    "direction_records_kept": "2/2",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/2",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 2,
+     "missing_out": [],
+     "attrs_not_preserved": {
+      "str:drug:metformin": "altered"
+     },
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 1,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (directed -> directed)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/2 role strings",
+    "incidence.direction": "DiHypergraph edge 'in' (tail) / 'out' (head) member sets",
+    "record-level weight values": "n/a",
+    "network-type": "class DiHypergraph",
+    "metadata": "H._net_attr: all keys"
+   },
+   "gen2_idempotent": true
+  },
+  "c23-big-int-ids": {
+   "load": "ok",
+   "class": "Hypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "3 -> 3",
+    "role_records_kept": "0/3",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/3",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 0,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 0,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "found for 0/3 role strings",
+    "incidence.direction": "n/a",
+    "record-level weight values": "n/a",
+    "network-type": "class Hypergraph",
+    "metadata": "n/a"
+   },
+   "gen2_idempotent": true
+  },
+  "c24-empty-incidences": {
+   "load": "ok",
+   "class": "Hypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "0 -> 0",
+    "role_records_kept": "0/0",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/0",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 0,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 0,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "added (<absent> -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "n/a",
+    "incidence.direction": "n/a",
+    "record-level weight values": "n/a",
+    "network-type": "class Hypergraph",
+    "metadata": "n/a"
+   },
+   "gen2_idempotent": true
+  },
+  "c26-edge-attr-key-equals-python-parameter": {
+   "load": "ERROR TypeError: DiHypergraph.add_edge() got multiple values for argument 'members' @ xgi/convert/hif_dict.py:184 in from_hif_dict: H.add_edge(_empty_edge(network_type), e, **attr)",
+   "class": null
+  },
+  "c25-plain-no-attrs": {
+   "load": "ok",
+   "class": "Hypergraph",
+   "export": "ok",
+   "schema_valid_output": true,
+   "strict_json_output": true,
+   "diff": {
+    "incidence_records": "4 -> 4",
+    "role_records_kept": "0/0",
+    "direction_records_kept": "0/0",
+    "incidence_weight_records_kept": "0/0",
+    "incidence_attrs_records_kept": "0/0",
+    "pairs_lost": 0,
+    "pairs_new": 0,
+    "pairs_count_changed": 0,
+    "weights_added_on_incidences": 0,
+    "nodes": {
+     "declared_in": 0,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "edges": {
+     "declared_in": 0,
+     "missing_out": [],
+     "attrs_not_preserved": {},
+     "weight_not_preserved": {},
+     "new_out": []
+    },
+    "network_type": "preserved (undirected -> undirected)",
+    "metadata": "preserved",
+    "metadata_keys_lost": [],
+    "metadata_keys_added": [],
+    "id_type_changes": 0
+   },
+   "field_locations": {
+    "incidence.attrs (role)": "n/a",
+    "incidence.direction": "n/a",
+    "record-level weight values": "n/a",
+    "network-type": "class Hypergraph",
+    "metadata": "n/a"
+   },
+   "gen2_idempotent": true
+  }
+ }
+}

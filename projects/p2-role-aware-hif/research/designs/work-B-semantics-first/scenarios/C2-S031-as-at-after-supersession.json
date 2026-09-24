@@ -1,0 +1,20 @@
+{
+  "khg_scenario": "khg-scenario/1.0.0",
+  "id": "C2-S031",
+  "title": "as-at before a supersession returns the earlier belief; the walk finds the replacement",
+  "requires": ["history", "as_at", "nesting"],
+  "schema": "p2-gate.schema.json",
+  "given": [
+    {"at": "2026-10-01T00:00:01Z", "put": ["@fixture:ex:Maria_Skłodowska", "@fixture:ex:Kraków", "@fixture:ex:Warszawa",
+                                          {"@fixture": "f:born-skłodowska-kraków", "set": {"status": "asserted"}, "drop": ["status_ref", "version"]}]},
+    {"at": "2026-10-01T00:00:02Z", "put": ["@fixture:f:born-skłodowska-warszawa", "@fixture:m:sup-1",
+                                          {"@fixture": "f:born-skłodowska-kraków", "drop": ["version"]}]}
+  ],
+  "when": [
+    {"op": "get", "args": {"id": "f:born-skłodowska-kraków", "as_at": "2026-10-01T00:00:01Z"}, "then": {"select": "status", "equals": "asserted"}},
+    {"op": "get", "args": {"id": "f:born-skłodowska-kraków"}, "then": {"select": "status", "equals": "superseded"}},
+    {"op": "supersession_walk", "args": {"id": "f:born-skłodowska-kraków", "direction": "forward"},
+     "then": {"equals": [{"from": "f:born-skłodowska-kraków", "via": "m:sup-1", "reason": "correction", "to": ["f:born-skłodowska-warszawa"]}]}},
+    {"op": "incident", "args": {"node": "ex:Maria_Skłodowska"}, "then": {"select": "ids", "equals": ["f:born-skłodowska-warszawa"]}}
+  ]
+}

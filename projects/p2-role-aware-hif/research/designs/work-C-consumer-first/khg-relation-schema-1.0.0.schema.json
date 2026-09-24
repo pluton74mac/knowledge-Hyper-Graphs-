@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:khg:schema:khg-relation-schema:1.0.0",
+  "title": "khg-relation-schema/1.0.0: a relation-type schema document (meta-schema)",
+  "type": "object",
+  "required": ["kind", "format", "id", "version", "roles", "relations"],
+  "additionalProperties": false,
+  "properties": {
+    "kind": {"const": "relation-schema"},
+    "format": {"type": "string", "pattern": "^khg-relation-schema/1\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$", "x-khg-code": "D-FORMAT"},
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]{0,63}$", "x-khg-code": "D-ID"},
+    "version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$", "x-khg-code": "D-SEMVER"},
+    "label": {"type": "string"},
+    "description": {"type": "string"},
+    "entity_types": {"type": "array", "items": {
+      "type": "object", "required": ["id", "label"], "additionalProperties": false,
+      "properties": {"id": {"$ref": "#/definitions/sym"}, "label": {"type": "string"},
+                     "parents": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/definitions/sym"}},
+                     "same_as": {"type": "array", "items": {"type": "string"}}}}},
+    "confidence_scales": {"type": "array", "items": {
+      "type": "object", "required": ["id", "kind", "min", "max"], "additionalProperties": false,
+      "properties": {"id": {"$ref": "#/definitions/sym"}, "kind": {"enum": ["probability", "bounded"]},
+                     "min": {"type": "number"}, "max": {"type": "number"}, "description": {"type": "string"}}}},
+    "time_model": {"type": "object", "additionalProperties": false,
+      "properties": {"from_role": {"$ref": "#/definitions/sym"}, "to_role": {"$ref": "#/definitions/sym"},
+                     "point_role": {"$ref": "#/definitions/sym"}}},
+    "roles": {"type": "array", "minItems": 1, "items": {
+      "type": "object", "required": ["id", "label"], "additionalProperties": false,
+      "properties": {"id": {"$ref": "#/definitions/sym"}, "label": {"type": "string", "minLength": 1},
+                     "description": {"type": "string"},
+                     "aliases": {"type": "array", "items": {"type": "string"}},
+                     "same_as": {"type": "array", "items": {"type": "string"}}}}},
+    "relations": {"type": "array", "minItems": 1, "items": {"$ref": "#/definitions/relation"}}
+  },
+  "definitions": {
+    "sym": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,63}$"},
+    "relation": {
+      "type": "object", "required": ["id", "label", "kind", "roles"], "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/definitions/sym"},
+        "label": {"type": "string", "minLength": 1},
+        "description": {"type": "string"},
+        "kind": {"enum": ["fact", "meta", "rule"]},
+        "nestable": {"type": "boolean"},
+        "aliases": {"type": "array", "items": {"type": "string"}},
+        "same_as": {"type": "array", "items": {"type": "string"}},
+        "roles": {"type": "array", "minItems": 1, "items": {"$ref": "#/definitions/usage"}, "x-khg-code": "D-NO-ROLES"},
+        "primary": {"type": "object", "required": ["subject", "object"], "additionalProperties": false,
+                    "properties": {"subject": {"$ref": "#/definitions/sym"}, "object": {"$ref": "#/definitions/sym"}}},
+        "key": {"type": "object", "required": ["roles", "temporal", "on_collision"], "additionalProperties": false,
+                "properties": {"roles": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/definitions/sym"}},
+                               "temporal": {"type": "boolean"},
+                               "on_collision": {"enum": ["reject", "close_older", "supersede", "merge", "dispute"]}}},
+        "constraints": {"type": "array", "items": {"$ref": "#/definitions/constraint"}}
+      }
+    },
+    "usage": {
+      "type": "object", "required": ["role", "slot", "fillers", "min", "max"], "additionalProperties": false,
+      "properties": {
+        "role": {"$ref": "#/definitions/sym"},
+        "slot": {"enum": ["core", "qualifier", "time", "meta"]},
+        "fillers": {"type": "object", "minProperties": 1, "additionalProperties": false,
+                    "properties": {
+                      "entity_types": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/definitions/sym"}},
+                      "datatypes": {"type": "array", "minItems": 1, "uniqueItems": true,
+                                    "items": {"enum": ["string", "lang-string", "integer", "decimal", "boolean", "time", "quantity", "iri"]}},
+                      "precisions": {"type": "array", "minItems": 1, "uniqueItems": true,
+                                     "items": {"enum": ["millennium", "century", "decade", "year", "month", "day", "second"]}},
+                      "units": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+                      "hyperedge": {"type": "object", "required": ["relations"], "additionalProperties": false,
+                                    "properties": {"relations": {"type": "array", "minItems": 1, "items": {"type": "string"}}}}}},
+        "min": {"type": "integer", "minimum": 0},
+        "max": {"type": ["integer", "null"], "minimum": 1},
+        "ordered": {"type": "boolean"},
+        "direction": {"enum": ["head", "tail"]},
+        "label": {"type": "string"},
+        "aliases": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "constraint": {
+      "type": "object", "required": ["type"],
+      "oneOf": [
+        {"properties": {"type": {"const": "requires"}, "if": {"$ref": "#/definitions/sym"}, "then": {"$ref": "#/definitions/sym"}},
+         "required": ["if", "then"], "additionalProperties": false},
+        {"properties": {"type": {"enum": ["excludes", "at_least_one_of"]},
+                        "roles": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"$ref": "#/definitions/sym"}}},
+         "required": ["roles"], "additionalProperties": false},
+        {"properties": {"type": {"const": "must_differ"},
+                        "roles": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/definitions/sym"}}},
+         "required": ["roles"], "additionalProperties": false}
+      ]
+    }
+  }
+}

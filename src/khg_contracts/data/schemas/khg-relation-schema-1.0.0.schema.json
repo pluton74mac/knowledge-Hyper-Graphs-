@@ -1,0 +1,624 @@
+{
+ "$schema": "http://json-schema.org/draft-07/schema#",
+ "$id": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0",
+ "title": "Relation-type schema document khg-relation-schema/1.0.0 (layer M, structural part; the M checks that need the whole document run in Python)",
+ "type": "object",
+ "required": [
+  "kind",
+  "format",
+  "id",
+  "version",
+  "roles",
+  "relations"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "kind": {
+   "const": "relation-schema",
+   "x-khg-code": "KHG-M015"
+  },
+  "format": {
+   "type": "string",
+   "pattern": "^khg-relation-schema/(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?!\\n)$",
+   "x-khg-code": "KHG-M015"
+  },
+  "id": {
+   "type": "string",
+   "pattern": "^[^\\s\\x00-\\x1f\\x7f/]{1,256}(?!\\n)$",
+   "x-khg-code": "KHG-M015"
+  },
+  "version": {
+   "type": "string",
+   "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?!\\n)$",
+   "x-khg-code": "KHG-M004"
+  },
+  "label": {
+   "type": "string",
+   "x-khg-code": "KHG-M015"
+  },
+  "entity_types": {
+   "type": "array",
+   "items": {
+    "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/entity_type"
+   },
+   "x-khg-code": "KHG-M015"
+  },
+  "roles": {
+   "type": "array",
+   "items": {
+    "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/role"
+   },
+   "x-khg-code": "KHG-M015"
+  },
+  "relations": {
+   "type": "array",
+   "items": {
+    "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/relation"
+   },
+   "x-khg-code": "KHG-M015"
+  },
+  "default_time": {
+   "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/time_model"
+  },
+  "confidence_scales": {
+   "type": "array",
+   "items": {
+    "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/confidence_scale"
+   },
+   "x-khg-code": "KHG-M015"
+  }
+ },
+ "definitions": {
+  "vocab_id": {
+   "type": "string",
+   "pattern": "^[^\\s\\x00-\\x1f\\x7f]{1,256}(?!\\n)$",
+   "x-khg-code": "KHG-M015"
+  },
+  "mappings": {
+   "type": "object",
+   "propertyNames": {
+    "pattern": "^[a-z][a-z0-9-]*(?!\\n)$",
+    "x-khg-code": "KHG-M015"
+   },
+   "additionalProperties": {
+    "type": "string",
+    "minLength": 1,
+    "x-khg-code": "KHG-M015"
+   },
+   "x-khg-code": "KHG-M015"
+  },
+  "entity_type": {
+   "type": "object",
+   "required": [
+    "id"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/vocab_id"
+    },
+    "parents": {
+     "type": "array",
+     "items": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/vocab_id"
+     },
+     "uniqueItems": true,
+     "x-khg-code": "KHG-M015"
+    }
+   },
+   "x-khg-code": "KHG-M015"
+  },
+  "role": {
+   "type": "object",
+   "required": [
+    "id"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/vocab_id"
+    },
+    "label": {
+     "type": "string",
+     "x-khg-code": "KHG-M015"
+    },
+    "aliases": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "x-khg-code": "KHG-M015"
+     },
+     "x-khg-code": "KHG-M015"
+    },
+    "mappings": {
+     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/mappings"
+    }
+   },
+   "x-khg-code": "KHG-M015"
+  },
+  "confidence_scale": {
+   "type": "object",
+   "required": [
+    "id",
+    "kind",
+    "min",
+    "max"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/vocab_id"
+    },
+    "kind": {
+     "const": "bounded",
+     "x-khg-code": "KHG-M015"
+    },
+    "min": {
+     "type": "number",
+     "x-khg-code": "KHG-M015"
+    },
+    "max": {
+     "type": "number",
+     "x-khg-code": "KHG-M015"
+    }
+   },
+   "x-khg-code": "KHG-M015"
+  },
+  "time_model": {
+   "type": "object",
+   "required": [
+    "model"
+   ],
+   "properties": {
+    "model": {
+     "enum": [
+      "interval",
+      "invariant",
+      "timeless"
+     ],
+     "x-khg-code": "KHG-M007"
+    }
+   },
+   "allOf": [
+    {
+     "if": {
+      "properties": {
+       "model": {
+        "const": "interval",
+        "x-khg-code": "KHG-M007"
+       }
+      },
+      "required": [
+       "model"
+      ],
+      "x-khg-code": "KHG-M007"
+     },
+     "then": {
+      "required": [
+       "model",
+       "start",
+       "end"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "model": {},
+       "start": {
+        "type": "string",
+        "minLength": 1,
+        "x-khg-code": "KHG-M007"
+       },
+       "end": {
+        "type": "string",
+        "minLength": 1,
+        "x-khg-code": "KHG-M007"
+       }
+      },
+      "x-khg-code": "KHG-M007"
+     },
+     "else": {
+      "additionalProperties": false,
+      "properties": {
+       "model": {}
+      },
+      "x-khg-code": "KHG-M007"
+     }
+    }
+   ],
+   "x-khg-code": "KHG-M007"
+  },
+  "filler": {
+   "type": "object",
+   "propertyNames": {
+    "enum": [
+     "entity",
+     "literal",
+     "fact",
+     "units",
+     "precision_min"
+    ],
+    "x-khg-code": "KHG-M015"
+   },
+   "if": {
+    "required": [
+     "entity"
+    ],
+    "x-khg-code": "KHG-M015"
+   },
+   "then": {
+    "additionalProperties": false,
+    "properties": {
+     "entity": {
+      "type": "array",
+      "items": {
+       "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/vocab_id"
+      },
+      "uniqueItems": true,
+      "x-khg-code": "KHG-M015"
+     }
+    },
+    "x-khg-code": "KHG-M015"
+   },
+   "else": {
+    "if": {
+     "required": [
+      "literal"
+     ],
+     "x-khg-code": "KHG-M015"
+    },
+    "then": {
+     "additionalProperties": false,
+     "properties": {
+      "literal": {
+       "enum": [
+        "time",
+        "quantity",
+        "string",
+        "lang_string",
+        "boolean",
+        "iri",
+        "geo"
+       ],
+       "x-khg-code": "KHG-M006"
+      },
+      "units": {
+       "type": "array",
+       "items": {
+        "type": "string",
+        "minLength": 1,
+        "x-khg-code": "KHG-M015"
+       },
+       "minItems": 1,
+       "uniqueItems": true,
+       "x-khg-code": "KHG-M015"
+      },
+      "precision_min": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 14,
+       "x-khg-code": "KHG-M015"
+      }
+     },
+     "x-khg-code": "KHG-M015"
+    },
+    "else": {
+     "if": {
+      "required": [
+       "fact"
+      ],
+      "x-khg-code": "KHG-M015"
+     },
+     "then": {
+      "additionalProperties": false,
+      "properties": {
+       "fact": {
+        "type": "array",
+        "items": {
+         "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/vocab_id"
+        },
+        "uniqueItems": true,
+        "x-khg-code": "KHG-M015"
+       }
+      },
+      "x-khg-code": "KHG-M015"
+     },
+     "else": {
+      "not": {},
+      "x-khg-code": "KHG-M015"
+     }
+    }
+   },
+   "x-khg-code": "KHG-M015"
+  },
+  "usage": {
+   "type": "object",
+   "required": [
+    "role",
+    "slot",
+    "fillers",
+    "min",
+    "max"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "role": {
+     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/vocab_id"
+    },
+    "slot": {
+     "enum": [
+      "core",
+      "qualifier",
+      "time",
+      "meta"
+     ],
+     "x-khg-code": "KHG-M015"
+    },
+    "fillers": {
+     "type": "array",
+     "minItems": 1,
+     "items": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/filler"
+     },
+     "x-khg-code": "KHG-M015"
+    },
+    "min": {
+     "type": "integer",
+     "minimum": 0,
+     "x-khg-code": "KHG-M015"
+    },
+    "max": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 1,
+     "x-khg-code": "KHG-M015"
+    },
+    "ordered": {
+     "type": "boolean",
+     "x-khg-code": "KHG-M015"
+    },
+    "complete": {
+     "type": "boolean",
+     "x-khg-code": "KHG-M015"
+    },
+    "direction": {
+     "enum": [
+      "tail",
+      "head"
+     ],
+     "x-khg-code": "KHG-M015"
+    },
+    "somevalue": {
+     "type": "boolean",
+     "x-khg-code": "KHG-M015"
+    },
+    "novalue": {
+     "type": "boolean",
+     "x-khg-code": "KHG-M015"
+    },
+    "label": {
+     "type": "string",
+     "x-khg-code": "KHG-M015"
+    }
+   },
+   "allOf": [
+    {
+     "if": {
+      "properties": {
+       "complete": {
+        "const": true,
+        "x-khg-code": "KHG-M015"
+       }
+      },
+      "required": [
+       "complete"
+      ],
+      "x-khg-code": "KHG-M015"
+     },
+     "then": {
+      "properties": {
+       "min": {
+        "minimum": 1,
+        "x-khg-code": "KHG-M014"
+       }
+      },
+      "x-khg-code": "KHG-M014"
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "slot": {
+        "const": "time",
+        "x-khg-code": "KHG-M015"
+       }
+      },
+      "required": [
+       "slot"
+      ],
+      "x-khg-code": "KHG-M015"
+     },
+     "then": {
+      "properties": {
+       "max": {
+        "const": 1,
+        "x-khg-code": "KHG-M007"
+       },
+       "fillers": {
+        "maxItems": 1,
+        "items": {
+         "required": [
+          "literal"
+         ],
+         "properties": {
+          "literal": {
+           "const": "time",
+           "x-khg-code": "KHG-M007"
+          }
+         },
+         "x-khg-code": "KHG-M007"
+        },
+        "x-khg-code": "KHG-M007"
+       }
+      },
+      "x-khg-code": "KHG-M007"
+     }
+    }
+   ],
+   "x-khg-code": "KHG-M015"
+  },
+  "constraint": {
+   "type": "object",
+   "required": [
+    "type",
+    "roles",
+    "severity"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "type": {
+     "enum": [
+      "requires",
+      "excludes",
+      "at_least_one_of",
+      "must_differ",
+      "must_agree"
+     ],
+     "x-khg-code": "KHG-M015"
+    },
+    "roles": {
+     "type": "array",
+     "items": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/vocab_id"
+     },
+     "minItems": 2,
+     "uniqueItems": true,
+     "x-khg-code": "KHG-M015"
+    },
+    "severity": {
+     "enum": [
+      "error",
+      "warning"
+     ],
+     "x-khg-code": "KHG-M015"
+    }
+   },
+   "x-khg-code": "KHG-M015"
+  },
+  "key": {
+   "type": "object",
+   "required": [
+    "roles"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "roles": {
+     "type": "array",
+     "items": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/vocab_id"
+     },
+     "minItems": 1,
+     "uniqueItems": true,
+     "x-khg-code": "KHG-M015"
+    },
+    "temporal": {
+     "type": "boolean",
+     "x-khg-code": "KHG-M015"
+    },
+    "on_collision": {
+     "enum": [
+      "close_older",
+      "supersede",
+      "dispute",
+      "reject"
+     ],
+     "x-khg-code": "KHG-M015"
+    }
+   },
+   "x-khg-code": "KHG-M015"
+  },
+  "primary": {
+   "type": "object",
+   "required": [
+    "subject",
+    "object"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "subject": {
+     "type": "string",
+     "minLength": 1,
+     "x-khg-code": "KHG-M012"
+    },
+    "object": {
+     "type": "string",
+     "minLength": 1,
+     "x-khg-code": "KHG-M012"
+    }
+   },
+   "x-khg-code": "KHG-M012"
+  },
+  "relation": {
+   "type": "object",
+   "required": [
+    "id"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/vocab_id"
+    },
+    "kind": {
+     "enum": [
+      "fact"
+     ],
+     "x-khg-code": "KHG-M015"
+    },
+    "label": {
+     "type": "string",
+     "x-khg-code": "KHG-M015"
+    },
+    "mappings": {
+     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/mappings"
+    },
+    "primary": {
+     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/primary"
+    },
+    "time": {
+     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/time_model"
+    },
+    "key": {
+     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/key"
+    },
+    "constraints": {
+     "type": "array",
+     "items": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/constraint"
+     },
+     "x-khg-code": "KHG-M015"
+    },
+    "roles": {
+     "type": "array",
+     "minItems": 1,
+     "items": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/usage"
+     },
+     "x-khg-code": {
+      "default": "KHG-M015",
+      "minItems": "KHG-M001"
+     }
+    }
+   },
+   "allOf": [
+    {
+     "required": [
+      "roles"
+     ],
+     "x-khg-code": "KHG-M001"
+    }
+   ],
+   "x-khg-code": "KHG-M015"
+  }
+ },
+ "x-khg-code": "KHG-M015"
+}

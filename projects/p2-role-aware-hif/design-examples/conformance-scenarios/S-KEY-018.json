@@ -1,0 +1,91 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-KEY-018",
+ "title": "one put spanning two relations reports every collision with its own policy",
+ "requires": [
+  "atomic_writes",
+  "key_constraint",
+  "literal_values",
+  "valid_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    "@f:king-13",
+    "@f:born-skłodowska-warszawa"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:king-14",
+      "set": {
+       "id": "f:king-14b"
+      },
+      "set_binding": {
+       "b3": {
+        "literal": {
+         "datatype": "time",
+         "time": "+1640-01-01T00:00:00Z",
+         "precision": 11
+        }
+       }
+      }
+     },
+     {
+      "@": "f:born-skłodowska-kraków",
+      "set": {
+       "status": "asserted"
+      },
+      "drop": [
+       "status_ref"
+      ]
+     }
+    ]
+   },
+   "then": {
+    "error": "KHG-D016",
+    "info": {
+     "collisions": [
+      {
+       "record": "f:born-skłodowska-kraków",
+       "policy": "dispute",
+       "conflicts": [
+        {
+         "id": "f:born-skłodowska-warszawa",
+         "in_batch": false,
+         "shape": null,
+         "class": "distinct",
+         "action": "dispute"
+        }
+       ]
+      },
+      {
+       "record": "f:king-14b",
+       "policy": "close_older",
+       "conflicts": [
+        {
+         "id": "f:king-13",
+         "in_batch": false,
+         "shape": "overlap_after_end",
+         "class": "distinct",
+         "action": "dispute"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "precedent": [
+  "critique CONS-13"
+ ]
+}

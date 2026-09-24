@@ -1,0 +1,82 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-KEY-015",
+ "title": "backfill (X4): the incoming fact is the older one, so it is the one closed",
+ "requires": [
+  "key_constraint",
+  "literal_values",
+  "valid_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    {
+     "@": "f:king-14",
+     "drop_bindings": [
+      "b4"
+     ]
+    }
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:king-13",
+      "drop_bindings": [
+       "b4"
+      ]
+     }
+    ]
+   },
+   "then": {
+    "error": "KHG-D016",
+    "info": {
+     "collisions": [
+      {
+       "record": "f:king-13",
+       "policy": "close_older",
+       "conflicts": [
+        {
+         "id": "f:king-14",
+         "in_batch": false,
+         "shape": "backfill",
+         "class": "distinct",
+         "action": "close_incoming"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     "@f:king-13"
+    ]
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "f:king-13",
+      1,
+      "created"
+     ]
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "critique SEM-04 (X4)",
+  "B identity table X4"
+ ]
+}

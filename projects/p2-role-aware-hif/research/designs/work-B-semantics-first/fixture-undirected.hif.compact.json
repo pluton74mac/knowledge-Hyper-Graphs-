@@ -1,0 +1,38 @@
+{
+ "network-type": "undirected",
+ "metadata": {
+  "hif-schema": "https://raw.githubusercontent.com/HIF-org/HIF-standard/b691a3d2ec32100c0229ebe1151e9afad015c356/schemas/hif_schema_v0.1.0.json",
+  "hif-schema-sha256": "639466b7a10de5a734d231d72422f54a5fce4084cb300869012510124c9b2196",
+  "hif-schema-doi": "10.5281/zenodo.17257719",
+  "hif-roles-version": "1.0.0",
+  "hif-roles-vocabulary": "p2-gate/1.0.0",
+  "khg-profile": "khg-hif/1.0.0",
+  "khg-record": "khg-record/1.0.0",
+  "khg-schema": "p2-gate/1.0.0",
+  "khg-schema-sha256": "sha256:8b2eb97583f1ef73523a8cb3f074ffe8f2098f46c4e5f43af344475afd822b00",
+  "khg-document-id": "p2-gate-fixture-undirected",
+  "khg-snapshot": "current",
+  "khg-complete": true
+ },
+ "nodes": [
+  {"node": "ex:AirCanada", "attrs": {"khg:kind": "entity", "khg:types": ["Airline"], "khg:label": "Air Canada"}},
+  {"node": "ex:Maria_Skłodowska", "attrs": {"khg:kind": "entity", "khg:types": ["Person"], "khg:label": "Maria Skłodowska"}},
+  {"node": "ex:Pierre_Curie", "attrs": {"khg:kind": "entity", "khg:types": ["Person"], "khg:label": "Pierre Curie"}},
+  {"node": "ex:YYZ", "attrs": {"khg:kind": "entity", "khg:types": ["Airport"], "khg:label": "Toronto Pearson"}},
+  {"node": "_:lit:6914a0d25911f31c02d9ab52abfc5380", "attrs": {"khg:kind": "literal", "khg:literal": {"datatype": "time", "time": "+1906-04-19T00:00:00Z", "precision": 11, "calendar": "gregorian"}, "khg:label": "+1906-04-19T00:00:00Z/11"}},
+  {"node": "_:lit:b11291e17146f26e1ea99ec83e6d5359", "attrs": {"khg:kind": "literal", "khg:literal": {"datatype": "time", "time": "+1895-07-26T00:00:00Z", "precision": 11, "calendar": "gregorian"}, "khg:label": "+1895-07-26T00:00:00Z/11"}}
+ ],
+ "edges": [
+  {"edge": "f:loop-yyz", "attrs": {"khg:kind": "fact", "khg:relation": "flies_between", "khg:status": "asserted", "khg:evidence": [{"id": "e1", "type": "curated", "mode": "manual", "source": {"doc_id": "doc:sightseeing-flight"}}]}},
+  {"edge": "f:married-curie", "attrs": {"khg:kind": "fact", "khg:relation": "married", "khg:status": "asserted", "khg:evidence": [{"id": "e1", "type": "curated", "mode": "manual", "source": {"doc_id": "doc:biography"}}]}}
+ ],
+ "incidences": [
+  {"edge": "f:loop-yyz", "node": "ex:AirCanada", "attrs": {"role": "carrier", "khg:bid": "b1"}},
+  {"edge": "f:loop-yyz", "node": "ex:YYZ", "attrs": {"role": "destination", "khg:bid": "b2"}},
+  {"edge": "f:loop-yyz", "node": "ex:YYZ", "attrs": {"role": "origin", "khg:bid": "b3"}},
+  {"edge": "f:married-curie", "node": "_:lit:6914a0d25911f31c02d9ab52abfc5380", "attrs": {"role": "end_time", "khg:bid": "b4"}},
+  {"edge": "f:married-curie", "node": "ex:Maria_Skłodowska", "attrs": {"role": "spouse", "khg:bid": "b1"}},
+  {"edge": "f:married-curie", "node": "ex:Pierre_Curie", "attrs": {"role": "spouse", "khg:bid": "b2"}},
+  {"edge": "f:married-curie", "node": "_:lit:b11291e17146f26e1ea99ec83e6d5359", "attrs": {"role": "start_time", "khg:bid": "b3"}}
+ ]
+}

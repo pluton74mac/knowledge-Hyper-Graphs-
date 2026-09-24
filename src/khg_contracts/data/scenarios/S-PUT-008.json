@@ -1,0 +1,37 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-PUT-008",
+ "title": "put cannot change the status of an existing id",
+ "requires": [],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    "@f:reg-1"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:reg-1",
+      "set": {
+       "status": "quoted"
+      }
+     }
+    ]
+   },
+   "then": {
+    "error": "KHG-D014"
+   }
+  }
+ ],
+ "precedent": [
+  "C S-PUT-006"
+ ]
+}

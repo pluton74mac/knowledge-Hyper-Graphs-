@@ -1,0 +1,29 @@
+{
+  "metadata": {},
+  "network-type": "directed",
+  "edges": [
+    {
+      "attrs": {
+        "relation": "regulates"
+      },
+      "edge": "r1"
+    }
+  ],
+  "incidences": [
+    {
+      "edge": "r1",
+      "node": "cell:HeLa",
+      "direction": "tail"
+    },
+    {
+      "edge": "r1",
+      "node": "gene:TP53",
+      "direction": "tail"
+    },
+    {
+      "edge": "r1",
+      "node": "gene:TP53",
+      "direction": "head"
+    }
+  ]
+}

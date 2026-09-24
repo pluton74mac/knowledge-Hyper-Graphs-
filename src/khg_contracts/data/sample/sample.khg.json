@@ -1,0 +1,16 @@
+{
+ "header": {"kind": "header", "format": "khg-record/1.0.0", "document_id": "kb-sample", "schema": {"id": "kb-sample", "version": "1.0.0", "sha256": "sha256:69f63208d33e09c742a90b1bf4ede076cfe158a5939f7f4f4d47e40c21da7fc5"}, "content": "snapshot", "complete": true, "extensions": {"hif:metadata": {"title": "Sample knowledge hypergraph in HIF (Hypergraph Interchange Format)", "description": "Three n-ary facts from a toy biomedical knowledge base. Each hyperedge is one fact; each incidence carries the role the entity plays in that fact. Directed: 'tail' incidences are the inputs/subjects of the relation, 'head' incidences are the outputs/objects.", "created": "2026-09-19", "kb-section": "kb/04-storage-and-formats"}}},
+ "records": [
+  {"kind": "entity", "id": "disease:T2DM", "types": ["Disease"], "label": "type 2 diabetes mellitus"},
+  {"kind": "entity", "id": "doc:guideline-2024", "types": ["Document"], "label": "Standards of Care 2024"},
+  {"kind": "entity", "id": "dose:500mg-bid", "types": ["Dosage"], "label": "500 mg twice daily"},
+  {"kind": "entity", "id": "drug:insulin", "types": ["Drug"], "label": "insulin"},
+  {"kind": "entity", "id": "drug:metformin", "types": ["Drug"], "label": "metformin"},
+  {"kind": "entity", "id": "effect:hypoglycemia", "types": ["AdverseEffect"], "label": "hypoglycaemia"},
+  {"kind": "entity", "id": "org:ADA", "types": ["Organisation"], "label": "American Diabetes Association"},
+  {"kind": "entity", "id": "pop:adults", "types": ["Population"], "label": "adults"},
+  {"kind": "hyperedge", "id": "f1", "relation": "treats", "status": "asserted", "bindings": [{"bid": "b1", "role": "condition", "value": {"entity": "disease:T2DM"}}, {"bid": "b2", "role": "dosage", "value": {"entity": "dose:500mg-bid"}}, {"bid": "b3", "role": "population", "value": {"entity": "pop:adults"}}, {"bid": "b4", "role": "start_time", "value": {"literal": {"datatype": "time", "time": "+2024-01-01T00:00:00Z", "precision": 11, "calendar": "gregorian"}}}, {"bid": "b5", "role": "treatment", "value": {"entity": "drug:metformin"}}], "evidence": [{"id": "e1", "type": "imported", "mode": "automatic", "source": {"doc_id": "doc:guideline-2024"}, "supports": ["b1", "b2", "b3", "b4", "b5"]}], "extensions": {"hif:weight": 0.95}, "rank": "normal", "visibility": "visible"},
+  {"kind": "hyperedge", "id": "f2", "relation": "co-administration-causes", "status": "asserted", "bindings": [{"bid": "b1", "role": "agent", "value": {"entity": "drug:insulin"}}, {"bid": "b2", "role": "agent", "value": {"entity": "drug:metformin"}}, {"bid": "b3", "role": "effect", "value": {"entity": "effect:hypoglycemia"}}], "evidence": [{"id": "e1", "type": "imported", "mode": "automatic", "source": {"doc_id": "doc:guideline-2024"}, "supports": ["b1", "b2", "b3"]}], "extensions": {"hif:weight": 0.8}, "rank": "normal", "visibility": "visible"},
+  {"kind": "hyperedge", "id": "f3", "relation": "publishes", "status": "asserted", "bindings": [{"bid": "b1", "role": "publication", "value": {"entity": "doc:guideline-2024"}}, {"bid": "b2", "role": "publisher", "value": {"entity": "org:ADA"}}], "evidence": [{"id": "e1", "type": "imported", "mode": "automatic", "source": {"doc_id": "doc:guideline-2024"}, "supports": ["b1", "b2"]}], "extensions": {"hif:weight": 1.0}, "rank": "normal", "visibility": "visible"}
+ ]
+}

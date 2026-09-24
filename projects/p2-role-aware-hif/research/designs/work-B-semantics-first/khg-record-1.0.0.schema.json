@@ -1,0 +1,1417 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "tag:khg-contracts,2026:schema/khg-record/1.0.0",
+  "title": "KHG C1 document, format khg-record/1.0.0 (structural layer only; semantics are checked in Python)",
+  "type": "object",
+  "required": [
+    "header",
+    "records"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "header": {
+      "$ref": "#/definitions/header"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/record"
+      }
+    }
+  },
+  "definitions": {
+    "id": {
+      "type": "string",
+      "pattern": "^(?!_:)[^\\s\\x00-\\x1f\\x7f]{1,512}$"
+    },
+    "vocab_id": {
+      "type": "string",
+      "pattern": "^[^\\s\\x00-\\x1f\\x7f/]{1,256}$"
+    },
+    "versioned_id": {
+      "type": "string",
+      "pattern": "^[^\\s\\x00-\\x1f\\x7f/]{1,256}/(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+    },
+    "bid": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,64}$"
+    },
+    "decimal": {
+      "type": "string",
+      "pattern": "^(\\+0|[+-](0\\.[0-9]*[1-9]|[1-9][0-9]*(\\.[0-9]*[1-9])?))$"
+    },
+    "timestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "extensions": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9-]*:[^\\s]+$"
+      }
+    },
+    "header": {
+      "type": "object",
+      "required": [
+        "kind",
+        "khg",
+        "document_id",
+        "schema"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "header"
+        },
+        "khg": {
+          "const": "khg-record/1.0.0"
+        },
+        "document_id": {
+          "$ref": "#/definitions/id"
+        },
+        "schema": {
+          "type": "object",
+          "required": [
+            "id",
+            "version",
+            "sha256"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "$ref": "#/definitions/vocab_id"
+            },
+            "version": {
+              "$ref": "#/definitions/semver"
+            },
+            "sha256": {
+              "$ref": "#/definitions/sha256"
+            }
+          }
+        },
+        "schema_document": {
+          "type": "object"
+        },
+        "snapshot": {
+          "enum": [
+            "current",
+            "history"
+          ]
+        },
+        "as_at": {
+          "$ref": "#/definitions/timestamp"
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "created_at": {
+          "$ref": "#/definitions/timestamp"
+        },
+        "generator": {
+          "type": "object",
+          "required": [
+            "name",
+            "version"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            }
+          }
+        },
+        "extensions": {
+          "$ref": "#/definitions/extensions"
+        }
+      }
+    },
+    "literal": {
+      "type": "object",
+      "required": [
+        "datatype"
+      ],
+      "properties": {
+        "datatype": {
+          "enum": [
+            "time",
+            "quantity",
+            "string",
+            "lang_string",
+            "boolean",
+            "iri",
+            "geo"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "datatype": {
+                "const": "time"
+              }
+            },
+            "required": [
+              "datatype"
+            ]
+          },
+          "then": {
+            "required": [
+              "datatype",
+              "time",
+              "precision"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "datatype": {},
+              "time": {
+                "type": "string",
+                "pattern": "^[+-][0-9]{4,}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+              },
+              "precision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 14
+              },
+              "calendar": {
+                "const": "gregorian"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "datatype": {
+                "const": "quantity"
+              }
+            },
+            "required": [
+              "datatype"
+            ]
+          },
+          "then": {
+            "required": [
+              "datatype",
+              "amount",
+              "unit"
+            ],
+            "additionalProperties": false,
+            "dependencies": {
+              "lower": [
+                "upper"
+              ],
+              "upper": [
+                "lower"
+              ]
+            },
+            "properties": {
+              "datatype": {},
+              "amount": {
+                "$ref": "#/definitions/decimal"
+              },
+              "unit": {
+                "anyOf": [
+                  {
+                    "const": "1"
+                  },
+                  {
+                    "$ref": "#/definitions/id"
+                  }
+                ]
+              },
+              "lower": {
+                "$ref": "#/definitions/decimal"
+              },
+              "upper": {
+                "$ref": "#/definitions/decimal"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "datatype": {
+                "const": "string"
+              }
+            },
+            "required": [
+              "datatype"
+            ]
+          },
+          "then": {
+            "required": [
+              "datatype",
+              "value"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "datatype": {},
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "datatype": {
+                "const": "lang_string"
+              }
+            },
+            "required": [
+              "datatype"
+            ]
+          },
+          "then": {
+            "required": [
+              "datatype",
+              "value",
+              "lang"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "datatype": {},
+              "value": {
+                "type": "string"
+              },
+              "lang": {
+                "type": "string",
+                "pattern": "^[a-z]{1,8}(-[a-z0-9]{1,8})*$"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "datatype": {
+                "const": "boolean"
+              }
+            },
+            "required": [
+              "datatype"
+            ]
+          },
+          "then": {
+            "required": [
+              "datatype",
+              "value"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "datatype": {},
+              "value": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "datatype": {
+                "const": "iri"
+              }
+            },
+            "required": [
+              "datatype"
+            ]
+          },
+          "then": {
+            "required": [
+              "datatype",
+              "value"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "datatype": {},
+              "value": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "datatype": {
+                "const": "geo"
+              }
+            },
+            "required": [
+              "datatype"
+            ]
+          },
+          "then": {
+            "required": [
+              "datatype",
+              "lat",
+              "lon",
+              "precision",
+              "globe"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "datatype": {},
+              "lat": {
+                "$ref": "#/definitions/decimal"
+              },
+              "lon": {
+                "$ref": "#/definitions/decimal"
+              },
+              "precision": {
+                "$ref": "#/definitions/decimal"
+              },
+              "globe": {
+                "$ref": "#/definitions/id"
+              }
+            }
+          }
+        }
+      ],
+      "x-khg-code": "KHG-C004"
+    },
+    "value": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 1,
+      "propertyNames": {
+        "enum": [
+          "entity",
+          "literal",
+          "fact",
+          "special",
+          "unbound"
+        ]
+      },
+      "not": {
+        "required": [
+          "unbound"
+        ]
+      },
+      "properties": {
+        "entity": {
+          "$ref": "#/definitions/id"
+        },
+        "literal": {
+          "$ref": "#/definitions/literal"
+        },
+        "fact": {
+          "$ref": "#/definitions/id"
+        },
+        "special": {
+          "enum": [
+            "somevalue",
+            "novalue"
+          ]
+        }
+      },
+      "x-khg-code": {
+        "type": "KHG-C001",
+        "minProperties": "KHG-C001",
+        "maxProperties": "KHG-C001",
+        "propertyNames": "KHG-C001",
+        "not": "KHG-C005"
+      }
+    },
+    "unbound": {
+      "type": "object",
+      "required": [
+        "unbound"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "unbound": {
+          "type": "object",
+          "required": [
+            "var"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "var": {
+              "type": "string",
+              "pattern": "^[a-z_][a-z0-9_]{0,63}$"
+            },
+            "expect": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "entity_types": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/vocab_id"
+                  },
+                  "minItems": 1
+                },
+                "datatype": {
+                  "enum": [
+                    "time",
+                    "quantity",
+                    "string",
+                    "lang_string",
+                    "boolean",
+                    "iri",
+                    "geo"
+                  ]
+                },
+                "relations": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/vocab_id"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "binding_common": {
+      "required": [
+        "bid",
+        "role",
+        "value"
+      ],
+      "properties": {
+        "bid": {
+          "$ref": "#/definitions/bid"
+        },
+        "role": {
+          "$ref": "#/definitions/vocab_id"
+        },
+        "position": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "direction": {
+          "enum": [
+            "tail",
+            "head"
+          ]
+        }
+      }
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "$ref": "#/definitions/binding_common"
+        }
+      ],
+      "properties": {
+        "bid": {},
+        "role": {},
+        "position": {},
+        "direction": {},
+        "value": {
+          "$ref": "#/definitions/value"
+        },
+        "extensions": {
+          "$ref": "#/definitions/extensions"
+        }
+      }
+    },
+    "goal_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "$ref": "#/definitions/binding_common"
+        }
+      ],
+      "properties": {
+        "bid": {},
+        "role": {},
+        "position": {},
+        "direction": {},
+        "value": {
+          "if": {
+            "type": "object",
+            "required": [
+              "unbound"
+            ]
+          },
+          "then": {
+            "$ref": "#/definitions/unbound"
+          },
+          "else": {
+            "$ref": "#/definitions/value"
+          }
+        },
+        "extensions": {
+          "$ref": "#/definitions/extensions"
+        }
+      }
+    },
+    "confidence": {
+      "type": "object",
+      "required": [
+        "value",
+        "scale"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "type": "number"
+        },
+        "scale": {
+          "$ref": "#/definitions/vocab_id"
+        },
+        "scorer": {
+          "type": "object",
+          "required": [
+            "name",
+            "version"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "x-khg-code": "KHG-C003"
+    },
+    "selector": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "quote",
+            "position"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "quote"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "required": [
+              "type",
+              "exact"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "type": {},
+              "exact": {
+                "type": "string",
+                "minLength": 1
+              },
+              "prefix": {
+                "type": "string"
+              },
+              "suffix": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "position"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "required": [
+              "type",
+              "start",
+              "end"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "type": {},
+              "start": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "end": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "evidence": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "mode"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/bid"
+        },
+        "type": {
+          "enum": [
+            "curated",
+            "imported",
+            "extracted",
+            "inferred",
+            "agent_bound"
+          ]
+        },
+        "mode": {
+          "enum": [
+            "automatic",
+            "manual",
+            "semi_automatic"
+          ]
+        },
+        "source": {
+          "type": "object",
+          "required": [
+            "doc_id"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "doc_id": {
+              "$ref": "#/definitions/id"
+            },
+            "doc_sha256": {
+              "$ref": "#/definitions/sha256"
+            },
+            "doc_version": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "retrieved_at": {
+              "$ref": "#/definitions/timestamp"
+            },
+            "license": {
+              "type": "string"
+            }
+          }
+        },
+        "selectors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/selector"
+          },
+          "minItems": 1
+        },
+        "activity": {
+          "type": "object",
+          "required": [
+            "agent"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "agent": {
+              "type": "string"
+            },
+            "agent_version": {
+              "type": "string"
+            },
+            "model": {
+              "type": "string"
+            },
+            "model_version": {
+              "type": "string"
+            },
+            "run_id": {
+              "type": "string"
+            },
+            "prompt_id": {
+              "type": "string"
+            },
+            "skill_id": {
+              "type": "string"
+            },
+            "params": {
+              "type": "object"
+            }
+          }
+        },
+        "inference": {
+          "type": "object",
+          "required": [
+            "rule",
+            "from"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "rule": {
+              "type": "string"
+            },
+            "from": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/id"
+              },
+              "minItems": 1
+            }
+          }
+        },
+        "supports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/bid"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "confidence": {
+          "$ref": "#/definitions/confidence"
+        },
+        "epistemics": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "negated": {
+              "type": "boolean"
+            },
+            "hypothesis": {
+              "type": "boolean"
+            }
+          }
+        },
+        "reference": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "role",
+              "value"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "role": {
+                "$ref": "#/definitions/vocab_id"
+              },
+              "value": {
+                "$ref": "#/definitions/value"
+              }
+            }
+          }
+        },
+        "recorded_at": {
+          "$ref": "#/definitions/timestamp"
+        },
+        "event_hash": {
+          "$ref": "#/definitions/sha256"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "extracted"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "source",
+              "activity",
+              "selectors"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "inferred"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "inference"
+            ]
+          }
+        }
+      ],
+      "x-khg-code": "KHG-C007"
+    },
+    "record_common": {
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/id"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "recorded_at": {
+          "$ref": "#/definitions/timestamp"
+        },
+        "typed_under": {
+          "$ref": "#/definitions/versioned_id"
+        },
+        "rank": {
+          "enum": [
+            "preferred",
+            "normal",
+            "deprecated"
+          ]
+        },
+        "rank_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "visibility": {
+          "enum": [
+            "visible",
+            "suppressed"
+          ]
+        },
+        "status_ref": {
+          "$ref": "#/definitions/id"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/evidence"
+          }
+        },
+        "confidence": {
+          "$ref": "#/definitions/confidence"
+        },
+        "text": {
+          "type": "string"
+        },
+        "derived": {
+          "type": "object"
+        },
+        "extensions": {
+          "$ref": "#/definitions/extensions"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "rank": {
+                "const": "deprecated"
+              }
+            },
+            "required": [
+              "rank"
+            ]
+          },
+          "then": {
+            "required": [
+              "rank_reason"
+            ],
+            "x-khg-code": "KHG-C008"
+          }
+        }
+      ]
+    },
+    "entity": {
+      "type": "object",
+      "required": [
+        "kind",
+        "id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "entity"
+        },
+        "id": {
+          "$ref": "#/definitions/id"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "types": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/vocab_id"
+          },
+          "uniqueItems": true
+        },
+        "label": {
+          "type": "string"
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "redirect_to": {
+          "$ref": "#/definitions/id"
+        },
+        "extensions": {
+          "$ref": "#/definitions/extensions"
+        },
+        "recorded_at": {
+          "$ref": "#/definitions/timestamp"
+        }
+      }
+    },
+    "fact": {
+      "type": "object",
+      "required": [
+        "kind",
+        "id",
+        "relation",
+        "status",
+        "bindings"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "$ref": "#/definitions/record_common"
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "disputed",
+                  "superseded",
+                  "retracted"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "status_ref"
+            ],
+            "x-khg-code": "KHG-C006"
+          }
+        }
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "fact",
+            "rule"
+          ]
+        },
+        "relation": {
+          "$ref": "#/definitions/vocab_id"
+        },
+        "status": {
+          "enum": [
+            "candidate",
+            "asserted",
+            "disputed",
+            "superseded",
+            "retracted",
+            "quoted"
+          ]
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/binding"
+          }
+        },
+        "id": {},
+        "version": {},
+        "recorded_at": {},
+        "typed_under": {},
+        "rank": {},
+        "rank_reason": {},
+        "visibility": {},
+        "status_ref": {},
+        "evidence": {},
+        "confidence": {},
+        "text": {},
+        "derived": {},
+        "extensions": {}
+      }
+    },
+    "goal": {
+      "type": "object",
+      "required": [
+        "kind",
+        "id",
+        "relation",
+        "status",
+        "bindings",
+        "goal"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "$ref": "#/definitions/record_common"
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "satisfied"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "status_ref"
+            ],
+            "x-khg-code": "KHG-C006"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "abandoned"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "goal": {
+                "required": [
+                  "closed_reason"
+                ]
+              }
+            },
+            "x-khg-code": "KHG-C006"
+          }
+        }
+      ],
+      "properties": {
+        "kind": {
+          "const": "goal"
+        },
+        "relation": {
+          "$ref": "#/definitions/vocab_id"
+        },
+        "status": {
+          "enum": [
+            "open",
+            "satisfied",
+            "abandoned"
+          ]
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/goal_binding"
+          }
+        },
+        "goal": {
+          "type": "object",
+          "required": [
+            "brief"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "brief": {
+              "type": "string"
+            },
+            "owner": {
+              "type": "string"
+            },
+            "closed_reason": {
+              "type": "string"
+            }
+          }
+        },
+        "id": {},
+        "version": {},
+        "recorded_at": {},
+        "typed_under": {},
+        "rank": {},
+        "rank_reason": {},
+        "visibility": {},
+        "status_ref": {},
+        "evidence": {},
+        "confidence": {},
+        "text": {},
+        "derived": {},
+        "extensions": {}
+      }
+    },
+    "meta": {
+      "type": "object",
+      "required": [
+        "kind",
+        "id",
+        "relation",
+        "status",
+        "bindings",
+        "meta",
+        "evidence"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "$ref": "#/definitions/record_common"
+        },
+        {
+          "if": {
+            "properties": {
+              "relation": {
+                "const": "khg:supersedes"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "meta": {
+                "properties": {
+                  "reason": {
+                    "enum": [
+                      "correction",
+                      "duplicate",
+                      "conflation",
+                      "schema_migration",
+                      "other"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "relation": {
+                "const": "khg:retracts"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "meta": {
+                "properties": {
+                  "reason": {
+                    "enum": [
+                      "withdrawn",
+                      "unsupported",
+                      "other"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "relation": {
+                "const": "khg:disputes"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "meta": {
+                "properties": {
+                  "reason": {
+                    "enum": [
+                      "key_conflict",
+                      "negation_conflict",
+                      "curator",
+                      "other"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "relation": {
+                "const": "khg:fulfils"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "meta": {
+                "properties": {
+                  "reason": {
+                    "enum": [
+                      "bound",
+                      "matched_existing"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "kind": {
+          "const": "meta"
+        },
+        "relation": {
+          "enum": [
+            "khg:supersedes",
+            "khg:retracts",
+            "khg:disputes",
+            "khg:fulfils"
+          ]
+        },
+        "status": {
+          "enum": [
+            "asserted",
+            "retracted"
+          ]
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/binding"
+          },
+          "minItems": 1
+        },
+        "meta": {
+          "type": "object",
+          "required": [
+            "reason"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "reason": {
+              "type": "string"
+            },
+            "note": {
+              "type": "string"
+            },
+            "migration_id": {
+              "type": "string"
+            }
+          }
+        },
+        "evidence": {
+          "minItems": 1
+        },
+        "id": {},
+        "version": {},
+        "recorded_at": {},
+        "typed_under": {},
+        "rank": {},
+        "rank_reason": {},
+        "visibility": {},
+        "status_ref": {},
+        "confidence": {},
+        "text": {},
+        "derived": {},
+        "extensions": {}
+      }
+    },
+    "record": {
+      "type": "object",
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "entity",
+            "fact",
+            "rule",
+            "goal",
+            "meta"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "entity"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/entity"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "fact",
+                  "rule"
+                ]
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/fact"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "goal"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/goal"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "meta"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/meta"
+          }
+        }
+      ]
+    }
+  }
+}

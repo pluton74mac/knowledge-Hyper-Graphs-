@@ -1,0 +1,37 @@
+{
+  "network-type": "directed",
+  "metadata": {
+    "title": "P2 probe: one role-labelled n-ary fact"
+  },
+  "nodes": [
+    {
+      "node": "gene:lexA"
+    }
+  ],
+  "edges": [
+    {
+      "edge": "f2",
+      "attrs": {
+        "relation": "regulates"
+      }
+    }
+  ],
+  "incidences": [
+    {
+      "edge": "f2",
+      "node": "gene:lexA",
+      "direction": "tail",
+      "attrs": {
+        "role": "regulator"
+      }
+    },
+    {
+      "edge": "f2",
+      "node": "gene:lexA",
+      "direction": "head",
+      "attrs": {
+        "role": "target"
+      }
+    }
+  ]
+}

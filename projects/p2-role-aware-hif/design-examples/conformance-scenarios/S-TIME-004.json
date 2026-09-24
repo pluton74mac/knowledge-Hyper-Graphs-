@@ -1,0 +1,91 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-TIME-004",
+ "title": "as_of and as_at compose",
+ "requires": [
+  "atomic_writes",
+  "literal_values",
+  "transaction_time",
+  "valid_time"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities"
+   ],
+   "at": "2026-10-01T00:00:01Z"
+  },
+  {
+   "put": [
+    {
+     "@": "f:king-13",
+     "drop_bindings": [
+      "b4"
+     ]
+    }
+   ],
+   "at": "2026-10-01T00:00:02Z"
+  },
+  {
+   "apply": {
+    "op": "end_validity",
+    "target": "f:king-13",
+    "end": {
+     "literal": {
+      "datatype": "time",
+      "time": "+1643-05-14T00:00:00Z",
+      "precision": 11
+     }
+    },
+    "evidence": [
+     {
+      "id": "e9",
+      "type": "curated",
+      "mode": "manual",
+      "source": {
+       "doc_id": "doc:scenario"
+      }
+     }
+    ]
+   },
+   "at": "2026-10-01T00:00:03Z"
+  }
+ ],
+ "when": [
+  {
+   "op": "incident",
+   "args": {
+    "node": "ex:KingOfFrance",
+    "where": {
+     "as_of": "+1700-01-01T00:00:00Z",
+     "as_at": "2026-10-01T00:00:02Z"
+    }
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:king-13"
+    ]
+   }
+  },
+  {
+   "op": "incident",
+   "args": {
+    "node": "ex:KingOfFrance",
+    "where": {
+     "as_of": "+1700-01-01T00:00:00Z"
+    }
+   },
+   "then": {
+    "select": "ids",
+    "equals": []
+   }
+  }
+ ],
+ "precedent": [
+  "B S033",
+  "C S-INC-006"
+ ]
+}

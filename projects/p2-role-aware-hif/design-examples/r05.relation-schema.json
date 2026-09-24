@@ -1,0 +1,24 @@
+{
+ "kind": "relation-schema",
+ "format": "khg-relation-schema/1.0.0",
+ "id": "r05-tables",
+ "version": "1.0.0",
+ "label": "The relations of the R05 unit-test tables, mapped to C1 (tests/scorers)",
+ "entity_types": [
+  {"id": "Thing"}
+ ],
+ "roles": [
+  {"id": "A"},
+  {"id": "B"},
+  {"id": "C"},
+  {"id": "D"},
+  {"id": "E"},
+  {"id": "Q"}
+ ],
+ "relations": [
+  {"id": "r", "key": {"roles": ["A", "B"], "temporal": false, "on_collision": "dispute"}, "roles": [{"role": "A", "slot": "core", "fillers": [{"entity": ["Thing"]}], "min": 0, "max": 1}, {"role": "B", "slot": "core", "fillers": [{"entity": ["Thing"]}], "min": 0, "max": 1}, {"role": "C", "slot": "qualifier", "fillers": [{"entity": ["Thing"]}], "min": 0, "max": 1}, {"role": "D", "slot": "qualifier", "fillers": [{"entity": ["Thing"]}], "min": 0, "max": 1}, {"role": "E", "slot": "qualifier", "fillers": [{"entity": ["Thing"]}], "min": 0, "max": 1}, {"role": "Q", "slot": "qualifier", "fillers": [{"entity": ["Thing"]}], "min": 0, "max": 1}]},
+  {"id": "s", "roles": [{"role": "A", "slot": "core", "fillers": [{"entity": ["Thing"]}], "min": 0, "max": 1}, {"role": "B", "slot": "core", "fillers": [{"entity": ["Thing"]}], "min": 0, "max": 1}]},
+  {"id": "r2", "roles": [{"role": "A", "slot": "core", "fillers": [{"entity": ["Thing"]}], "min": 1, "max": 1}, {"role": "B", "slot": "core", "fillers": [{"entity": ["Thing"]}], "min": 1, "max": 1}]},
+  {"id": "r4", "roles": [{"role": "A", "slot": "core", "fillers": [{"entity": ["Thing"]}], "min": 1, "max": 1}, {"role": "B", "slot": "core", "fillers": [{"entity": ["Thing"]}], "min": 1, "max": 1}, {"role": "C", "slot": "core", "fillers": [{"entity": ["Thing"]}], "min": 1, "max": 1}, {"role": "D", "slot": "core", "fillers": [{"entity": ["Thing"]}], "min": 1, "max": 1}]}
+ ]
+}

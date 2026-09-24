@@ -1,0 +1,45 @@
+{
+  "network-type": "undirected",
+  "nodes": [
+    {
+      "node": 1
+    },
+    {
+      "node": "1"
+    },
+    {
+      "node": "a"
+    }
+  ],
+  "edges": [
+    {
+      "edge": 10
+    },
+    {
+      "edge": "10"
+    }
+  ],
+  "incidences": [
+    {
+      "edge": 10,
+      "node": 1,
+      "attrs": {
+        "role": "member"
+      }
+    },
+    {
+      "edge": 10,
+      "node": "1",
+      "attrs": {
+        "role": "member"
+      }
+    },
+    {
+      "edge": "10",
+      "node": "a",
+      "attrs": {
+        "role": "member"
+      }
+    }
+  ]
+}

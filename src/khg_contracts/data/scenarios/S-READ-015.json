@@ -1,0 +1,44 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-READ-015",
+ "title": "get ignores the Where filters",
+ "requires": [
+  "goals",
+  "literal_values",
+  "nesting",
+  "ordered_roles",
+  "special_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "load": "@fixture"
+  }
+ ],
+ "when": [
+  {
+   "op": "get",
+   "args": {
+    "id": "f:born-skłodowska-kraków"
+   },
+   "then": {
+    "select": "status",
+    "equals": "superseded"
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "g:who-1774"
+   },
+   "then": {
+    "select": "status",
+    "equals": "goal"
+   }
+  }
+ ],
+ "precedent": [
+  "standards ruling (store defaults)"
+ ]
+}

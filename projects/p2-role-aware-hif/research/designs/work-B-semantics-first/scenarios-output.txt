@@ -1,0 +1,18 @@
+   PASS C2-S012 put(records=...) -> [['f:king-14', 2, 'versioned']]
+   PASS C2-S012 get(id='f:king-14', version=1) -> 'since'
+   PASS C2-S012 get(id='f:king-14') -> 'period'
+   PASS C2-S012 put(records=...) -> 'KHG-D013'
+   PASS C2-S012 put(records=...) -> 'KHG-D013'
+   PASS C2-S031 get(id='f:born-skłodowska-kraków', as_at='2026-10-01T00:00:01Z') -> 'asserted'
+   PASS C2-S031 get(id='f:born-skłodowska-kraków') -> 'superseded'
+   PASS C2-S031 supersession_walk(id='f:born-skłodowska-kraków', direction='forward') -> [{'from': 'f:born-skłodowska-kraków', 'via': 'm:sup-1', 'reason': 'correction', 'to': ['f:born-skłodowska-warsz
+   PASS C2-S031 incident(node='ex:Maria_Skłodowska') -> ['f:born-skłodowska-warszawa']
+   PASS C2-S034 find(relation='married', pattern=[], valid_at='+1903-01-01T00:00:00Z') -> ['f:m-period', 'f:m-since']
+   PASS C2-S034 find(relation='married', pattern=[], valid_at='+1903-01-01T00:00:00Z', valid_mode='possible') -> ['f:m-period', 'f:m-since', 'f:m-undated']
+   PASS C2-S034 find(relation='married', pattern=[], valid_at='+1900-06-01T00:00:00Z') -> ['f:m-period']
+   PASS C2-S034 find(relation='married', pattern=[], valid_at='+2026-01-01T00:00:00Z') -> ['f:m-since']
+   PASS C2-S034 find(relation='married', pattern=[]) -> ['f:m-period', 'f:m-since', 'f:m-undated']
+   PASS C2-S040 put(records=...) -> 'KHG-D016'
+   PASS C2-S040 get(id='f:king-14b') -> None
+   PASS C2-S040 by_key(relation='position_held', key_bindings=[{'role': 'position', 'value': {'entity': 'ex:KingO) -> ['f:king-13']
+ALL SCENARIOS PASS

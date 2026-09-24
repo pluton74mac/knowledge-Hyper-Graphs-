@@ -1,0 +1,33 @@
+{
+  "metadata": {},
+  "network-type": "undirected",
+  "nodes": [
+    {
+      "attrs": {
+        "label": "second",
+        "a": 1,
+        "b": 2
+      },
+      "node": "n1"
+    }
+  ],
+  "edges": [
+    {
+      "attrs": {
+        "relation": "r-second",
+        "c": 3
+      },
+      "edge": "e1"
+    }
+  ],
+  "incidences": [
+    {
+      "edge": "e1",
+      "node": "n1"
+    },
+    {
+      "edge": "e1",
+      "node": "n2"
+    }
+  ]
+}

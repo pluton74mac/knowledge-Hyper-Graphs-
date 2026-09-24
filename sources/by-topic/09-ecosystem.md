@@ -205,3 +205,19 @@ the `[unverified]` list in [`books-surveys-and-courses.md`](../../kb/09-ecosyste
 - PyPI JSON API, `hyperextract`: version **0.10.3**, licence Apache-2.0, uploaded 2026-09-20, 19 releases, Python 3.11+. Queried 2026-09-21. https://pypi.org/project/hyperextract/
 - PyPI JSON API, `ontomem` 0.6.0, Apache-2.0, "a self-consolidating memory layer for AI agents with schema-first design, intelligent merging, and hybrid search capabilities" — the entity/hyperedge merge layer Hyper-Extract depends on (`MergeStrategy.LLM.BALANCED` by default for graph and hypergraph types). Queried 2026-09-21. https://pypi.org/project/ontomem/
 - Hyper-Extract documentation site and AtomGit mirror, as linked from the README (docs at `yifanfeng97.github.io/Hyper-Extract/latest/`; mirror at `atomgit.com/yifanfeng97/Hyper-Extract`). Recorded from the README, not independently fetched, 2026-09-21. `[unverified]`
+
+## Added by project P2 (2026-09-24) — HIF input and output of XGI and HyperNetX, probed
+
+Cited by [`kb/09-ecosystem/software-libraries.md`](../../kb/09-ecosystem/software-libraries.md) §1 and §8 and
+[`kb/09-ecosystem/standards-bodies-and-specifications.md`](../../kb/09-ecosystem/standards-bodies-and-specifications.md) §4.
+Corrects section 8 above in one point: `hypernetx.from_hif()` returns an undirected hypergraph but keeps `direction`
+as an opaque incidence column (it is not dropped). The `$id` 404 and the other URLs are one repository under three
+names and two schema files with identical rules, not competing schemas.
+
+- XGI source at release tag v0.10.2 (`xgi/readwrite/hif.py`, `xgi/convert/hif_dict.py`, `xgi/core/hypergraph.py`, `xgi/core/dihypergraph.py`, `xgi/convert/bipartite_edges.py`, `xgi/convert/higher_order_network.py`), byte-identical to the PyPI wheel uploaded 2026-05-15; checked 2026-09-23. https://github.com/xgi-org/xgi/tree/v0.10.2 ; https://pypi.org/project/xgi/0.10.2/
+- HyperNetX source at release tag v2.4.3 (`hypernetx/hif.py`, `hypernetx/classes/factory.py`, `hypernetx/classes/hypergraph.py`, `hypernetx/classes/property_store.py`, `hypernetx/classes/hyp_view.py`), byte-identical to the PyPI wheel uploaded 2026-07-23 (declares `pandas<3.0.0`); checked 2026-09-23. https://github.com/pnnl/HyperNetX/tree/v2.4.3 ; https://pypi.org/project/hypernetx/2.4.3/
+- HyperNetX issue #171, "Code Fails on Import if Internet Connection is Disrupted" (opened 2025-10-21, open on 2026-09-23). https://github.com/pnnl/HyperNetX/issues/171
+- HIF-standard issue #55 (maintainers' "v1"/"v2" wording, 2025-12-09) and Zenodo releases v0.1.0–v0.1.2. https://github.com/HIF-org/HIF-standard/issues/55 ; https://doi.org/10.5281/zenodo.17257719
+- P2 research report 03, "XGI and HyperNetX HIF input and output, probed" (probes run 2026-09-23, Python 3.11.15, 27 cases). [projects/p2-role-aware-hif/research/03-library-probes.md](../../projects/p2-role-aware-hif/research/03-library-probes.md)
+- P2 research report 02, "What the HIF standard says today, from primary sources" (2026-09-23). [projects/p2-role-aware-hif/research/02-hif-standard.md](../../projects/p2-role-aware-hif/research/02-hif-standard.md)
+- P2 library evidence, `library-hif-evidence.json`: the libraries' own HIF functions, run offline, on four role-carrying files. [tests/evidence/library-hif-evidence.json](../../tests/evidence/library-hif-evidence.json)

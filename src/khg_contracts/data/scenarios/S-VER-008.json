@@ -1,0 +1,107 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-VER-008",
+ "title": "entity versions: labels may change, types only grow, redirect_to is set once",
+ "requires": [],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "ex:LouisXIV",
+      "set": {
+       "label": "Louis XIV of France",
+       "aliases": [
+        "the Sun King"
+       ]
+      }
+     }
+    ]
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "ex:LouisXIV",
+      2,
+      "versioned"
+     ]
+    ]
+   }
+  },
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "ex:LouisXIV",
+      "set": {
+       "types": [
+        "Agent"
+       ],
+       "label": "Louis XIV of France",
+       "aliases": [
+        "the Sun King"
+       ]
+      }
+     }
+    ]
+   },
+   "then": {
+    "error": "KHG-D013"
+   }
+  },
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "ex:Paris",
+      "set": {
+       "redirect_to": "ex:Warszawa"
+      }
+     }
+    ]
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "ex:Paris",
+      2,
+      "versioned"
+     ]
+    ]
+   }
+  },
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "ex:Paris",
+      "set": {
+       "redirect_to": "ex:Kraków"
+      }
+     }
+    ]
+   },
+   "then": {
+    "error": "KHG-D013"
+   }
+  }
+ ],
+ "precedent": [
+  "critique CONS-28"
+ ]
+}

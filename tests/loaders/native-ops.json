@@ -1,0 +1,195 @@
+{
+ "format": "khg-native-ops/1.0.0",
+ "strict": true,
+ "rows": [
+  {
+   "library": "xgi",
+   "operation": "copy() then derive",
+   "file": "full",
+   "expected": "exact",
+   "outcome": "exact",
+   "ok": true,
+   "report": {}
+  },
+  {
+   "library": "xgi",
+   "operation": "remove_node('ex:HeLa') (weak: f:reg-1 survives)",
+   "file": "full",
+   "expected": "raises (partial)",
+   "outcome": "raises (partial)",
+   "ok": true,
+   "report": {}
+  },
+  {
+   "library": "xgi",
+   "operation": "remove_node('ex:HeLa', strong=True) (f:reg-1 removed whole)",
+   "file": "full",
+   "expected": "removals",
+   "outcome": "removals",
+   "ok": true,
+   "report": {
+    "dropped_records": 3,
+    "dropped_nodes": 1
+   }
+  },
+  {
+   "library": "xgi",
+   "operation": "add_edge + set_edge_attributes, then label",
+   "file": "full",
+   "expected": "needs-label",
+   "outcome": "needs-label -> exports (changed)",
+   "ok": true,
+   "report": {}
+  },
+  {
+   "library": "xgi",
+   "operation": "add_node_to_edge('f:reg-1', 'ex:Paris'), then label",
+   "file": "full",
+   "expected": "needs-label",
+   "outcome": "needs-label -> exports (changed)",
+   "ok": true,
+   "report": {}
+  },
+  {
+   "library": "xgi",
+   "operation": "remove_node_from_edge + add_node_to_edge (same pair)",
+   "file": "full",
+   "expected": "exact",
+   "outcome": "exact",
+   "ok": true,
+   "report": {}
+  },
+  {
+   "library": "xgi",
+   "operation": "subhypergraph(all nodes but ex:HeLa) then derive",
+   "file": "full",
+   "expected": "removals",
+   "outcome": "removals",
+   "ok": true,
+   "report": {}
+  },
+  {
+   "library": "xgi",
+   "operation": "subhypergraph on a DiHypergraph",
+   "file": "slice",
+   "expected": "unsupported",
+   "outcome": "unsupported (XGIError)",
+   "ok": true,
+   "report": {}
+  },
+  {
+   "library": "xgi",
+   "operation": "convert_labels_to_integers",
+   "file": "full",
+   "expected": "raises (partial)",
+   "outcome": "raises (unlabelled)",
+   "ok": true,
+   "report": {}
+  },
+  {
+   "library": "xgi",
+   "operation": "dual()",
+   "file": "full",
+   "expected": "raises (partial)",
+   "outcome": "raises (unlabelled)",
+   "ok": true,
+   "report": {}
+  },
+  {
+   "library": "xgi",
+   "operation": "cleanup() (relabels to integers by default)",
+   "file": "full",
+   "expected": "raises",
+   "outcome": "raises (unlabelled)",
+   "ok": true,
+   "report": {}
+  },
+  {
+   "library": "hnx",
+   "operation": "clone() then derive (HyperNetX drops the isolated ex:Mazarin)",
+   "file": "full",
+   "expected": "removals",
+   "outcome": "removals",
+   "ok": true,
+   "report": {}
+  },
+  {
+   "library": "hnx",
+   "operation": "restrict_to_edges(all but f:reg-1) then derive",
+   "file": "full",
+   "expected": "removals",
+   "outcome": "removals",
+   "ok": true,
+   "report": {}
+  },
+  {
+   "library": "hnx",
+   "operation": "remove_edges(['f:reg-1'])",
+   "file": "full",
+   "expected": "removals",
+   "outcome": "removals",
+   "ok": true,
+   "report": {
+    "dropped_records": 3,
+    "dropped_nodes": 2
+   }
+  },
+  {
+   "library": "hnx",
+   "operation": "remove_incidences([('f:reg-1', 'ex:HeLa')])",
+   "file": "full",
+   "expected": "raises (partial)",
+   "outcome": "raises (partial)",
+   "ok": true,
+   "report": {}
+  },
+  {
+   "library": "hnx",
+   "operation": "rename(nodes={'ex:HeLa': 'ex:HeLa-cells'})",
+   "file": "full",
+   "expected": "moved",
+   "outcome": "moved",
+   "ok": true,
+   "report": {
+    "moved": 1,
+    "dropped_nodes": 1
+   }
+  },
+  {
+   "library": "hnx",
+   "operation": "add_incidence('f:reg-1', 'ex:Paris'), then label",
+   "file": "full",
+   "expected": "needs-label",
+   "outcome": "needs-label -> exports (changed)",
+   "ok": true,
+   "report": {}
+  },
+  {
+   "library": "hnx",
+   "operation": "restrict_to_nodes(all but ex:HeLa) then derive",
+   "file": "full",
+   "expected": "raises (partial)",
+   "outcome": "raises (partial)",
+   "ok": true,
+   "report": {}
+  },
+  {
+   "library": "hnx",
+   "operation": "collapse_nodes() then derive",
+   "file": "full",
+   "expected": "raises",
+   "outcome": "raises (partial)",
+   "ok": true,
+   "report": {}
+  },
+  {
+   "library": "hnx",
+   "operation": "sum(slice) then derive (the slice is a subset; the isolated node is lost)",
+   "file": "full",
+   "expected": "removals",
+   "outcome": "removals",
+   "ok": true,
+   "report": {}
+  }
+ ]
+}

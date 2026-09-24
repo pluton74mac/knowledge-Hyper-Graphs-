@@ -1,0 +1,299 @@
+{
+ "case": "c23-big-int-ids",
+ "description": "integer ids at and beyond 2^53 and 2^63",
+ "input": "lib-cases/c23-big-int-ids.hif.json",
+ "lib": "xgi",
+ "lib_version": "0.10.2",
+ "load": {
+  "api": "xgi.read_hif(path)",
+  "ok": true,
+  "error": null,
+  "warnings": [],
+  "class": "Hypergraph"
+ },
+ "placement": {
+  "class": "Hypergraph",
+  "num_nodes": 2,
+  "num_edges": 2,
+  "net_attr (H._net_attr)": {},
+  "node_attrs (H.nodes[n])": {
+   "int:9007199254740993": {},
+   "int:18446744073709551621": {}
+  },
+  "edge_attrs (H.edges[e])": {
+   "int:9223372036854775807": {},
+   "int:9223372036854775808": {}
+  },
+  "edge_members": {
+   "int:9223372036854775807": {
+    "members": [
+     "int:18446744073709551621",
+     "int:9007199254740993"
+    ]
+   },
+   "int:9223372036854775808": {
+    "members": [
+     "int:9007199254740993"
+    ]
+   }
+  },
+  "role_strings_in_object_state": {
+   "a": [],
+   "b": [],
+   "c": []
+  },
+  "record_weight_values_in_object_state": [],
+  "record_weight_values_searched": []
+ },
+ "field_locations": {
+  "incidence.attrs (role)": "found for 0/3 role strings",
+  "incidence.direction": "n/a",
+  "record-level weight values": "n/a",
+  "network-type": "class Hypergraph",
+  "metadata": "n/a"
+ },
+ "export": {
+  "api": "xgi.write_hif(H, path)",
+  "ok": true,
+  "error": null,
+  "warnings": [],
+  "output": "out/xgi/c23-big-int-ids.out.hif.json",
+  "strict_json": true,
+  "schema_errors": [],
+  "top_level_keys": [
+   "incidences",
+   "metadata",
+   "network-type"
+  ],
+  "n_node_records": 0,
+  "n_edge_records": 0,
+  "to_hif_dict_equals_file": true
+ },
+ "diff": {
+  "top": {
+   "network-type": {
+    "in": "undirected",
+    "out": "undirected",
+    "status": "preserved"
+   },
+   "metadata": {
+    "keys_lost": [],
+    "keys_added": [],
+    "keys_changed": [],
+    "status": "preserved"
+   },
+   "other_top_level_keys_out": []
+  },
+  "incidences": {
+   "int:9223372036854775807 | int:9007199254740993": {
+    "edge": "int:9223372036854775807",
+    "node": "int:9007199254740993",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "a"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "a"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   },
+   "int:9223372036854775807 | int:18446744073709551621": {
+    "edge": "int:9223372036854775807",
+    "node": "int:18446744073709551621",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "b"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "b"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   },
+   "int:9223372036854775808 | int:9007199254740993": {
+    "edge": "int:9223372036854775808",
+    "node": "int:9007199254740993",
+    "count_in": 1,
+    "count_out": 1,
+    "role": "lost",
+    "direction": "preserved",
+    "weight": "preserved",
+    "attrs": "lost",
+    "status": "present",
+    "roles_in": [
+     "c"
+    ],
+    "roles_out": [
+     "<absent>"
+    ],
+    "directions_in": [
+     "<absent>"
+    ],
+    "directions_out": [
+     "<absent>"
+    ],
+    "weights_in": [
+     "<absent>"
+    ],
+    "weights_out": [
+     "<absent>"
+    ],
+    "attrs_in": [
+     {
+      "role": "c"
+     }
+    ],
+    "attrs_out": [
+     "<absent>"
+    ]
+   }
+  },
+  "nodes": {
+   "int:9007199254740993": {
+    "declared_in": 0,
+    "declared_out": 0,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved"
+   },
+   "int:18446744073709551621": {
+    "declared_in": 0,
+    "declared_out": 0,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved"
+   }
+  },
+  "edges": {
+   "int:9223372036854775808": {
+    "declared_in": 0,
+    "declared_out": 0,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved"
+   },
+   "int:9223372036854775807": {
+    "declared_in": 0,
+    "declared_out": 0,
+    "present_out": true,
+    "attrs": "preserved",
+    "weight": "preserved"
+   }
+  },
+  "id_type_changes": [],
+  "summary": {
+   "incidence_records": "3 -> 3",
+   "role_records_kept": "0/3",
+   "direction_records_kept": "0/0",
+   "incidence_weight_records_kept": "0/0",
+   "incidence_attrs_records_kept": "0/3",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 0,
+   "nodes": {
+    "declared_in": 0,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 0,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "network_type": "preserved (undirected -> undirected)",
+   "metadata": "preserved",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [],
+   "id_type_changes": 0
+  }
+ },
+ "gen2": {
+  "load_error": null,
+  "export_error": null,
+  "idempotent (gen1 == gen2 structurally)": true,
+  "diff_gen1_gen2_summary": {
+   "incidence_records": "3 -> 3",
+   "role_records_kept": "0/0",
+   "direction_records_kept": "0/0",
+   "incidence_weight_records_kept": "0/0",
+   "incidence_attrs_records_kept": "0/0",
+   "pairs_lost": 0,
+   "pairs_new": 0,
+   "pairs_count_changed": 0,
+   "weights_added_on_incidences": 0,
+   "nodes": {
+    "declared_in": 0,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "edges": {
+    "declared_in": 0,
+    "missing_out": [],
+    "attrs_not_preserved": {},
+    "weight_not_preserved": {},
+    "new_out": []
+   },
+   "network_type": "preserved (undirected -> undirected)",
+   "metadata": "preserved",
+   "metadata_keys_lost": [],
+   "metadata_keys_added": [],
+   "id_type_changes": 0
+  }
+ }
+}

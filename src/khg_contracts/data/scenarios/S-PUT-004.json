@@ -1,0 +1,38 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-PUT-004",
+ "title": "a candidate never enters a store",
+ "requires": [],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     {
+      "@": "f:reg-1",
+      "set": {
+       "status": "candidate"
+      }
+     }
+    ]
+   },
+   "then": {
+    "error": "KHG-D017"
+   }
+  }
+ ],
+ "precedent": [
+  "A C2-17 passed",
+  "C S-PUT-003 passed",
+  "B S004"
+ ]
+}

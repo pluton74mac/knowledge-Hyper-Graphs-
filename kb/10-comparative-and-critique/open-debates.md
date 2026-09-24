@@ -4,7 +4,7 @@ type: question
 status: draft
 tags: [debate, open-questions, terminology, hyper-relational, n-ary, rdf-1.2, higher-order-networks, rag, reification, community-disconnect]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-24
 ---
 
 # Open debates
@@ -264,6 +264,17 @@ zero means "no match in extracted text", not "certainly absent"]`.
 **What would fix it.** A role-aware extension of HIF; a survey written by authors from both sides; a
 benchmark where the same dataset is analysed structurally *and* used for link prediction. This is the
 clearest available gap for a project in this KB.
+
+**Update 2026-09-24.** The first item now exists in this repository. Project P2 defined
+`role-convention` 1.0.0, a role convention on HIF incidence attributes that validates against the
+current schema, and loaders that carry roles through XGI 0.10.2 and HyperNetX 2.4.3 and back with
+nothing lost. They work by building the library objects directly, because both libraries' own HIF
+readers lose roles. So the "practical symptom" above no longer holds for files that use the
+convention, though it still holds for the libraries' own HIF functions. The proposal to the HIF
+maintainers is drafted and not yet filed; see
+[../04-storage-and-formats/hif-hypergraph-interchange-format.md](../04-storage-and-formats/hif-hypergraph-interchange-format.md) §10
+and [../../projects/p2-role-aware-hif/](../../projects/p2-role-aware-hif/). Open questions [09.5] and
+[10.4] were narrowed accordingly.
 
 ---
 

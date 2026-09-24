@@ -1,0 +1,718 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "tag:khg-contracts,2026:schema/khg-queue/1.0.0",
+  "title": "C3: candidate queue item, linter/curation action-log entry, and review verdict (khg-queue/1.0.0, released with khg-record/1.0.0)",
+  "definitions": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+    },
+    "state": {
+      "enum": [
+        "pending",
+        "linted",
+        "accepted",
+        "rejected",
+        "merged",
+        "needs_review",
+        "withdrawn"
+      ]
+    },
+    "actor": {
+      "type": "object",
+      "required": [
+        "type",
+        "id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "agent",
+            "linter",
+            "person",
+            "system"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "item": {
+      "type": "object",
+      "required": [
+        "kind",
+        "khg_queue",
+        "item_id",
+        "item_kind",
+        "payload",
+        "extraction",
+        "keys",
+        "submitted_at"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "queue_item"
+        },
+        "khg_queue": {
+          "const": "khg-queue/1.0.0"
+        },
+        "item_id": {
+          "type": "string",
+          "pattern": "^q-[0-9A-Za-z_.-]{1,64}$"
+        },
+        "item_kind": {
+          "enum": [
+            "new_fact",
+            "goal_binding",
+            "merge_proposal",
+            "supersession_proposal",
+            "retraction_proposal"
+          ],
+          "x-khg-code": "KHG-Q003"
+        },
+        "payload": {
+          "type": "object",
+          "description": "a C1 record; validated in a second step against khg-record/1.0.0 #/definitions/fact (bundled), never through a cross-document $ref"
+        },
+        "target": {
+          "type": "object",
+          "required": [
+            "store_id"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "store_id": {
+              "type": "string"
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "bid": {
+              "type": "string"
+            }
+          }
+        },
+        "extraction": {
+          "type": "object",
+          "required": [
+            "run_id",
+            "order_id",
+            "position",
+            "extractor",
+            "doc"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "run_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "order_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "position": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "seed": {
+              "type": "integer"
+            },
+            "temperature": {
+              "type": "number",
+              "minimum": 0
+            },
+            "extractor": {
+              "type": "object",
+              "required": [
+                "name",
+                "version"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "version": {
+                  "type": "string"
+                }
+              },
+              "x-khg-code": {
+                "required": "KHG-Q001"
+              }
+            },
+            "model": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "version": {
+                  "type": "string"
+                },
+                "provider": {
+                  "type": "string"
+                }
+              }
+            },
+            "prompt_id": {
+              "type": "string"
+            },
+            "skill_id": {
+              "type": "string"
+            },
+            "params": {
+              "type": "object"
+            },
+            "doc": {
+              "type": "object",
+              "required": [
+                "doc_id"
+              ],
+              "properties": {
+                "doc_id": {
+                  "type": "string"
+                },
+                "doc_sha256": {
+                  "$ref": "#/definitions/sha256"
+                }
+              },
+              "x-khg-code": {
+                "required": "KHG-Q001"
+              }
+            }
+          },
+          "x-khg-code": {
+            "required": "KHG-Q001"
+          }
+        },
+        "keys": {
+          "type": "object",
+          "required": [
+            "content_key",
+            "core_key",
+            "key_digest"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "content_key": {
+              "$ref": "#/definitions/sha256"
+            },
+            "core_key": {
+              "$ref": "#/definitions/sha256"
+            },
+            "key_digest": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/sha256"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "event_hashes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/sha256"
+              }
+            }
+          }
+        },
+        "submitted_at": {
+          "$ref": "#/definitions/timestamp"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "item_kind": {
+                "enum": [
+                  "new_fact",
+                  "merge_proposal"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "required": [
+                  "kind",
+                  "id",
+                  "relation",
+                  "status",
+                  "bindings"
+                ],
+                "properties": {
+                  "status": {
+                    "const": "candidate",
+                    "x-khg-code": "KHG-Q002"
+                  },
+                  "kind": {
+                    "enum": [
+                      "fact",
+                      "rule"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "item_kind": {
+                "enum": [
+                  "goal_binding",
+                  "supersession_proposal",
+                  "retraction_proposal"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "target"
+            ]
+          }
+        }
+      ]
+    },
+    "finding": {
+      "type": "object",
+      "required": [
+        "rule_id",
+        "severity",
+        "message"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "rule_id": {
+          "type": "string",
+          "pattern": "^(KHG-[A-Z][0-9]{3}|L-[A-Z]+-[0-9]{3})$"
+        },
+        "rule_version": {
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "violation",
+            "warning",
+            "info"
+          ]
+        },
+        "path": {
+          "type": "string"
+        },
+        "value": {},
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "log_entry": {
+      "type": "object",
+      "required": [
+        "kind",
+        "log_id",
+        "parent_log_id",
+        "target",
+        "action",
+        "state_before",
+        "state_after",
+        "actor",
+        "at"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "log_entry"
+        },
+        "log_id": {
+          "type": "string",
+          "pattern": "^l-[0-9A-Za-z_.-]{1,64}$"
+        },
+        "parent_log_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^l-"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "target": {
+          "type": "object",
+          "required": [
+            "item_id"
+          ],
+          "properties": {
+            "item_id": {
+              "type": "string"
+            },
+            "store_id": {
+              "type": "string"
+            },
+            "content_key": {
+              "$ref": "#/definitions/sha256"
+            }
+          }
+        },
+        "action": {
+          "enum": [
+            "submit",
+            "lint",
+            "accept",
+            "merge",
+            "reject",
+            "flag",
+            "auto_fix",
+            "propose_merge",
+            "propose_supersession",
+            "verdict",
+            "withdraw"
+          ],
+          "x-khg-code": "KHG-Q003"
+        },
+        "state_before": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/state"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state_after": {
+          "$ref": "#/definitions/state"
+        },
+        "actor": {
+          "$ref": "#/definitions/actor"
+        },
+        "mode": {
+          "enum": [
+            "automatic",
+            "manual",
+            "semi_automatic"
+          ]
+        },
+        "at": {
+          "$ref": "#/definitions/timestamp"
+        },
+        "rule_set": {
+          "type": "object",
+          "required": [
+            "id",
+            "version"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            }
+          }
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/finding"
+          }
+        },
+        "outcome": {
+          "enum": [
+            "pass",
+            "warning",
+            "violation"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "before": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "after": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "result": {
+          "type": "object",
+          "properties": {
+            "store_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "tx": {
+              "type": [
+                "integer",
+                "string"
+              ]
+            }
+          }
+        },
+        "plan_hash": {
+          "$ref": "#/definitions/sha256"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "action": {
+                "const": "lint"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "rule_set",
+              "findings",
+              "outcome"
+            ],
+            "x-khg-code": "KHG-Q004"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "action": {
+                "enum": [
+                  "accept",
+                  "merge"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "result",
+              "plan_hash",
+              "before",
+              "after"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "action": {
+                "enum": [
+                  "reject",
+                  "flag"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "reason"
+            ]
+          }
+        }
+      ]
+    },
+    "verdict": {
+      "type": "object",
+      "required": [
+        "kind",
+        "verdict_id",
+        "item_id",
+        "evidence_id",
+        "content_key",
+        "event_hash",
+        "label",
+        "curator",
+        "at"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "verdict"
+        },
+        "verdict_id": {
+          "type": "string"
+        },
+        "item_id": {
+          "type": "string"
+        },
+        "evidence_id": {
+          "type": "string"
+        },
+        "content_key": {
+          "$ref": "#/definitions/sha256"
+        },
+        "event_hash": {
+          "$ref": "#/definitions/sha256"
+        },
+        "label": {
+          "enum": [
+            "correct",
+            "no_relation",
+            "wrong_relation",
+            "wrong_role",
+            "wrong_filler",
+            "span_boundary",
+            "missing_participant",
+            "extra_participant",
+            "negated",
+            "hypothesis",
+            "other"
+          ]
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "bid",
+              "label"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "bid": {
+                "type": "string"
+              },
+              "label": {
+                "enum": [
+                  "correct",
+                  "wrong_role",
+                  "wrong_filler",
+                  "extra_participant"
+                ]
+              },
+              "should_be_role": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "missing": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "role"
+            ],
+            "properties": {
+              "role": {
+                "type": "string"
+              },
+              "value": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "text": {
+          "type": "string"
+        },
+        "curator": {
+          "$ref": "#/definitions/actor"
+        },
+        "at": {
+          "$ref": "#/definitions/timestamp"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "label": {
+                "const": "other"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "text"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "type": "object",
+  "required": [
+    "kind"
+  ],
+  "properties": {
+    "kind": {
+      "enum": [
+        "queue_item",
+        "log_entry",
+        "verdict"
+      ],
+      "x-khg-code": "KHG-Q003"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "queue_item"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/definitions/item"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "log_entry"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/definitions/log_entry"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "verdict"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/definitions/verdict"
+      }
+    }
+  ]
+}

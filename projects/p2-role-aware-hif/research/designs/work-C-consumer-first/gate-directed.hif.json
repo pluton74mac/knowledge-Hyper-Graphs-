@@ -1,0 +1,1664 @@
+{
+ "network-type": "directed",
+ "metadata": {
+  "roles-convention": "1.0.0",
+  "roles-vocabulary": {
+   "agent": {
+    "label": "agent"
+   },
+   "background_therapy": {
+    "label": "background therapy"
+   },
+   "comparator": {
+    "label": "comparator"
+   },
+   "context": {
+    "label": "context"
+   },
+   "effect": {
+    "label": "effect"
+   },
+   "intervention": {
+    "label": "intervention"
+   },
+   "organisation": {
+    "label": "organisation"
+   },
+   "outcome": {
+    "label": "outcome"
+   },
+   "person": {
+    "label": "person"
+   },
+   "regulator": {
+    "label": "regulator"
+   },
+   "report": {
+    "label": "report"
+   },
+   "statement": {
+    "label": "statement"
+   },
+   "superseded": {
+    "label": "superseded record (profile role)"
+   },
+   "superseding": {
+    "label": "superseding record (profile role)"
+   },
+   "target": {
+    "label": "target"
+   }
+  },
+  "hif-schema": "https://raw.githubusercontent.com/HIF-org/HIF-standard/b691a3d2ec32100c0229ebe1151e9afad015c356/schemas/hif_schema_v0.1.0.json",
+  "hif-schema-sha256": "639466b7a10de5a734d231d72422f54a5fce4084cb300869012510124c9b2196",
+  "hif-schema-doi": "10.5281/zenodo.17257719",
+  "khg-profile": "khg-hif/1.0.0",
+  "khg-header": {
+   "kind": "header",
+   "format": "khg-record/1.0.0",
+   "content": "snapshot",
+   "as_at": "2026-09-23T12:00:00Z",
+   "created_at": "2026-09-23T12:00:00Z",
+   "created_by": "p2-gate-fixture/1.0.0",
+   "title": "P2 gate fixture (adversarial)",
+   "schemas": [
+    {
+     "id": "p2-gate",
+     "version": "1.0.0",
+     "sha256": "0acc5bc47da530243090e868492b376b444b37a8873d83f648b472e4bcc42943"
+    }
+   ]
+  },
+  "khg-schemas": [
+   {
+    "kind": "relation-schema",
+    "format": "khg-relation-schema/1.0.0",
+    "id": "p2-gate",
+    "version": "1.0.0",
+    "label": "P2 gate fixture schema",
+    "entity_types": [
+     {
+      "id": "Thing",
+      "label": "thing"
+     },
+     {
+      "id": "Drug",
+      "label": "drug",
+      "parents": [
+       "Thing"
+      ]
+     },
+     {
+      "id": "Disease",
+      "label": "disease",
+      "parents": [
+       "Thing"
+      ]
+     },
+     {
+      "id": "Outcome",
+      "label": "outcome",
+      "parents": [
+       "Thing"
+      ]
+     },
+     {
+      "id": "Population",
+      "label": "population",
+      "parents": [
+       "Thing"
+      ]
+     },
+     {
+      "id": "AdverseEffect",
+      "label": "adverse effect",
+      "parents": [
+       "Thing"
+      ]
+     },
+     {
+      "id": "Gene",
+      "label": "gene",
+      "parents": [
+       "Thing"
+      ]
+     },
+     {
+      "id": "CellLine",
+      "label": "cell line",
+      "parents": [
+       "Thing"
+      ]
+     },
+     {
+      "id": "Organisation",
+      "label": "organisation",
+      "parents": [
+       "Thing"
+      ]
+     },
+     {
+      "id": "Airline",
+      "label": "airline",
+      "parents": [
+       "Organisation"
+      ]
+     },
+     {
+      "id": "Person",
+      "label": "person",
+      "parents": [
+       "Thing"
+      ]
+     },
+     {
+      "id": "Position",
+      "label": "position",
+      "parents": [
+       "Thing"
+      ]
+     },
+     {
+      "id": "Airport",
+      "label": "airport",
+      "parents": [
+       "Thing"
+      ]
+     },
+     {
+      "id": "Place",
+      "label": "place",
+      "parents": [
+       "Thing"
+      ]
+     },
+     {
+      "id": "Document",
+      "label": "document",
+      "parents": [
+       "Thing"
+      ]
+     },
+     {
+      "id": "Reaction",
+      "label": "reaction",
+      "parents": [
+       "Thing"
+      ]
+     },
+     {
+      "id": "Chemical",
+      "label": "chemical",
+      "parents": [
+       "Thing"
+      ]
+     }
+    ],
+    "confidence_scales": [
+     {
+      "id": "probability",
+      "kind": "probability",
+      "min": 0,
+      "max": 1
+     },
+     {
+      "id": "llm-1-10",
+      "kind": "bounded",
+      "min": 1,
+      "max": 10
+     }
+    ],
+    "time_model": {
+     "from_role": "start_time",
+     "to_role": "end_time",
+     "point_role": "point_in_time"
+    },
+    "roles": [
+     {
+      "id": "agent",
+      "label": "agent"
+     },
+     {
+      "id": "background_therapy",
+      "label": "background therapy"
+     },
+     {
+      "id": "catalyst",
+      "label": "catalyst"
+     },
+     {
+      "id": "comparator",
+      "label": "comparator"
+     },
+     {
+      "id": "condition",
+      "label": "condition"
+     },
+     {
+      "id": "context",
+      "label": "context"
+     },
+     {
+      "id": "count",
+      "label": "count"
+     },
+     {
+      "id": "dose",
+      "label": "dose"
+     },
+     {
+      "id": "effect",
+      "label": "effect"
+     },
+     {
+      "id": "end_time",
+      "label": "end time"
+     },
+     {
+      "id": "flight_number",
+      "label": "flight number"
+     },
+     {
+      "id": "hba1c_change",
+      "label": "hba1c change"
+     },
+     {
+      "id": "holder",
+      "label": "holder"
+     },
+     {
+      "id": "intervention",
+      "label": "intervention"
+     },
+     {
+      "id": "open_access",
+      "label": "open access"
+     },
+     {
+      "id": "operator",
+      "label": "operator"
+     },
+     {
+      "id": "organisation",
+      "label": "organisation"
+     },
+     {
+      "id": "outcome",
+      "label": "outcome"
+     },
+     {
+      "id": "page_count",
+      "label": "page count"
+     },
+     {
+      "id": "partner",
+      "label": "partner"
+     },
+     {
+      "id": "person",
+      "label": "person"
+     },
+     {
+      "id": "place",
+      "label": "place"
+     },
+     {
+      "id": "point_in_time",
+      "label": "point in time"
+     },
+     {
+      "id": "population",
+      "label": "population"
+     },
+     {
+      "id": "position",
+      "label": "position"
+     },
+     {
+      "id": "publication",
+      "label": "publication"
+     },
+     {
+      "id": "publisher",
+      "label": "publisher"
+     },
+     {
+      "id": "reaction",
+      "label": "reaction"
+     },
+     {
+      "id": "regulator",
+      "label": "regulator"
+     },
+     {
+      "id": "report",
+      "label": "report"
+     },
+     {
+      "id": "start_time",
+      "label": "start time"
+     },
+     {
+      "id": "statement",
+      "label": "statement"
+     },
+     {
+      "id": "stop",
+      "label": "stop"
+     },
+     {
+      "id": "target",
+      "label": "target"
+     },
+     {
+      "id": "title",
+      "label": "title"
+     },
+     {
+      "id": "treatment",
+      "label": "treatment"
+     },
+     {
+      "id": "url",
+      "label": "url"
+     }
+    ],
+    "relations": [
+     {
+      "id": "treats",
+      "label": "treats",
+      "kind": "fact",
+      "nestable": true,
+      "aliases": [
+       "is used to treat"
+      ],
+      "primary": {
+       "subject": "treatment",
+       "object": "condition"
+      },
+      "roles": [
+       {
+        "role": "treatment",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Drug"
+         ]
+        },
+        "min": 1,
+        "max": 1,
+        "direction": "tail"
+       },
+       {
+        "role": "condition",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Disease"
+         ]
+        },
+        "min": 1,
+        "max": 1,
+        "direction": "head"
+       },
+       {
+        "role": "dose",
+        "slot": "qualifier",
+        "fillers": {
+         "datatypes": [
+          "quantity"
+         ]
+        },
+        "min": 0,
+        "max": 1
+       },
+       {
+        "role": "population",
+        "slot": "qualifier",
+        "fillers": {
+         "entity_types": [
+          "Population"
+         ]
+        },
+        "min": 0,
+        "max": 1
+       },
+       {
+        "role": "hba1c_change",
+        "slot": "qualifier",
+        "fillers": {
+         "datatypes": [
+          "decimal"
+         ]
+        },
+        "min": 0,
+        "max": 1
+       }
+      ]
+     },
+     {
+      "id": "compared_in_trial",
+      "label": "compared in trial",
+      "kind": "fact",
+      "nestable": true,
+      "roles": [
+       {
+        "role": "intervention",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Drug"
+         ]
+        },
+        "min": 1,
+        "max": 1,
+        "direction": "tail"
+       },
+       {
+        "role": "background_therapy",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Drug"
+         ]
+        },
+        "min": 0,
+        "max": 1,
+        "direction": "tail"
+       },
+       {
+        "role": "comparator",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Drug"
+         ]
+        },
+        "min": 1,
+        "max": 1,
+        "direction": "tail"
+       },
+       {
+        "role": "outcome",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Outcome"
+         ]
+        },
+        "min": 1,
+        "max": 1,
+        "direction": "head"
+       }
+      ]
+     },
+     {
+      "id": "regulates",
+      "label": "regulates",
+      "kind": "fact",
+      "roles": [
+       {
+        "role": "regulator",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Gene"
+         ]
+        },
+        "min": 1,
+        "max": 1,
+        "direction": "tail"
+       },
+       {
+        "role": "target",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Gene"
+         ]
+        },
+        "min": 1,
+        "max": 1,
+        "direction": "head"
+       },
+       {
+        "role": "context",
+        "slot": "qualifier",
+        "fillers": {
+         "entity_types": [
+          "CellLine"
+         ]
+        },
+        "min": 0,
+        "max": 1,
+        "direction": "tail"
+       }
+      ]
+     },
+     {
+      "id": "co_administration_causes",
+      "label": "co-administration causes",
+      "kind": "fact",
+      "roles": [
+       {
+        "role": "agent",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Drug"
+         ]
+        },
+        "min": 2,
+        "max": null,
+        "direction": "tail"
+       },
+       {
+        "role": "effect",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "AdverseEffect"
+         ]
+        },
+        "min": 1,
+        "max": 1,
+        "direction": "head"
+       }
+      ]
+     },
+     {
+      "id": "flight_route",
+      "label": "flight route",
+      "kind": "fact",
+      "roles": [
+       {
+        "role": "operator",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Airline"
+         ]
+        },
+        "min": 1,
+        "max": 1
+       },
+       {
+        "role": "stop",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Airport"
+         ]
+        },
+        "min": 2,
+        "max": null,
+        "ordered": true
+       },
+       {
+        "role": "flight_number",
+        "slot": "qualifier",
+        "fillers": {
+         "datatypes": [
+          "string"
+         ]
+        },
+        "min": 0,
+        "max": 1
+       }
+      ]
+     },
+     {
+      "id": "position_held",
+      "label": "position held",
+      "kind": "fact",
+      "key": {
+       "roles": [
+        "position"
+       ],
+       "temporal": true,
+       "on_collision": "close_older"
+      },
+      "roles": [
+       {
+        "role": "holder",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Person"
+         ]
+        },
+        "min": 1,
+        "max": 1
+       },
+       {
+        "role": "position",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Position"
+         ]
+        },
+        "min": 1,
+        "max": 1
+       },
+       {
+        "role": "start_time",
+        "slot": "time",
+        "fillers": {
+         "datatypes": [
+          "time"
+         ]
+        },
+        "min": 0,
+        "max": 1
+       },
+       {
+        "role": "end_time",
+        "slot": "time",
+        "fillers": {
+         "datatypes": [
+          "time"
+         ]
+        },
+        "min": 0,
+        "max": 1
+       }
+      ]
+     },
+     {
+      "id": "population_count",
+      "label": "population count",
+      "kind": "fact",
+      "key": {
+       "roles": [
+        "place"
+       ],
+       "temporal": true,
+       "on_collision": "reject"
+      },
+      "roles": [
+       {
+        "role": "place",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Place"
+         ]
+        },
+        "min": 1,
+        "max": 1
+       },
+       {
+        "role": "count",
+        "slot": "core",
+        "fillers": {
+         "datatypes": [
+          "quantity"
+         ],
+         "units": [
+          "1"
+         ]
+        },
+        "min": 1,
+        "max": 1
+       },
+       {
+        "role": "point_in_time",
+        "slot": "time",
+        "fillers": {
+         "datatypes": [
+          "time"
+         ],
+         "precisions": [
+          "year",
+          "month",
+          "day"
+         ]
+        },
+        "min": 1,
+        "max": 1
+       }
+      ]
+     },
+     {
+      "id": "publishes",
+      "label": "publishes",
+      "kind": "fact",
+      "roles": [
+       {
+        "role": "publisher",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Organisation"
+         ]
+        },
+        "min": 1,
+        "max": 1
+       },
+       {
+        "role": "publication",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Document"
+         ]
+        },
+        "min": 1,
+        "max": 1
+       },
+       {
+        "role": "title",
+        "slot": "qualifier",
+        "fillers": {
+         "datatypes": [
+          "lang-string"
+         ]
+        },
+        "min": 0,
+        "max": 1
+       },
+       {
+        "role": "url",
+        "slot": "qualifier",
+        "fillers": {
+         "datatypes": [
+          "iri"
+         ]
+        },
+        "min": 0,
+        "max": 1
+       },
+       {
+        "role": "open_access",
+        "slot": "qualifier",
+        "fillers": {
+         "datatypes": [
+          "boolean"
+         ]
+        },
+        "min": 0,
+        "max": 1
+       },
+       {
+        "role": "page_count",
+        "slot": "qualifier",
+        "fillers": {
+         "datatypes": [
+          "integer"
+         ]
+        },
+        "min": 0,
+        "max": 1
+       }
+      ]
+     },
+     {
+      "id": "married",
+      "label": "married",
+      "kind": "fact",
+      "constraints": [
+       {
+        "type": "must_differ",
+        "roles": [
+         "partner"
+        ]
+       }
+      ],
+      "roles": [
+       {
+        "role": "partner",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Person"
+         ]
+        },
+        "min": 2,
+        "max": 2
+       },
+       {
+        "role": "start_time",
+        "slot": "time",
+        "fillers": {
+         "datatypes": [
+          "time"
+         ]
+        },
+        "min": 0,
+        "max": 1
+       }
+      ]
+     },
+     {
+      "id": "catalysed_by",
+      "label": "catalysed by",
+      "kind": "fact",
+      "roles": [
+       {
+        "role": "reaction",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Reaction"
+         ]
+        },
+        "min": 1,
+        "max": 1
+       },
+       {
+        "role": "catalyst",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Chemical"
+         ]
+        },
+        "min": 1,
+        "max": null
+       }
+      ]
+     },
+     {
+      "id": "chief_executive",
+      "label": "chief executive",
+      "kind": "fact",
+      "key": {
+       "roles": [
+        "organisation"
+       ],
+       "temporal": true,
+       "on_collision": "supersede"
+      },
+      "roles": [
+       {
+        "role": "organisation",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Organisation"
+         ]
+        },
+        "min": 1,
+        "max": 1,
+        "direction": "tail"
+       },
+       {
+        "role": "person",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Person"
+         ]
+        },
+        "min": 1,
+        "max": 1,
+        "direction": "head"
+       }
+      ]
+     },
+     {
+      "id": "reported_in",
+      "label": "reported in",
+      "kind": "meta",
+      "roles": [
+       {
+        "role": "statement",
+        "slot": "core",
+        "fillers": {
+         "hyperedge": {
+          "relations": [
+           "compared_in_trial",
+           "treats"
+          ]
+         }
+        },
+        "min": 1,
+        "max": 1,
+        "direction": "head"
+       },
+       {
+        "role": "report",
+        "slot": "core",
+        "fillers": {
+         "entity_types": [
+          "Document"
+         ]
+        },
+        "min": 1,
+        "max": 1,
+        "direction": "tail"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "khg-slice": {
+   "relations": [
+    "chief_executive",
+    "co_administration_causes",
+    "compared_in_trial",
+    "regulates",
+    "reported_in"
+   ]
+  }
+ },
+ "nodes": [
+  {
+   "node": "cell:HeLa",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "HeLa",
+    "khg-types": [
+     "CellLine"
+    ]
+   }
+  },
+  {
+   "node": "disease:T1DM",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "type 1 diabetes mellitus",
+    "khg-types": [
+     "Disease"
+    ]
+   }
+  },
+  {
+   "node": "disease:T2DM",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "type 2 diabetes mellitus",
+    "khg-types": [
+     "Disease"
+    ]
+   }
+  },
+  {
+   "node": "doc:soc-2024",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "Standards of Care in Diabetes—2024",
+    "khg-types": [
+     "Document"
+    ]
+   }
+  },
+  {
+   "node": "doc:trial-report-1998",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "Trial report (1998)",
+    "khg-types": [
+     "Document"
+    ]
+   }
+  },
+  {
+   "node": "drug:insulin",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "insulin",
+    "khg-types": [
+     "Drug"
+    ]
+   }
+  },
+  {
+   "node": "drug:metformin",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "metformin",
+    "khg-types": [
+     "Drug"
+    ]
+   }
+  },
+  {
+   "node": "effect:hypoglycaemia",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "hypoglycaemia",
+    "khg-types": [
+     "AdverseEffect"
+    ]
+   }
+  },
+  {
+   "node": "gene:TP53",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "TP53",
+    "khg-types": [
+     "Gene"
+    ]
+   }
+  },
+  {
+   "node": "khg-ref:khg:f02-trial",
+   "attrs": {
+    "khg-kind": "hyperedge-ref",
+    "khg-ref": "khg:f02-trial"
+   }
+  },
+  {
+   "node": "khg-ref:khg:f11-ceo-alice",
+   "attrs": {
+    "khg-kind": "hyperedge-ref",
+    "khg-ref": "khg:f11-ceo-alice"
+   }
+  },
+  {
+   "node": "khg-ref:khg:f12-ceo-bob",
+   "attrs": {
+    "khg-kind": "hyperedge-ref",
+    "khg-ref": "khg:f12-ceo-bob"
+   }
+  },
+  {
+   "node": "org:ADA",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "American Diabetes Association",
+    "khg-types": [
+     "Organisation"
+    ]
+   }
+  },
+  {
+   "node": "org:Acme",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "Acme Corp.",
+    "khg-types": [
+     "Organisation"
+    ]
+   }
+  },
+  {
+   "node": "outcome:HbA1c",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "glycated haemoglobin (HbA1c)",
+    "khg-types": [
+     "Outcome"
+    ]
+   }
+  },
+  {
+   "node": "pop:adults",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "adults",
+    "khg-types": [
+     "Population"
+    ]
+   }
+  },
+  {
+   "node": "x:Alice",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "Alice",
+    "khg-types": [
+     "Person"
+    ]
+   }
+  },
+  {
+   "node": "x:Bob",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "Bob",
+    "khg-types": [
+     "Person"
+    ]
+   }
+  },
+  {
+   "node": "x:Louis_XIV",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "Louis XIV",
+    "khg-types": [
+     "Person"
+    ]
+   }
+  },
+  {
+   "node": "x:ORD",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "Chicago O'Hare",
+    "khg-types": [
+     "Airport"
+    ]
+   }
+  },
+  {
+   "node": "x:R1",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "reaction R1",
+    "khg-types": [
+     "Reaction"
+    ]
+   }
+  },
+  {
+   "node": "x:Roi_de_France",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "roi de France",
+    "khg-types": [
+     "Position"
+    ]
+   }
+  },
+  {
+   "node": "x:YYZ",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "Toronto Pearson",
+    "khg-types": [
+     "Airport"
+    ]
+   }
+  },
+  {
+   "node": "x:Zoë",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "Zoë",
+    "khg-types": [
+     "Person"
+    ]
+   }
+  },
+  {
+   "node": "x:Zürich",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "Zürich",
+    "khg-types": [
+     "Place"
+    ]
+   }
+  },
+  {
+   "node": "x:air-canada",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "Air Canada",
+    "khg-types": [
+     "Airline"
+    ]
+   }
+  },
+  {
+   "node": "x:Москва",
+   "attrs": {
+    "khg-kind": "entity",
+    "label": "Москва",
+    "khg-types": [
+     "Place"
+    ]
+   }
+  }
+ ],
+ "edges": [
+  {
+   "edge": "khg:f02-trial",
+   "attrs": {
+    "relation": "compared_in_trial",
+    "khg-kind": "hyperedge",
+    "khg-version": 1,
+    "khg-recorded-at": "2026-09-23T10:00:00Z",
+    "khg-recorded-by": "p2-gate-fixture/1.0.0",
+    "khg-change": {
+     "op": "put"
+    },
+    "khg-status": "asserted",
+    "khg-evidence": [
+     {
+      "eid": "ev1",
+      "type": "curated",
+      "mode": "manual",
+      "source": {
+       "doc": "doc:trial-report-1998"
+      },
+      "activity": {
+       "agent": "curator:reviewer-1"
+      }
+     }
+    ],
+    "khg-schema": "p2-gate/1.0.0",
+    "khg-rank": "normal",
+    "khg-visibility": "visible",
+    "khg-arity": {
+     "arity": 4,
+     "core": 4,
+     "participants": 3
+    },
+    "khg-keys": {
+     "content": "sha256:089b4367c127643b17196120b56e476974269ab8dd617ee67be9cb462aa4d152",
+     "core": "sha256:6aa7243fbd8ebc9d7d4f4095e29dc71c4b3ea6fdbb30773f5f53ea4e9cabfb8a"
+    }
+   }
+  },
+  {
+   "edge": "khg:f03-regulates",
+   "attrs": {
+    "relation": "regulates",
+    "khg-kind": "hyperedge",
+    "khg-version": 1,
+    "khg-recorded-at": "2026-09-23T10:00:00Z",
+    "khg-recorded-by": "p2-gate-fixture/1.0.0",
+    "khg-change": {
+     "op": "put"
+    },
+    "khg-status": "asserted",
+    "khg-evidence": [
+     {
+      "eid": "ev1",
+      "type": "curated",
+      "mode": "manual",
+      "source": {
+       "doc": "doc:tp53-review"
+      },
+      "activity": {
+       "agent": "curator:reviewer-1"
+      }
+     }
+    ],
+    "khg-schema": "p2-gate/1.0.0",
+    "khg-rank": "normal",
+    "khg-visibility": "visible",
+    "khg-arity": {
+     "arity": 3,
+     "core": 2,
+     "participants": 2
+    },
+    "khg-keys": {
+     "content": "sha256:249022b02a47d05f4c1c5f82cc579b91893378a793de0f7a935000c87b562a5e",
+     "core": "sha256:2c351eadf1bd518dc2f516f9628fec951c453f979be1563296b65efc11fc4ede"
+    }
+   }
+  },
+  {
+   "edge": "khg:f04-coadmin",
+   "attrs": {
+    "relation": "co_administration_causes",
+    "khg-kind": "hyperedge",
+    "khg-version": 1,
+    "khg-recorded-at": "2026-09-23T10:00:00Z",
+    "khg-recorded-by": "p2-gate-fixture/1.0.0",
+    "khg-change": {
+     "op": "put"
+    },
+    "khg-status": "asserted",
+    "khg-evidence": [
+     {
+      "eid": "ev1",
+      "type": "curated",
+      "mode": "manual",
+      "source": {
+       "doc": "doc:soc-2024"
+      },
+      "activity": {
+       "agent": "curator:reviewer-1"
+      }
+     }
+    ],
+    "khg-confidence": {
+     "value": 7,
+     "scale": "llm-1-10"
+    },
+    "khg-schema": "p2-gate/1.0.0",
+    "khg-rank": "normal",
+    "khg-visibility": "visible",
+    "khg-arity": {
+     "arity": 3,
+     "core": 3,
+     "participants": 3
+    },
+    "khg-keys": {
+     "content": "sha256:31162aba80d29ea524bad8e50c5a551e09707574a180511c031a9b222bacf868",
+     "core": "sha256:fc2439f2ff6a6f3424592bf9aa837a10c26f6af1da901e42301e1f4c335212e9"
+    }
+   }
+  },
+  {
+   "edge": "khg:f11-ceo-alice",
+   "attrs": {
+    "relation": "chief_executive",
+    "khg-kind": "hyperedge",
+    "khg-version": 2,
+    "khg-recorded-at": "2026-09-23T11:00:00Z",
+    "khg-recorded-by": "p2-gate-fixture/1.0.0",
+    "khg-change": {
+     "op": "supersede",
+     "ref": "khg:s01"
+    },
+    "khg-status": "superseded",
+    "khg-evidence": [
+     {
+      "eid": "ev1",
+      "type": "curated",
+      "mode": "manual",
+      "source": {
+       "doc": "doc:acme-pr-2019"
+      },
+      "activity": {
+       "agent": "curator:reviewer-1"
+      }
+     }
+    ],
+    "khg-superseded-by": [
+     "khg:f12-ceo-bob"
+    ],
+    "khg-valid-time": {
+     "from": "2019-01-01"
+    },
+    "khg-schema": "p2-gate/1.0.0",
+    "khg-rank": "normal",
+    "khg-visibility": "visible",
+    "khg-arity": {
+     "arity": 2,
+     "core": 2,
+     "participants": 2
+    },
+    "khg-keys": {
+     "content": "sha256:b69ad50b61f8ff24258f49a2c9be0246444b7ed5089f8aa24e8ecfa57691e43f",
+     "core": "sha256:9031158fbbc0edff06b6110b4d43942c265ee3d6f51dd1e8b502a54a973f8c9e",
+     "key": "sha256:1bcb00fd07a8146ddb6aa5c24b83de5076596794221dc483f2daec7c1bf565fb"
+    }
+   }
+  },
+  {
+   "edge": "khg:f12-ceo-bob",
+   "attrs": {
+    "relation": "chief_executive",
+    "khg-kind": "hyperedge",
+    "khg-version": 1,
+    "khg-recorded-at": "2026-09-23T11:00:00Z",
+    "khg-recorded-by": "p2-gate-fixture/1.0.0",
+    "khg-change": {
+     "op": "put"
+    },
+    "khg-status": "asserted",
+    "khg-evidence": [
+     {
+      "eid": "ev1",
+      "type": "curated",
+      "mode": "manual",
+      "source": {
+       "doc": "doc:acme-pr-2021"
+      },
+      "activity": {
+       "agent": "curator:reviewer-1"
+      }
+     }
+    ],
+    "khg-valid-time": {
+     "from": "2019-01-01"
+    },
+    "khg-schema": "p2-gate/1.0.0",
+    "khg-rank": "normal",
+    "khg-visibility": "visible",
+    "khg-arity": {
+     "arity": 2,
+     "core": 2,
+     "participants": 2
+    },
+    "khg-keys": {
+     "content": "sha256:214c126c8bd06d84879559eac9134bc19fbe475524c655cbc9a0354fc938ba1b",
+     "core": "sha256:3a35b074cb59e1002bc2c57b779d8c65b1203ad211a984811294f50919b13e82",
+     "key": "sha256:1bcb00fd07a8146ddb6aa5c24b83de5076596794221dc483f2daec7c1bf565fb"
+    }
+   }
+  },
+  {
+   "edge": "khg:f13-reported",
+   "attrs": {
+    "relation": "reported_in",
+    "khg-kind": "hyperedge",
+    "khg-version": 1,
+    "khg-recorded-at": "2026-09-23T10:00:00Z",
+    "khg-recorded-by": "p2-gate-fixture/1.0.0",
+    "khg-change": {
+     "op": "put"
+    },
+    "khg-status": "asserted",
+    "khg-evidence": [
+     {
+      "eid": "ev1",
+      "type": "curated",
+      "mode": "manual",
+      "source": {
+       "doc": "doc:trial-report-1998"
+      },
+      "activity": {
+       "agent": "curator:reviewer-1"
+      }
+     }
+    ],
+    "khg-schema": "p2-gate/1.0.0",
+    "khg-rank": "normal",
+    "khg-visibility": "visible",
+    "khg-arity": {
+     "arity": 2,
+     "core": 2,
+     "participants": 2
+    },
+    "khg-keys": {
+     "content": "sha256:e339305b2144acfdaa0e3e1cac8ac8f19c26f0fb7a61cf6eb09dc6302e1123f6",
+     "core": "sha256:970d76370b4d603f29f1554642cfd60e506f4b5c82be85b1d12b6e86be1e383a"
+    }
+   }
+  },
+  {
+   "edge": "khg:s01",
+   "attrs": {
+    "relation": "khg-supersedes",
+    "khg-kind": "supersession",
+    "khg-reason": "incorrect",
+    "khg-reason-detail": "the 2019 press release named the wrong person; corrected in 2021",
+    "khg-recorded-at": "2026-09-23T11:00:00Z",
+    "khg-recorded-by": "p2-gate-fixture/1.0.0",
+    "khg-evidence": [
+     {
+      "eid": "ev1",
+      "type": "curated",
+      "mode": "manual",
+      "source": {
+       "doc": "doc:acme-pr-2021"
+      },
+      "activity": {
+       "agent": "curator:reviewer-1"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "incidences": [
+  {
+   "edge": "khg:f02-trial",
+   "node": "drug:metformin",
+   "direction": "tail",
+   "attrs": {
+    "role": "intervention",
+    "khg-bid": "b1",
+    "khg-slot": "core"
+   }
+  },
+  {
+   "edge": "khg:f02-trial",
+   "node": "drug:metformin",
+   "direction": "tail",
+   "attrs": {
+    "role": "background_therapy",
+    "khg-bid": "b2",
+    "khg-slot": "core"
+   }
+  },
+  {
+   "edge": "khg:f02-trial",
+   "node": "drug:insulin",
+   "direction": "tail",
+   "attrs": {
+    "role": "comparator",
+    "khg-bid": "b3",
+    "khg-slot": "core"
+   }
+  },
+  {
+   "edge": "khg:f02-trial",
+   "node": "outcome:HbA1c",
+   "direction": "head",
+   "attrs": {
+    "role": "outcome",
+    "khg-bid": "b4",
+    "khg-slot": "core"
+   }
+  },
+  {
+   "edge": "khg:f03-regulates",
+   "node": "gene:TP53",
+   "direction": "tail",
+   "attrs": {
+    "role": "regulator",
+    "khg-bid": "b1",
+    "khg-slot": "core"
+   }
+  },
+  {
+   "edge": "khg:f03-regulates",
+   "node": "gene:TP53",
+   "direction": "head",
+   "attrs": {
+    "role": "target",
+    "khg-bid": "b2",
+    "khg-slot": "core"
+   }
+  },
+  {
+   "edge": "khg:f03-regulates",
+   "node": "cell:HeLa",
+   "direction": "tail",
+   "attrs": {
+    "role": "context",
+    "khg-bid": "b3",
+    "khg-slot": "qualifier"
+   }
+  },
+  {
+   "edge": "khg:f04-coadmin",
+   "node": "drug:metformin",
+   "direction": "tail",
+   "attrs": {
+    "role": "agent",
+    "khg-bid": "b1",
+    "khg-slot": "core"
+   }
+  },
+  {
+   "edge": "khg:f04-coadmin",
+   "node": "drug:insulin",
+   "direction": "tail",
+   "attrs": {
+    "role": "agent",
+    "khg-bid": "b2",
+    "khg-slot": "core"
+   }
+  },
+  {
+   "edge": "khg:f04-coadmin",
+   "node": "effect:hypoglycaemia",
+   "direction": "head",
+   "attrs": {
+    "role": "effect",
+    "khg-bid": "b3",
+    "khg-slot": "core"
+   }
+  },
+  {
+   "edge": "khg:f11-ceo-alice",
+   "node": "org:Acme",
+   "direction": "tail",
+   "attrs": {
+    "role": "organisation",
+    "khg-bid": "b1",
+    "khg-slot": "core"
+   }
+  },
+  {
+   "edge": "khg:f11-ceo-alice",
+   "node": "x:Alice",
+   "direction": "head",
+   "attrs": {
+    "role": "person",
+    "khg-bid": "b2",
+    "khg-slot": "core"
+   }
+  },
+  {
+   "edge": "khg:f12-ceo-bob",
+   "node": "org:Acme",
+   "direction": "tail",
+   "attrs": {
+    "role": "organisation",
+    "khg-bid": "b1",
+    "khg-slot": "core"
+   }
+  },
+  {
+   "edge": "khg:f12-ceo-bob",
+   "node": "x:Bob",
+   "direction": "head",
+   "attrs": {
+    "role": "person",
+    "khg-bid": "b2",
+    "khg-slot": "core"
+   }
+  },
+  {
+   "edge": "khg:f13-reported",
+   "node": "khg-ref:khg:f02-trial",
+   "direction": "head",
+   "attrs": {
+    "role": "statement",
+    "khg-bid": "b1",
+    "khg-slot": "core"
+   }
+  },
+  {
+   "edge": "khg:f13-reported",
+   "node": "doc:trial-report-1998",
+   "direction": "tail",
+   "attrs": {
+    "role": "report",
+    "khg-bid": "b2",
+    "khg-slot": "core"
+   }
+  },
+  {
+   "edge": "khg:s01",
+   "node": "khg-ref:khg:f11-ceo-alice",
+   "direction": "head",
+   "attrs": {
+    "role": "superseded"
+   }
+  },
+  {
+   "edge": "khg:s01",
+   "node": "khg-ref:khg:f12-ceo-bob",
+   "direction": "tail",
+   "attrs": {
+    "role": "superseding"
+   }
+  }
+ ]
+}

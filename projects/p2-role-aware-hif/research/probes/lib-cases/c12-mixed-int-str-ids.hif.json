@@ -1,0 +1,61 @@
+{
+ "network-type": "undirected",
+ "nodes": [
+  {
+   "node": 1,
+   "attrs": {
+    "kind": "int"
+   }
+  },
+  {
+   "node": "1",
+   "attrs": {
+    "kind": "str"
+   }
+  }
+ ],
+ "edges": [
+  {
+   "edge": 1,
+   "attrs": {
+    "kind": "int"
+   }
+  },
+  {
+   "edge": "1",
+   "attrs": {
+    "kind": "str"
+   }
+  }
+ ],
+ "incidences": [
+  {
+   "edge": 1,
+   "node": 1,
+   "attrs": {
+    "role": "int-in-int"
+   }
+  },
+  {
+   "edge": 1,
+   "node": "1",
+   "attrs": {
+    "role": "str-in-int"
+   }
+  },
+  {
+   "edge": "1",
+   "node": 1,
+   "attrs": {
+    "role": "int-in-str"
+   }
+  },
+  {
+   "edge": "1",
+   "node": "x",
+   "attrs": {
+    "role": "x-in-str"
+   }
+  }
+ ]
+}

@@ -1,0 +1,51 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-PUT-002",
+ "title": "an identical put is a no-op",
+ "requires": [],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    "@f:reg-1"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     "@f:reg-1"
+    ]
+   },
+   "then": {
+    "select": "receipt.records",
+    "equals": [
+     [
+      "f:reg-1",
+      1,
+      "noop"
+     ]
+    ]
+   }
+  },
+  {
+   "op": "get",
+   "args": {
+    "id": "f:reg-1"
+   },
+   "then": {
+    "select": "version",
+    "equals": 1
+   }
+  }
+ ],
+ "precedent": [
+  "A C2-02 passed",
+  "C S-PUT-001 passed",
+  "B S002"
+ ]
+}

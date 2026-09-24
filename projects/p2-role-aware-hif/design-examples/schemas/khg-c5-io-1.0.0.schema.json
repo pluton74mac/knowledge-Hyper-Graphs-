@@ -1,0 +1,482 @@
+{
+ "$schema": "http://json-schema.org/draft-07/schema#",
+ "$id": "tag:khg-contracts,2026:schema/khg-c5-io/1.0.0",
+ "title": "C5 system outputs khg-c5-io/1.0.0 (draft): completion rank records, retrieval and memory responses. Extraction outputs are C3 queue items.",
+ "type": "object",
+ "required": [
+  "kind",
+  "qid"
+ ],
+ "properties": {
+  "kind": {
+   "enum": [
+    "completion-rank",
+    "retrieval-response",
+    "memory-response"
+   ],
+   "x-khg-code": "KHG-C010"
+  },
+  "qid": {
+   "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/id"
+  }
+ },
+ "allOf": [
+  {
+   "if": {
+    "properties": {
+     "kind": {
+      "const": "completion-rank",
+      "x-khg-code": "KHG-C010"
+     }
+    },
+    "required": [
+     "kind"
+    ],
+    "x-khg-code": "KHG-C010"
+   },
+   "then": {
+    "required": [
+     "kind",
+     "qid",
+     "n_candidates",
+     "n_filtered_out",
+     "n_greater",
+     "n_equal"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "kind": {},
+     "qid": {},
+     "n_candidates": {
+      "type": "integer",
+      "minimum": 1,
+      "x-khg-code": "KHG-C010"
+     },
+     "n_filtered_out": {
+      "type": "integer",
+      "minimum": 0,
+      "x-khg-code": "KHG-C010"
+     },
+     "n_greater": {
+      "type": "integer",
+      "minimum": 0,
+      "x-khg-code": "KHG-C010"
+     },
+     "n_equal": {
+      "type": "integer",
+      "minimum": 0,
+      "x-khg-code": "KHG-C010"
+     },
+     "target_prob": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "x-khg-code": "KHG-C010"
+     },
+     "top1": {
+      "type": "object",
+      "required": [
+       "value",
+       "prob"
+      ],
+      "properties": {
+       "value": {
+        "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/value"
+       },
+       "prob": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1,
+        "x-khg-code": "KHG-C010"
+       }
+      },
+      "x-khg-code": "KHG-C010"
+     },
+     "prob_map": {
+      "type": "object",
+      "additionalProperties": {
+       "type": "number",
+       "x-khg-code": "KHG-C010"
+      },
+      "x-khg-code": "KHG-C010"
+     },
+     "model_rank": {
+      "type": "integer",
+      "minimum": 1,
+      "x-khg-code": "KHG-C010"
+     }
+    },
+    "x-khg-code": "KHG-C010"
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "kind": {
+      "const": "retrieval-response",
+      "x-khg-code": "KHG-C010"
+     }
+    },
+    "required": [
+     "kind"
+    ],
+    "x-khg-code": "KHG-C010"
+   },
+   "then": {
+    "required": [
+     "kind",
+     "qid",
+     "answer",
+     "retrieved",
+     "cost"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "kind": {},
+     "qid": {},
+     "answer": {
+      "type": "object",
+      "required": [
+       "values",
+       "abstained"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "values": {
+        "type": "array",
+        "items": {
+         "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/value"
+        },
+        "x-khg-code": "KHG-C010"
+       },
+       "text": {
+        "type": "string",
+        "x-khg-code": "KHG-C010"
+       },
+       "abstained": {
+        "type": "boolean",
+        "x-khg-code": "KHG-C010"
+       }
+      },
+      "x-khg-code": "KHG-C010"
+     },
+     "retrieved": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "required": [
+        "rank",
+        "unit_id",
+        "unit_kind",
+        "hyperedge_ids"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "rank": {
+         "type": "integer",
+         "minimum": 1,
+         "x-khg-code": "KHG-C010"
+        },
+        "unit_id": {
+         "type": "string",
+         "x-khg-code": "KHG-C010"
+        },
+        "unit_kind": {
+         "enum": [
+          "hyperedge",
+          "pair",
+          "chunk",
+          "path",
+          "community"
+         ],
+         "x-khg-code": "KHG-C010"
+        },
+        "hyperedge_ids": {
+         "type": "array",
+         "items": {
+          "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/id"
+         },
+         "x-khg-code": "KHG-C010"
+        },
+        "bids": {
+         "type": "array",
+         "items": {
+          "type": "array",
+          "items": {
+           "type": "string",
+           "x-khg-code": "KHG-C010"
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "x-khg-code": "KHG-C010"
+         },
+         "x-khg-code": "KHG-C010"
+        }
+       },
+       "x-khg-code": "KHG-C010"
+      },
+      "x-khg-code": "KHG-C010"
+     },
+     "support_claimed": {
+      "type": "array",
+      "items": {
+       "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/id"
+      },
+      "x-khg-code": "KHG-C010"
+     },
+     "cost": {
+      "type": "object",
+      "required": [
+       "prompt_tokens",
+       "completion_tokens",
+       "llm_calls",
+       "retrieval_calls",
+       "retrieval_ms",
+       "wall_ms"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "prompt_tokens": {
+        "type": "integer",
+        "minimum": 0,
+        "x-khg-code": "KHG-C010"
+       },
+       "completion_tokens": {
+        "type": "integer",
+        "minimum": 0,
+        "x-khg-code": "KHG-C010"
+       },
+       "llm_calls": {
+        "type": "integer",
+        "minimum": 0,
+        "x-khg-code": "KHG-C010"
+       },
+       "retrieval_calls": {
+        "type": "integer",
+        "minimum": 0,
+        "x-khg-code": "KHG-C010"
+       },
+       "hyperedges_visited": {
+        "type": "integer",
+        "minimum": 0,
+        "x-khg-code": "KHG-C010"
+       },
+       "retrieval_ms": {
+        "type": "number",
+        "minimum": 0,
+        "x-khg-code": "KHG-C010"
+       },
+       "wall_ms": {
+        "type": "number",
+        "minimum": 0,
+        "x-khg-code": "KHG-C010"
+       },
+       "usd": {
+        "type": "number",
+        "minimum": 0,
+        "x-khg-code": "KHG-C010"
+       },
+       "price_table": {
+        "type": "string",
+        "x-khg-code": "KHG-C010"
+       }
+      },
+      "x-khg-code": "KHG-C010"
+     }
+    },
+    "x-khg-code": "KHG-C010"
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "kind": {
+      "const": "memory-response",
+      "x-khg-code": "KHG-C010"
+     }
+    },
+    "required": [
+     "kind"
+    ],
+    "x-khg-code": "KHG-C010"
+   },
+   "then": {
+    "required": [
+     "kind",
+     "qid",
+     "answer"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "kind": {},
+     "qid": {},
+     "answer": {
+      "type": "object",
+      "required": [
+       "values",
+       "abstained"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "values": {
+        "type": "array",
+        "items": {
+         "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/value"
+        },
+        "x-khg-code": "KHG-C010"
+       },
+       "text": {
+        "type": "string",
+        "x-khg-code": "KHG-C010"
+       },
+       "abstained": {
+        "type": "boolean",
+        "x-khg-code": "KHG-C010"
+       }
+      },
+      "x-khg-code": "KHG-C010"
+     },
+     "value_scores": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "required": [
+        "value",
+        "score"
+       ],
+       "properties": {
+        "value": {
+         "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/value"
+        },
+        "score": {
+         "type": "number",
+         "x-khg-code": "KHG-C010"
+        }
+       },
+       "x-khg-code": "KHG-C010"
+      },
+      "x-khg-code": "KHG-C010"
+     },
+     "retrieved": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "required": [
+        "rank",
+        "unit_id",
+        "unit_kind",
+        "hyperedge_ids"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "rank": {
+         "type": "integer",
+         "minimum": 1,
+         "x-khg-code": "KHG-C010"
+        },
+        "unit_id": {
+         "type": "string",
+         "x-khg-code": "KHG-C010"
+        },
+        "unit_kind": {
+         "enum": [
+          "hyperedge",
+          "pair",
+          "chunk",
+          "path",
+          "community"
+         ],
+         "x-khg-code": "KHG-C010"
+        },
+        "hyperedge_ids": {
+         "type": "array",
+         "items": {
+          "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/id"
+         },
+         "x-khg-code": "KHG-C010"
+        },
+        "bids": {
+         "type": "array",
+         "items": {
+          "type": "array",
+          "items": {
+           "type": "string",
+           "x-khg-code": "KHG-C010"
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "x-khg-code": "KHG-C010"
+         },
+         "x-khg-code": "KHG-C010"
+        }
+       },
+       "x-khg-code": "KHG-C010"
+      },
+      "x-khg-code": "KHG-C010"
+     },
+     "cost": {
+      "type": "object",
+      "required": [
+       "prompt_tokens",
+       "completion_tokens",
+       "llm_calls",
+       "retrieval_calls",
+       "retrieval_ms",
+       "wall_ms"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "prompt_tokens": {
+        "type": "integer",
+        "minimum": 0,
+        "x-khg-code": "KHG-C010"
+       },
+       "completion_tokens": {
+        "type": "integer",
+        "minimum": 0,
+        "x-khg-code": "KHG-C010"
+       },
+       "llm_calls": {
+        "type": "integer",
+        "minimum": 0,
+        "x-khg-code": "KHG-C010"
+       },
+       "retrieval_calls": {
+        "type": "integer",
+        "minimum": 0,
+        "x-khg-code": "KHG-C010"
+       },
+       "hyperedges_visited": {
+        "type": "integer",
+        "minimum": 0,
+        "x-khg-code": "KHG-C010"
+       },
+       "retrieval_ms": {
+        "type": "number",
+        "minimum": 0,
+        "x-khg-code": "KHG-C010"
+       },
+       "wall_ms": {
+        "type": "number",
+        "minimum": 0,
+        "x-khg-code": "KHG-C010"
+       },
+       "usd": {
+        "type": "number",
+        "minimum": 0,
+        "x-khg-code": "KHG-C010"
+       },
+       "price_table": {
+        "type": "string",
+        "x-khg-code": "KHG-C010"
+       }
+      },
+      "x-khg-code": "KHG-C010"
+     }
+    },
+    "x-khg-code": "KHG-C010"
+   }
+  }
+ ],
+ "x-khg-code": "KHG-C010"
+}

@@ -1,0 +1,33 @@
+{
+  "khg_scenario": "khg-scenario/1.0.0",
+  "id": "C2-S034",
+  "title": "known vs possible validity: an undated fact is not returned by a definite as-of query but is by a possible one; a since-fact is presumed ongoing",
+  "requires": ["valid_time"],
+  "schema": "p2-gate.schema.json",
+  "given": [
+    {"at": "2026-10-01T00:00:01Z", "put": [
+      {"kind": "entity", "id": "ex:A", "types": ["Person"]}, {"kind": "entity", "id": "ex:B", "types": ["Person"]},
+      {"kind": "entity", "id": "ex:C", "types": ["Person"]}, {"kind": "entity", "id": "ex:D", "types": ["Person"]},
+      {"kind": "entity", "id": "ex:E", "types": ["Person"]}, {"kind": "entity", "id": "ex:F", "types": ["Person"]},
+      {"kind": "fact", "id": "f:m-period", "relation": "married", "status": "asserted",
+       "bindings": [{"bid": "b1", "role": "spouse", "value": {"entity": "ex:A"}}, {"bid": "b2", "role": "spouse", "value": {"entity": "ex:B"}},
+                    {"bid": "b3", "role": "start_time", "value": {"literal": {"datatype": "time", "time": "+1895-07-26T00:00:00Z", "precision": 11}}},
+                    {"bid": "b4", "role": "end_time", "value": {"literal": {"datatype": "time", "time": "+1906-04-19T00:00:00Z", "precision": 11}}}],
+       "evidence": [{"id": "e1", "type": "curated", "mode": "manual", "source": {"doc_id": "doc:x"}}]},
+      {"kind": "fact", "id": "f:m-undated", "relation": "married", "status": "asserted",
+       "bindings": [{"bid": "b1", "role": "spouse", "value": {"entity": "ex:C"}}, {"bid": "b2", "role": "spouse", "value": {"entity": "ex:D"}}],
+       "evidence": [{"id": "e1", "type": "curated", "mode": "manual", "source": {"doc_id": "doc:x"}}]},
+      {"kind": "fact", "id": "f:m-since", "relation": "married", "status": "asserted",
+       "bindings": [{"bid": "b1", "role": "spouse", "value": {"entity": "ex:E"}}, {"bid": "b2", "role": "spouse", "value": {"entity": "ex:F"}},
+                    {"bid": "b3", "role": "start_time", "value": {"literal": {"datatype": "time", "time": "+1900-00-00T00:00:00Z", "precision": 9}}}],
+       "evidence": [{"id": "e1", "type": "curated", "mode": "manual", "source": {"doc_id": "doc:x"}}]}
+    ]}
+  ],
+  "when": [
+    {"op": "find", "args": {"relation": "married", "pattern": [], "valid_at": "+1903-01-01T00:00:00Z"}, "then": {"select": "ids", "equals": ["f:m-period", "f:m-since"]}},
+    {"op": "find", "args": {"relation": "married", "pattern": [], "valid_at": "+1903-01-01T00:00:00Z", "valid_mode": "possible"}, "then": {"select": "ids", "equals": ["f:m-period", "f:m-since", "f:m-undated"]}},
+    {"op": "find", "args": {"relation": "married", "pattern": [], "valid_at": "+1900-06-01T00:00:00Z"}, "then": {"select": "ids", "equals": ["f:m-period"]}},
+    {"op": "find", "args": {"relation": "married", "pattern": [], "valid_at": "+2026-01-01T00:00:00Z"}, "then": {"select": "ids", "equals": ["f:m-since"]}},
+    {"op": "find", "args": {"relation": "married", "pattern": []}, "then": {"select": "ids", "equals": ["f:m-period", "f:m-since", "f:m-undated"]}}
+  ]
+}

@@ -1,0 +1,500 @@
+{
+ "env": {
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "jsonschema": "4.26.0",
+  "pandas": "2.3.3",
+  "numpy": "2.4.6",
+  "fastjsonschema": "2.22.2",
+  "requests": "2.34.2",
+  "xgi": "0.10.2",
+  "hypernetx": "2.4.3"
+ },
+ "input": "schemas/sample.hif.json",
+ "runs": {
+  "xgi.write_hif(xgi.read_hif(sample))": {
+   "seeds": {
+    "1": {
+     "sha256": "a240364d265e1dbc33eb0995f16a6947a91acbd893f0f42646be9034330c8d5a",
+     "first_incidences": [
+      {
+       "<tuple>": [
+        "f1",
+        "pop:adults"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "drug:metformin"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "dose:500mg-bid"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "disease:T2DM"
+       ]
+      }
+     ]
+    },
+    "2": {
+     "sha256": "00a4698dd0b44b179714fea076928f6a3fa627a7ea4c70565381ad353499b160",
+     "first_incidences": [
+      {
+       "<tuple>": [
+        "f1",
+        "dose:500mg-bid"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "drug:metformin"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "pop:adults"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "disease:T2DM"
+       ]
+      }
+     ]
+    },
+    "3": {
+     "sha256": "806a3027d6fe398a57321c4751980cb988068bcc939d12bbee495f5d1cfd526a",
+     "first_incidences": [
+      {
+       "<tuple>": [
+        "f1",
+        "pop:adults"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "drug:metformin"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "dose:500mg-bid"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "disease:T2DM"
+       ]
+      }
+     ]
+    },
+    "4": {
+     "sha256": "8b79bec50b728d433d9b4aedd864ff5dd0d8fd886cb97eb05982c5388e81a860",
+     "first_incidences": [
+      {
+       "<tuple>": [
+        "f1",
+        "dose:500mg-bid"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "drug:metformin"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "pop:adults"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "disease:T2DM"
+       ]
+      }
+     ]
+    }
+   },
+   "distinct_outputs": 4
+  },
+  "hnx.to_hif(hnx.from_hif(sample), network_type='directed')": {
+   "seeds": {
+    "1": {
+     "sha256": "5387bfe69db3ae9e38332d8a5d8c32af27bb37c30370a8796c84072726fc6987",
+     "first_incidences": [
+      {
+       "<tuple>": [
+        "f1",
+        "drug:metformin"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "disease:T2DM"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "dose:500mg-bid"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "pop:adults"
+       ]
+      }
+     ]
+    },
+    "2": {
+     "sha256": "5387bfe69db3ae9e38332d8a5d8c32af27bb37c30370a8796c84072726fc6987",
+     "first_incidences": [
+      {
+       "<tuple>": [
+        "f1",
+        "drug:metformin"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "disease:T2DM"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "dose:500mg-bid"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "pop:adults"
+       ]
+      }
+     ]
+    },
+    "3": {
+     "sha256": "5387bfe69db3ae9e38332d8a5d8c32af27bb37c30370a8796c84072726fc6987",
+     "first_incidences": [
+      {
+       "<tuple>": [
+        "f1",
+        "drug:metformin"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "disease:T2DM"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "dose:500mg-bid"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "pop:adults"
+       ]
+      }
+     ]
+    },
+    "4": {
+     "sha256": "5387bfe69db3ae9e38332d8a5d8c32af27bb37c30370a8796c84072726fc6987",
+     "first_incidences": [
+      {
+       "<tuple>": [
+        "f1",
+        "drug:metformin"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "disease:T2DM"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "dose:500mg-bid"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "pop:adults"
+       ]
+      }
+     ]
+    }
+   },
+   "distinct_outputs": 1
+  },
+  "sketch from_xgi(to_xgi(sample))": {
+   "seeds": {
+    "1": {
+     "sha256": "f069d917ee0c62e39ff94331a132610c37b41c5d88e7bbbdc8473f16820cd303",
+     "first_incidences": [
+      {
+       "<tuple>": [
+        "f1",
+        "drug:metformin"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "disease:T2DM"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "dose:500mg-bid"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "pop:adults"
+       ]
+      }
+     ]
+    },
+    "2": {
+     "sha256": "f069d917ee0c62e39ff94331a132610c37b41c5d88e7bbbdc8473f16820cd303",
+     "first_incidences": [
+      {
+       "<tuple>": [
+        "f1",
+        "drug:metformin"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "disease:T2DM"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "dose:500mg-bid"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "pop:adults"
+       ]
+      }
+     ]
+    },
+    "3": {
+     "sha256": "f069d917ee0c62e39ff94331a132610c37b41c5d88e7bbbdc8473f16820cd303",
+     "first_incidences": [
+      {
+       "<tuple>": [
+        "f1",
+        "drug:metformin"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "disease:T2DM"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "dose:500mg-bid"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "pop:adults"
+       ]
+      }
+     ]
+    },
+    "4": {
+     "sha256": "f069d917ee0c62e39ff94331a132610c37b41c5d88e7bbbdc8473f16820cd303",
+     "first_incidences": [
+      {
+       "<tuple>": [
+        "f1",
+        "drug:metformin"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "disease:T2DM"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "dose:500mg-bid"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "pop:adults"
+       ]
+      }
+     ]
+    }
+   },
+   "distinct_outputs": 1
+  },
+  "sketch from_hnx(to_hnx(sample))": {
+   "seeds": {
+    "1": {
+     "sha256": "f069d917ee0c62e39ff94331a132610c37b41c5d88e7bbbdc8473f16820cd303",
+     "first_incidences": [
+      {
+       "<tuple>": [
+        "f1",
+        "drug:metformin"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "disease:T2DM"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "dose:500mg-bid"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "pop:adults"
+       ]
+      }
+     ]
+    },
+    "2": {
+     "sha256": "f069d917ee0c62e39ff94331a132610c37b41c5d88e7bbbdc8473f16820cd303",
+     "first_incidences": [
+      {
+       "<tuple>": [
+        "f1",
+        "drug:metformin"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "disease:T2DM"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "dose:500mg-bid"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "pop:adults"
+       ]
+      }
+     ]
+    },
+    "3": {
+     "sha256": "f069d917ee0c62e39ff94331a132610c37b41c5d88e7bbbdc8473f16820cd303",
+     "first_incidences": [
+      {
+       "<tuple>": [
+        "f1",
+        "drug:metformin"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "disease:T2DM"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "dose:500mg-bid"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "pop:adults"
+       ]
+      }
+     ]
+    },
+    "4": {
+     "sha256": "f069d917ee0c62e39ff94331a132610c37b41c5d88e7bbbdc8473f16820cd303",
+     "first_incidences": [
+      {
+       "<tuple>": [
+        "f1",
+        "drug:metformin"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "disease:T2DM"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "dose:500mg-bid"
+       ]
+      },
+      {
+       "<tuple>": [
+        "f1",
+        "pop:adults"
+       ]
+      }
+     ]
+    }
+   },
+   "distinct_outputs": 1
+  }
+ }
+}

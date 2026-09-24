@@ -1,0 +1,136 @@
+{
+  "metadata": {
+    "title": "attr shapes",
+    "evidence": [
+      "pmid:1",
+      "pmid:2"
+    ],
+    "qualifiers": {
+      "since": "2020",
+      "certainty": 0.9,
+      "nested": {
+        "deep": [
+          1,
+          {
+            "x": null
+          }
+        ]
+      }
+    },
+    "note": null,
+    "flag": true,
+    "label": "\u00dcberpr\u00fcfung \u2013 \u691c\u8a3c",
+    "empty_list": [],
+    "empty_obj": {},
+    "big": 9007199254740993,
+    "tiny": 1e-300,
+    "zero": 0
+  },
+  "network-type": "directed",
+  "nodes": [
+    {
+      "attrs": {
+        "type": "Drug",
+        "evidence": [
+          "pmid:1",
+          "pmid:2"
+        ],
+        "qualifiers": {
+          "since": "2020",
+          "certainty": 0.9,
+          "nested": {
+            "deep": [
+              1,
+              {
+                "x": null
+              }
+            ]
+          }
+        },
+        "note": null,
+        "flag": true,
+        "label": "\u00dcberpr\u00fcfung \u2013 \u691c\u8a3c",
+        "empty_list": [],
+        "empty_obj": {},
+        "big": 9007199254740993,
+        "tiny": 1e-300,
+        "zero": 0
+      },
+      "node": "drug:metformin"
+    },
+    {
+      "attrs": {
+        "type": "Disease",
+        "evidence": [
+          "pmid:1",
+          "pmid:2"
+        ],
+        "qualifiers": {
+          "since": "2020",
+          "certainty": 0.9,
+          "nested": {
+            "deep": [
+              1,
+              {
+                "x": null
+              }
+            ]
+          }
+        },
+        "note": null,
+        "flag": true,
+        "label": "\u00dcberpr\u00fcfung \u2013 \u691c\u8a3c",
+        "empty_list": [],
+        "empty_obj": {},
+        "big": 9007199254740993,
+        "tiny": 1e-300,
+        "zero": 0
+      },
+      "node": "disease:T2DM"
+    }
+  ],
+  "edges": [
+    {
+      "attrs": {
+        "relation": "treats",
+        "evidence": [
+          "pmid:1",
+          "pmid:2"
+        ],
+        "qualifiers": {
+          "since": "2020",
+          "certainty": 0.9,
+          "nested": {
+            "deep": [
+              1,
+              {
+                "x": null
+              }
+            ]
+          }
+        },
+        "note": null,
+        "flag": true,
+        "label": "\u00dcberpr\u00fcfung \u2013 \u691c\u8a3c",
+        "empty_list": [],
+        "empty_obj": {},
+        "big": 9007199254740993,
+        "tiny": 1e-300,
+        "zero": 0
+      },
+      "edge": "f1"
+    }
+  ],
+  "incidences": [
+    {
+      "edge": "f1",
+      "node": "drug:metformin",
+      "direction": "tail"
+    },
+    {
+      "edge": "f1",
+      "node": "disease:T2DM",
+      "direction": "head"
+    }
+  ]
+}

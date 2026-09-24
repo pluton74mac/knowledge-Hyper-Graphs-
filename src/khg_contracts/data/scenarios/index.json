@@ -1,0 +1,1439 @@
+{
+ "format": "khg-scenario-index/1.0.0",
+ "runner": "khg_contracts.store.conformance.run(factory, *, only=None, capabilities=None) -> EARL-shaped report (passed, failed, inapplicable, cantTell per scenario)",
+ "factory": "factory(schema: Schema, clock: Clock) -> a fresh, empty Store",
+ "clock": {
+  "start": "2026-10-01T00:00:00Z",
+  "step_seconds": 1,
+  "rule": "one tick per write call; a step's 'at' sets the clock; later ticks continue from it"
+ },
+ "requires": "the capabilities a scenario needs: those of the operations and assertions under test (valid_time for as_of, valid_mode or end_validity; transaction_time for as_at or get(version); history_export for content history; atomic_writes for a multi-record write), plus the data flags of the records it writes or loads (literal_values, special_values, goals, nesting, ordered_roles). A scenario that loads @fixture needs all five data flags; its core variant (id suffix c) loads @fixture[core] and needs only literal_values and nesting. A store lacking a flag gets 'inapplicable', never 'failed'.",
+ "given": "put steps run one call each (one record per call, in the listed order, for a store without atomic_writes); apply steps run one event; load loads a container into the empty store",
+ "references": {
+  "@<id>": "the fixture record with that id",
+  "@entities": "every entity record of the fixture",
+  "@fixture": "the whole fixture container",
+  "@fixture[core]": "the fixture without the records that need ordered_roles, special_values or goals (f:route-1, f:born-scribe, f:cat-7, g:who-1774)",
+  "@<id>.<field>": "that field of the fixture record",
+  "@fixture.header": "the fixture's header"
+ },
+ "patch_keys": {
+  "set": "replace or add fields",
+  "drop": "remove fields",
+  "set_binding": "replace the value of the binding with that bid",
+  "drop_bindings": "remove bindings by bid, and those bids from every evidence supports list",
+  "add_evidence": "append evidence records",
+  "set_evidence": "change fields of the evidence record with that id"
+ },
+ "pattern": "find patterns are [{role, value, position?}] where value is a C1 value, {\"any\": true} or {\"any_unbound\": true}; a missing position matches any position; [] matches every fact of the relation",
+ "then": {
+  "select + equals": "a projection of the result equals the value (ids, value, version, versions, status, status_ref, goal, record, canonical, receipt.records, receipt.warnings, evidence.ids, evidence.<id>.<field>, binding.<bid>.<field>, derived.<field>, terminal, terminal.ids, steps.count, record.<id>.<field>, versions.<id>, header.<field>, metadata.<field>, node.<id>.<path>); '{store_id}' in an expected string is the store's id",
+  "error + info": "the call raises; the code is among the error's codes; info matches as a subset (objects: listed keys; lists: same length, element-wise)",
+  "container_equals": "the export equals that container (header without created_at and generator; records in canonical form), ignoring the listed store-assigned fields",
+  "hif_valid": "the export passes the vendored HIF schema and the khg-hif profile",
+  "equals_file": "the export equals that file, ignoring the listed attrs keys",
+  "reload_equal": "loading the export into a fresh store and exporting again gives the same bytes",
+  "deterministic": "two fresh runs give byte-identical output"
+ },
+ "projections": {
+  "canonical": "the record in canonical form without version, recorded_at, recorded_by",
+  "derived.<field>": "computed by the runner from the returned record (derived is an optional cache)",
+  "receipt.records": "[id, version, outcome] per written record, sorted by id; outcome created, versioned or noop",
+  "receipt.warnings": "[{code, ids}] lint findings of the write (KHG-L008 possible overlaps)"
+ },
+ "count": 114,
+ "scenarios": [
+  {
+   "id": "S-PUT-001",
+   "title": "put then get returns the record",
+   "requires": [],
+   "precedent": [
+    "A C2-01 passed",
+    "B S001"
+   ]
+  },
+  {
+   "id": "S-PUT-002",
+   "title": "an identical put is a no-op",
+   "requires": [],
+   "precedent": [
+    "A C2-02 passed",
+    "C S-PUT-001 passed",
+    "B S002"
+   ]
+  },
+  {
+   "id": "S-PUT-003",
+   "title": "one invalid record in a batch writes nothing",
+   "requires": [
+    "atomic_writes"
+   ],
+   "precedent": [
+    "B S003",
+    "A §6.2 validate-all-then-write"
+   ]
+  },
+  {
+   "id": "S-PUT-004",
+   "title": "a candidate never enters a store",
+   "requires": [],
+   "precedent": [
+    "A C2-17 passed",
+    "C S-PUT-003 passed",
+    "B S004"
+   ]
+  },
+  {
+   "id": "S-PUT-005",
+   "title": "put reports the validator's code",
+   "requires": [
+    "literal_values"
+   ],
+   "precedent": [
+    "B S005",
+    "C S-PUT-005"
+   ]
+  },
+  {
+   "id": "S-PUT-006",
+   "title": "optimistic concurrency: a stale expect is refused",
+   "requires": [],
+   "precedent": [
+    "B S006"
+   ]
+  },
+  {
+   "id": "S-PUT-007",
+   "title": "unbound is accepted in a goal and refused elsewhere",
+   "requires": [
+    "goals",
+    "literal_values"
+   ],
+   "precedent": [
+    "C S-PUT-004 passed"
+   ]
+  },
+  {
+   "id": "S-PUT-008",
+   "title": "put cannot change the status of an existing id",
+   "requires": [],
+   "precedent": [
+    "C S-PUT-006"
+   ]
+  },
+  {
+   "id": "S-PUT-009",
+   "title": "a reference to an entity the store does not hold is refused",
+   "requires": [],
+   "precedent": [
+    "C S-PUT-007"
+   ]
+  },
+  {
+   "id": "S-PUT-010",
+   "title": "a value naming a redirected entity is refused (redirects are rewritten in 1.2)",
+   "requires": [
+    "literal_values"
+   ],
+   "precedent": [
+    "critique SEM-16 (R01 I10)"
+   ]
+  },
+  {
+   "id": "S-VER-001",
+   "title": "each write makes a version; get(as_at) returns the older one",
+   "requires": [
+    "atomic_writes",
+    "literal_values",
+    "transaction_time",
+    "valid_time"
+   ],
+   "precedent": [
+    "A C2-03 passed",
+    "C S-PUT-002 passed",
+    "B S010"
+   ]
+  },
+  {
+   "id": "S-VER-002",
+   "title": "add_evidence makes a new version with the same content",
+   "requires": [],
+   "precedent": [
+    "B S011",
+    "C S-LIFE-003"
+   ]
+  },
+  {
+   "id": "S-VER-003",
+   "title": "adding an end date is a refinement; changing a core binding is refused",
+   "requires": [
+    "literal_values"
+   ],
+   "precedent": [
+    "B C2-S012 passed",
+    "A C2-18 passed",
+    "judge probe: C accepted Bob for Alice as version 2"
+   ]
+  },
+  {
+   "id": "S-VER-004",
+   "title": "a new version that rewrites earlier evidence is refused",
+   "requires": [],
+   "precedent": [
+    "B S013"
+   ]
+  },
+  {
+   "id": "S-VER-005",
+   "title": "a transition outside the table (retracted to disputed) is refused",
+   "requires": [
+    "atomic_writes"
+   ],
+   "precedent": [
+    "B S014",
+    "A C2-16 passed"
+   ]
+  },
+  {
+   "id": "S-VER-006",
+   "title": "superseded content is frozen",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "B S015"
+   ]
+  },
+  {
+   "id": "S-VER-007",
+   "title": "a somevalue binding refined to a value keeps its bid",
+   "requires": [
+    "special_values"
+   ],
+   "precedent": [
+    "B §2.16 (R01 I12)"
+   ]
+  },
+  {
+   "id": "S-VER-008",
+   "title": "entity versions: labels may change, types only grow, redirect_to is set once",
+   "requires": [],
+   "precedent": [
+    "critique CONS-28"
+   ]
+  },
+  {
+   "id": "S-VER-009",
+   "title": "end_validity may replace a novalue end (a world change): the status stays asserted",
+   "requires": [
+    "literal_values",
+    "special_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "critique SEM-01, SEM-06 (R04 M4 end_cause)"
+   ]
+  },
+  {
+   "id": "S-READ-001",
+   "title": "incident is complete and in id order; goals are not asserted",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "A C2-04 passed",
+    "C S-INC-001 passed"
+   ]
+  },
+  {
+   "id": "S-READ-002",
+   "title": "a node in two roles returns the fact once; the role filter",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "A C2-05 passed",
+    "C S-INC-002 passed",
+    "B S020/S021"
+   ]
+  },
+  {
+   "id": "S-READ-003",
+   "title": "default reads hide superseded, quoted, deprecated, goal and lifecycle records",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "A C2-06 passed",
+    "C S-INC-007",
+    "B S022"
+   ]
+  },
+  {
+   "id": "S-READ-004",
+   "title": "the status filter can include superseded facts",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "A C2-07 passed"
+   ]
+  },
+  {
+   "id": "S-READ-005",
+   "title": "incident on a fact id finds nesting and lifecycle records",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "A C2-22 passed",
+    "C S-INC-003 passed",
+    "B S023"
+   ]
+  },
+  {
+   "id": "S-READ-006",
+   "title": "keyset pagination is stable",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "A C2-20 passed",
+    "C S-INC-004 passed",
+    "B S024"
+   ]
+  },
+  {
+   "id": "S-READ-007",
+   "title": "degree equals the length of incident",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "C S-INC-008",
+    "B S025"
+   ]
+  },
+  {
+   "id": "S-READ-008",
+   "title": "find at_least matches a multiset; a repeated role needs distinct bindings",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "A C2-09 passed",
+    "C S-FIND-001 passed",
+    "B S026"
+   ]
+  },
+  {
+   "id": "S-READ-009",
+   "title": "find exact needs the whole binding multiset",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "A C2-10 passed",
+    "C S-FIND-002 passed",
+    "B S027"
+   ]
+  },
+  {
+   "id": "S-READ-010",
+   "title": "find by a time literal: precision takes part in equality; the calendar does not",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "C S-FIND-003 passed",
+    "B S028",
+    "critique CONS-12 (Julian 1895-07-14 is Gregorian 1895-07-26)"
+   ]
+  },
+  {
+   "id": "S-READ-011",
+   "title": "quantities match with unit and bounds",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "C S-FIND-004"
+   ]
+  },
+  {
+   "id": "S-READ-012",
+   "title": "ordered roles match by position; a pattern without a position matches any position",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "C S-FIND-005",
+    "critique CONS-25"
+   ]
+  },
+  {
+   "id": "S-READ-013",
+   "title": "an any_unbound pattern finds goals, which appear only when asked for",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "A C2-21 passed",
+    "C S-FIND-006",
+    "B S029",
+    "critique CONS-25 (pattern grammar)"
+   ]
+  },
+  {
+   "id": "S-READ-014",
+   "title": "find matches novalue",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "C S-FIND-007"
+   ]
+  },
+  {
+   "id": "S-READ-015",
+   "title": "get ignores the Where filters",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "standards ruling (store defaults)"
+   ]
+  },
+  {
+   "id": "S-READ-016",
+   "title": "get_many returns every requested record in one call",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "C §1.4 (P10)"
+   ]
+  },
+  {
+   "id": "S-READ-017",
+   "title": "timeless relations pass every as_of filter, in both modes",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "critique SEM-15"
+   ]
+  },
+  {
+   "id": "S-READ-018",
+   "title": "an empty pattern lists the relation's facts, paginated",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "critique CONS-25"
+   ]
+  },
+  {
+   "id": "S-READ-019",
+   "title": "vocabulary ids (units, globes, rank reasons) are not nodes: incident finds nothing",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "critique FIXTURE-VOCAB-REFS"
+   ]
+  },
+  {
+   "id": "S-TIME-001",
+   "title": "as_of filters by valid time; an ended fact stays asserted",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "A C2-08 passed",
+    "C S-INC-005"
+   ]
+  },
+  {
+   "id": "S-TIME-002",
+   "title": "as_at before a supersession sees the older belief; so does the walk",
+   "requires": [
+    "atomic_writes",
+    "transaction_time"
+   ],
+   "precedent": [
+    "B C2-S031 passed",
+    "C S-SUP-004"
+   ]
+  },
+  {
+   "id": "S-TIME-003",
+   "title": "definite and possible readings at year precision",
+   "requires": [
+    "literal_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "B S032",
+    "B identity case X1"
+   ]
+  },
+  {
+   "id": "S-TIME-004",
+   "title": "as_of and as_at compose",
+   "requires": [
+    "atomic_writes",
+    "literal_values",
+    "transaction_time",
+    "valid_time"
+   ],
+   "precedent": [
+    "B S033",
+    "C S-INC-006"
+   ]
+  },
+  {
+   "id": "S-TIME-005",
+   "title": "an undated fact: definite reads skip it, possible reads and reads without as_of keep it",
+   "requires": [
+    "literal_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "B C2-S034 passed"
+   ]
+  },
+  {
+   "id": "S-TIME-006",
+   "title": "end_validity keeps the status and adds the end binding",
+   "requires": [
+    "literal_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "C S-TIME-001 passed",
+    "C S-TIME-002",
+    "critique SEM-21"
+   ]
+  },
+  {
+   "id": "S-TIME-007",
+   "title": "a Julian date is compared on the proleptic Gregorian line",
+   "requires": [
+    "literal_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "graft U10 (calendar field)"
+   ]
+  },
+  {
+   "id": "S-TIME-008",
+   "title": "an end-only (until) fact has no definite validity: the start is unknown",
+   "requires": [
+    "literal_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "critique SEM-08"
+   ]
+  },
+  {
+   "id": "S-TIME-009",
+   "title": "a somevalue end (ended, date unknown) has no definite validity after the start window",
+   "requires": [
+    "literal_values",
+    "special_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "critique SEM-01"
+   ]
+  },
+  {
+   "id": "S-TIME-010",
+   "title": "precision 7 is an ordinal century: +1900/7 is 1801-1900",
+   "requires": [
+    "literal_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "critique CONS-01 (Wikidata Help:Dates, precision 7)"
+   ]
+  },
+  {
+   "id": "S-TIME-011",
+   "title": "precision 6 is an ordinal millennium; precision 8 is a decade",
+   "requires": [
+    "literal_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "critique CONS-01 (precision 6 and 8)"
+   ]
+  },
+  {
+   "id": "S-TIME-012",
+   "title": "a BCE Julian date: historical year -44 is astronomical -43, and Julian 15 March is Gregorian 13 March",
+   "requires": [
+    "literal_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "critique CONS-01 (Wikibase: BCE years use historical numbering)"
+   ]
+  },
+  {
+   "id": "S-KEY-001",
+   "title": "a put that breaks the key invariant raises KeyCollision and writes nothing",
+   "requires": [
+    "key_constraint",
+    "literal_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "B C2-S040 passed",
+    "C S-KEY-002 passed",
+    "A C2-12 passed",
+    "critique SEM-04 (X2 shape)"
+   ]
+  },
+  {
+   "id": "S-KEY-002",
+   "title": "find_by_key without as_of returns the key's timeline in id order",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "B S041"
+   ]
+  },
+  {
+   "id": "S-KEY-003",
+   "title": "find_by_key with as_of returns the holder at that time",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "C S-KEY-001 passed",
+    "B S042"
+   ]
+  },
+  {
+   "id": "S-KEY-004",
+   "title": "one preferred fact may stand beside normal ones on a key",
+   "requires": [
+    "atomic_writes",
+    "key_constraint",
+    "literal_values"
+   ],
+   "precedent": [
+    "B S043 (Wikidata single-best-value)"
+   ]
+  },
+  {
+   "id": "S-KEY-005",
+   "title": "a deprecated fact never collides and is hidden by default",
+   "requires": [
+    "key_constraint",
+    "literal_values"
+   ],
+   "precedent": [
+    "standards and consumers rulings (rank-aware invariant)"
+   ]
+  },
+  {
+   "id": "S-KEY-006",
+   "title": "a non-temporal key collides whatever the dates",
+   "requires": [
+    "key_constraint"
+   ],
+   "precedent": [
+    "B S046",
+    "C S-KEY-004"
+   ]
+  },
+  {
+   "id": "S-KEY-007",
+   "title": "close_older on a succession: the caller ends the older fact at the newer start, then puts",
+   "requires": [
+    "key_constraint",
+    "literal_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "B S044",
+    "A C2-11 passed (reported, not rewritten)",
+    "C §1.4 (P7)",
+    "critique SEM-04"
+   ]
+  },
+  {
+   "id": "S-KEY-008",
+   "title": "dispute: one transition writes the new fact, both statuses and the khg:disputes record",
+   "requires": [
+    "atomic_writes",
+    "key_constraint"
+   ],
+   "precedent": [
+    "B S045",
+    "C S-LIFE (transition)",
+    "critique SEM-10"
+   ]
+  },
+  {
+   "id": "S-KEY-009",
+   "title": "a year-precision handover is a succession, not a collision; the possible overlap is a warning",
+   "requires": [
+    "atomic_writes",
+    "key_constraint",
+    "literal_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "B identity case X1",
+    "C S-KEY-003"
+   ]
+  },
+  {
+   "id": "S-KEY-010",
+   "title": "a transition back to asserted drops status_ref and re-checks the key",
+   "requires": [
+    "atomic_writes",
+    "key_constraint"
+   ],
+   "precedent": [
+    "C S-KEY-005",
+    "critique SEM-10"
+   ]
+  },
+  {
+   "id": "S-KEY-011",
+   "title": "a special value in a key role gives no key digest and never collides",
+   "requires": [
+    "atomic_writes",
+    "key_constraint",
+    "special_values"
+   ],
+   "precedent": [
+    "B §2.17",
+    "judge re-run: C's digest made two somevalue keys collide"
+   ]
+  },
+  {
+   "id": "S-KEY-012",
+   "title": "an undated fact beside a dated one on a temporal key: no collision, a possible-overlap warning",
+   "requires": [
+    "key_constraint",
+    "literal_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "critique SEM-08, CONS-11 (open question X3, ruled)"
+   ]
+  },
+  {
+   "id": "S-KEY-013",
+   "title": "two undated facts on one temporal key: no collision, a possible-overlap warning",
+   "requires": [
+    "key_constraint",
+    "literal_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "critique CONS-11"
+   ]
+  },
+  {
+   "id": "S-KEY-014",
+   "title": "same start (R01 case 3b): close_older does not apply, the action is dispute",
+   "requires": [
+    "key_constraint",
+    "literal_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "critique SEM-04 (3b)",
+    "B identity table 3b"
+   ]
+  },
+  {
+   "id": "S-KEY-015",
+   "title": "backfill (X4): the incoming fact is the older one, so it is the one closed",
+   "requires": [
+    "key_constraint",
+    "literal_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "critique SEM-04 (X4)",
+    "B identity table X4"
+   ]
+  },
+  {
+   "id": "S-KEY-016",
+   "title": "a refining claim on the same key is a merge: it becomes a new version of the stored fact",
+   "requires": [
+    "key_constraint",
+    "literal_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "critique SEM-05 (R01 case 1, C3-R10)"
+   ]
+  },
+  {
+   "id": "S-KEY-017",
+   "title": "a new claim on a disputed key joins the dispute",
+   "requires": [
+    "atomic_writes",
+    "key_constraint"
+   ],
+   "precedent": [
+    "critique SEM-09"
+   ]
+  },
+  {
+   "id": "S-KEY-018",
+   "title": "one put spanning two relations reports every collision with its own policy",
+   "requires": [
+    "atomic_writes",
+    "key_constraint",
+    "literal_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "critique CONS-13"
+   ]
+  },
+  {
+   "id": "S-KEY-019",
+   "title": "key literals compare exactly: 2019 at year precision and 30 June 2019 are different keys",
+   "requires": [
+    "key_constraint",
+    "literal_values"
+   ],
+   "precedent": [
+    "critique SEM-13"
+   ]
+  },
+  {
+   "id": "S-LIFE-001",
+   "title": "supersede is one event; the walk forward ends at the current belief",
+   "requires": [
+    "atomic_writes"
+   ],
+   "precedent": [
+    "A C2-13 passed",
+    "C S-SUP-001 passed"
+   ]
+  },
+  {
+   "id": "S-LIFE-002",
+   "title": "the walk runs backward",
+   "requires": [
+    "atomic_writes"
+   ],
+   "precedent": [
+    "A C2-14 passed",
+    "B S051"
+   ]
+  },
+  {
+   "id": "S-LIFE-003",
+   "title": "the walk branches on conflation",
+   "requires": [
+    "atomic_writes"
+   ],
+   "precedent": [
+    "B S050",
+    "C S-SUP-002"
+   ]
+  },
+  {
+   "id": "S-LIFE-004",
+   "title": "a superseding fact must be asserted when the event runs, so events cannot form a cycle",
+   "requires": [
+    "atomic_writes"
+   ],
+   "precedent": [
+    "B S053 (cycle, KHG-D012 stays a container check)",
+    "C S-SUP-003",
+    "critique SEM-11"
+   ]
+  },
+  {
+   "id": "S-LIFE-005",
+   "title": "put cannot create a record in status superseded",
+   "requires": [],
+   "precedent": [
+    "A C2-15 passed"
+   ]
+  },
+  {
+   "id": "S-LIFE-006",
+   "title": "retraction writes khg:retracts; a retracted fact does not come back",
+   "requires": [
+    "atomic_writes"
+   ],
+   "precedent": [
+    "A C2-16 passed"
+   ]
+  },
+  {
+   "id": "S-LIFE-007",
+   "title": "retracting a supersession record restores the superseded fact (undo) and drops its status_ref",
+   "requires": [
+    "atomic_writes"
+   ],
+   "precedent": [
+    "B S052",
+    "critique SEM-10"
+   ]
+  },
+  {
+   "id": "S-LIFE-008",
+   "title": "binding a goal slot is a new version with the same bid",
+   "requires": [
+    "goals",
+    "literal_values"
+   ],
+   "precedent": [
+    "A C2-19 passed",
+    "B S070"
+   ]
+  },
+  {
+   "id": "S-LIFE-009",
+   "title": "a fully bound goal becomes asserted by a transition that drops the goal block",
+   "requires": [
+    "goals",
+    "key_constraint",
+    "literal_values",
+    "valid_time"
+   ],
+   "precedent": [
+    "C S-LIFE-002"
+   ]
+  },
+  {
+   "id": "S-LIFE-010",
+   "title": "a goal with an unbound slot cannot become asserted",
+   "requires": [
+    "goals",
+    "literal_values"
+   ],
+   "precedent": [
+    "C S-LIFE-002"
+   ]
+  },
+  {
+   "id": "S-LIFE-011",
+   "title": "an asserted fact cannot become a goal",
+   "requires": [],
+   "precedent": [
+    "C S-LIFE-001 passed"
+   ]
+  },
+  {
+   "id": "S-LIFE-012",
+   "title": "a supersession chain A -> B -> C: the walk's terminal is C, whose predecessors stay superseded",
+   "requires": [
+    "atomic_writes"
+   ],
+   "precedent": [
+    "critique SEM-11"
+   ]
+  },
+  {
+   "id": "S-LIFE-013",
+   "title": "undoing a keyed correction must resolve the superseding fact, here by a dispute",
+   "requires": [
+    "atomic_writes",
+    "key_constraint"
+   ],
+   "precedent": [
+    "critique SEM-19"
+   ]
+  },
+  {
+   "id": "S-LIFE-014",
+   "title": "a new version of a superseding fact must keep the correction's key digest",
+   "requires": [
+    "atomic_writes",
+    "key_constraint",
+    "literal_values"
+   ],
+   "precedent": [
+    "critique SEM-11 (put runs D011 on new versions of superseding facts)"
+   ]
+  },
+  {
+   "id": "S-EXP-001",
+   "title": "load then export khg-json gives the fixture back, header included",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "C S-EXP-002 passed",
+    "B S060",
+    "critique STORE-HEADER"
+   ]
+  },
+  {
+   "id": "S-EXP-002",
+   "title": "the fixture rebuilt through put and one supersede event exports equal to it (given its header)",
+   "requires": [
+    "atomic_writes",
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "C S-EXP-001 passed"
+   ]
+  },
+  {
+   "id": "S-EXP-003",
+   "title": "the HIF export validates and equals fixture.hif.json",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "B S061",
+    "A C2-23",
+    "C S-EXP-004"
+   ]
+  },
+  {
+   "id": "S-EXP-004",
+   "title": "export as_at reconstructs an earlier snapshot",
+   "requires": [
+    "atomic_writes",
+    "transaction_time"
+   ],
+   "precedent": [
+    "B S062"
+   ]
+  },
+  {
+   "id": "S-EXP-005",
+   "title": "a history export holds every version and reloads to the same store",
+   "requires": [
+    "atomic_writes",
+    "history_export",
+    "literal_values",
+    "transaction_time",
+    "valid_time"
+   ],
+   "precedent": [
+    "B S063",
+    "A C2-24",
+    "C S-EXP-003"
+   ]
+  },
+  {
+   "id": "S-EXP-006",
+   "title": "a directed slice exports as a directed HIF file",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "C §4.3 E12 (directed slice)"
+   ]
+  },
+  {
+   "id": "S-EXP-007",
+   "title": "the same writes on two fresh stores give byte-identical exports",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "B S080",
+    "A PYTHONHASHSEED check passed"
+   ]
+  },
+  {
+   "id": "S-EXP-008",
+   "title": "a write whose transaction time precedes the store's latest is refused",
+   "requires": [
+    "atomic_writes",
+    "transaction_time"
+   ],
+   "precedent": [
+    "A C2-25",
+    "C C-TX-ORDER"
+   ]
+  },
+  {
+   "id": "S-EXP-009",
+   "title": "a store filled only by put exports its own document id",
+   "requires": [],
+   "precedent": [
+    "critique STORE-HEADER"
+   ]
+  },
+  {
+   "id": "S-EXP-010",
+   "title": "transaction time increases per store: a new id cannot be written before another id's latest",
+   "requires": [
+    "atomic_writes",
+    "transaction_time"
+   ],
+   "precedent": [
+    "critique SEM-14"
+   ]
+  },
+  {
+   "id": "S-EXP-011",
+   "title": "a slice of claims alone keeps its fact reference as an external node and is not complete",
+   "requires": [
+    "goals",
+    "literal_values",
+    "nesting",
+    "ordered_roles",
+    "special_values"
+   ],
+   "precedent": [
+    "critique CONS-14, GL-17"
+   ]
+  },
+  {
+   "id": "S-READ-001c",
+   "title": "incident is complete and in id order; goals are not asserted (capability-limited fixture @fixture[core])",
+   "requires": [
+    "literal_values",
+    "nesting"
+   ],
+   "precedent": [
+    "core variant of S-READ-001"
+   ]
+  },
+  {
+   "id": "S-READ-002c",
+   "title": "a node in two roles returns the fact once; the role filter (capability-limited fixture @fixture[core])",
+   "requires": [
+    "literal_values",
+    "nesting"
+   ],
+   "precedent": [
+    "core variant of S-READ-002"
+   ]
+  },
+  {
+   "id": "S-READ-003c",
+   "title": "default reads hide superseded, quoted, deprecated, goal and lifecycle records (capability-limited fixture @fixture[core])",
+   "requires": [
+    "literal_values",
+    "nesting"
+   ],
+   "precedent": [
+    "core variant of S-READ-003"
+   ]
+  },
+  {
+   "id": "S-READ-004c",
+   "title": "the status filter can include superseded facts (capability-limited fixture @fixture[core])",
+   "requires": [
+    "literal_values",
+    "nesting"
+   ],
+   "precedent": [
+    "core variant of S-READ-004"
+   ]
+  },
+  {
+   "id": "S-READ-005c",
+   "title": "incident on a fact id finds nesting and lifecycle records (capability-limited fixture @fixture[core])",
+   "requires": [
+    "literal_values",
+    "nesting"
+   ],
+   "precedent": [
+    "core variant of S-READ-005"
+   ]
+  },
+  {
+   "id": "S-READ-007c",
+   "title": "degree equals the length of incident (capability-limited fixture @fixture[core])",
+   "requires": [
+    "literal_values",
+    "nesting"
+   ],
+   "precedent": [
+    "core variant of S-READ-007"
+   ]
+  },
+  {
+   "id": "S-READ-008c",
+   "title": "find at_least matches a multiset; a repeated role needs distinct bindings (capability-limited fixture @fixture[core])",
+   "requires": [
+    "literal_values",
+    "nesting"
+   ],
+   "precedent": [
+    "core variant of S-READ-008"
+   ]
+  },
+  {
+   "id": "S-READ-009c",
+   "title": "find exact needs the whole binding multiset (capability-limited fixture @fixture[core])",
+   "requires": [
+    "literal_values",
+    "nesting"
+   ],
+   "precedent": [
+    "core variant of S-READ-009"
+   ]
+  },
+  {
+   "id": "S-READ-010c",
+   "title": "find by a time literal: precision takes part in equality; the calendar does not (capability-limited fixture @fixture[core])",
+   "requires": [
+    "literal_values",
+    "nesting"
+   ],
+   "precedent": [
+    "core variant of S-READ-010"
+   ]
+  },
+  {
+   "id": "S-READ-011c",
+   "title": "quantities match with unit and bounds (capability-limited fixture @fixture[core])",
+   "requires": [
+    "literal_values",
+    "nesting"
+   ],
+   "precedent": [
+    "core variant of S-READ-011"
+   ]
+  },
+  {
+   "id": "S-READ-015c",
+   "title": "get ignores the Where filters (capability-limited fixture @fixture[core])",
+   "requires": [
+    "literal_values",
+    "nesting"
+   ],
+   "precedent": [
+    "core variant of S-READ-015"
+   ]
+  },
+  {
+   "id": "S-READ-016c",
+   "title": "get_many returns every requested record in one call (capability-limited fixture @fixture[core])",
+   "requires": [
+    "literal_values",
+    "nesting"
+   ],
+   "precedent": [
+    "core variant of S-READ-016"
+   ]
+  },
+  {
+   "id": "S-READ-017c",
+   "title": "timeless relations pass every as_of filter, in both modes (capability-limited fixture @fixture[core])",
+   "requires": [
+    "literal_values",
+    "nesting",
+    "valid_time"
+   ],
+   "precedent": [
+    "core variant of S-READ-017"
+   ]
+  },
+  {
+   "id": "S-READ-018c",
+   "title": "an empty pattern lists the relation's facts, paginated (capability-limited fixture @fixture[core])",
+   "requires": [
+    "literal_values",
+    "nesting"
+   ],
+   "precedent": [
+    "core variant of S-READ-018"
+   ]
+  },
+  {
+   "id": "S-TIME-001c",
+   "title": "as_of filters by valid time; an ended fact stays asserted (capability-limited fixture @fixture[core])",
+   "requires": [
+    "literal_values",
+    "nesting",
+    "valid_time"
+   ],
+   "precedent": [
+    "core variant of S-TIME-001"
+   ]
+  },
+  {
+   "id": "S-KEY-002c",
+   "title": "find_by_key without as_of returns the key's timeline in id order (capability-limited fixture @fixture[core])",
+   "requires": [
+    "literal_values",
+    "nesting"
+   ],
+   "precedent": [
+    "core variant of S-KEY-002"
+   ]
+  },
+  {
+   "id": "S-KEY-003c",
+   "title": "find_by_key with as_of returns the holder at that time (capability-limited fixture @fixture[core])",
+   "requires": [
+    "literal_values",
+    "nesting",
+    "valid_time"
+   ],
+   "precedent": [
+    "core variant of S-KEY-003"
+   ]
+  },
+  {
+   "id": "S-EXP-001c",
+   "title": "load then export khg-json gives the fixture back, header included (capability-limited fixture @fixture[core])",
+   "requires": [
+    "literal_values",
+    "nesting"
+   ],
+   "precedent": [
+    "core variant of S-EXP-001"
+   ]
+  },
+  {
+   "id": "S-EXP-007c",
+   "title": "the same writes on two fresh stores give byte-identical exports (capability-limited fixture @fixture[core])",
+   "requires": [
+    "literal_values",
+    "nesting"
+   ],
+   "precedent": [
+    "core variant of S-EXP-007"
+   ]
+  },
+  {
+   "id": "S-VER-006c",
+   "title": "superseded content is frozen (capability-limited fixture @fixture[core])",
+   "requires": [
+    "literal_values",
+    "nesting"
+   ],
+   "precedent": [
+    "core variant of S-VER-006"
+   ]
+  }
+ ]
+}

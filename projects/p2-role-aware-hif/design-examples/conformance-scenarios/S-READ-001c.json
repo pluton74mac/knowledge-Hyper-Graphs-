@@ -1,0 +1,34 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-READ-001c",
+ "title": "incident is complete and in id order; goals are not asserted (capability-limited fixture @fixture[core])",
+ "requires": [
+  "literal_values",
+  "nesting"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "load": "@fixture[core]"
+  }
+ ],
+ "when": [
+  {
+   "op": "incident",
+   "args": {
+    "node": "ex:KingOfFrance"
+   },
+   "then": {
+    "select": "ids",
+    "equals": [
+     "f:king-13",
+     "f:king-14"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "core variant of S-READ-001"
+ ]
+}

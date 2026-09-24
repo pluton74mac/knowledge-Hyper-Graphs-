@@ -1,0 +1,73 @@
+{
+ "network-type": "directed",
+ "nodes": [
+  {
+   "node": "药物:二甲双胍",
+   "attrs": {
+    "label": "métformine"
+   }
+  },
+  {
+   "node": "é",
+   "attrs": {
+    "form": "NFC"
+   }
+  },
+  {
+   "node": "é",
+   "attrs": {
+    "form": "NFD"
+   }
+  }
+ ],
+ "edges": [
+  {
+   "edge": "事实-1",
+   "attrs": {
+    "relation": "traite"
+   }
+  }
+ ],
+ "incidences": [
+  {
+   "edge": "事实-1",
+   "node": "药物:二甲双胍",
+   "direction": "tail",
+   "attrs": {
+    "role": "治疗"
+   }
+  },
+  {
+   "edge": "事实-1",
+   "node": "maladie:diabète type 2",
+   "direction": "head",
+   "attrs": {
+    "role": "état"
+   }
+  },
+  {
+   "edge": "事实-1",
+   "node": "🧪 sample #42",
+   "direction": "tail",
+   "attrs": {
+    "role": "échantillon"
+   }
+  },
+  {
+   "edge": "事实-1",
+   "node": "é",
+   "direction": "tail",
+   "attrs": {
+    "role": "nfc"
+   }
+  },
+  {
+   "edge": "事实-1",
+   "node": "é",
+   "direction": "tail",
+   "attrs": {
+    "role": "nfd"
+   }
+  }
+ ]
+}

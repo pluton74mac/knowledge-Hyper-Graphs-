@@ -1,0 +1,40 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-EXP-001",
+ "title": "load then export khg-json gives the fixture back, header included",
+ "requires": [
+  "goals",
+  "literal_values",
+  "nesting",
+  "ordered_roles",
+  "special_values"
+ ],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "load": "@fixture"
+  }
+ ],
+ "when": [
+  {
+   "op": "export",
+   "args": {
+    "format": "khg-json"
+   },
+   "then": {
+    "container_equals": "@fixture",
+    "ignore": [
+     "version",
+     "recorded_at",
+     "recorded_by"
+    ]
+   }
+  }
+ ],
+ "precedent": [
+  "C S-EXP-002 passed",
+  "B S060",
+  "critique STORE-HEADER"
+ ]
+}

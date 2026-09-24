@@ -1,0 +1,1321 @@
+{
+ "format": "khg-codes/1.0.0",
+ "rule": "codes are stable across minor versions; a new check gets a new code; a code is never reused or renumbered; messages are not part of the contract; reserved codes are never emitted",
+ "layer_rule": "A finding's layer is the letter of its code. A validation step may emit another layer's code (decoding emits S016; the S pass emits D002). The first rejecting layer of an input is the earliest letter, in its kind's pipeline order, among its error findings. J and V findings stop later layers.",
+ "layers": {
+  "J": "strict JSON parse (stdlib json with hooks); runs on every input; a J finding stops later layers",
+  "V": "version gate: reads format and profile ids and selects the schemas; a V finding stops later layers",
+  "H": "the vendored HIF schema hif_schema_v0.1.0.json (blob e2105bb), unchanged; HIF inputs only",
+  "R": "role-convention 1.0.0 (four rules), no khg requirements; HIF inputs, alone or inside the profile",
+  "P": "the khg-hif/1.0.0 profile of HIF: khg-hif-1.0.0.schema.json (allOf the vendored schema) plus Python checks",
+  "D": "decoding (HIF to C1), cross-record, container, history and store rules (Python)",
+  "C": "the C1 record schema khg-record-1.0.0.schema.json (draft-07, x-khg-code annotations, if/then dispatch)",
+  "S": "one record against its relation-type schema (Python)",
+  "M": "relation-type schema documents: khg-relation-schema-1.0.0 plus Python checks",
+  "Q": "C3 queue files: khg-queue-1.0.0 plus the state fold, key recomputation and replay (Python)",
+  "I": "C4 items: khg-c4-items-0.1.0.schema.json (draft-07) plus the memory-gold check",
+  "L": "lint findings; never make a file invalid (v1 ships only L008, the store's possible-overlap warning)",
+  "F": "migration report entries (v1: the v0-sample migration)"
+ },
+ "pipelines": {
+  "c1": "J V C S D",
+  "hif": "J V H R P D C S (D first runs as decoding; the cross-record D checks run after S)",
+  "role-convention": "J H R",
+  "relation-schema": "J V M",
+  "queue": "J V Q C S D (C and S on payloads; S003 is a warning on candidates)",
+  "c4": "J V I (embedded C1 records and values report C and S findings nested under I003)"
+ },
+ "codes": [
+  {
+   "code": "KHG-J001",
+   "layer": "J",
+   "severity": "error",
+   "status": "active",
+   "meaning": "not JSON, empty input, or truncated",
+   "merges": "B J001; A J001; C J-PARSE"
+  },
+  {
+   "code": "KHG-J002",
+   "layer": "J",
+   "severity": "error",
+   "status": "active",
+   "meaning": "byte-order mark or invalid UTF-8",
+   "merges": "B J002; C J-ENCODING"
+  },
+  {
+   "code": "KHG-J003",
+   "layer": "J",
+   "severity": "error",
+   "status": "active",
+   "meaning": "duplicate object key",
+   "merges": "B J003; A J002; C J-DUP-KEY"
+  },
+  {
+   "code": "KHG-J004",
+   "layer": "J",
+   "severity": "error",
+   "status": "active",
+   "meaning": "NaN or +/-Infinity",
+   "merges": "B J004; A J003; C J-NAN"
+  },
+  {
+   "code": "KHG-J005",
+   "layer": "J",
+   "severity": "error",
+   "status": "active",
+   "meaning": "lone surrogate in a string",
+   "merges": "B J005; A J004; C J-SURROGATE"
+  },
+  {
+   "code": "KHG-J006",
+   "layer": "J",
+   "severity": "error",
+   "status": "active",
+   "meaning": "integer outside +/-(2^53-1)",
+   "merges": "A J005 (graft I12)"
+  },
+  {
+   "code": "KHG-J007",
+   "layer": "J",
+   "severity": "error",
+   "status": "active",
+   "meaning": "top level (or a JSONL line) is not an object",
+   "merges": "C J-NOT-OBJECT"
+  },
+  {
+   "code": "KHG-V001",
+   "layer": "V",
+   "severity": "error",
+   "status": "active",
+   "meaning": "format or profile id unknown, a major version the reader does not support, or a minor newer than the reader (writers stamp the lowest version whose features a document uses): khg-record, khg-hif, khg-relation-schema, khg-queue, khg-c4-items",
+   "merges": "B D009 (version part); A P002; C R-FORMAT"
+  },
+  {
+   "code": "KHG-H001",
+   "layer": "H",
+   "severity": "error",
+   "status": "active",
+   "meaning": "HIF: no incidences",
+   "merges": "B H001; A H001"
+  },
+  {
+   "code": "KHG-H002",
+   "layer": "H",
+   "severity": "error",
+   "status": "active",
+   "meaning": "HIF: extra top-level key",
+   "merges": "B H002; A H002"
+  },
+  {
+   "code": "KHG-H003",
+   "layer": "H",
+   "severity": "error",
+   "status": "active",
+   "meaning": "HIF: extra record-level key",
+   "merges": "B H003; A H002"
+  },
+  {
+   "code": "KHG-H004",
+   "layer": "H",
+   "severity": "error",
+   "status": "active",
+   "meaning": "HIF: attrs or metadata not an object",
+   "merges": "B H004"
+  },
+  {
+   "code": "KHG-H005",
+   "layer": "H",
+   "severity": "error",
+   "status": "active",
+   "meaning": "HIF: direction not head or tail",
+   "merges": "B H005; A H004"
+  },
+  {
+   "code": "KHG-H006",
+   "layer": "H",
+   "severity": "error",
+   "status": "active",
+   "meaning": "HIF: record missing edge or node",
+   "merges": "B H006; A H001"
+  },
+  {
+   "code": "KHG-H007",
+   "layer": "H",
+   "severity": "error",
+   "status": "active",
+   "meaning": "HIF: id of the wrong JSON type",
+   "merges": "B H007; A H003"
+  },
+  {
+   "code": "KHG-H008",
+   "layer": "H",
+   "severity": "error",
+   "status": "active",
+   "meaning": "HIF: network-type outside the HIF enum",
+   "merges": "B H008; A H004"
+  },
+  {
+   "code": "KHG-H009",
+   "layer": "H",
+   "severity": "error",
+   "status": "active",
+   "meaning": "HIF: another member of the wrong JSON type",
+   "merges": "B H009"
+  },
+  {
+   "code": "KHG-R001",
+   "layer": "R",
+   "severity": "error",
+   "status": "active",
+   "meaning": "an incidence of a role-carrying edge (an edge with at least one attrs.role) has no role, or its role is not one non-empty string",
+   "merges": "critique UPSTREAM; was P005 (role part) and P006"
+  },
+  {
+   "code": "KHG-R002",
+   "layer": "R",
+   "severity": "error",
+   "status": "active",
+   "meaning": "two incidence records repeat the same (edge, node, role, role-position)",
+   "merges": "critique UPSTREAM; was P016 (exact duplicates)"
+  },
+  {
+   "code": "KHG-R003",
+   "layer": "R",
+   "severity": "error",
+   "status": "active",
+   "meaning": "metadata role-convention missing or not a known version (1.0.0)",
+   "merges": "critique UPSTREAM; was P001 (role part)"
+  },
+  {
+   "code": "KHG-R004",
+   "layer": "R",
+   "severity": "error",
+   "status": "active",
+   "meaning": "role-position not an integer >= 1",
+   "merges": "critique UPSTREAM; was P015"
+  },
+  {
+   "code": "KHG-P001",
+   "layer": "P",
+   "severity": "error",
+   "status": "active",
+   "meaning": "a khg-hif declaration missing (hif-schema, hif-schema-sha256, khg-profile, khg-record, khg-schema, khg-schema-sha256, khg-document-id, khg-literal-nodes), or no metadata",
+   "merges": "B P001; A P001"
+  },
+  {
+   "code": "KHG-P002",
+   "layer": "P",
+   "severity": "error",
+   "status": "active",
+   "meaning": "non-string id (the profile allows string ids only, F10)",
+   "merges": "B P002; A P003"
+  },
+  {
+   "code": "KHG-P003",
+   "layer": "P",
+   "severity": "error",
+   "status": "active",
+   "meaning": "id grammar: empty, control character, white space, over 512 code points (518 for a _:ref: node)",
+   "merges": "B P003; A P003; critique GL-16"
+  },
+  {
+   "code": "KHG-P004",
+   "layer": "P",
+   "severity": "error",
+   "status": "active",
+   "meaning": "reserved _: prefix misused: an entity id using it, or a derived node id without its kind's prefix (_:lit:, _:litb:, _:sv:, _:nv:, _:var:, _:ref:)",
+   "merges": "B P004"
+  },
+  {
+   "code": "KHG-P005",
+   "layer": "P",
+   "severity": "error",
+   "status": "active",
+   "meaning": "incidence without attrs, role or khg-bid, or a malformed khg-bid",
+   "merges": "B P005; A P004"
+  },
+  {
+   "code": "KHG-P006",
+   "layer": "P",
+   "severity": "error",
+   "status": "reserved",
+   "meaning": "reserved: moved to KHG-R001 before 1.0",
+   "merges": "B P006; A P004"
+  },
+  {
+   "code": "KHG-P007",
+   "layer": "P",
+   "severity": "error",
+   "status": "active",
+   "meaning": "network-type asc (refused by the profile, R03 D8)",
+   "merges": "B P007; A P006"
+  },
+  {
+   "code": "KHG-P008",
+   "layer": "P",
+   "severity": "error",
+   "status": "active",
+   "meaning": "forbidden metadata key: default_attrs, or an unknown khg-* key",
+   "merges": "B P008; A P007"
+  },
+  {
+   "code": "KHG-P009",
+   "layer": "P",
+   "severity": "error",
+   "status": "active",
+   "meaning": "declaration value malformed or not the pinned one (hif-schema, hif-schema-sha256, khg-literal-nodes)",
+   "merges": "B P009; A P001"
+  },
+  {
+   "code": "KHG-P010",
+   "layer": "P",
+   "severity": "error",
+   "status": "active",
+   "meaning": "directed document with an incidence lacking direction",
+   "merges": "B P010; A P005"
+  },
+  {
+   "code": "KHG-P011",
+   "layer": "P",
+   "severity": "error",
+   "status": "active",
+   "meaning": "network-type contradicts the direction rule (directed iff every incidence has a direction)",
+   "merges": "synthesis (replaces B P011)"
+  },
+  {
+   "code": "KHG-P012",
+   "layer": "P",
+   "severity": "error",
+   "status": "active",
+   "meaning": "edge without attrs, relation or khg-status, or a malformed khg-* edge attribute",
+   "merges": "B P012; A P009"
+  },
+  {
+   "code": "KHG-P013",
+   "layer": "P",
+   "severity": "error",
+   "status": "active",
+   "meaning": "node without attrs or khg-kind, unknown khg-kind, or the kind's payload missing (khg-literal, khg-unbound, khg-ref)",
+   "merges": "B P013; A P008"
+  },
+  {
+   "code": "KHG-P014",
+   "layer": "P",
+   "severity": "error",
+   "status": "active",
+   "meaning": "unknown khg-* incidence attrs key (khg-bid and khg-extensions are allowed), or the legacy key roles next to role",
+   "merges": "B P014; critique GL-07"
+  },
+  {
+   "code": "KHG-P015",
+   "layer": "P",
+   "severity": "error",
+   "status": "reserved",
+   "meaning": "reserved: moved to KHG-R004 before 1.0",
+   "merges": "B P015"
+  },
+  {
+   "code": "KHG-P016",
+   "layer": "P",
+   "severity": "error",
+   "status": "active",
+   "meaning": "two incidence records of one edge share a khg-bid",
+   "merges": "rulings; B S025"
+  },
+  {
+   "code": "KHG-P017",
+   "layer": "P",
+   "severity": "error",
+   "status": "active",
+   "meaning": "khg-external fact reference outside a slice, or an external reference to a fact the file holds",
+   "merges": "critique CONS-14"
+  },
+  {
+   "code": "KHG-D001",
+   "layer": "D",
+   "severity": "error",
+   "status": "active",
+   "meaning": "node, edge or record declared twice (same id, or same id and version)",
+   "merges": "B D001; A P011, S026"
+  },
+  {
+   "code": "KHG-D002",
+   "layer": "D",
+   "severity": "error",
+   "status": "active",
+   "meaning": "unresolved reference: incidence to an undeclared node, entity absent from a complete document or from the store, fact reference to a missing hyperedge. Vocabulary ids (units, globes, rank reasons, schema units) are never references",
+   "merges": "B D002; A P012, S013; C C-ENTITY-REF"
+  },
+  {
+   "code": "KHG-D003",
+   "layer": "D",
+   "severity": "error",
+   "status": "active",
+   "meaning": "incidence names an undeclared edge",
+   "merges": "B D003; A P012"
+  },
+  {
+   "code": "KHG-D004",
+   "layer": "D",
+   "severity": "error",
+   "status": "reserved",
+   "meaning": "reserved",
+   "merges": "B D004"
+  },
+  {
+   "code": "KHG-D005",
+   "layer": "D",
+   "severity": "error",
+   "status": "active",
+   "meaning": "derived HIF node id does not match its value, (record id, bid) or reference",
+   "merges": "B D005; A P010; C P-LITERAL-ID"
+  },
+  {
+   "code": "KHG-D006",
+   "layer": "D",
+   "severity": "error",
+   "status": "reserved",
+   "meaning": "reserved",
+   "merges": "B D006"
+  },
+  {
+   "code": "KHG-D007",
+   "layer": "D",
+   "severity": "error",
+   "status": "active",
+   "meaning": "one id names both an entity and a hyperedge",
+   "merges": "B D007; C C-DUP-ID"
+  },
+  {
+   "code": "KHG-D008",
+   "layer": "D",
+   "severity": "error",
+   "status": "active",
+   "meaning": "nesting cycle among fact references",
+   "merges": "B D008; A S014; C C-NESTING-CYCLE"
+  },
+  {
+   "code": "KHG-D009",
+   "layer": "D",
+   "severity": "error",
+   "status": "active",
+   "meaning": "relation-type schema id, version or sha256 does not match the one declared (container header, HIF metadata, queue header), or no schema supplied and none inlined",
+   "merges": "B D009; C C-SCHEMA-REF"
+  },
+  {
+   "code": "KHG-D010",
+   "layer": "D",
+   "severity": "error",
+   "status": "active",
+   "meaning": "lifecycle pointer inconsistent: status_ref dangling, of the wrong relation, or not naming the record; a fact bound by an asserted khg:supersedes (as superseded) or khg:retracts record without that status",
+   "merges": "B D010; A S022; C C-SUPERSESSION"
+  },
+  {
+   "code": "KHG-D011",
+   "layer": "D",
+   "severity": "error",
+   "status": "active",
+   "meaning": "supersession constraint: a superseding fact not asserted when the supersede event runs; correction across relations or key digests; duplicate with different content keys; refinement where the superseding fact does not refine the superseded one (checked at the event, on a put of a new version of a bound fact, and on containers)",
+   "merges": "B D011; A S023; critique SEM-11, SEM-20"
+  },
+  {
+   "code": "KHG-D012",
+   "layer": "D",
+   "severity": "error",
+   "status": "active",
+   "meaning": "supersession cycle",
+   "merges": "B D012"
+  },
+  {
+   "code": "KHG-D013",
+   "layer": "D",
+   "severity": "error",
+   "status": "active",
+   "meaning": "version rule: a new version is not a refinement of the current one, changes the relation, mutates earlier evidence (event_hash included), or breaks the entity rule (types only grow; redirect_to is set once)",
+   "merges": "B D013; A S031; critique CONS-28"
+  },
+  {
+   "code": "KHG-D014",
+   "layer": "D",
+   "severity": "error",
+   "status": "active",
+   "meaning": "status transition not in the transition table: put creating a record in a status other than asserted, quoted or goal; put writing a lifecycle record; put changing the status of an existing id; an event outside the table; consecutive versions of a history container",
+   "merges": "B D014; A S030; C TransitionError"
+  },
+  {
+   "code": "KHG-D015",
+   "layer": "D",
+   "severity": "error",
+   "status": "active",
+   "meaning": "a stored derived block disagrees with recomputation",
+   "merges": "B D015; A M41; C R-DERIVED"
+  },
+  {
+   "code": "KHG-D016",
+   "layer": "D",
+   "severity": "error",
+   "status": "active",
+   "meaning": "key invariant violated (raised as KeyCollision; info.collisions lists every colliding record with its policy and, per conflict, shape, class and action)",
+   "merges": "B D016; A S029; C C-KEY-COLLISION; critique CONS-13"
+  },
+  {
+   "code": "KHG-D017",
+   "layer": "D",
+   "severity": "error",
+   "status": "active",
+   "meaning": "status candidate outside a queue payload",
+   "merges": "B D017; A S028; C C-STATUS-CANDIDATE"
+  },
+  {
+   "code": "KHG-D018",
+   "layer": "D",
+   "severity": "error",
+   "status": "active",
+   "meaning": "transaction time not after the store's latest (put or apply at, load); in a history container, a version not after the previous version of its id, or after the header's as_at",
+   "merges": "A S032; C C-TX-ORDER; critique SEM-14"
+  },
+  {
+   "code": "KHG-D019",
+   "layer": "D",
+   "severity": "error",
+   "status": "active",
+   "meaning": "store: optimistic-concurrency expectation not met (expect)",
+   "merges": "B ConcurrencyError"
+  },
+  {
+   "code": "KHG-D020",
+   "layer": "D",
+   "severity": "error",
+   "status": "active",
+   "meaning": "a value names an entity that has redirect_to (redirects are rewritten in 1.2)",
+   "merges": "critique SEM-16"
+  },
+  {
+   "code": "KHG-C001",
+   "layer": "C",
+   "severity": "error",
+   "status": "active",
+   "meaning": "value not exactly one kind (entity, literal, fact, special, unbound)",
+   "merges": "B C001; A P014; C R-VALUE"
+  },
+  {
+   "code": "KHG-C002",
+   "layer": "C",
+   "severity": "error",
+   "status": "active",
+   "meaning": "enum violation (kind, status, rank, visibility, datatype, direction, evidence type or mode, selector type, content)",
+   "merges": "B C002; C R-STATUS"
+  },
+  {
+   "code": "KHG-C003",
+   "layer": "C",
+   "severity": "error",
+   "status": "active",
+   "meaning": "confidence not {value, scale, scorer?}",
+   "merges": "B C003; A M39"
+  },
+  {
+   "code": "KHG-C004",
+   "layer": "C",
+   "severity": "error",
+   "status": "active",
+   "meaning": "literal structure: unit, precision range, calendar, bound pairs, lexical pattern",
+   "merges": "B C004; A P015; C R-LIT-*"
+  },
+  {
+   "code": "KHG-C005",
+   "layer": "C",
+   "severity": "error",
+   "status": "active",
+   "meaning": "unbound value in a hyperedge whose status is not goal",
+   "merges": "B C005; A S008; C S-UNBOUND"
+  },
+  {
+   "code": "KHG-C006",
+   "layer": "C",
+   "severity": "error",
+   "status": "active",
+   "meaning": "status disputed, superseded or retracted without status_ref, or status_ref with any other status",
+   "merges": "B C006; A P016; critique SEM-10"
+  },
+  {
+   "code": "KHG-C007",
+   "layer": "C",
+   "severity": "error",
+   "status": "active",
+   "meaning": "evidence structure: extracted without doc_sha256, activity or selectors; selectors without doc_sha256; inferred without inference; inference.from empty unless rule is model and activity names model and model_version; malformed selector",
+   "merges": "B C007; A P017; C R-EVIDENCE-DOC-HASH; critique CONS-29"
+  },
+  {
+   "code": "KHG-C008",
+   "layer": "C",
+   "severity": "error",
+   "status": "active",
+   "meaning": "rank deprecated without a rank_reason list (import writes [\"unspecified\"] when the source gives none)",
+   "merges": "B C008; critique CONS-22"
+  },
+  {
+   "code": "KHG-C009",
+   "layer": "C",
+   "severity": "error",
+   "status": "active",
+   "meaning": "unknown field",
+   "merges": "B C009; A P018"
+  },
+  {
+   "code": "KHG-C010",
+   "layer": "C",
+   "severity": "error",
+   "status": "active",
+   "meaning": "required field missing, wrong JSON type or out of range (includes a retraction event without its record id)",
+   "merges": "B C010"
+  },
+  {
+   "code": "KHG-C011",
+   "layer": "C",
+   "severity": "error",
+   "status": "active",
+   "meaning": "identifier, bid, timestamp, hash, version or extension key not in its lexical form; a JSON number where C1 requires a decimal string; an as_of instant outside [+-]YYYY-MM-DDThh:mm:ssZ",
+   "merges": "B C011; C R-ID; critique CONS-04"
+  },
+  {
+   "code": "KHG-C012",
+   "layer": "C",
+   "severity": "error",
+   "status": "active",
+   "meaning": "field allowed only on some records: reason or note outside a lifecycle record (relation khg:*), reason missing on one; goal outside status goal",
+   "merges": "synthesis"
+  },
+  {
+   "code": "KHG-S001",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "relation not declared",
+   "merges": "B S001; A S001; C S-RELATION"
+  },
+  {
+   "code": "KHG-S002",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "role not allowed for the relation",
+   "merges": "B S002; A S002; C S-ROLE"
+  },
+  {
+   "code": "KHG-S003",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "required role missing (error for asserted, disputed, superseded, retracted, quoted; warning for candidates)",
+   "merges": "B S003; A S003; C S-ROLE-MIN"
+  },
+  {
+   "code": "KHG-S004",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "role bound more often than max",
+   "merges": "B S004; A S004; C S-ROLE-MAX"
+  },
+  {
+   "code": "KHG-S005",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "filler kind, entity type, datatype or special value not allowed (includes a fact reference where no fact is accepted); run only on resolved entities",
+   "merges": "B S005; A S005, S006, S015; C S-FILLER, S-NESTING"
+  },
+  {
+   "code": "KHG-S006",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "literal value out of range for its lexical form: calendar date, components below the precision, year 0, a date before 1583 without calendar",
+   "merges": "B S006; A S007; C R-LIT-DATE; critique CONS-01, CONS-12"
+  },
+  {
+   "code": "KHG-S007",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "hyperedge with no bindings",
+   "merges": "B S007; A P014; C S-NO-BINDINGS"
+  },
+  {
+   "code": "KHG-S008",
+   "layer": "S",
+   "severity": "error",
+   "status": "reserved",
+   "meaning": "reserved (merged into S005)",
+   "merges": "B S008"
+  },
+  {
+   "code": "KHG-S009",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "possible validity empty (start window not before end window)",
+   "merges": "B S009; A S020; C R-VALID-TIME"
+  },
+  {
+   "code": "KHG-S010",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "confidence scale undeclared or value outside the scale",
+   "merges": "B S010; A S021; C S-CONFIDENCE"
+  },
+  {
+   "code": "KHG-S011",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "asserted fact without supporting (non-negated) evidence",
+   "merges": "B S011; A S016; C S-EVIDENCE-MISSING"
+  },
+  {
+   "code": "KHG-S012",
+   "layer": "S",
+   "severity": "error",
+   "status": "reserved",
+   "meaning": "reserved",
+   "merges": "B S012"
+  },
+  {
+   "code": "KHG-S013",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "novalue together with another filler of the same role",
+   "merges": "B S013; A S009; C S-NOVALUE-MIXED"
+  },
+  {
+   "code": "KHG-S014",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "duplicate filler in an unordered role, or two somevalue fillers of one role",
+   "merges": "B S014; A S012; C S-DUP-BINDING"
+  },
+  {
+   "code": "KHG-S015",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "positions: missing on an ordered role, present on an unordered one, or not contiguous 1..n",
+   "merges": "B S015; A S010; C S-POSITION"
+  },
+  {
+   "code": "KHG-S016",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "direction contradicts the role usage's declared direction",
+   "merges": "B S016; A S011; C S-DIRECTION"
+  },
+  {
+   "code": "KHG-S018",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "goal omits a required role instead of leaving it unbound",
+   "merges": "B S018"
+  },
+  {
+   "code": "KHG-S019",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "one unbound variable used twice in a goal",
+   "merges": "B S019"
+  },
+  {
+   "code": "KHG-S020",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "id or string not in Unicode NFC",
+   "merges": "B S020; A S027; C R-ID-NFC"
+  },
+  {
+   "code": "KHG-S021",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "span empty or reversed, or quote differs from text[start:end] (code points, NFC; needs the document text)",
+   "merges": "B S021; A S018; C R-SELECTOR-SPAN"
+  },
+  {
+   "code": "KHG-S022",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "evidence supports an unknown bid",
+   "merges": "B S022; A S017; C R-EVIDENCE-REF"
+  },
+  {
+   "code": "KHG-S023",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "literal below the usage's precision_min, or a unit not allowed",
+   "merges": "B S023"
+  },
+  {
+   "code": "KHG-S024",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "co-occurrence constraint violated (severity from the schema: error or warning)",
+   "merges": "B S024; C S-CONSTRAINT"
+  },
+  {
+   "code": "KHG-S025",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "duplicate bid in one hyperedge",
+   "merges": "B S025; C R-DUP-BID"
+  },
+  {
+   "code": "KHG-S026",
+   "layer": "S",
+   "severity": "error",
+   "status": "active",
+   "meaning": "lifecycle reason outside its relation's reason list",
+   "merges": "synthesis (A M53)"
+  },
+  {
+   "code": "KHG-M001",
+   "layer": "M",
+   "severity": "error",
+   "status": "active",
+   "meaning": "relation with no roles",
+   "merges": "B M001; A D001; C D-NO-ROLES"
+  },
+  {
+   "code": "KHG-M002",
+   "layer": "M",
+   "severity": "error",
+   "status": "active",
+   "meaning": "role used twice in one relation",
+   "merges": "B M002; C D-DUP-USAGE"
+  },
+  {
+   "code": "KHG-M003",
+   "layer": "M",
+   "severity": "error",
+   "status": "active",
+   "meaning": "bad key: role not used by the relation, or a time/meta-slot key role",
+   "merges": "B M003; A D003; C D-KEY"
+  },
+  {
+   "code": "KHG-M004",
+   "layer": "M",
+   "severity": "error",
+   "status": "active",
+   "meaning": "schema version not semver",
+   "merges": "B M004; C D-SEMVER"
+  },
+  {
+   "code": "KHG-M005",
+   "layer": "M",
+   "severity": "error",
+   "status": "active",
+   "meaning": "unknown entity type or relation in a filler",
+   "merges": "B M005; A D002; C D-TYPE"
+  },
+  {
+   "code": "KHG-M006",
+   "layer": "M",
+   "severity": "error",
+   "status": "active",
+   "meaning": "unknown datatype",
+   "merges": "B M006; A D001"
+  },
+  {
+   "code": "KHG-M007",
+   "layer": "M",
+   "severity": "error",
+   "status": "active",
+   "meaning": "bad time model or time-slot declaration (model outside interval, invariant, timeless; max != 1; a filler other than one time literal; start/end not time-slot usages)",
+   "merges": "B M007; critique SEM-15"
+  },
+  {
+   "code": "KHG-M008",
+   "layer": "M",
+   "severity": "error",
+   "status": "active",
+   "meaning": "user schema uses the reserved khg: namespace",
+   "merges": "B M008; A D006"
+  },
+  {
+   "code": "KHG-M009",
+   "layer": "M",
+   "severity": "error",
+   "status": "active",
+   "meaning": "usage names a role missing from the global vocabulary",
+   "merges": "B M009; C D-ROLE-UNDECLARED"
+  },
+  {
+   "code": "KHG-M010",
+   "layer": "M",
+   "severity": "error",
+   "status": "active",
+   "meaning": "max < min",
+   "merges": "B M010; A D004; C D-CARDINALITY"
+  },
+  {
+   "code": "KHG-M011",
+   "layer": "M",
+   "severity": "error",
+   "status": "active",
+   "meaning": "temporal key on a relation without an interval time model",
+   "merges": "B M011"
+  },
+  {
+   "code": "KHG-M012",
+   "layer": "M",
+   "severity": "error",
+   "status": "active",
+   "meaning": "primary does not name two core usages with max 1",
+   "merges": "B M012; C D-PRIMARY"
+  },
+  {
+   "code": "KHG-M013",
+   "layer": "M",
+   "severity": "error",
+   "status": "active",
+   "meaning": "duplicate relation, role or entity-type id",
+   "merges": "B M013"
+  },
+  {
+   "code": "KHG-M014",
+   "layer": "M",
+   "severity": "error",
+   "status": "active",
+   "meaning": "complete on a role with min 0",
+   "merges": "B M014"
+  },
+  {
+   "code": "KHG-M015",
+   "layer": "M",
+   "severity": "error",
+   "status": "active",
+   "meaning": "other structural violation of a schema document (including a constraint severity outside error and warning, and relation kind rule before 1.1)",
+   "merges": "B M015; C D-SCHEMA; critique GL-01"
+  },
+  {
+   "code": "KHG-M016",
+   "layer": "M",
+   "severity": "error",
+   "status": "active",
+   "meaning": "entity-type parents cycle or unknown parent",
+   "merges": "C D-TYPE"
+  },
+  {
+   "code": "KHG-M017",
+   "layer": "M",
+   "severity": "error",
+   "status": "active",
+   "meaning": "on_collision supersede on a temporal key (a succession is not a belief revision)",
+   "merges": "critique SEM-04"
+  },
+  {
+   "code": "KHG-Q001",
+   "layer": "Q",
+   "severity": "error",
+   "status": "active",
+   "meaning": "hyperedge item lacks extraction fields (run.run_id, run.order_id, run.position, submitted_by, doc) or evidence",
+   "merges": "B Q001; A S019; C Q-PAYLOAD, Q-RUN"
+  },
+  {
+   "code": "KHG-Q002",
+   "layer": "Q",
+   "severity": "error",
+   "status": "active",
+   "meaning": "payload status not candidate, or payload id not cand:<queue_id>.<seq>",
+   "merges": "B Q002; A Q001; C Q-PAYLOAD"
+  },
+  {
+   "code": "KHG-Q003",
+   "layer": "Q",
+   "severity": "error",
+   "status": "active",
+   "meaning": "unknown line kind, item kind (v1: hyperedge) or log action (v1: lint, accept, reject, flag, verdict, withdraw)",
+   "merges": "B Q003; A Q001; C Q-LOG-ACTION"
+  },
+  {
+   "code": "KHG-Q004",
+   "layer": "Q",
+   "severity": "error",
+   "status": "active",
+   "meaning": "lint entry without rule_set, findings or outcome",
+   "merges": "B Q004; C Q-SCHEMA"
+  },
+  {
+   "code": "KHG-Q005",
+   "layer": "Q",
+   "severity": "error",
+   "status": "active",
+   "meaning": "log entry does not follow the state fold (wrong state_before, forbidden move, decision after a terminal state, accept with an open error finding)",
+   "merges": "B Q005; A Q005, Q006; C Q-TRANSITION"
+  },
+  {
+   "code": "KHG-Q006",
+   "layer": "Q",
+   "severity": "error",
+   "status": "active",
+   "meaning": "replay mismatch: the recomputed decision_hash or the written [id, version] differs",
+   "merges": "B Q006"
+  },
+  {
+   "code": "KHG-Q007",
+   "layer": "Q",
+   "severity": "error",
+   "status": "active",
+   "meaning": "log entry names a missing item or a parent that is not the item's previous entry",
+   "merges": "B Q007; A Q004; C Q-LOG-TARGET"
+  },
+  {
+   "code": "KHG-Q008",
+   "layer": "Q",
+   "severity": "error",
+   "status": "active",
+   "meaning": "other structural violation of a queue file (header missing or repeated, verdict other without note, ...)",
+   "merges": "B Q008; A Q002; C Q-SCHEMA"
+  },
+  {
+   "code": "KHG-Q009",
+   "layer": "Q",
+   "severity": "error",
+   "status": "active",
+   "meaning": "extracted evidence does not point at the item's doc (doc_id or doc_sha256)",
+   "merges": "C Q-DOC-HASH"
+  },
+  {
+   "code": "KHG-Q010",
+   "layer": "Q",
+   "severity": "error",
+   "status": "active",
+   "meaning": "item keys or an evidence event_hash disagree with recomputation from the payload",
+   "merges": "A Q003; critique SEM-12"
+  },
+  {
+   "code": "KHG-Q011",
+   "layer": "Q",
+   "severity": "error",
+   "status": "active",
+   "meaning": "a payload names an entity that neither item.entities, the queue's base nor the linter's store resolves",
+   "merges": "critique CONS-10"
+  },
+  {
+   "code": "KHG-Q012",
+   "layer": "Q",
+   "severity": "error",
+   "status": "active",
+   "meaning": "the base supplied for replay or lint does not match the header's base {document_id, sha256}",
+   "merges": "critique G3-ACCEPT-REPLAY"
+  },
+  {
+   "code": "KHG-I001",
+   "layer": "I",
+   "severity": "error",
+   "status": "active",
+   "meaning": "unknown C4 item kind",
+   "merges": "C I-*"
+  },
+  {
+   "code": "KHG-I002",
+   "layer": "I",
+   "severity": "error",
+   "status": "active",
+   "meaning": "C4 item structure (draft schema) violated",
+   "merges": "C I-*"
+  },
+  {
+   "code": "KHG-I003",
+   "layer": "I",
+   "severity": "error",
+   "status": "active",
+   "meaning": "embedded C1 record or value invalid (the C, S or D finding is attached as nested)",
+   "merges": "C I-*"
+  },
+  {
+   "code": "KHG-I004",
+   "layer": "I",
+   "severity": "error",
+   "status": "active",
+   "meaning": "memory question without its stale_values or future_values array (mandatory, R05 D-C5-15)",
+   "merges": "R05 §5.5"
+  },
+  {
+   "code": "KHG-I005",
+   "layer": "I",
+   "severity": "error",
+   "status": "active",
+   "meaning": "memory question gold disagrees with derive_memory_gold replayed from its trace",
+   "merges": "B C5-E001"
+  },
+  {
+   "code": "KHG-L008",
+   "layer": "L",
+   "severity": "warning",
+   "status": "active",
+   "meaning": "only a possible (not definite) overlap on a temporal key (put receipts, validate_container)",
+   "merges": "B L-I-008"
+  },
+  {
+   "code": "KHG-F006",
+   "layer": "F",
+   "severity": "info",
+   "status": "active",
+   "meaning": "record weight kept as extensions hif:weight, never read as confidence",
+   "merges": "B IMPORT-I01"
+  },
+  {
+   "code": "KHG-F015",
+   "layer": "F",
+   "severity": "info",
+   "status": "active",
+   "meaning": "migration: stored arity checked against the C1 rule and dropped",
+   "merges": "B MIGRATE-I02"
+  },
+  {
+   "code": "KHG-F016",
+   "layer": "F",
+   "severity": "info",
+   "status": "active",
+   "meaning": "migration: metadata conventions/schema replaced by the declaration block",
+   "merges": "B MIGRATE-I01"
+  },
+  {
+   "code": "KHG-F017",
+   "layer": "F",
+   "severity": "warning",
+   "status": "active",
+   "meaning": "migration: valid-from turned into a start_time binding under a generated interval time model",
+   "merges": "B MIGRATE-W01"
+  }
+ ],
+ "planned": [
+  {
+   "code": "KHG-S017",
+   "layer": "S",
+   "severity": "error",
+   "meaning": "rule relation: a binding without direction, or tail and head share a value",
+   "version": "1.1 (rule relations)"
+  },
+  {
+   "code": "KHG-L001",
+   "layer": "L",
+   "severity": "info",
+   "meaning": "candidate duplicates a stored fact: propose merge (add evidence)",
+   "version": "1.1 (identity lints)"
+  },
+  {
+   "code": "KHG-L002",
+   "layer": "L",
+   "severity": "info",
+   "meaning": "candidate refines a stored fact: propose merge (new version of the target)",
+   "version": "1.1 (identity lints)"
+  },
+  {
+   "code": "KHG-L003",
+   "layer": "L",
+   "severity": "info",
+   "meaning": "candidate generalises a stored fact: propose merge (evidence appended, supports mapped)",
+   "version": "1.1 (identity lints)"
+  },
+  {
+   "code": "KHG-L004",
+   "layer": "L",
+   "severity": "warning",
+   "meaning": "ambiguous: two or more stored targets of one class",
+   "version": "1.1 (identity lints)"
+  },
+  {
+   "code": "KHG-L005",
+   "layer": "L",
+   "severity": "warning",
+   "meaning": "key collision with a distinct current fact: propose the declared policy's action",
+   "version": "1.1 (identity lints)"
+  },
+  {
+   "code": "KHG-L006",
+   "layer": "L",
+   "severity": "warning",
+   "meaning": "negation conflict: propose dispute (wins over L005 on the same pair)",
+   "version": "1.1 (identity lints)"
+  },
+  {
+   "code": "KHG-L007",
+   "layer": "L",
+   "severity": "warning",
+   "meaning": "candidate matches a superseded or retracted fact; a quoted match proposes quoted to asserted",
+   "version": "1.1 (identity lints)"
+  },
+  {
+   "code": "KHG-L009",
+   "layer": "L",
+   "severity": "info",
+   "meaning": "the same stored event_hash already reached the store",
+   "version": "1.1 (identity lints)"
+  },
+  {
+   "code": "KHG-L101",
+   "layer": "L",
+   "severity": "info",
+   "meaning": "evidence coverage below 1",
+   "version": "1.1 (quality lints)"
+  },
+  {
+   "code": "KHG-L102",
+   "layer": "L",
+   "severity": "info",
+   "meaning": "incomplete key: exempt from collisions",
+   "version": "1.1 (quality lints)"
+  },
+  {
+   "code": "KHG-L103",
+   "layer": "L",
+   "severity": "warning",
+   "meaning": "a role that looks like provenance",
+   "version": "1.1 (quality lints)"
+  },
+  {
+   "code": "KHG-L104",
+   "layer": "L",
+   "severity": "warning",
+   "meaning": "a filler added to a repeated core role of a dated fact (a later joiner is end_validity plus a new fact)",
+   "version": "1.1 (quality lints)"
+  },
+  {
+   "code": "KHG-L105",
+   "layer": "L",
+   "severity": "info",
+   "meaning": "arity outlier for the relation",
+   "version": "1.1 (quality lints)"
+  },
+  {
+   "code": "KHG-L106",
+   "layer": "L",
+   "severity": "warning",
+   "meaning": "a quoted fact that no fact references",
+   "version": "1.1 (quality lints)"
+  },
+  {
+   "code": "KHG-L107",
+   "layer": "L",
+   "severity": "warning",
+   "meaning": "an attrs key named weight (HyperNetX promotes it)",
+   "version": "1.1 (quality lints)"
+  },
+  {
+   "code": "KHG-L108",
+   "layer": "L",
+   "severity": "info",
+   "meaning": "one node in several roles of one hyperedge",
+   "version": "1.1 (quality lints)"
+  },
+  {
+   "code": "KHG-L110",
+   "layer": "L",
+   "severity": "warning",
+   "meaning": "a key literal refines or overlaps another key literal of the same relation",
+   "version": "1.1 (critique SEM-13)"
+  },
+  {
+   "code": "KHG-F001",
+   "layer": "F",
+   "severity": "info",
+   "meaning": "integer id converted to its decimal string",
+   "version": "1.1 (foreign import)"
+  },
+  {
+   "code": "KHG-F002",
+   "layer": "F",
+   "severity": "error",
+   "meaning": "integer id collides with an equal string id",
+   "version": "1.1 (foreign import)"
+  },
+  {
+   "code": "KHG-F003",
+   "layer": "F",
+   "severity": "warning",
+   "meaning": "list-valued role expanded to one binding per role",
+   "version": "1.1 (foreign import)"
+  },
+  {
+   "code": "KHG-F004",
+   "layer": "F",
+   "severity": "warning",
+   "meaning": "incidence without role: role member assigned",
+   "version": "1.1 (foreign import)"
+  },
+  {
+   "code": "KHG-F005",
+   "layer": "F",
+   "severity": "warning",
+   "meaning": "edge without relation: relation untyped assigned",
+   "version": "1.1 (foreign import)"
+  },
+  {
+   "code": "KHG-F007",
+   "layer": "F",
+   "severity": "warning",
+   "meaning": "attrs key collides with a profile key: renamed <key>@hif",
+   "version": "1.1 (foreign import)"
+  },
+  {
+   "code": "KHG-F008",
+   "layer": "F",
+   "severity": "warning",
+   "meaning": "metadata default_attrs renamed default_attrs@hif",
+   "version": "1.1 (foreign import)"
+  },
+  {
+   "code": "KHG-F009",
+   "layer": "F",
+   "severity": "warning",
+   "meaning": "empty HIF edge reported and not imported",
+   "version": "1.1 (foreign import)"
+  },
+  {
+   "code": "KHG-F010",
+   "layer": "F",
+   "severity": "warning",
+   "meaning": "edge id equals a node id: edge remapped to hif-edge:<id>",
+   "version": "1.1 (foreign import)"
+  },
+  {
+   "code": "KHG-F011",
+   "layer": "F",
+   "severity": "error",
+   "meaning": "directed file with an incidence lacking direction",
+   "version": "1.1 (foreign import)"
+  },
+  {
+   "code": "KHG-F012",
+   "layer": "F",
+   "severity": "error",
+   "meaning": "network-type asc refused",
+   "version": "1.1 (foreign import)"
+  },
+  {
+   "code": "KHG-F013",
+   "layer": "F",
+   "severity": "error",
+   "meaning": "duplicate node or edge declarations refused",
+   "version": "1.1 (foreign import)"
+  },
+  {
+   "code": "KHG-F014",
+   "layer": "F",
+   "severity": "error",
+   "meaning": "id not in NFC refused",
+   "version": "1.1 (foreign import)"
+  }
+ ]
+}

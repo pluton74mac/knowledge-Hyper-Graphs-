@@ -1,0 +1,32 @@
+{
+ "format": "khg-scenario/1.0.0",
+ "id": "S-LIFE-005",
+ "title": "put cannot create a record in status superseded",
+ "requires": [],
+ "schema": "fixture.relation-schema.json",
+ "fixture": "fixture.c1.json",
+ "given": [
+  {
+   "put": [
+    "@entities",
+    "@f:born-skłodowska-warszawa"
+   ]
+  }
+ ],
+ "when": [
+  {
+   "op": "put",
+   "args": {
+    "records": [
+     "@f:born-skłodowska-kraków"
+    ]
+   },
+   "then": {
+    "error": "KHG-D014"
+   }
+  }
+ ],
+ "precedent": [
+  "A C2-15 passed"
+ ]
+}

@@ -1,0 +1,190 @@
+{
+ "network-type": "directed",
+ "metadata": {
+  "title": "attr shapes",
+  "evidence": [
+   "pmid:1",
+   "pmid:2"
+  ],
+  "qualifiers": {
+   "since": "2020",
+   "certainty": 0.9,
+   "nested": {
+    "deep": [
+     1,
+     {
+      "x": null
+     }
+    ]
+   }
+  },
+  "note": null,
+  "flag": true,
+  "label": "Überprüfung – 検証",
+  "empty_list": [],
+  "empty_obj": {},
+  "big": 9007199254740993,
+  "tiny": 1e-300,
+  "zero": 0
+ },
+ "nodes": [
+  {
+   "node": "drug:metformin",
+   "attrs": {
+    "type": "Drug",
+    "evidence": [
+     "pmid:1",
+     "pmid:2"
+    ],
+    "qualifiers": {
+     "since": "2020",
+     "certainty": 0.9,
+     "nested": {
+      "deep": [
+       1,
+       {
+        "x": null
+       }
+      ]
+     }
+    },
+    "note": null,
+    "flag": true,
+    "label": "Überprüfung – 検証",
+    "empty_list": [],
+    "empty_obj": {},
+    "big": 9007199254740993,
+    "tiny": 1e-300,
+    "zero": 0
+   }
+  },
+  {
+   "node": "disease:T2DM",
+   "attrs": {
+    "type": "Disease",
+    "evidence": [
+     "pmid:1",
+     "pmid:2"
+    ],
+    "qualifiers": {
+     "since": "2020",
+     "certainty": 0.9,
+     "nested": {
+      "deep": [
+       1,
+       {
+        "x": null
+       }
+      ]
+     }
+    },
+    "note": null,
+    "flag": true,
+    "label": "Überprüfung – 検証",
+    "empty_list": [],
+    "empty_obj": {},
+    "big": 9007199254740993,
+    "tiny": 1e-300,
+    "zero": 0
+   }
+  }
+ ],
+ "edges": [
+  {
+   "edge": "f1",
+   "attrs": {
+    "relation": "treats",
+    "evidence": [
+     "pmid:1",
+     "pmid:2"
+    ],
+    "qualifiers": {
+     "since": "2020",
+     "certainty": 0.9,
+     "nested": {
+      "deep": [
+       1,
+       {
+        "x": null
+       }
+      ]
+     }
+    },
+    "note": null,
+    "flag": true,
+    "label": "Überprüfung – 検証",
+    "empty_list": [],
+    "empty_obj": {},
+    "big": 9007199254740993,
+    "tiny": 1e-300,
+    "zero": 0
+   }
+  }
+ ],
+ "incidences": [
+  {
+   "edge": "f1",
+   "node": "drug:metformin",
+   "direction": "tail",
+   "attrs": {
+    "role": "treatment",
+    "evidence": [
+     "pmid:1",
+     "pmid:2"
+    ],
+    "qualifiers": {
+     "since": "2020",
+     "certainty": 0.9,
+     "nested": {
+      "deep": [
+       1,
+       {
+        "x": null
+       }
+      ]
+     }
+    },
+    "note": null,
+    "flag": true,
+    "label": "Überprüfung – 検証",
+    "empty_list": [],
+    "empty_obj": {},
+    "big": 9007199254740993,
+    "tiny": 1e-300,
+    "zero": 0
+   }
+  },
+  {
+   "edge": "f1",
+   "node": "disease:T2DM",
+   "direction": "head",
+   "attrs": {
+    "role": "condition",
+    "evidence": [
+     "pmid:1",
+     "pmid:2"
+    ],
+    "qualifiers": {
+     "since": "2020",
+     "certainty": 0.9,
+     "nested": {
+      "deep": [
+       1,
+       {
+        "x": null
+       }
+      ]
+     }
+    },
+    "note": null,
+    "flag": true,
+    "label": "Überprüfung – 検証",
+    "empty_list": [],
+    "empty_obj": {},
+    "big": 9007199254740993,
+    "tiny": 1e-300,
+    "zero": 0
+   }
+  }
+ ]
+}

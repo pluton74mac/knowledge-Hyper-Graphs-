@@ -1,0 +1,20 @@
+== fixture-directed: sketch chain HIF->XGI->HIF->HNX->HIF
+   incidences: multiset equal = True
+   nodes: multiset equal = True
+   edges: multiset equal = True
+   metadata equal = True | network-type equal = True
+   (edge,node,direction,role,position,bid) tuples equal = True (49 incidences)
+   repeated (edge,node) pairs in source: {'f:reg-1|ex:TP53': 2, 'f:route-1|ex:YYZ': 2}
+   xgi.read_hif/write_hif: incidences 49 -> 48; records with role kept 0/49
+   hnx.from_hif/to_hif: incidences 49 -> 47; role records kept 47; metadata keys lost 12 of 12; nodes 41 -> 41
+   hnx second generation to_hif: None
+== fixture-undirected: sketch chain HIF->XGI->HIF->HNX->HIF
+   incidences: multiset equal = True
+   nodes: multiset equal = True
+   edges: multiset equal = True
+   metadata equal = True | network-type equal = True
+   (edge,node,direction,role,position,bid) tuples equal = True (7 incidences)
+   repeated (edge,node) pairs in source: {'f:loop-yyz|ex:YYZ': 2}
+   xgi.read_hif/write_hif: incidences 7 -> 6; records with role kept 0/7
+   hnx.from_hif/to_hif: incidences 7 -> 6; role records kept 6; metadata keys lost 12 of 12; nodes 6 -> 6
+   hnx second generation to_hif: dict with 6 incidences

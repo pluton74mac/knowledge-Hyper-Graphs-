@@ -1,0 +1,25 @@
+  passed   C2-01 put then get returns the canonical record
+  passed   C2-02 putting identical content again is a no-op
+  passed   C2-03 a closed valid interval is a new version; as_at sees the old one
+  passed   C2-04 incident is complete and ordered by edge id
+  passed   C2-05 incident filtered by role
+  passed   C2-06 default status filter excludes superseded versions
+  passed   C2-07 status filter can include superseded
+  passed   C2-08 as_of filters by valid time (an ended fact stays asserted)
+  passed   C2-09 find matches at least the given bindings
+  passed   C2-10 find exact needs the whole binding multiset
+  passed   C2-11 temporal key: overlapping holders are reported under end-older, not rewritten
+  passed   C2-12 key conflict under reject policy is an error
+  passed   C2-13 supersession is one batch; the walk follows it forward
+  passed   C2-14 the walk runs backward too
+  passed   C2-15 superseded without a supersession record is rejected
+  passed   C2-16 retracted is terminal
+  passed   C2-17 candidates never enter the store
+  passed   C2-18 bindings of an asserted edge are immutable
+  passed   C2-19 a goal's unbound slot can be bound by a new version
+  passed   C2-20 keyset pagination is stable
+  passed   C2-21 the unbound goal is visible only when goals are asked for
+  passed   C2-22 nesting: incident on an edge id returns the facts about it
+conformance: 22 / 22 passed
+smoke test: queue -> structural lint -> accept -> store -> export
+  lint violations=0 put=['f1'] queue-lines-valid=True khg-export-valid=True hif-export-profile-valid=True roles=['condition', 'dosage', 'population', 'treatment'] hif->khg equals khg export=True

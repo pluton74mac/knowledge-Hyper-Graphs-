@@ -7,10 +7,9 @@ documentation and specification entries give the date they were checked. Compile
 ## Hypergraph interchange: the HIF standard
 
 - Coll, M., Joslyn, C. A., Landry, N. W., Lotito, Q. F., Myers, A., Pickard, J., Praggastis, B., Szufel, P. "HIF: The hypergraph interchange format for higher-order networks." *Network Science* 13, e21, 2025. https://doi.org/10.1017/nws.2025.10018
-- HIF-standard repository: README, `schemas/hif_schema.json` (JSON Schema draft-07), `schemas/CHANGELOG.md` (single entry, v0.0). Checked 2026-09-20. https://github.com/pszufe/HIF-standard
-- HIF-standard organisation mirror (README byte-identical to the above on 2026-09-20). https://github.com/HIF-org/HIF-standard
+- HIF-standard repository: README, `schemas/hif_schema.json` and `schemas/hif_schema_v0.1.0.json` (JSON Schema draft-07, identical validation rules), `schemas/CHANGELOG.md` (single entry, v0.0), `CITATION.cff`, `tests/`. Checked 2026-09-20; cloned in full 2026-09-23 at HEAD `b691a3d2ec32100c0229ebe1151e9afad015c356` (2026-03-19, 139 commits). https://github.com/HIF-org/HIF-standard — canonical home (corrected 2026-09-24: not a mirror). The same repository is reachable by GitHub redirect under its earlier names, https://github.com/pszufe/HIF-standard and https://github.com/pszufe/HIF_validators
 - HIF Zenodo record, DOI 10.5281/zenodo.15802759. https://doi.org/10.5281/zenodo.15802759
-- HIF validators repository (target of the schema `$id`). https://github.com/pszufe/HIF_validators
+- `pszufe/HIF_validators` is the original name of the HIF-standard repository, not a separate validators repository (corrected 2026-09-24). The `$id` of `hif_schema.json`, `https://raw.githubusercontent.com/pszufe/HIF_validators/main/schemas/schema.json`, returns 404 because the file was renamed 21 minutes after that `$id` was written (commits `58447e4`, `6ffdb48`, `c8e2d4f`, 2025-05-02).
 - "A Blue Start: A large-scale pairwise and higher-order social network dataset." arXiv:2505.11608. https://arxiv.org/abs/2505.11608
 - "Efficient Gillespie algorithms for spreading phenomena in large and heterogeneous higher-order networks." arXiv:2509.20174. https://arxiv.org/abs/2509.20174
 
@@ -136,3 +135,18 @@ documentation and specification entries give the date they were checked. Compile
 
 - `jsonschema` 4.26.0 (Python), Draft-07 validator, used on [`schemas/sample.hif.json`](../../schemas/sample.hif.json) on 2026-09-20: 0 errors. https://pypi.org/project/jsonschema/
 - `pyoxigraph` 0.5.11, used to parse [`schemas/sample-n-ary-fact.ttl`](../../schemas/sample-n-ary-fact.ttl) on 2026-09-20: 32 quads, no errors. https://pypi.org/project/pyoxigraph/
+
+## Added by project P2 (2026-09-24) — HIF re-checked from primary sources
+
+Cited by [`kb/04-storage-and-formats/hif-hypergraph-interchange-format.md`](../../kb/04-storage-and-formats/hif-hypergraph-interchange-format.md)
+§0–§7 and §10, as corrected on 2026-09-24.
+
+- Coll, M., Joslyn, C. A., Landry, N. W., Lotito, Q. F., Myers, A., Pickard, J., Praggastis, B., Szufel, P. "HIF: The hypergraph interchange format for higher-order networks." arXiv:2507.11520, v1 2025-07-15, v2 2026-01-30 (typeset in the journal template; page numbers in the KB refer to v2). https://arxiv.org/abs/2507.11520
+- Crossref metadata for DOI 10.1017/nws.2025.10018: online publication 2025-12-11, licence CC BY 4.0, author affiliations. Checked 2026-09-24. https://api.crossref.org/works/10.1017/nws.2025.10018
+- HIF Zenodo versions: v0.1.0, 2025-07-04, https://doi.org/10.5281/zenodo.15802760 ; v0.1.1, 2025-10-02, https://doi.org/10.5281/zenodo.17251025 ; v0.1.2, 2025-10-03, https://doi.org/10.5281/zenodo.17257719 (archive `pszufe/HIF-standard-v0.1.2.zip`, both schema files byte-identical to HEAD). Version list checked through the Zenodo API 2026-09-24.
+- HIF-standard issues [#2](https://github.com/HIF-org/HIF-standard/issues/2) (repository name, 2024-07-26), [#51](https://github.com/HIF-org/HIF-standard/issues/51) (v2 goals, 2025-11-21), [#55](https://github.com/HIF-org/HIF-standard/issues/55) ("v1 released … HIF v2, in current development", 2025-12-09), and pull request [#34](https://github.com/HIF-org/HIF-standard/pull/34) ("Split schema title and version", merged 2025-05-02). Read via WebFetch 2026-09-23; issue comment threads not fully readable `[unverified]`.
+- GitHub Docs. "Renaming a repository" and "Transferring a repository" (redirects stop if the old name is reused). Read 2026-09-23. https://docs.github.com/en/repositories/creating-and-managing-repositories/renaming-a-repository ; https://docs.github.com/en/repositories/creating-and-managing-repositories/transferring-a-repository
+- JSON Schema draft 2019-09 release notes (`unevaluatedProperties` is new in 2019-09, so draft-07 validators ignore it). https://json-schema.org/draft/2019-09/release-notes
+- P2 research report 02, "What the HIF standard says today, from primary sources" (2026-09-23), with vendored schema snapshots, 36 validation cases and results. [projects/p2-role-aware-hif/research/02-hif-standard.md](../../projects/p2-role-aware-hif/research/02-hif-standard.md)
+- P2 research report 03, "XGI and HyperNetX HIF input and output, probed" (2026-09-23). [projects/p2-role-aware-hif/research/03-library-probes.md](../../projects/p2-role-aware-hif/research/03-library-probes.md)
+- P2 design, §4 (`role-convention` 1.0.0, `khg-hif/1.0.0`), §5 (loaders), §12.3 (upstream proposal); library evidence file. [projects/p2-role-aware-hif/DESIGN.md](../../projects/p2-role-aware-hif/DESIGN.md) ; [tests/evidence/library-hif-evidence.json](../../tests/evidence/library-hif-evidence.json)
