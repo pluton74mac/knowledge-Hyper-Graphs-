@@ -19,8 +19,8 @@ from __future__ import annotations
 
 from . import keys, lifecycle, project
 from ._common import SPECIALS, VALUE_KINDS, value_kind
-from .canonical import (KIND_ORDER, STORE_FIELDS, binding_sort_key, canonical_container, decision_view, normalize,
-                        record_sort_key)
+from .canonical import (KIND_ORDER, STORE_FIELDS, binding_sort_key, canonical_container, carried_supports,
+                        decision_view, normalize, record_sort_key, resolve_supports)
 from .container import (FORMATS, check_container, container_sha256, iter_jsonl, read_container, serialize,
                         write_container)
 from .derive import (CONTENT_SLOTS, arity, arity_bin, content_bindings, content_key, core_key, derive, key_digest,
@@ -66,6 +66,7 @@ __all__ = [
     "canonical_container",
     "canonical_literal",
     "canonical_value",
+    "carried_supports",
     "check_container",
     "container_sha256",
     "content_bindings",
@@ -101,6 +102,7 @@ __all__ = [
     "render_text",
     "render_value",
     "resolve_redirects",
+    "resolve_supports",
     "selected_text",
     "serialize",
     "span_selectors",

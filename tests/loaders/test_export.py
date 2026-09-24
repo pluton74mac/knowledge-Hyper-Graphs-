@@ -16,6 +16,7 @@ import pytest
 from khg_contracts import hif, jsonio, loaders
 from khg_contracts.errors import LoaderError
 from khg_contracts.loaders.reconcile import reconcile_weight
+from khg_contracts.validate import validate_hif
 
 xgi = pytest.importorskip("xgi")
 hypernetx = pytest.importorskip("hypernetx")
@@ -42,6 +43,10 @@ def _strict_refusal(bundle: loaders.Bundle) -> dict[str, Any]:
     assert err.value.codes == ("KHG-P005",)
     assert err.value.info["report"] is bundle.report
     return err.value.info["report"]
+
+
+def _errors(doc: dict[str, Any], schema: Any) -> list[tuple[str, str]]:
+    return [(f["code"], f["path"]) for f in validate_hif(doc, schema=schema)["findings"] if f["severity"] == "error"]
 
 
 # ------------------------------------------------------------------------------------------------ weights
@@ -168,6 +173,84 @@ def test_absent_and_empty_attrs_stay_apart():
         out = EXPORT[lib](b)
         assert out == doc and jsonio.canonical(out) == jsonio.canonical(doc)
         assert set(out) == {"nodes", "edges", "incidences"}  # no network-type or metadata was invented
+
+
+# ------------------------------------------------------------------------------------------------ network-type
+
+#: The fixture's only facts with incidences that have no direction (the loop's and the marriage's seven records).
+UNDIRECTED_FACTS = ("f:loop-yyz", "f:married-curie")
+
+
+def _remove_edges(bundle: loaders.Bundle, edges: tuple[str, ...]) -> None:
+    if bundle.lib == "xgi":
+        for e in edges:
+            bundle.graph.remove_edge(e)
+    else:
+        bundle.graph.remove_edges(list(edges))
+
+
+@pytest.mark.parametrize("lib", LIBS)
+def test_a_profile_file_left_with_directed_records_only_exports_as_directed(full, schema, lib):
+    """§4.2 and P011: network-type is directed iff every incidence has a direction. Removing the facts without a
+    direction (a supported native edit) leaves only directed records, so the export is a directed file that the
+    profile, the loaders and ``from_hif`` accept (it was written ``undirected`` and refused with P011)."""
+    assert {i["edge"] for i in full["incidences"] if "direction" not in i} == set(UNDIRECTED_FACTS)
+    b = LOAD[lib](full)
+    _remove_edges(b, UNDIRECTED_FACTS)
+    out = EXPORT[lib](b)
+    assert len(b.report["dropped_records"]) == 7 and b.report["stale"] == b.report["unlabelled"] == []
+    assert all("direction" in i for i in out["incidences"]) and out["network-type"] == "directed"
+    assert _errors(out, schema) == []
+    again = LOAD[lib](out)  # the loaders accept their own export: XGI now builds a DiHypergraph
+    assert type(again.graph) is (xgi.DiHypergraph if lib == "xgi" else hypernetx.Hypergraph)
+    assert EXPORT[lib](again) == out
+    assert hif.to_hif(hif.from_hif(out, schema), schema) == out  # what to_hif writes for the decoded container
+
+
+@pytest.mark.parametrize("lib", LIBS)
+def test_a_restriction_to_the_directed_facts_goes_back_to_c1(c1, schema, lib):
+    """The §5 table's restrictions (``restrict_to_edges``, ``subhypergraph``, then ``derive``) through the C1
+    conveniences: the removals are reported and ``*_to_khg`` returns the container of the remaining facts."""
+    keep = [r["id"] for r in c1["records"] if r["kind"] == "hyperedge" and r["id"] not in UNDIRECTED_FACTS]
+    if lib == "xgi":
+        b = loaders.khg_to_xgi(c1, schema)
+        d = b.derive(xgi.subhypergraph(b.graph, edges=keep))
+        back = loaders.xgi_to_khg(d, schema)
+    else:
+        b = loaders.khg_to_hnx(c1, schema)
+        d = b.derive(b.graph.restrict_to_edges(keep))
+        back = loaders.hnx_to_khg(d, schema)
+    assert len(d.report["dropped_records"]) == 7
+    facts = {r["id"] for r in back["records"] if r["kind"] == "hyperedge"}
+    assert facts == set(keep) and not facts & set(UNDIRECTED_FACTS)
+
+
+def test_a_directed_profile_file_that_loses_a_direction_no_longer_exports_as_directed(directed_slice, schema):
+    """The mirror case: a HyperNetX cell's direction removed natively. The export follows the library and the
+    direction rule (``undirected``; it was ``directed`` and refused with P010); the usage gives the direction back
+    on import, so the decoded container is the slice's."""
+    b = loaders.load_hnx(directed_slice)
+    b.graph.incidences.property_store.set_property(("f:reg-1", "ex:HeLa"), "direction", None)
+    out = loaders.export_hnx(b)
+    assert out["network-type"] == "undirected" and not any(b.report.values())
+    assert _incidences(out, "f:reg-1")[0] == {"edge": "f:reg-1", "node": "ex:HeLa",
+                                              "attrs": {"role": "context", "khg-bid": "b1"}}
+    assert _errors(out, schema) == []
+    assert jsonio.canonical(hif.from_hif(out, schema)) == jsonio.canonical(hif.from_hif(directed_slice, schema))
+
+
+@pytest.mark.parametrize("lib", LIBS)
+def test_the_loaded_network_type_stays_outside_the_direction_rule(full, lib):
+    """Files without the profile keep their network-type (HIF allows native directions in any network type), and
+    so does a profile file exported without any record, where both values pass."""
+    doc = {"network-type": "undirected", "metadata": {"role-convention": "1.0.0"},
+           "incidences": [{"edge": "e", "node": "a", "direction": "tail", "attrs": {"role": "r"}},
+                          {"edge": "e", "node": "b", "direction": "head", "attrs": {"role": "s"}}]}
+    assert EXPORT[lib](LOAD[lib](doc, validate="convention")) == doc
+    b = LOAD[lib](full)
+    _remove_edges(b, tuple(e["edge"] for e in full["edges"]))
+    out = EXPORT[lib](b)
+    assert out["incidences"] == [] and out["network-type"] == "undirected"
 
 
 # ------------------------------------------------------------------------------------------------ the strict rule

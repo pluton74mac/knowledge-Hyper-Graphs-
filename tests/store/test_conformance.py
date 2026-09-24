@@ -315,3 +315,45 @@ def test_every_scenario_store_exports_valid_documents():
                                                  engine=engine)
             assert report["ok"], (sid, content, [f for f in report["findings"] if f["severity"] == "error"])
         assert validate.validate_hif(s.export("hif"), schema=SUITE.schema, engine="fastjsonschema")["ok"], sid
+
+
+def test_every_write_the_scenarios_make_leaves_valid_exports():
+    """Not only the given steps: after each accepted put, apply or load of a scenario's ``when`` steps, the snapshot
+    and the history export pass the validator. S-LIFE-013's undo resolved by a dispute takes a fact from superseded
+    to disputed in one version, which the history rule refused (D014)."""
+    from khg_contracts.errors import KHGError
+
+    refused = []
+    for sid in IDS:
+        s = MemoryStore(SUITE.schema, clock=ScenarioClock())
+        conformance.run_given(s, SUITE.scenarios[sid]["given"], SUITE, s.capabilities)
+        for n, step in enumerate(SUITE.scenarios[sid]["when"], 1):
+            if step["op"] not in ("put", "apply", "load"):
+                continue
+            try:
+                conformance.call(s, step, SUITE)
+            except KHGError:
+                continue  # a step that expects an error
+            for content in ("snapshot", "history"):
+                report = validate.validate_container(s.export("khg-json", content=content), schema=SUITE.schema,
+                                                     engine="fastjsonschema")
+                if not report["ok"]:
+                    refused.append((sid, n, content, [f["code"] for f in report["findings"]
+                                                      if f["severity"] == "error"]))
+    assert refused == []
+
+
+def test_a_declared_flag_beyond_the_ten_is_not_tested():
+    """A backend may declare a flag of its own or of a later version; the v1 suite runs on the ten it knows (the run
+    raised ValueError and gave no report)."""
+    class Extra(MemoryStore):
+        def info(self):
+            return dict(super().info(), capabilities=self.capabilities | {"full_text_search"})
+
+    report = conformance.run(lambda schema, clock: Extra(schema, clock=clock), only="S-PUT-00*")
+    assert report["summary"]["failed"] == report["summary"]["cantTell"] == 0 and report["summary"]["passed"] == 9
+    subject = report["subject"]
+    assert "full_text_search" in subject["capabilities"] and "full_text_search" not in subject["tested_capabilities"]
+    assert conformance.run_scenario(lambda schema, clock: Extra(schema, clock=clock), "S-PUT-001").outcome == "passed"
+    with pytest.raises(ValueError):  # a caller's own list is still checked
+        conformance.run(memory_factory, only="S-PUT-001", capabilities=["full_text_search"])

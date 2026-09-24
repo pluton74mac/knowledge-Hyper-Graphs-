@@ -46,6 +46,11 @@ def test_an_unbounded_usage_needs_a_width():
         project.position_map(S, "co_administration_causes")
     with pytest.raises(ValueError, match="positions"):
         project.positional(FACTS["f:route-1"], S, widths={"stop": 2})  # three stops
+    for width in (0, -1, True, 2.5, "4"):  # 0 and -1 dropped the three stops without an error
+        with pytest.raises(ValueError, match="positive integer"):
+            project.positional(FACTS["f:route-1"], S, widths={"stop": width})
+        with pytest.raises(ValueError, match="positive integer"):
+            project.position_map(S, "flight_route", widths={"stop": width})
 
 
 def test_position_maps():
@@ -188,3 +193,38 @@ def test_incidence_rows_keep_versions_in_canonical_order():
     rows = project.incidence_rows(shuffled)
     assert [(r[0], r[1]) for r in rows if r[4] == "b1"] == \
         [("f:king-13", 1), ("f:king-13", 2), ("f:reg-1", 1), ("f:reg-1", 2), ("m:ret-1", 1)]
+
+
+def test_the_inverses_take_one_version_per_fact():
+    """``incidence_rows`` keeps every version of a history (a column), but the inverses rebuild one structure per
+    fact: rows or triples of several versions are ValueError, not a fact with every version's bids and one version's
+    status. A snapshot of the history round-trips."""
+    history = data.load_json("fixture/fixture.history.c1.json")
+    rows = project.incidence_rows(history)
+    with pytest.raises(ValueError, match="several versions of f:king-13, f:reg-1"):
+        project.from_incidence_rows(rows)
+    with pytest.raises(ValueError, match="several versions of f:king-13, f:reg-1"):
+        project.rdf_relation_instance(history)
+    latest = {}
+    for r in history["records"]:
+        latest[r["id"]] = r  # the history is in version order
+    snapshot = {"header": dict(history["header"], content="snapshot"), "records": list(latest.values())}
+    assert project.from_incidence_rows(project.incidence_rows(snapshot)) == binding_structure(snapshot)
+    assert project.from_rdf_relation_instance(project.rdf_relation_instance(snapshot)) == binding_structure(snapshot)
+    assert binding_structure(snapshot)["f:reg-1"]["status"] == "retracted"
+
+
+def test_the_inverses_refuse_rows_and_triples_that_disagree():
+    rows = project.incidence_rows(C1)
+    first = rows[0]  # f:born-louis14-paris, quoted
+    with pytest.raises(ValueError, match="disagree"):
+        project.from_incidence_rows(rows + [first[:3] + ("asserted", "b9") + first[5:]])
+    with pytest.raises(ValueError, match="b2 twice"):
+        project.from_incidence_rows(rows + [first])
+    triples = project.rdf_relation_instance(C1)
+    assert project.from_rdf_relation_instance(triples + triples) == binding_structure(C1)  # one triple, twice
+    reg = "urn:khg:f%3Areg-1"
+    with pytest.raises(ValueError, match="two khg:status values"):
+        project.from_rdf_relation_instance(triples + [(reg, project.KHG_NS + "status", {"literal": "retracted"})])
+    with pytest.raises(ValueError, match="two khg:value values"):
+        project.from_rdf_relation_instance(triples + [(reg + "#b1", project.KHG_NS + "value", "urn:khg:ex%3ATP53")])

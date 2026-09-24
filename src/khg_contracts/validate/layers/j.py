@@ -6,9 +6,15 @@
   JSON value is read as JSONL.
 - An object already in memory is checked for what the parser refuses: NaN and +/-Infinity (J004), lone surrogates
   (J005), integers beyond +/-(2^53-1) (J006), a top level (or JSONL line) that is not an object (J007), and values
-  or keys that are not JSON at all, or nesting deeper than 512 levels (J001). Tuples and other mappings are read as
-  JSON arrays and objects. A list is read as the lines of a JSONL file; a single object given for a queue or C4
-  file is read as a file of one line.
+  or keys that are not JSON at all (J001). Tuples and other mappings are read as JSON arrays and objects. A list is
+  read as the lines of a JSONL file; a single object given for a queue or C4 file is read as a file of one line.
+- **One nesting limit** for every form of input: a document (or JSONL line) whose objects and arrays nest deeper
+  than ``MAX_DEPTH`` (256) levels is J001, at the first value too deep. The limit is checked after parsing text too,
+  so a document gets one verdict whether it is given as an object, bytes or a file, and whatever the caller's stack
+  depth (the parser's own limit, near 1000 levels from a shallow stack, is not the rule). It is well inside what the
+  later layers and the package's recursive walkers process at two interpreter frames a level, so ``validate`` never
+  meets Python's recursion limit on what J accepts (it also catches cycles in objects). ``MAX_DEPTH`` and the scan
+  live in ``schema.checks``, whose ``check_schema`` applies the same rule.
 
 J reports the first fault only, and a J finding stops the run. JSONL findings are at ``/lines/<n>``.
 """
@@ -22,6 +28,7 @@ from typing import Any, Mapping
 from ... import jsonio
 from ...errors import ValidationError, make_finding
 from ...schema import Schema
+from ...schema.checks import MAX_DEPTH, nesting_fault
 from ..context import Context
 from ..engines import pointer
 
@@ -33,8 +40,6 @@ IMPLEMENTED = True
 
 #: The kinds whose files are always JSONL.
 JSONL_KINDS = ("queue", "item")
-#: The deepest nesting accepted in an object already in memory.
-MAX_DEPTH = 512
 _SURROGATE = re.compile("[\ud800-\udfff]")
 
 Finding = dict[str, str]
@@ -91,6 +96,20 @@ def _several_values(e: ValidationError) -> bool:
 
 
 def _parse_bytes(raw: bytes, kind: str, *, jsonl: bool | None) -> tuple[Any, list[Finding]]:
+    doc, findings = _parse_text(raw, kind, jsonl=jsonl)
+    if findings:
+        return None, findings
+    if raw.count(b"{") + raw.count(b"[") <= MAX_DEPTH:
+        return doc, []  # fewer brackets than levels: the nesting cannot be that deep
+    for path, part in ([(f"/lines/{n}", line) for n, line in enumerate(doc)] if isinstance(doc, list) else
+                       [("", doc)]):
+        deep = nesting_fault(part)
+        if deep is not None:
+            return None, [make_finding("KHG-J001", path + deep, f"nesting deeper than {MAX_DEPTH} levels")]
+    return doc, []
+
+
+def _parse_text(raw: bytes, kind: str, *, jsonl: bool | None) -> tuple[Any, list[Finding]]:
     try:
         if kind in JSONL_KINDS or jsonl:
             return jsonio.loads_lines(raw), []
@@ -186,8 +205,21 @@ def _path(link: Any) -> str:
 
 
 def _plain(value: Any) -> Any:
-    if isinstance(value, Mapping):
-        return {k: _plain(v) for k, v in value.items()}
-    if isinstance(value, (list, tuple)):
-        return [_plain(v) for v in value]
-    return value
+    """A copy with mappings as dicts and tuples as lists (iterative)."""
+    out: list[Any] = []
+    stack: list[tuple[Any, Any, Any]] = [(value, out, 0)]
+    while stack:
+        x, parent, key = stack.pop()
+        if isinstance(x, Mapping):
+            y: Any = dict.fromkeys(x)  # the key order; the values are filled in below
+            stack.extend((v, y, k) for k, v in x.items())
+        elif isinstance(x, (list, tuple)):
+            y = [None] * len(x)
+            stack.extend((v, y, i) for i, v in enumerate(x))
+        else:
+            y = x
+        if parent is out:
+            out.append(y)
+        else:
+            parent[key] = y
+    return out[0]

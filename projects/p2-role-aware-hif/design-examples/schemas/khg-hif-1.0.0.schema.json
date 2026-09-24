@@ -13,7 +13,7 @@
  "definitions": {
   "hif_id": {
    "type": "string",
-   "pattern": "^(_:ref:[^\\s\\x00-\\x1f\\x7f]{1,512}|(?!_:ref:)[^\\s\\x00-\\x1f\\x7f]{1,512})$",
+   "pattern": "^(_:ref:[^\\s\\x00-\\x1f\\x7f]{1,512}|(?!_:ref:)[^\\s\\x00-\\x1f\\x7f]{1,512})(?!\\n)$",
    "x-khg-code": {
     "type": "KHG-P002",
     "pattern": "KHG-P003"
@@ -355,6 +355,143 @@
            "goal"
           ],
           "x-khg-code": "KHG-P012"
+         },
+         "khg-status-ref": {
+          "type": "string",
+          "pattern": "^(?!_:)[^\\s\\x00-\\x1f\\x7f]{1,512}(?!\\n)$",
+          "x-khg-code": "KHG-P012"
+         },
+         "khg-rank": {
+          "enum": [
+           "preferred",
+           "normal",
+           "deprecated"
+          ],
+          "x-khg-code": "KHG-P012"
+         },
+         "khg-rank-reason": {
+          "type": "array",
+          "items": {
+           "type": "string",
+           "pattern": "^[^\\s\\x00-\\x1f\\x7f]{1,256}(?!\\n)$",
+           "x-khg-code": "KHG-P012"
+          },
+          "minItems": 1,
+          "x-khg-code": "KHG-P012"
+         },
+         "khg-visibility": {
+          "enum": [
+           "visible",
+           "suppressed"
+          ],
+          "x-khg-code": "KHG-P012"
+         },
+         "khg-confidence": {
+          "type": "object",
+          "required": [
+           "value",
+           "scale"
+          ],
+          "additionalProperties": false,
+          "properties": {
+           "value": {
+            "type": "number",
+            "x-khg-code": "KHG-P012"
+           },
+           "scale": {
+            "type": "string",
+            "pattern": "^[^\\s\\x00-\\x1f\\x7f]{1,256}(?!\\n)$",
+            "x-khg-code": "KHG-P012"
+           },
+           "scorer": {
+            "type": "object",
+            "required": [
+             "name",
+             "version"
+            ],
+            "additionalProperties": false,
+            "properties": {
+             "name": {
+              "type": "string",
+              "x-khg-code": "KHG-P012"
+             },
+             "version": {
+              "type": "string",
+              "x-khg-code": "KHG-P012"
+             }
+            },
+            "x-khg-code": "KHG-P012"
+           }
+          },
+          "x-khg-code": "KHG-P012"
+         },
+         "khg-source-text": {
+          "type": "string",
+          "x-khg-code": "KHG-P012"
+         },
+         "khg-goal": {
+          "type": "object",
+          "required": [
+           "brief"
+          ],
+          "additionalProperties": false,
+          "properties": {
+           "brief": {
+            "type": "string",
+            "minLength": 1,
+            "x-khg-code": "KHG-P012"
+           },
+           "owner": {
+            "type": "string",
+            "x-khg-code": "KHG-P012"
+           }
+          },
+          "x-khg-code": "KHG-P012"
+         },
+         "khg-reason": {
+          "type": "string",
+          "pattern": "^[^\\s\\x00-\\x1f\\x7f]{1,256}(?!\\n)$",
+          "x-khg-code": "KHG-P012"
+         },
+         "khg-note": {
+          "type": "string",
+          "x-khg-code": "KHG-P012"
+         },
+         "khg-typed-under": {
+          "type": "string",
+          "pattern": "^[^\\s\\x00-\\x1f\\x7f/]{1,256}/(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?!\\n)$",
+          "x-khg-code": "KHG-P012"
+         },
+         "khg-version": {
+          "type": "integer",
+          "minimum": 1,
+          "x-khg-code": "KHG-P012"
+         },
+         "khg-recorded-at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z(?!\\n)$",
+          "x-khg-code": "KHG-P012"
+         },
+         "khg-recorded-by": {
+          "type": "string",
+          "minLength": 1,
+          "x-khg-code": "KHG-P012"
+         },
+         "khg-extensions": {
+          "type": "object",
+          "propertyNames": {
+           "pattern": "^[a-z][a-z0-9-]*:[^\\s]+(?!\\n)$",
+           "x-khg-code": "KHG-P012"
+          },
+          "x-khg-code": "KHG-P012"
+         },
+         "khg-evidence": {
+          "type": "array",
+          "items": {
+           "type": "object",
+           "x-khg-code": "KHG-P012"
+          },
+          "x-khg-code": "KHG-P012"
          }
         },
         "x-khg-code": "KHG-P012"
@@ -416,7 +553,7 @@
         "properties": {
          "khg-bid": {
           "type": "string",
-          "pattern": "^b[1-9][0-9]*$",
+          "pattern": "^b[1-9][0-9]*(?!\\n)$",
           "x-khg-code": {
            "default": "KHG-P005",
            "propertyNames": "KHG-P014"

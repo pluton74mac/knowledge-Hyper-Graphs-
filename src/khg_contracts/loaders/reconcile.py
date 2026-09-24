@@ -10,6 +10,8 @@ and fill the report's record classes. ``finish`` then writes the document:
   ``attrs`` come from the library, so native attribute edits are honoured;
 - **the strict rule**: ``strict=True`` raises ``LoaderError`` (P005) when a membership is unlabelled, a record is
   stale (a partial fact) or a move is not injective; records of edges removed whole are only reported;
+- **network-type**: the loaded one, except that a profile file follows the profile's direction rule (§4.2; P010,
+  P011) on the exported records: ``directed`` iff every record has a direction (``_network_type``);
 - **order**: profile files in the §4.2 order recomputed from the node attrs; other files keep the source order of
   their records, and anything new follows, sorted by a typed key. Nothing depends on ``PYTHONHASHSEED``.
 """
@@ -105,6 +107,19 @@ def _ordered_records(kept: list[Kept]) -> list[dict[str, Any]]:
     return [kept[n][1] for _, n in loaded] + new
 
 
+def _network_type(loaded: str | None, records: list[dict[str, Any]], profile: bool) -> str | None:
+    """The exported ``network-type``. A profile file follows the profile's direction rule (§4.2; P010, P011) on the
+    exported records, as ``to_hif`` does: ``directed`` when every record has a direction, and no longer ``directed``
+    once one lacks it (an edit can remove the last incidence without a direction, or add one). Otherwise the loaded
+    value stays: in files without the profile, where HIF allows native directions in any network type, and in an
+    export without records, where both values pass."""
+    if not profile or not records:
+        return loaded
+    if all(r.get("direction") is not None for r in records):
+        return "directed"
+    return "undirected" if loaded == "directed" else loaded
+
+
 def finish(bundle: Bundle, nodes: list[Item], edges: list[Item], kept: list[Kept], report: ExportReport,
            strict: bool) -> dict[str, Any]:
     """Write the exported HIF document of ``bundle`` from the library's nodes and edges and the kept records,
@@ -129,8 +144,9 @@ def finish(bundle: Bundle, nodes: list[Item], edges: list[Item], kept: list[Kept
                           f"export with strict=False to drop and report them", codes=["KHG-P005"],
                           info={"report": report})
     out: dict[str, Any] = {}
-    if ctx.network_type is not None:
-        out["network-type"] = ctx.network_type
+    network_type = _network_type(ctx.network_type, records, ctx.profile)
+    if network_type is not None:
+        out["network-type"] = network_type
     if ctx.metadata is not None:
         out["metadata"] = copy_json(ctx.metadata)
     if node_items or "nodes" in ctx.top_keys:

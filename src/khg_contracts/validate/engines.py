@@ -12,6 +12,10 @@
   ``exception.definition`` and ``exception.rule``). The generator propagates the codes to every constraint. The
   vendored HIF schema carries no annotations, so its codes come from the H table, keyed on the keyword and the
   instance path.
+- **End anchors.** jsonschema matches ``pattern`` with Python's ``re.search``, where ``$`` also matches before a final
+  newline; ECMA-262, which JSON Schema names, and fastjsonschema (which rewrites ``$`` to ``\\Z``) do not. The
+  generated schemas end their patterns with ``(?!\\n)$`` (``schema.codegen.END``); the jsonschema registry holds
+  copies with the same end anchor on every pattern, so a schema generated elsewhere (the queue's) is read alike.
 
 jsonschema reports every violation; fastjsonschema stops at its first, so it gives exactly one finding. Engine
 agreement is defined on single-fault inputs: fastjsonschema's code is among jsonschema's.
@@ -222,6 +226,16 @@ def _finding(subschema: Any, keyword: str, path: list[Any], message: str) -> Fin
 # ------------------------------------------------------------------------------------------------ jsonschema
 
 
+def _end_anchored(doc: Mapping[str, Any]) -> dict[str, Any]:
+    """A copy of a schema whose patterns end with ``(?!\\n)$``, the end of the string for Python's ``re`` as for
+    ECMA-262 (a no-op on the generated schemas, which already do)."""
+    from ..schema.codegen import end_anchors
+
+    out = copy.deepcopy(dict(doc))
+    end_anchors(out)
+    return out
+
+
 @functools.cache
 def _registry() -> Any:
     from referencing import Registry, Resource
@@ -231,7 +245,8 @@ def _registry() -> Any:
         raise Unresolvable(f"closed resolver: {uri!r} is not a packaged schema")
 
     return Registry(retrieve=retrieve).with_resources(  # type: ignore[call-arg]
-        (sid, Resource.from_contents(doc, default_specification=SPEC)) for sid, doc in _documents().items())
+        (sid, Resource.from_contents(_end_anchored(doc), default_specification=SPEC))
+        for sid, doc in _documents().items())
 
 
 def _jsonschema(root_uri: str) -> Runner:

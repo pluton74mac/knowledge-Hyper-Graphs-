@@ -13,17 +13,23 @@
   S010 confidence scales; S022 supports an unknown bid; S021 spans against the document texts; S024 the relation's
   constraints, with the schema's severity; S026 a lifecycle reason outside the relation's list.
 
+S021 reads the text that the evidence's ``doc_sha256`` hashes (§2.8): ``doc_texts`` maps a ``doc_id`` or a
+``doc_sha256`` to a text, and the text under the digest is used, else the ``doc_id``'s text when it hashes to the
+digest. A text of another revision of the document is not the evidence's text, so the span is not judged, as when
+no text is given. Evidence without a ``doc_sha256`` is read against its ``doc_id``'s text.
+
 ``nfc_findings`` reports S020 for every string and key not in NFC. Findings on a structure that layer C rejects are
 not repeated: S skips what it cannot read. Without a schema the step reports D009, once per run.
 """
 from __future__ import annotations
 
+import functools
 import unicodedata
 from typing import Any, Iterable, Mapping
 
 from ... import jsonio
 from ...errors import KHGError, make_finding
-from ...record import bounds, identity_key, parse_time
+from ...record import bounds, identity_key, parse_time, text_sha256
 from ...schema import Schema
 from ..context import Context
 from ..engines import pointer
@@ -45,8 +51,16 @@ def _f(code: str, path: str, message: str, severity: str = "error") -> Finding:
     return make_finding(code, path, message, severity)
 
 
-def _int(x: Any) -> bool:
-    return isinstance(x, int) and not isinstance(x, bool)
+def _integral(x: Any) -> int | None:
+    """``x`` as an int when it is an integer or an integral float (F10: ``2.0`` is ``2``, as canonical JSON and both
+    engines read it); None for a bool, a fractional or non-finite float and anything else."""
+    if isinstance(x, bool):
+        return None
+    if isinstance(x, int):
+        return x
+    if isinstance(x, float) and x.is_integer():
+        return int(x)
+    return None
 
 
 def _number(x: Any) -> bool:
@@ -111,7 +125,8 @@ def record_findings(record: Any, schema: Schema, *, entities: Mapping[str, Any] 
     """Layer S on one hyperedge (entities and other records give []), without S020 (see ``nfc_findings``).
 
     ``entities`` and ``facts`` resolve entity and fact values by id (S005 runs only on resolved ones);
-    ``doc_texts`` maps a ``doc_id`` to its text (S021); ``candidate`` makes S003 a warning, as on queue payloads.
+    ``doc_texts`` maps a ``doc_id`` or a ``doc_sha256`` to a text (S021 reads the text the evidence's ``doc_sha256``
+    hashes); ``candidate`` makes S003 a warning, as on queue payloads.
     """
     if not isinstance(record, Mapping) or record.get("kind") != "hyperedge":
         return []
@@ -210,20 +225,26 @@ def _value_findings(schema: Schema, u: Mapping[str, Any], value: Any, ents: Mapp
         options = [f for f in fillers if f.get("literal") == dt]
         if not options:
             return [_f("KHG-S005", p, f"datatype {dt!r} is not allowed for {u['role']!r}")]
-        out = []
+        # the fillers are a disjunction (§3): S023 only when no filler of the datatype allows the literal
         if dt == "time":
             try:
                 parse_time(lit.get("time"), lit.get("precision"), lit.get("calendar"))
             except KHGError as e:
                 return [_f(e.code or "KHG-S006", f"{p}/value/literal", e.message)]
-            pm = options[0].get("precision_min")
-            if _int(pm) and _number(lit.get("precision")) and lit["precision"] < pm:
-                out.append(_f("KHG-S023", p, f"precision {lit['precision']} is below precision_min {pm}"))
+            except (ValueError, OverflowError) as e:  # e.g. a year with more digits than Python converts
+                return [_f("KHG-S006", f"{p}/value/literal", f"time {str(lit.get('time'))[:40]!r}...: {e}"[:200])]
+            mins = [_integral(o.get("precision_min")) for o in options]
+            precision = lit.get("precision")
+            if _number(precision) and all(pm is not None and precision < pm for pm in mins):
+                least = min(pm for pm in mins if pm is not None)
+                return [_f("KHG-S023", p, f"precision {precision} is below precision_min {least}")]
         if dt == "quantity":
-            units = options[0].get("units")
-            if units and lit.get("unit") not in units:
-                out.append(_f("KHG-S023", p, f"unit {lit.get('unit')!r} is not one of {units}"))
-        return out
+            allowed = [o.get("units") for o in options]
+            unit = lit.get("unit")
+            if all(isinstance(a, list) and a and unit not in a for a in allowed):
+                units = list(dict.fromkeys(x for a in allowed for x in a))
+                return [_f("KHG-S023", p, f"unit {unit!r} is not one of {units}")]
+        return []
     if kind == "fact":
         options = [f["fact"] for f in fillers if "fact" in f]
         if not options:
@@ -245,22 +266,22 @@ def _usage_findings(u: Mapping[str, Any], bs: list[Mapping[str, Any]], status: A
                     path: str) -> list[Finding]:
     role, n = u["role"], len(bs)
     out = []
-    minimum = u.get("min", 0)
-    if _int(minimum) and n < minimum:
+    minimum = _integral(u.get("min", 0))
+    if minimum is not None and n < minimum:
         if status == "goal":
             out.append(_f("KHG-S018", path, f"goal omits {role!r}: leave it unbound instead"))
         else:
             severity = "warning" if candidate or status == "candidate" else "error"
             out.append(_f("KHG-S003", path, f"{role!r} is bound {n} times, min {minimum}", severity))
-    maximum = u.get("max")
-    if _int(maximum) and n > maximum:
+    maximum = _integral(u.get("max"))
+    if maximum is not None and n > maximum:
         out.append(_f("KHG-S004", path, f"{role!r} is bound {n} times, max {maximum}"))
     values = [b.get("value") for b in bs]
     if n > 1 and any(_is_special(v, "novalue") for v in values):
         out.append(_f("KHG-S013", path, f"novalue with another filler of {role!r}"))
     if u.get("ordered"):
-        positions = [b.get("position") for b in bs]
-        if not all(_int(x) for x in positions) or sorted(positions) != list(range(1, n + 1)):
+        positions = [_integral(b.get("position")) for b in bs]
+        if None in positions or sorted(positions) != list(range(1, n + 1)):  # type: ignore[type-var]
             out.append(_f("KHG-S015", path, f"the positions of {role!r} are not 1..{n}"))
     else:
         if any("position" in b for b in bs):
@@ -309,23 +330,41 @@ def _confidence_findings(schema: Schema, c: Any, p: str) -> list[Finding]:
     return []
 
 
+@functools.lru_cache(maxsize=64)
+def _text_digest(text: str) -> str:
+    return text_sha256(text)
+
+
+def _source_text(source: Any, texts: Mapping[str, str]) -> str | None:
+    """The text an evidence's selectors are read against (see the module docstring), or None."""
+    if not isinstance(source, Mapping):
+        return None
+    doc_id, want = source.get("doc_id"), source.get("doc_sha256")
+    if not isinstance(want, str):
+        text = texts.get(doc_id) if isinstance(doc_id, str) else None
+        return text if isinstance(text, str) else None
+    for key in (want, doc_id):
+        text = texts.get(key) if isinstance(key, str) else None
+        if isinstance(text, str) and _text_digest(text) == want:
+            return text
+    return None
+
+
 def _span_findings(e: Mapping[str, Any], texts: Mapping[str, str], p: str) -> list[Finding]:
     listed = e.get("selectors")
     selectors = [s for s in listed if isinstance(s, Mapping)] if isinstance(listed, list) else []
-    source = e.get("source")
-    doc_id = source.get("doc_id") if isinstance(source, Mapping) else None
-    text = texts.get(doc_id) if isinstance(doc_id, str) else None
-    if not selectors or not isinstance(text, str):
+    text = _source_text(e.get("source"), texts) if selectors and texts else None
+    if text is None:
         return []
     t = jsonio.nfc(text)
     quote = next((s for s in selectors if s.get("type") == "quote"), None)
     position = next((s for s in selectors if s.get("type") == "position"), None)
     if position is None:
         return []
-    start, end = position.get("start"), position.get("end")
-    if not (_int(start) and _int(end) and 0 <= start < end <= len(t)):
-        return [_f("KHG-S021", p, f"span [{start}, {end}) is empty, reversed or outside a text of {len(t)} "
-                                  "code points")]
+    start, end = _integral(position.get("start")), _integral(position.get("end"))
+    if start is None or end is None or not 0 <= start < end <= len(t):
+        return [_f("KHG-S021", p, f"span [{position.get('start')}, {position.get('end')}) is empty, reversed or "
+                                  f"outside a text of {len(t)} code points")]
     if quote is not None and t[start:end] != quote.get("exact"):
         return [_f("KHG-S021", p, "the quote differs from text[start:end] (code points, NFC)")]
     return []
@@ -364,9 +403,9 @@ def latest_records(records: Iterable[Any]) -> dict[str, Mapping[str, Any]]:
         if not isinstance(r, Mapping) or r.get("kind") not in ("entity", "hyperedge") or not isinstance(
                 r.get("id"), str):
             continue
-        version = r.get("version") if _int(r.get("version")) else 0
+        version = _integral(r.get("version")) or 0
         held = latest.get(r["id"])
-        if held is None or version >= (held.get("version") if _int(held.get("version")) else 0):
+        if held is None or version >= (_integral(held.get("version")) or 0):
             latest[r["id"]] = r
     return latest
 

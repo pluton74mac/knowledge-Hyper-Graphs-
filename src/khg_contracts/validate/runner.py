@@ -8,7 +8,10 @@ pipeline in order (``layers.PIPELINES``) over one ``Context``:
 - ``steps`` restricts the run to some modules (the loaders run ``j v h r p`` or ``j h r``); J always runs;
 - a step that raises after an earlier step reported an error is skipped and listed in ``Report.skipped`` (a later
   layer may not read a structure an earlier layer rejected); a step that raises on an input without errors is a
-  bug, and the exception propagates.
+  bug, and the exception propagates;
+- a step that meets Python's recursion limit reports J001 ("nesting too deep") and the run stops there, as after a J
+  error. Layer J's nesting limit keeps accepted inputs well inside the recursion limit, so this is a safety net for
+  a caller whose own stack is already deep.
 
 **The layer rule.** A finding's layer is the letter of its code (a step may emit another layer's code: decoding
 emits S016, and the S pass emits D009 without a schema). The first rejecting layer of an input is the earliest
@@ -29,7 +32,7 @@ from .context import Context
 from .engines import check_engine
 from .layers import KINDS, PIPELINES
 from .layers.j import is_path
-from .layers.v import detect_kind
+from .layers.v import detect_kind, lone_header
 from .registry import registry
 
 __all__ = ["STOPS", "Report", "Result", "first_rejecting_layer", "pipeline_letters", "run"]
@@ -122,8 +125,9 @@ def _schema_arg(schema: Any) -> Schema | None:
 
 
 def _texts_arg(doc_texts: Any) -> dict[str, str]:
-    """``{doc_id: text}`` from a mapping of texts, a ``khg-doc-texts`` document (``{"texts": {doc_id: {"text":
-    ...}}}``) or a path to one."""
+    """``{doc_id or doc_sha256: text}`` from a mapping of texts, a ``khg-doc-texts`` document (``{"texts": {doc_id:
+    {"text": ...}}}``) or a path to one. Layer S reads a selector against the text the evidence's ``doc_sha256``
+    hashes: the text under that digest, else the ``doc_id``'s text when its digest matches (S021)."""
     if doc_texts is None:
         return {}
     if is_path(doc_texts):
@@ -173,6 +177,9 @@ def _bases_arg(bases: Any) -> dict[str, Mapping[str, Any]]:
 def _call(report: Report, ctx: Context, name: str) -> list[Finding]:
     try:
         found = list(layers.module(name).run(ctx))
+    except RecursionError:
+        found = [make_finding("KHG-J001", "", f"nesting too deep for the {name} step (Python's recursion limit)")]
+        report.stopped = name
     except Exception as exc:
         if not report.errors:
             raise
@@ -220,12 +227,16 @@ def run(obj_or_path: Any, *, kind: str = "auto", schema: Any = None, doc_texts: 
             report.stopped = "v"
             return report
         ctx.kind = report.kind = detected
+        if lone_header(ctx.doc):
+            ctx.doc = [ctx.doc]  # the file of that one line
     if ctx.kind == "container" and isinstance(ctx.doc, list):
         ctx.doc = {"header": ctx.doc[0], "records": ctx.doc[1:]}
     for name in PIPELINES[ctx.kind][1:]:
         if wanted is not None and name not in wanted:
             continue
         found = _call(report, ctx, name)
+        if report.stopped is not None:
+            break  # the step met the recursion limit
         if any(f["severity"] == "error" for f in found) and (name == "v" or stop == "first"):
             report.stopped = name
             break

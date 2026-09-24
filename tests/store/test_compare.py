@@ -67,6 +67,21 @@ def test_history_containers_key_records_by_version():
     assert compare_containers(history, copy.deepcopy(history), ignore=()) == []
 
 
+def test_carried_evidence_without_supports_is_no_difference():
+    """§2.8.1: in a history, evidence carried without ``supports`` supports what it did where it was first written,
+    so leaving the list out of both versions of f:king-13's e1 (v2 adds b4) changes nothing."""
+    history = data.load_json("fixture/fixture.history.c1.json")
+    implicit = copy.deepcopy(history)
+    for r in implicit["records"]:
+        if r["id"] == "f:king-13":
+            r["evidence"][0].pop("supports")
+    assert compare_containers(history, implicit, ignore=()) == []
+    widened = copy.deepcopy(history)
+    next(r for r in widened["records"] if r["id"] == "f:king-13" and r["version"] == 2)["evidence"][0]["supports"] = \
+        ["b1", "b2", "b3", "b4"]
+    assert [d["path"] for d in compare_containers(implicit, widened)] == ["/records/f:king-13/2"]
+
+
 def test_only_containers_compare(fixture_doc):
     with pytest.raises(TypeError):
         compare_containers(fixture_doc, "{}")

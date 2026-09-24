@@ -145,11 +145,11 @@
   "scenarios/index.json": "sha256:d5f3547a9f4ae58f32da5338ab0853c648e933353b628890dc966f229d854b50",
   "schemas/HIF-LICENSE.txt": "sha256:bfec44796db963653bcb367f176b8197ee0aca95b914ddcf638413ed431b2ddd",
   "schemas/hif_schema_v0.1.0.json": "sha256:639466b7a10de5a734d231d72422f54a5fce4084cb300869012510124c9b2196",
-  "schemas/khg-c4-items-0.1.0.schema.json": "sha256:8870412de1849c520d016404f6df519cdb4913b88dcd164aeee9ed2d5c967a98",
+  "schemas/khg-c4-items-0.1.0.schema.json": "sha256:ac57f477403716042ae6abae6e5e15c549dfd7abc9777c27277c125b188ae858",
   "schemas/khg-c5-io-1.0.0.schema.json": "sha256:a51da48facfdf88dbf9f4043b409e37d89e545db33314c8c73e46ea641e9cd3d",
-  "schemas/khg-hif-1.0.0.schema.json": "sha256:b866b3cdf388967bf08439b3074cb73b435dbd51a17cfc1fd8df9f08700892b0",
+  "schemas/khg-hif-1.0.0.schema.json": "sha256:ad9b3074c1e9f2f61c6791ed8c5d24b17a1b6d02fff1973ca36097efc75183e4",
   "schemas/khg-queue-1.0.0.schema.json": "sha256:da7be40aa704ba3e1f64289397b8685865afc9c4c24b396bb08ee81e2db444f6",
-  "schemas/khg-record-1.0.0.schema.json": "sha256:ae5f7d1c948b4df06d0345d0c63869bde242dda2ee7ce7c93b2ef1a6019f6a73",
-  "schemas/khg-relation-schema-1.0.0.schema.json": "sha256:1fdc7e86cbd0bb53e78e3c1a8119f3a1ad41b7403e541090459d1727e68feec6"
+  "schemas/khg-record-1.0.0.schema.json": "sha256:80dca779acb6959628be3a1f16cc6534a10f4c4e779b6c549c841c557626b256",
+  "schemas/khg-relation-schema-1.0.0.schema.json": "sha256:bd321ee2318ea553d5b079e3800bc6f4f9dbcd50acab4b02dcf78034496ee36e"
  }
 }

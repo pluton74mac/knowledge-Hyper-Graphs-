@@ -170,6 +170,31 @@ def test_undo_restores_the_superseded_fact(maria, rec, cur):
     assert maria.supersession_walk("f:born-skłodowska-kraków")["steps"] == []
 
 
+@pytest.mark.parametrize("resolve", ["retract", "dispute"])
+def test_undoing_two_supersessions_that_share_a_superseding_fact(ms, entities, rec, cur, resolve):
+    """One transition may undo several supersessions (§2.7: all of it is one atomic event); a superseding fact they
+    share is resolved once, not written twice (D001)."""
+    from khg_contracts import validate
+
+    ms.put(entities + [rec("f:coadmin-1", set={"id": i}) for i in ("f:coadmin-a", "f:coadmin-b")] +
+           [rec("f:coadmin-1")], actor="t")
+    for sup, old in (("m:sup-a", "f:coadmin-a"), ("m:sup-b", "f:coadmin-b")):
+        ms.apply({"op": "supersede", "id": sup, "superseded": [old], "superseding": ["f:coadmin-1"],
+                  "reason": "duplicate", "evidence": [cur]}, actor="t")
+    event = {"op": "transition", "targets": ["m:sup-a", "m:sup-b"], "to": "retracted", "id": "m:ret-1",
+             "reason": "withdrawn", "resolve_superseding": resolve, "evidence": [cur]}
+    if resolve == "dispute":
+        event["dispute_id"] = "m:dis-1"
+    receipt = ms.apply(event, actor="t")
+    assert ("f:coadmin-1", 2, "versioned") in receipt["records"]
+    assert ms.get("f:coadmin-1")["status"] == ("retracted" if resolve == "retract" else "disputed")
+    lifecycle_record = ms.get("m:ret-1" if resolve == "retract" else "m:dis-1")
+    bound = [b["value"]["fact"] for b in lifecycle_record["bindings"]]
+    assert len(bound) == len(set(bound)) and "f:coadmin-1" in bound
+    for content in ("snapshot", "history"):
+        assert validate.validate_container(ms.export("khg-json", content=content), schema=ms.schema)["ok"]
+
+
 def test_a_resolving_dispute_needs_its_id(maria, rec, cur):
     maria.apply(supersede(rec, cur), actor="t")
     with pytest.raises(ValidationError) as e:
@@ -224,6 +249,25 @@ def test_end_validity_adds_the_end_and_its_cause(ms, entities, rec, cur, T):
     assert e.value.codes == ("KHG-D013",)
 
 
+def test_end_validity_refines_an_end_whose_cause_is_held(ms, entities, rec, cur, T):
+    """The khg:end_cause usage has max 1: restating the held cause while refining the end keeps its one binding
+    (a second one was S004 and S014); another cause is a change the version rule refuses (D013)."""
+    ms.put(entities + [rec("f:king-13", drop_bindings=["b4"])], actor="t")
+    louis = {"entity": "ex:LouisXIV"}
+    ms.apply({"op": "end_validity", "target": "f:king-13", "end": T("+1643-00-00T00:00:00Z", 9), "end_cause": louis,
+              "evidence": [cur]}, actor="t")
+    receipt = ms.apply({"op": "end_validity", "target": "f:king-13", "end": T("+1643-05-14T00:00:00Z"),
+                        "end_cause": louis, "evidence": [dict(cur, id="e10")]}, actor="t")
+    assert receipt["records"] == [("f:king-13", 3, "versioned")]
+    king = ms.get("f:king-13")
+    assert [(b["bid"], b["value"]) for b in king["bindings"] if b["role"] == "khg:end_cause"] == [("b5", louis)]
+    assert [(e["id"], e["supports"]) for e in king["evidence"]][-2:] == [("e10", ["b4"]), ("e9", ["b4", "b5"])]
+    with pytest.raises(VersionError) as e:
+        ms.apply({"op": "end_validity", "target": "f:king-13", "end": T("+1643-05-14T00:00:00Z"),
+                  "end_cause": {"entity": "ex:LouisXIII"}, "evidence": [dict(cur, id="e11")]}, actor="t")
+    assert e.value.codes == ("KHG-D013",) and ms.get("f:king-13")["version"] == 3
+
+
 def test_end_validity_refuses_what_it_cannot_end(schema, ms, entities, rec, cur, T):
     ms.put(entities + [rec("f:reg-1"), rec("f:born-louis14-paris")], actor="t")
     end = {"op": "end_validity", "end": T("+1700-01-01T00:00:00Z"), "evidence": [cur]}
@@ -256,6 +300,39 @@ def test_add_evidence_appends(ms, entities, rec, cur):
     with pytest.raises(ValidationError) as e:
         ms.apply({"op": "add_evidence", "target": "f:reg-1", "evidence": [{"id": "e10"}]}, actor="t")
     assert e.value.codes == ("KHG-C007",) and ms.get("f:reg-1")["version"] == 2
+
+
+def test_an_evidence_id_is_given_once(ms, entities, rec, cur):
+    """Evidence is append-only (§2.8, §2.9): neither a put nor an event may give a held evidence id a second record,
+    which readers would resolve to either one."""
+    ms.put(entities + [rec("f:reg-1")], actor="t")
+    held = ms.get("f:reg-1")["evidence"][0]  # e1, from doc:review-p53
+    forged = {"id": "e1", "type": "curated", "mode": "manual", "source": {"doc_id": "doc:forged"}, "supports": ["b1"]}
+    for evidence in ([forged, held], [held, forged], [held, held]):
+        with pytest.raises(VersionError) as e:
+            ms.put(rec("f:reg-1", set={"evidence": copy.deepcopy(evidence)}), actor="t")
+        assert e.value.codes == ("KHG-D013",)
+    with pytest.raises(VersionError) as e:
+        ms.apply({"op": "add_evidence", "target": "f:reg-1",
+                  "evidence": [dict(cur, source={"doc_id": "doc:a"}), dict(cur, mode="automatic")]}, actor="t")
+    assert e.value.codes == ("KHG-D013",) and ms.get("f:reg-1")["version"] == 1
+    assert ms.put(rec("f:reg-1", add_evidence=[cur]), actor="t")["records"] == [("f:reg-1", 2, "versioned")]
+
+
+@pytest.mark.parametrize("bad_id", [["e9"], {"x": 1}, 7, None], ids=["list", "object", "number", "null"])
+def test_an_evidence_id_that_is_not_a_string_is_c010_on_every_event(ms, entities, rec, cur, T, bad_id):
+    """Such an id was tested against the held ids as a set member, a TypeError for a list or an object."""
+    ms.put(entities + [rec("f:reg-1"), rec("f:born-louis14-paris"), rec("f:king-13", drop_bindings=["b4"])],
+           actor="t")
+    evidence = [dict(cur, id=bad_id)]
+    for event in ({"op": "add_evidence", "target": "f:reg-1", "evidence": evidence},
+                  {"op": "transition", "targets": ["f:born-louis14-paris"], "to": "asserted", "evidence": evidence},
+                  {"op": "end_validity", "target": "f:king-13", "end": T("+1643-05-14T00:00:00Z"),
+                   "evidence": evidence}):
+        with pytest.raises(ValidationError) as e:
+            ms.apply(copy.deepcopy(event), actor="t")
+        assert "KHG-C010" in e.value.codes, event["op"]
+    assert [ms.get(i)["version"] for i in ("f:reg-1", "f:born-louis14-paris", "f:king-13")] == [1, 1, 1]
 
 
 def test_unknown_and_malformed_events(ms, entities):

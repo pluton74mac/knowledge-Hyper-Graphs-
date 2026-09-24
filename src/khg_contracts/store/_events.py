@@ -10,7 +10,8 @@
   lifecycle record is undo); ``asserted`` takes a disputed, quoted or goal fact back, dropping ``status_ref`` and
   the ``goal`` block.
 - ``end_validity`` {``target``, ``end``, ``end_cause?``, ``evidence``}: adds or refines the end binding, or replaces a
-  ``novalue`` end; ``end_cause`` becomes a ``khg:end_cause`` binding; the status stays.
+  ``novalue`` end; ``end_cause`` becomes a ``khg:end_cause`` binding (the one the fact holds, when it has one: the
+  usage has max 1); the status stays.
 - ``add_evidence`` {``target``, ``evidence``}: appends evidence; superseded and retracted facts are frozen (D013).
 
 Records carried by events arrive as ``asserted`` without ``status_ref``; the store sets both. Evidence without
@@ -23,8 +24,8 @@ from __future__ import annotations
 import copy
 from typing import Any, Mapping
 
-from ..errors import NotFound
-from ..record import canonical_value, lifecycle, normalize
+from ..errors import KHGError, NotFound
+from ..record import canonical_value, lifecycle, normalize, values_equal
 from ..record.canonical import STORE_FIELDS
 from ..record.lifecycle import Problem
 from ..schema import LIFECYCLE_RELATIONS
@@ -40,6 +41,14 @@ _UNDO_ROLE = {"khg:supersedes": "khg:superseded", "khg:disputes": "khg:disputed"
 
 def _d014(rid: Any, message: str) -> Problem:
     return Problem("KHG-D014", rid, "/status", message)
+
+
+def _same_value(a: Any, b: Any) -> bool:
+    """One value identity (§2.3); a held value that cannot be read is not the same."""
+    try:
+        return values_equal(a, b)
+    except (KHGError, ValueError, TypeError, KeyError):
+        return False
 
 
 def _content(record: Mapping[str, Any]) -> dict[str, Any]:
@@ -146,11 +155,21 @@ class EventsMixin(WriteMixin):
 
     @staticmethod
     def _append_evidence(record: dict[str, Any], evidence: list[dict[str, Any]], supports: list[str]) -> None:
-        held = {e.get("id") for e in record.get("evidence") or [] if isinstance(e, Mapping)}
-        clash = sorted(str(e.get("id")) for e in evidence if e.get("id") in held)
+        """Append ``evidence`` (D013 for an id the fact holds or that the event gives twice: evidence is
+        append-only); an id that is not a string is left to layer C (C010)."""
+        held = {e["id"] for e in record.get("evidence") or []
+                if isinstance(e, Mapping) and isinstance(e.get("id"), str)}
+        clash = set()
+        for e in evidence:
+            eid = e.get("id")
+            if isinstance(eid, str):
+                if eid in held:
+                    clash.add(eid)
+                held.add(eid)
         if clash:
-            raise lifecycle.error_for([Problem("KHG-D013", record.get("id"), "/evidence",
-                                               f"evidence {', '.join(clash)} already exists: evidence is append-only")])
+            raise lifecycle.error_for([Problem(
+                "KHG-D013", record.get("id"), "/evidence",
+                f"evidence {', '.join(sorted(clash))} already exists or is given twice: evidence is append-only")])
         for e in evidence:
             e.setdefault("supports", list(supports))
         record["evidence"] = list(record.get("evidence") or []) + evidence
@@ -263,6 +282,7 @@ class EventsMixin(WriteMixin):
         restored: list[dict[str, Any]] = []
         extra: list[dict[str, Any]] = []
         superseding: list[dict[str, Any]] = []
+        collected = set(targets)  # a superseding fact that is a target is retracted as one
         for f in olds:
             role = _UNDO_ROLE.get(f.get("relation"))  # type: ignore[arg-type]
             if role is None:
@@ -273,8 +293,11 @@ class EventsMixin(WriteMixin):
                 if x is not None and x.get("status_ref") == f["id"]:
                     restored.append(x)
             if f.get("relation") == "khg:supersedes" and resolve is not None:
-                superseding += [self._held(b["value"]["fact"]) for b in f.get("bindings", [])
-                                if b.get("role") == "khg:superseding"]
+                for b in f.get("bindings", []):  # each superseding fact once, though several targets bind it
+                    fid = (b.get("value") or {}).get("fact")
+                    if b.get("role") == "khg:superseding" and isinstance(fid, str) and fid not in collected:
+                        collected.add(fid)
+                        superseding.append(self._held(fid))
         if resolve == "retract":
             extra = superseding
             problems = self._retractable(extra)
@@ -373,10 +396,16 @@ class EventsMixin(WriteMixin):
             bindings.append(end)
         end["value"] = canonical_value(event["end"])
         supports = [end["bid"]]
-        if event.get("end_cause") is not None:
-            after += 1
-            bindings.append({"bid": f"b{after}", "role": "khg:end_cause", "value": canonical_value(event["end_cause"])})
-            supports.append(f"b{after}")
+        if event.get("end_cause") is not None:  # one khg:end_cause binding (max 1): the held one, or a new one
+            cause = canonical_value(event["end_cause"])
+            held = next((b for b in bindings if b.get("role") == "khg:end_cause"), None)
+            if held is None:
+                after += 1
+                bindings.append({"bid": f"b{after}", "role": "khg:end_cause", "value": cause})
+                supports.append(f"b{after}")
+            elif not _same_value(held.get("value"), cause):  # a changed cause: the version rule judges it (D013)
+                held["value"] = cause
+                supports.append(held["bid"])
         self._append_evidence(new, evidence, supports)
         new = normalize(new)
         pending = Pending(self._table)

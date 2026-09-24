@@ -55,8 +55,9 @@ def validate(obj_or_path: Any, *, kind: str = "auto", schema: Any = None, doc_te
     ``obj_or_path`` is a path, raw ``bytes``, or a parsed input (a dict; a list of line dicts for a queue or C4
     file). ``kind`` is ``auto`` or one of ``record``, ``container``, ``hif``, ``role-convention``, ``schema``,
     ``queue`` and ``item``. ``schema`` is the relation-type schema (a ``Schema``, a document or a path); without it
-    a container or HIF file uses the schema it embeds. ``doc_texts`` maps ``doc_id`` to the document text for the
-    span check (S021); ``bases`` gives a queue's base containers. ``engine`` is ``jsonschema`` (every violation) or
+    a container or HIF file uses the schema it embeds. ``doc_texts`` maps a ``doc_id`` (or a ``doc_sha256``) to the
+    document text for the span check (S021), which reads the text an evidence's ``doc_sha256`` hashes; ``bases``
+    gives a queue's base containers. ``engine`` is ``jsonschema`` (every violation) or
     ``fastjsonschema`` (the first one).
     """
     return run(obj_or_path, kind=kind, schema=schema, doc_texts=doc_texts, bases=bases, engine=engine).result()

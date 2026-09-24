@@ -11,22 +11,48 @@ from .. import jsonio
 from ..errors import ValidationError, make_finding
 from .builtins import DEFAULT_POLICY, DEFAULT_TIME, END_CAUSE, PROBABILITY, lifecycle_relations
 
-__all__ = ["Schema"]
+__all__ = ["Schema", "json_copy"]
 
 
 def _missing(code: str, path: str, message: str) -> ValidationError:
     return ValidationError.from_findings([make_finding(code, path, message)])
 
 
+def json_copy(value: Any) -> Any:
+    """A copy of a JSON value, built without recursion: mappings as dicts (in their key order), tuples as lists,
+    and an integral float within +/-(2^53-1) as its int (F10: ``2.0`` is ``2``, as canonical JSON and the digest
+    already read it). Other values are kept as they are."""
+    out: list[Any] = []
+    stack: list[tuple[Any, Any, Any]] = [(value, out, 0)]
+    while stack:
+        x, parent, key = stack.pop()
+        if isinstance(x, Mapping):
+            y: Any = dict.fromkeys(x)  # the key order; the values are filled in below
+            stack.extend((v, y, k) for k, v in x.items())
+        elif isinstance(x, (list, tuple)):
+            y = [None] * len(x)
+            stack.extend((v, y, i) for i, v in enumerate(x))
+        elif isinstance(x, float) and x.is_integer() and abs(x) <= jsonio.MAX_SAFE_INTEGER:
+            y = int(x)
+        else:
+            y = x
+        if parent is out:
+            out.append(y)
+        else:
+            parent[key] = y
+    return out[0]
+
+
 class Schema:
     """A relation-type schema: the document plus the lifecycle relations and ``khg:end_cause`` built into it.
 
     ``sha256`` is ``digest("khg-schema/1", document)``, the value C1 headers, HIF metadata and queue headers pin
-    (D009). The document is copied on construction; treat ``doc`` as read-only.
+    (D009). The document is copied on construction, with integral floats as ints (``json_copy``: a ``min`` of
+    ``1.0`` is the cardinality 1, and the digest is the same); treat ``doc`` as read-only.
     """
 
     def __init__(self, doc: Mapping[str, Any]):
-        self._doc: dict[str, Any] = copy.deepcopy(dict(doc))
+        self._doc: dict[str, Any] = json_copy(dict(doc))
         self._sha256 = jsonio.digest("khg-schema/1", self._doc)
         self._user_ids = [r["id"] for r in self._doc.get("relations", [])]
         self._rel: dict[str, dict[str, Any]] = {r["id"]: r for r in self._doc.get("relations", [])}

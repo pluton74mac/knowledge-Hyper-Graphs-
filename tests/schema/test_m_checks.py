@@ -6,7 +6,7 @@ import copy
 
 import pytest
 
-from khg_contracts import data
+from khg_contracts import data, jsonio
 from khg_contracts.errors import ValidationError
 from khg_contracts.schema import Schema, check_schema, load_schema
 from khg_contracts.schema.checks import meta_findings, python_findings
@@ -259,9 +259,81 @@ def test_a_time_filler_with_precision_min_is_still_a_time_usage():
                     "time": "t", "constraints": {}}]},
     {"entity_types": [{"id": "A", "parents": "B"}, 5], "roles": [{"id": ["x"]}]},
     {"confidence_scales": [{"id": "s", "kind": "bounded", "min": "0", "max": None}]},
+    # X-02: a non-string id or role that the Python checks look up in a set
+    {"entity_types": [{"id": ["A"]}]},
+    {"relations": [{"id": "r", "roles": [{"role": ["t"], "slot": "time", "min": 0, "max": 1,
+                                          "fillers": [{"literal": "time"}]}]}]},
+    {"confidence_scales": [{"id": ["s"], "kind": "bounded", "min": 0, "max": 1}]},
 ])
 def test_structurally_broken_documents_give_findings_not_exceptions(broken):
     doc = dict(copy.deepcopy(BASE), **broken)
     for engine in ENGINES:
         findings = check_schema(doc, engine=engine)
         assert findings and all(f["layer"] == "M" for f in findings)
+
+
+# ------------------------------------------------------------------------------------------------ review fixes
+
+
+def _nested(levels):
+    value = 1
+    for _ in range(levels):
+        value = {"a": value}
+    return value
+
+
+@pytest.mark.parametrize("engine", ENGINES)
+def test_a_deep_document_is_j001_not_a_recursion_error(engine):
+    """b-validate-01: the Python checks and their plain copy work without recursion, and a document nested deeper
+    than layer J's limit is J001 (for ``load_schema`` of a mapping too, which runs no parser)."""
+    from khg_contracts.validate.layers.j import MAX_DEPTH  # one limit: layer J and check_schema share it
+
+    doc = copy.deepcopy(BASE)
+    doc["relations"][0]["label"] = _nested(MAX_DEPTH - 3)  # the deepest accepted (the top, relations and [0] nest)
+    assert _error_codes(check_schema(doc, engine=engine)) == {"KHG-M015"}  # a label is a string
+    for levels in (MAX_DEPTH - 2, 600, 2000):
+        doc["relations"][0]["label"] = _nested(levels)
+        found = check_schema(doc, engine=engine)
+        assert [(f["code"], f["path"]) for f in found] == \
+            [("KHG-J001", "/relations/0/label" + "/a" * (MAX_DEPTH - 3))], levels
+        with pytest.raises(ValidationError) as exc:
+            load_schema(doc)
+        assert exc.value.codes == ("KHG-J001",)
+
+
+def test_python_findings_read_a_deep_document_without_recursion():
+    doc = copy.deepcopy(BASE)
+    doc["roles"][0]["label"] = _nested(3000)
+    assert python_findings(doc) == []  # a label is the meta-schema's to judge
+
+
+@pytest.mark.parametrize("engine", ENGINES)
+@pytest.mark.parametrize("mutate", [
+    lambda d: d["entity_types"][0].update(id=["Person"]),
+    lambda d: _use(d, "position_held", "start_time").update(role=["a"]),
+    lambda d: d["confidence_scales"][0].update(id=["x"]),
+], ids=["entity-type-id", "time-usage-role", "scale-id"])
+def test_a_non_string_id_is_m015_from_every_entry_point(mutate, engine):
+    """X-02: the M checks read a list where a string belongs without raising; the meta-schema reports M015."""
+    from khg_contracts import hif
+    from khg_contracts.validate import validate
+
+    doc = copy.deepcopy(BASE)
+    mutate(doc)
+    assert "KHG-M015" in _error_codes(check_schema(doc, engine=engine))
+    result = validate(doc, kind="schema", engine=engine)
+    assert not result["ok"] and "KHG-M015" in {f["code"] for f in result["findings"]}
+    assert "KHG-M015" in {f["code"] for f in validate(doc, engine=engine)["findings"]}
+    with pytest.raises(ValidationError) as exc:
+        load_schema(doc)
+    assert "KHG-M015" in exc.value.codes
+    # the same schema inlined in a HIF file (an input, not an argument)
+    h = hif.to_hif(data.load_json("fixture/fixture.c1.json"), load_schema(BASE), schema_document=True)
+    h["metadata"]["khg-schema-document"] = doc
+    h["metadata"]["khg-schema-sha256"] = jsonio.digest("khg-schema/1", doc)
+    found = validate(h, kind="hif", engine=engine)["findings"]
+    assert ("KHG-M015", "error") in {(f["code"], f["severity"]) for f in found}
+    assert all(f["path"].startswith("/metadata/khg-schema-document") for f in found if f["layer"] == "M")
+    with pytest.raises(ValidationError) as exc:
+        hif.from_hif(h)
+    assert "KHG-M015" in exc.value.codes

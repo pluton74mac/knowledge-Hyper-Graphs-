@@ -3,8 +3,9 @@
 
 A scenario is **inapplicable** when its ``requires`` holds a flag the store does not declare (``info()``), or that
 ``capabilities`` leaves out: only a declared-absent flag makes a scenario inapplicable (the director's ruling on
-§14). Otherwise its ``given`` steps run (``put`` steps one call each, one record per call for a store without
-``atomic_writes``; ``apply`` one event; ``load`` one container), then each ``when`` step and its ``then`` clauses:
+§14). A declared flag outside the ten of §6.3 (a backend's own, or a later version's) is ignored. Otherwise its
+``given`` steps run (``put`` steps one call each, one record per call for a store without ``atomic_writes``;
+``apply`` one event; ``load`` one container), then each ``when`` step and its ``then`` clauses:
 
 - **passed**: every step behaved as stated;
 - **failed**: a clause did not hold, a call raised what the step did not expect, or the store raised
@@ -21,6 +22,7 @@ from ... import jsonio
 from ...errors import CapabilityMissing, KHGError
 from ...validate import validate_hif
 from ..clocks import ScenarioClock
+from ..flags import ALL_FLAGS
 from ..flags import capabilities as _capabilities
 from ..where import Where
 from . import checks
@@ -238,7 +240,7 @@ def run_scenario(factory: Factory, scenario: Mapping[str, Any] | str, *, capabil
         out.outcome, out.info = "failed", f"the factory raised {type(e).__name__}: {e}"
         return out
     try:
-        declared = frozenset(store.info()["capabilities"])
+        declared = frozenset(store.info()["capabilities"]) & ALL_FLAGS  # a flag beyond the ten is not tested
         flags = declared if capabilities is None else declared & _capabilities(capabilities)
         missing = sorted(set(requires) - flags)
         if missing:
@@ -271,7 +273,7 @@ def run_suite(factory: Factory, *, only: str | Iterable[str] | None = None,
         info = dict(probe.info())
     finally:
         _close(probe)
-    declared = frozenset(info["capabilities"])
+    declared = frozenset(info["capabilities"]) & ALL_FLAGS  # a flag beyond the ten (a later version's) is not tested
     flags = declared if capabilities is None else declared & _capabilities(capabilities)
     outcomes = [run_scenario(factory, s.scenarios[i], capabilities=flags, s=s) for i in select(s.scenarios, only)]
     return outcomes, info, flags

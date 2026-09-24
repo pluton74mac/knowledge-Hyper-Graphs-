@@ -2,6 +2,9 @@
 implements the core passes the whole suite; and the public surface of ``khg_contracts.store`` (§10.2)."""
 from __future__ import annotations
 
+import contextlib
+import copy
+import signal
 import subprocess
 import sys
 
@@ -106,6 +109,66 @@ def test_the_walk_branches_and_ends_on_chains(ms, entities, rec, cur):
                                 {"id": "f:coadmin-2", "status": "asserted"}]
     before = ms.supersession_walk("f:coadmin-0", as_at="2026-10-01T00:00:02Z")
     assert before["steps"] == [] and before["terminal"] == [{"id": "f:coadmin-0", "status": "asserted"}]
+
+
+@contextlib.contextmanager
+def ends_within(seconds: int):
+    """Fail instead of hanging when the call inside does not end (POSIX: SIGALRM)."""
+    if not hasattr(signal, "SIGALRM"):
+        pytest.skip("needs SIGALRM")
+
+    def stop(*_):
+        raise TimeoutError("the walk did not end")
+    old = signal.signal(signal.SIGALRM, stop)
+    signal.alarm(seconds)
+    try:
+        yield
+    finally:
+        signal.alarm(0)
+        signal.signal(signal.SIGALRM, old)
+
+
+def test_the_walk_ends_on_a_supersession_cycle(schema, fixture_doc):
+    """§6.2: the walk always ends. A trusted load does not check D012, so a store may hold a cycle: here Kraków is
+    superseded by Warszawa (m:sup-1) and Warszawa by Kraków (m:sup-2)."""
+    doc = copy.deepcopy(fixture_doc)
+    records = {r["id"]: r for r in doc["records"]}
+    records["f:born-skłodowska-warszawa"].update(status="superseded", status_ref="m:sup-2")
+    back = copy.deepcopy(records["m:sup-1"])
+    back["id"] = "m:sup-2"
+    for b in back["bindings"]:
+        b["value"] = {"fact": "f:born-skłodowska-kraków" if b["role"] == "khg:superseding"
+                      else "f:born-skłodowska-warszawa"}
+    doc["records"].append(back)
+    s = MemoryStore(schema, clock=ScenarioClock())
+    s.load(doc)
+    with ends_within(10):
+        walk = s.supersession_walk("f:born-skłodowska-kraków")
+        backward = s.supersession_walk("f:born-skłodowska-kraków", direction="backward")
+    assert [(x["depth"], x["via"], x["to"]) for x in walk["steps"]] == [
+        (1, "m:sup-1", "f:born-skłodowska-warszawa"), (2, "m:sup-2", "f:born-skłodowska-kraków")]
+    assert walk["terminal"] == [] and backward["terminal"] == []  # every fact reached is superseded again
+    assert [x["via"] for x in backward["steps"]] == ["m:sup-2", "m:sup-1"]
+
+
+def test_the_walk_reaches_a_diamond_once(ms, entities, rec, cur):
+    """A is superseded by B and C (a conflation), and both by D: D is reached twice but walked and listed once."""
+    ms.put(entities + [rec("f:coadmin-1", set={"id": "f:A"})], actor="t")
+    ms.apply({"op": "supersede", "id": "m:s1", "superseded": ["f:A"], "reason": "conflation",
+              "records": [rec("f:coadmin-1", set={"id": "f:B"}), rec("f:coadmin-1", set={"id": "f:C"})],
+              "evidence": [cur]}, actor="t")
+    ms.apply({"op": "supersede", "id": "m:s2", "superseded": ["f:B"],
+              "records": [rec("f:coadmin-1", set={"id": "f:D"})], "reason": "duplicate", "evidence": [cur]}, actor="t")
+    ms.apply({"op": "supersede", "id": "m:s3", "superseded": ["f:C"], "superseding": ["f:D"], "reason": "duplicate",
+              "evidence": [cur]}, actor="t")
+    with ends_within(10):
+        walk = ms.supersession_walk("f:A")
+        backward = ms.supersession_walk("f:D", direction="backward")
+    assert [(x["depth"], x["via"], x["to"]) for x in walk["steps"]] == [
+        (1, "m:s1", "f:B"), (1, "m:s1", "f:C"), (2, "m:s2", "f:D"), (2, "m:s3", "f:D")]
+    assert walk["terminal"] == [{"id": "f:D", "status": "asserted"}]
+    assert [(x["depth"], x["to"]) for x in backward["steps"]] == [(1, "f:B"), (1, "f:C"), (2, "f:A"), (2, "f:A")]
+    assert backward["terminal"] == [{"id": "f:A", "status": "superseded"}]
 
 
 def test_the_public_surface_of_section_10_2():

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import json
 import os
 import stat
 import struct
@@ -166,6 +167,30 @@ def test_a_history_container_round_trips_in_version_order(tmp_path):
     assert record.read_container(out) == HISTORY
 
 
+def test_a_history_whose_carried_evidence_omits_supports_stays_valid_when_written(tmp_path):
+    """§2.8.1: writing a history must not change carried evidence. With ``supports`` omitted from e1 in both versions
+    of f:king-13 (v2 adds b4), the written v2 keeps e1 on b1-b3; the version rule would call b1-b4 a rewrite."""
+    from khg_contracts import validate
+    from khg_contracts.schema import load_schema
+
+    schema = load_schema(data.path("fixture/fixture.relation-schema.json"))
+    doc = copy.deepcopy(HISTORY)
+    for r in doc["records"]:
+        if r.get("id") == "f:king-13":
+            r["evidence"][0].pop("supports")
+    assert validate.validate_container(doc, schema=schema)["ok"]
+    king13 = [r for r in doc["records"] if r["id"] == "f:king-13"]
+    for name in ("history.khg.jsonl", "history.khg.json"):
+        record.write_container(doc, tmp_path / name)
+        back = record.read_container(tmp_path / name)
+        assert back == HISTORY
+        report = validate.validate_container(back, schema=schema)
+        assert report["ok"], [f for f in report["findings"] if f["severity"] == "error"]
+        assert record.supported_values([r for r in back["records"] if r["id"] == "f:king-13"], "e1") == \
+            record.supported_values(king13, "e1")
+    assert record.container_sha256(doc) == record.container_sha256(HISTORY)
+
+
 def test_write_refuses_another_version_and_writes_nothing(tmp_path):
     for fmt in ("khg-record/2.0.0", "khg-record/1.1.0", "khg-record", None):
         bad = copy.deepcopy(C1)
@@ -210,14 +235,81 @@ def test_check_container_passes_the_packaged_containers():
 
 
 def test_formats_and_suffixes(tmp_path):
-    record.write_container(C1, tmp_path / "a.khg.json", format="jsonl")  # an explicit format wins
-    assert (tmp_path / "a.khg.json").read_bytes() == JSONL_BYTES
-    record.write_container(C1, tmp_path / "noext")
-    assert (tmp_path / "noext").read_bytes() == JSONL_BYTES
-    with pytest.raises(ValueError):
-        record.write_container(C1, tmp_path / "b.khg.jsonl", format="yaml")
+    """DESIGN §14 ruling 4: the suffix alone names the layout, ``.json`` or ``.jsonl``. ``format`` may restate it."""
+    record.write_container(C1, tmp_path / "a.khg.jsonl", format="jsonl")
+    record.write_container(C1, str(tmp_path / "a.khg.json"), format="json")
+    record.write_container(C1, tmp_path / "b.jsonl")
+    assert (tmp_path / "a.khg.jsonl").read_bytes() == (tmp_path / "b.jsonl").read_bytes() == JSONL_BYTES
+    assert record.read_container(tmp_path / "a.khg.json") == record.read_container(str(tmp_path / "b.jsonl")) == C1
     with pytest.raises(ValueError):
         record.serialize(C1, format="xml")
+
+
+@pytest.mark.parametrize("name, fmt", [
+    ("a.khg.json", "jsonl"),   # a format the suffix does not name (the old rule let an explicit format win)
+    ("a.khg.jsonl", "json"),
+    ("a.khg.jsonl", "yaml"),
+    ("noext", None),           # the old rule wrote any other name as JSONL, which read_container read as JSON
+    ("a.txt", None),
+    ("a.txt", "jsonl"),
+    ("a.khg.JSON", None),
+    ("a.jsonl.bak", "jsonl"),
+])
+def test_write_refuses_a_suffix_that_names_no_layout_or_another_one(tmp_path, name, fmt):
+    for container in (C1, {"header": {"format": "khg-record/9.0.0"}, "records": []}):  # the suffix is checked first
+        with pytest.raises(ValueError) as e:
+            record.write_container(container, tmp_path / name, format=fmt)
+        assert type(e.value) is ValueError  # not a ValidationError of the container
+    assert list(tmp_path.iterdir()) == []
+
+
+@pytest.mark.parametrize("name", ["a.txt", "noext", "a.khg.JSONL", "a.json.gz"])
+def test_read_refuses_a_suffix_that_names_no_layout(tmp_path, name):
+    path = tmp_path / name
+    path.write_bytes(JSONL_BYTES)  # what the old writer put into any name but .json
+    with pytest.raises(ValueError) as e:
+        record.read_container(path)
+    assert type(e.value) is ValueError and name in str(e.value)
+    with pytest.raises(ValueError) as e:  # before any read: a missing file with such a name is the same error
+        record.read_container(tmp_path / ("missing-" + name))
+    assert type(e.value) is ValueError
+
+
+def _deep_container(levels):
+    doc = copy.deepcopy(C1)
+    value = 1
+    for _ in range(levels):
+        value = [value]
+    next(r for r in doc["records"] if r.get("id") == "f:reg-1").setdefault("extensions", {})["ex:deep"] = value
+    return doc
+
+
+def test_a_container_at_the_nesting_limit_is_written_and_read_back(tmp_path):
+    """Layer J accepts at most ``jsonio.MAX_DEPTH`` levels, and the record functions process what it accepts."""
+    levels = jsonio.MAX_DEPTH - 4  # under the root, the records, the record and its extensions
+    doc = _deep_container(levels)
+    for name in ("deep.khg.json", "deep.khg.jsonl"):
+        record.write_container(doc, tmp_path / name)
+        assert jsonio.canonical(record.read_container(tmp_path / name)) == \
+            jsonio.canonical(record.canonical_container(doc))
+    (tmp_path / "deeper.khg.json").write_text(json.dumps(_deep_container(levels + 1)), encoding="utf-8")
+    err = raises(record.read_container, tmp_path / "deeper.khg.json")
+    assert err.codes == ("KHG-J001",) and err.info["findings"][0]["path"].startswith("/records/")
+
+
+def test_the_canonical_form_and_hash_take_any_depth_in_memory():
+    """An object that never went through layer J may nest deeper than the Python stack allows (the recursive
+    walkers met RecursionError near 500 levels on Python 3.10 and 3.11). The V and C checks of
+    ``write_container`` run jsonschema, whose own walk is not the package's."""
+    from khg_contracts.schema import load_schema
+
+    doc = _deep_container(1500)
+    reg = next(r for r in doc["records"] if r.get("id") == "f:reg-1")
+    assert jsonio.canonical(record.normalize(reg)["extensions"]) == jsonio.canonical(reg["extensions"])
+    record.with_derived(reg, load_schema(data.path("fixture/fixture.relation-schema.json")))
+    text = record.serialize(doc)
+    assert text.count("[" * 1500 + "1" + "]" * 1500) == 1
+    assert record.container_sha256(doc) == "sha256:" + hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
 # ------------------------------------------------------------------------------------------------ digests
@@ -227,6 +319,21 @@ def test_container_sha256_is_the_hash_of_the_canonical_jsonl_text():
     assert record.container_sha256(C1) == "sha256:" + hashlib.sha256(JSONL_BYTES).hexdigest()
     shuffled = {"header": C1["header"], "records": list(reversed(C1["records"]))}
     assert record.container_sha256(shuffled) == record.container_sha256(C1)
+
+
+def test_a_lone_surrogate_is_j005_when_writing_and_hashing(tmp_path):
+    """A container built in memory may hold one (a parsed one cannot: J005 at parse time); UTF-8 cannot."""
+    doc = copy.deepcopy(C1)
+    next(r for r in doc["records"] if r.get("id") == "ex:AirCanada")["label"] = "Air Canada \ud800"
+    assert record.check_container(doc) == []  # V and C pass
+    for fn, args in ((record.write_container, (doc, tmp_path / "x.khg.jsonl")), (record.container_sha256, (doc,))):
+        assert raises(fn, *args).codes == ("KHG-J005",)
+    assert list(tmp_path.iterdir()) == []
+    assert _codes_of_digest(doc) == ("KHG-J005",)
+
+
+def _codes_of_digest(doc):
+    return raises(jsonio.digest, "khg-timed/1", doc).codes
 
 
 def test_container_sha256_of_the_smoke_base_is_the_queue_base():

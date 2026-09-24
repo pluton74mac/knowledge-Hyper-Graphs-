@@ -6,6 +6,9 @@
 - A **time literal** is written in Wikibase form ``±YYYY-MM-DDThh:mm:ssZ`` with historical years (no year 0,
   ``-0001`` is 1 BCE), a ``precision`` 0-14 and a ``calendar`` (``gregorian`` or ``julian``). Components below the
   precision are zero, and a written year before 1583 must state its calendar (S006).
+- **Years have 4 to 16 digits** in a literal, Wikibase's own bound (C004 beyond it), and up to 17 in an instant, so
+  that every window bound of a literal (the year after the largest one) is an instant too (C011 beyond it). Without
+  a bound, ``int()`` refuses a year of more than 4300 digits with a plain ``ValueError``.
 - The **window** ``[lo, hi)`` of a time literal is computed in its calendar and mapped to the Gregorian line
   through the Julian day number. Centuries (7) and millennia (6) are ordinal, as Wikidata reads them; decades (8)
   and precisions 5 to 0 floor the astronomical year.
@@ -20,10 +23,12 @@ from ._common import fail
 __all__ = [
     "CALENDARS",
     "DAY",
+    "INSTANT_YEAR_DIGITS",
     "JULIAN_BEFORE",
     "NEG_INF",
     "POS_INF",
     "TimeParts",
+    "YEAR_DIGITS",
     "astronomical_year",
     "days_in_month",
     "format_instant",
@@ -42,7 +47,19 @@ JULIAN_BEFORE = 1583
 NEG_INF = float("-inf")
 POS_INF = float("inf")
 
-_TIME = re.compile(r"([+-])([0-9]{4,})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})Z")
+#: The most digits of a written year: a time literal's (Wikibase's bound), and an instant's (one more, for the upper
+#: bound of the window of the largest literal year).
+YEAR_DIGITS = 16
+INSTANT_YEAR_DIGITS = YEAR_DIGITS + 1
+_REST = r"-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})Z"
+_TIME = re.compile(r"([+-])([0-9]{4,%d})" % YEAR_DIGITS + _REST)
+_INSTANT = re.compile(r"([+-])([0-9]{4,%d})" % INSTANT_YEAR_DIGITS + _REST)
+
+
+def _show(text: Any) -> str:
+    """``repr(text)``, shortened for a message."""
+    r = repr(text)
+    return r if len(r) <= 60 else f"{r[:40]}...{r[-12:]} ({len(r)} characters)"
 
 
 class TimeParts(NamedTuple):
@@ -126,11 +143,12 @@ def format_instant(t: float) -> str | None:
 
 
 def parse_instant(text: Any) -> int:
-    """An ``as_of`` instant ``[+-]YYYY-MM-DDThh:mm:ssZ`` (proleptic Gregorian, astronomical years, UTC, no
-    precision or calendar) as seconds; C011 on anything else, including a partial date and ``-0000``."""
-    m = _TIME.fullmatch(text) if isinstance(text, str) else None
+    """An ``as_of`` instant ``[+-]YYYY-MM-DDThh:mm:ssZ`` (proleptic Gregorian, astronomical years of 4 to 17 digits,
+    UTC, no precision or calendar) as seconds; C011 on anything else, including a partial date and ``-0000``."""
+    m = _INSTANT.fullmatch(text) if isinstance(text, str) else None
     if not m:
-        raise fail("KHG-C011", f"as_of instant {text!r} is not [+-]YYYY-MM-DDThh:mm:ssZ")
+        raise fail("KHG-C011", f"as_of instant {_show(text)} is not [+-]YYYY-MM-DDThh:mm:ssZ (a year of 4 to "
+                               f"{INSTANT_YEAR_DIGITS} digits)")
     sign, y, mo, d, hh, mi, ss = m.groups()
     if sign == "-" and int(y) == 0:
         raise fail("KHG-C011", f"as_of instant {text!r}: write year 0 as +0000")
@@ -158,12 +176,14 @@ def _precision(value: Any) -> int:
 def parse_time(time: Any, precision: Any, calendar: Any = None) -> TimeParts:
     """Parse and check the Wikibase form of a time literal (DESIGN §2.3).
 
-    C004 for the lexical form, the precision range and the calendar; S006 for year 0, a year before 1583 without a
-    calendar, a component set below the precision, and a component or day out of range for its calendar.
+    C004 for the lexical form (a year has 4 to 16 digits), the precision range and the calendar; S006 for year 0, a
+    year before 1583 without a calendar, a component set below the precision, and a component or day out of range
+    for its calendar.
     """
     m = _TIME.fullmatch(time) if isinstance(time, str) else None
     if not m:
-        raise fail("KHG-C004", f"time {time!r} is not in the form +-YYYY-MM-DDThh:mm:ssZ")
+        raise fail("KHG-C004", f"time {_show(time)} is not in the form +-YYYY-MM-DDThh:mm:ssZ (a year of 4 to "
+                               f"{YEAR_DIGITS} digits)")
     sign, y, mo, d, hh, mi, ss = m.groups()
     if int(y) == 0:
         raise fail("KHG-S006", f"time {time!r}: year 0 does not exist in historical numbering (1 BCE is -0001)")

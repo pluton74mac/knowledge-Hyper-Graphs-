@@ -208,3 +208,62 @@ def test_parse_time_returns_the_written_parts():
     parts = record.parse_time("-0044-03-15T00:00:00Z", 11, "julian")
     assert parts == record.TimeParts(-44, 3, 15, 0, 0, 0, 11, "julian")
     assert record.parse_time("+2019-00-00T00:00:00Z", 9).calendar == "gregorian"
+
+
+# ------------------------------------------------------------------------------------------------ year digits
+
+
+def _year(digits: int, sign: str = "+") -> str:
+    return sign + "1" * digits + "-00-00T00:00:00Z"
+
+
+@pytest.mark.parametrize("digits", [17, 4301, 5000])
+def test_a_literal_year_beyond_16_digits_is_c004(digits):
+    """Wikibase's own bound. Unbounded, ``int()`` refused a year beyond 4300 digits with a plain ValueError."""
+    lit = T(_year(digits), 9, "gregorian")
+    for fn, arg in ((record.window, lit), (record.value_identity, {"literal": lit}),
+                    (record.canonical_value, {"literal": lit})):
+        assert code(fn, arg) == "KHG-C004"
+    with pytest.raises(ValidationError) as exc:
+        record.parse_time(_year(digits, "-"), 9, "julian")
+    assert exc.value.code == "KHG-C004" and len(exc.value.message) < 300  # the message shortens the text
+    normal = record.normalize({"kind": "hyperedge", "id": "f:x", "bindings": [{"bid": "b1", "value": {
+        "literal": {"datatype": "time", "time": _year(digits), "precision": 9}}}]})
+    assert "calendar" not in normal["bindings"][0]["value"]["literal"]  # kept as written, checked later
+
+
+@pytest.mark.parametrize("digits", [17, 18, 4301, 5000])
+def test_an_instant_year_beyond_17_digits_is_c011(digits):
+    text = "+" + "1" * digits + "-01-01T00:00:00Z"
+    if digits == 17:  # the upper bound of the window of the largest literal year is an instant
+        assert record.format_instant(record.parse_instant(text)) == text
+        return
+    assert code(record.parse_instant, text) == "KHG-C011"
+    from khg_contracts.store import Where
+    with pytest.raises(ValidationError) as exc:
+        Where(as_of=text)
+    assert exc.value.code == "KHG-C011"
+
+
+def test_the_largest_years_have_windows_whose_bounds_are_instants():
+    big = "9" * 16
+    for text, precision in ((f"+{big}-00-00T00:00:00Z", 0), (f"+{big}-00-00T00:00:00Z", 6),
+                            (f"+{big}-00-00T00:00:00Z", 7), (f"+{big}-00-00T00:00:00Z", 9),
+                            (f"+{big}-12-31T00:00:00Z", 11), (f"-{big}-00-00T00:00:00Z", 9)):
+        lo, hi = record.window(T(text, precision, "julian" if text[0] == "-" else None))
+        assert record.parse_instant(lo) < record.parse_instant(hi)  # both bounds read back as instants
+
+
+def test_a_container_with_an_overlong_year_gets_findings_not_an_exception():
+    from khg_contracts import data, validate
+    from khg_contracts.schema import load_schema
+
+    schema = load_schema(data.path("fixture/fixture.relation-schema.json"))
+    doc = data.load_json("fixture/fixture.c1.json")
+    king = next(r for r in doc["records"] if r.get("id") == "f:king-14")
+    end = next(b for b in king["bindings"] if b["role"] == "end_time")
+    end["value"]["literal"] = T(_year(4301), 9, "gregorian")
+    for engine in ("jsonschema", "fastjsonschema"):
+        report = validate.validate_container(doc, schema=schema, engine=engine)
+        errors = {f["code"] for f in report["findings"] if f["severity"] == "error"}
+        assert not report["ok"] and errors and errors <= {"KHG-C004", "KHG-S006"}, report["findings"]

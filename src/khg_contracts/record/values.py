@@ -17,7 +17,7 @@ from typing import Any, Mapping
 
 from .. import jsonio
 from ._common import SPECIALS, fail, nfc_deep, value_kind
-from .windows import CALENDARS, JULIAN_BEFORE, format_instant, parse_time, window_seconds
+from .windows import CALENDARS, JULIAN_BEFORE, YEAR_DIGITS, format_instant, parse_time, window_seconds
 
 __all__ = [
     "DATATYPES",
@@ -33,7 +33,7 @@ __all__ = [
 
 DATATYPES = ("time", "quantity", "string", "lang_string", "boolean", "iri", "geo")
 _DECIMAL = re.compile(r"\+0|[+-](0\.[0-9]*[1-9]|[1-9][0-9]*(\.[0-9]*[1-9])?)")
-_YEAR = re.compile(r"([+-])([0-9]{4,})-")
+_YEAR = re.compile(r"([+-])([0-9]{4,%d})-" % YEAR_DIGITS)  # a longer year is C004 (parse_time)
 
 
 def decimal(text: Any) -> Decimal:

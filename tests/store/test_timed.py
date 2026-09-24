@@ -93,3 +93,15 @@ def test_result_sizes():
     assert result_size("load", {"records": 3, "versions": 5, "skipped": [], "seconds": 0.1}) == 5
     assert result_size("supersession_walk", {"steps": [1, 2], "terminal": []}) == 2
     assert result_size("close", object()) == 1
+
+
+def test_a_set_of_ids_enters_the_digest_as_the_sorted_list():
+    """§6.3: frozensets as sorted lists. Sorting the canonical texts put "ex:A!" before "ex:A" (the closing quote
+    sorts after "!"), so the same call with a sorted list had another digest."""
+    from khg_contracts import jsonio
+    from khg_contracts.store.timed import args_digest
+
+    ids = frozenset({"ex:A", "ex:A!", 'ex:"q"', "ex:b\\c"})
+    want = jsonio.digest("khg-timed/1", {"ids": sorted(ids), "as_at": None})
+    assert args_digest("get_many", ids) == args_digest("get_many", sorted(ids)) == want
+    assert args_digest("get_many", {1, "a"}) == args_digest("get_many", {"a", 1})  # mixed members still digest

@@ -87,8 +87,9 @@ def _projectable(record: Mapping[str, Any], schema: SchemaLike) -> Any:
 def position_map(schema: SchemaLike, relation: str, *, slots: tuple[str, ...] = ("core", "qualifier"),
                  literals: str = "node", widths: Mapping[str, int] | None = None) -> list[tuple[str, int]]:
     """The positions of a relation as ``(role, i)``: its usages in schema order (filtered by ``slots``); a usage with
-    max k gives k positions; an unbounded usage takes ``widths[role]`` (``ValueError`` without it). With
-    ``literals="drop"`` the usages that admit only literals are left out."""
+    max k gives k positions; an unbounded usage takes ``widths[role]``, a positive integer (``ValueError`` without
+    one: a width of 0 would drop every filler of the role unnoticed). With ``literals="drop"`` the usages that admit
+    only literals are left out."""
     _check_literals(literals)
     out: list[tuple[str, int]] = []
     for u in as_schema(schema).usages(relation):
@@ -101,6 +102,8 @@ def position_map(schema: SchemaLike, relation: str, *, slots: tuple[str, ...] = 
             width = (widths or {}).get(u["role"])
             if width is None:
                 raise ValueError(f"the unbounded usage {relation}.{u['role']} needs a width (widths={{role: k}})")
+            if isinstance(width, bool) or not isinstance(width, int) or width < 1:
+                raise ValueError(f"the width of {relation}.{u['role']} is a positive integer, not {width!r}")
         out.extend((u["role"], i) for i in range(1, width + 1))
     return out
 
@@ -204,14 +207,27 @@ def _lit(text: str) -> dict[str, str]:
     return {"literal": text}
 
 
+def _one_version_each(ids: Iterable[Any], holder: str) -> None:
+    """``ValueError`` when an id comes more than once: the projection has one IRI (one structure) per fact."""
+    seen: set[str] = set()
+    again: set[str] = set()
+    for i in ids:
+        key = i if isinstance(i, str) else repr(i)
+        (again if key in seen else seen).add(key)
+    if again:
+        raise ValueError(f"{holder} several versions of {', '.join(sorted(again))}: the projection takes one "
+                         "version per fact (a snapshot); a history needs named graphs per version (DESIGN §6.5)")
+
+
 def rdf_relation_instance(container: Mapping[str, Any]) -> list[Triple]:
     """The RDF relation-instance projection of a container's hyperedges: triples ``(s, p, o)`` with IRIs as strings
     and literals as ``{"literal": text}``, sorted by their canonical JSON. Entity and fact values are
-    ``khg:value`` IRIs with a ``khg:valueKind``; other values are ``khg:valueJSON`` (canonical JSON)."""
+    ``khg:value`` IRIs with a ``khg:valueKind``; other values are ``khg:valueJSON`` (canonical JSON). One IRI per
+    fact, so a container with several versions of a fact (a history) is ``ValueError``."""
+    edges = [r for r in container.get("records", []) if r.get("kind") == "hyperedge"]
+    _one_version_each((r.get("id") for r in edges), "the container holds")
     triples: list[Triple] = []
-    for r in container.get("records", []):
-        if r.get("kind") != "hyperedge":
-            continue
+    for r in edges:
         f = iri_encode(r["id"])
         triples += [(f, RDF_TYPE, KHG_NS + "Hyperedge"), (f, KHG_NS + "relation", _lit(r["relation"])),
                     (f, KHG_NS + "status", _lit(r["status"]))]
@@ -238,9 +254,18 @@ def _structure(facts: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
     return {k: facts[k] for k in sorted(facts)}
 
 
+def _set_once(fields: dict[str, Any], subject: str, name: str, value: Any) -> None:
+    """One value per (subject, predicate): the same triple twice is one triple, two values are ``ValueError``."""
+    if name in fields and fields[name] != value:
+        raise ValueError(f"{subject} has two khg:{name} values ({fields[name]!r} and {value!r}): the triples of "
+                         "several versions of a fact, or not a relation-instance projection")
+    fields[name] = value
+
+
 def from_rdf_relation_instance(triples: Iterable[Triple]) -> dict[str, dict[str, Any]]:
     """The inverse of ``rdf_relation_instance`` for the binding structure: ``{fact id: {relation, status,
-    bindings}}``, bindings in canonical order."""
+    bindings}}``, bindings in canonical order. A fact or binding with two values of one predicate is
+    ``ValueError``."""
     facts: dict[str, dict[str, Any]] = {}
     nodes: dict[str, dict[str, Any]] = {}
     links: dict[str, list[str]] = {}
@@ -248,11 +273,13 @@ def from_rdf_relation_instance(triples: Iterable[Triple]) -> dict[str, dict[str,
         if p == RDF_TYPE:
             facts.setdefault(s, {})
         elif p in (KHG_NS + "relation", KHG_NS + "status"):
-            facts.setdefault(s, {})[p[len(KHG_NS):]] = o["literal"]
+            _set_once(facts.setdefault(s, {}), s, p[len(KHG_NS):], o["literal"])
         elif p == KHG_NS + "binding":
-            links.setdefault(s, []).append(o)
+            bound = links.setdefault(s, [])
+            if o not in bound:
+                bound.append(o)
         elif p.startswith(KHG_NS):
-            nodes.setdefault(s, {})[p[len(KHG_NS):]] = o
+            _set_once(nodes.setdefault(s, {}), s, p[len(KHG_NS):], o)
         else:
             raise ValueError(f"unknown predicate {p!r}")
     out: dict[str, dict[str, Any]] = {}
@@ -295,11 +322,24 @@ def incidence_rows(container: Mapping[str, Any]) -> list[tuple[Any, ...]]:
 
 
 def from_incidence_rows(rows: Iterable[Iterable[Any]]) -> dict[str, dict[str, Any]]:
-    """The inverse of ``incidence_rows`` for the binding structure: ``{fact id: {relation, status, bindings}}``."""
+    """The inverse of ``incidence_rows`` for the binding structure: ``{fact id: {relation, status, bindings}}``.
+    It takes one version per fact (the rows of a snapshot): rows of several versions of a fact (a history), rows of
+    one fact that disagree on its relation or status, and a bid given twice are ``ValueError``."""
+    table = [tuple(row) for row in rows]
+    versions: dict[Any, set[Any]] = {}
+    for row in table:
+        versions.setdefault(row[0], set()).add(row[1])
+    _one_version_each((fid for fid, vs in versions.items() for _ in vs), "the rows hold")
     out: dict[str, dict[str, Any]] = {}
-    for row in rows:
+    bids: dict[Any, set[Any]] = {}
+    for row in table:
         fid, _version, rel, status, bid, role, pos, direction, kind, value = row
         f = out.setdefault(fid, {"relation": rel, "status": status, "bindings": []})
+        if (f["relation"], f["status"]) != (rel, status):
+            raise ValueError(f"the rows of {fid} disagree on its relation or status")
+        if bid in bids.setdefault(fid, set()):
+            raise ValueError(f"the rows of {fid} give {bid} twice")
+        bids[fid].add(bid)
         b: dict[str, Any] = {"bid": bid, "role": role,
                              "value": {kind: value} if kind in ("entity", "fact") else jsonio.loads(value)}
         if pos is not None:

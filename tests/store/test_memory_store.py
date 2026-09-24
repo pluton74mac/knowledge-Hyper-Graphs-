@@ -5,8 +5,8 @@ import copy
 
 import pytest
 
-from khg_contracts import CONTRACTS
-from khg_contracts.errors import (CapabilityMissing, ConcurrencyError, KeyCollision, ValidationError,
+from khg_contracts import CONTRACTS, data, record
+from khg_contracts.errors import (CapabilityMissing, ConcurrencyError, KeyCollision, KHGError, ValidationError,
                                   VersionError)
 from khg_contracts.store import (ALL_FLAGS, MemoryStore, ScenarioClock, Store, SystemClock, Where,
                                  memory_factory)
@@ -138,6 +138,51 @@ def test_a_new_version_follows_the_version_rule(ms, entities, rec, cur, T):
         ms.put({"kind": "entity", "id": "f:king-13", "types": ["Person"]}, actor="t")
 
 
+def test_carried_evidence_without_supports_keeps_what_it_supported(ms, entities):
+    """§2.8.1: a new version that carries evidence without ``supports`` keeps what the evidence supported where it
+    was first written; normalising the version alone would widen e1 to the new bid b4, which the version rule refuses
+    as a rewrite (D013)."""
+    history = data.load_json("fixture/fixture.history.c1.json")
+    v1, v2 = [{k: v for k, v in r.items() if k not in ("version", "recorded_at", "recorded_by")}
+              for r in history["records"] if r["id"] == "f:king-13"]
+    for v in (v1, v2):
+        del v["evidence"][0]["supports"]  # e1
+    ms.put(entities + [v1], actor="t")
+    assert ms.put(v2, actor="t")["records"] == [("f:king-13", 2, "versioned")]
+    assert [(e["id"], e["supports"]) for e in ms.get("f:king-13")["evidence"]] == \
+        [("e1", ["b1", "b2", "b3"]), ("e2", ["b4"])]
+    assert ms.put(v2, actor="t")["records"] == [("f:king-13", 2, "noop")]
+    assert sorted(record.supported_values(ms.history("f:king-13"), "e1")) == ["b1", "b2", "b3"]
+
+
+def test_put_cannot_move_a_status_ref(ms, entities, rec, cur):
+    """§2.7: ``status_ref`` is on the belief axis, which only events move (D014). A put that re-pointed a disputed
+    fact's ``status_ref`` left the store breaking the pointer rule (D010), and later undos of the dispute failed."""
+    ms.put(entities + [rec("f:born-skłodowska-warszawa")], actor="t")
+    ms.apply({"op": "transition", "targets": ["f:born-skłodowska-warszawa"], "to": "disputed",
+              "records": [rec("f:born-skłodowska-kraków", set={"status": "asserted"}, drop=["status_ref"])],
+              "id": "m:dis-1", "reason": "key_conflict", "evidence": [cur]}, actor="t")
+    held = {k: v for k, v in ms.get("f:born-skłodowska-warszawa").items()
+            if k not in ("version", "recorded_at", "recorded_by")}
+    for ref in ("m:nothing", "f:born-skłodowska-kraków", None):
+        moved = copy.deepcopy(held)
+        if ref is None:
+            del moved["status_ref"]
+        else:
+            moved["status_ref"] = ref
+        with pytest.raises(VersionError) as e:
+            ms.put(moved, actor="t")
+        assert e.value.codes == ("KHG-D014",) and e.value.info["problems"][0]["pointer"] == "/status_ref"
+    assert ms.get("f:born-skłodowska-warszawa")["version"] == 2
+    assert ms.put(held, actor="t")["records"] == [("f:born-skłodowska-warszawa", 2, "noop")]
+    edited = dict(held, extensions={"ex:note": "checked"})  # the editable fields still change by put
+    assert ms.put(edited, actor="t")["records"] == [("f:born-skłodowska-warszawa", 3, "versioned")]
+    ms.put(rec("f:reg-1"), actor="t")
+    with pytest.raises(VersionError) as e:  # an asserted fact cannot gain one either
+        ms.put(dict(rec("f:reg-1"), status_ref="m:dis-1"), actor="t")
+    assert e.value.codes == ("KHG-D014",)
+
+
 def test_expect_gives_optimistic_concurrency(ms, entities, rec, cur):
     ms.put(entities + [rec("f:reg-1")], actor="t")
     with pytest.raises(ConcurrencyError) as e:
@@ -229,6 +274,26 @@ def test_the_invariant_is_checked_without_an_incoming_fact(ms, entities, rec, cu
     assert ms.get("f:pop-łódź-2019")["status"] == "asserted" and ms.get("m:ret-1") is None
 
 
+def test_a_write_is_not_blamed_for_what_is_left_of_a_loaded_violation(schema, fixture_doc, entities, rec, cur):
+    """A trusted load may hold three normal facts on one key (D016). Retracting or deprecating one leaves two of
+    them, a part of the violation that was there, not a new one. A new version of one of them that stays asserted
+    still takes part in it, and is refused as before."""
+    pop = rec("f:pop-łódź-2019")
+    doc = {"header": fixture_doc["header"], "records": entities + [dict(pop, id=i)
+                                                                    for i in ("f:pop-a", "f:pop-b", "f:pop-c")]}
+    for write in (lambda s: s.apply({"op": "transition", "targets": ["f:pop-a"], "to": "retracted", "id": "m:r1",
+                                     "reason": "withdrawn", "evidence": [cur]}, actor="t"),
+                  lambda s: s.put(dict(pop, id="f:pop-a", rank="deprecated", rank_reason=["wd:Q41755623"]),
+                                  actor="t")):
+        s = MemoryStore(schema, clock=ScenarioClock())
+        s.load(copy.deepcopy(doc))
+        assert write(s)["records"][0][:2] == ("f:pop-a", 2)
+    s = MemoryStore(schema, clock=ScenarioClock())
+    s.load(copy.deepcopy(doc))
+    with pytest.raises(KeyCollision):
+        s.apply({"op": "add_evidence", "target": "f:pop-a", "evidence": [cur]}, actor="t")
+
+
 def _cites(rid, target):
     return {"kind": "hyperedge", "id": rid, "relation": "cites", "status": "asserted",
             "bindings": [{"bid": "b1", "role": "cited", "value": {"fact": target}}],
@@ -254,6 +319,71 @@ def test_nesting_cycles_are_refused(schema, entities, rec):
     assert e.value.codes == ("KHG-D002",)
     chain = [_cites("f:c1", "f:born-louis14-paris"), _cites("f:c2", "f:c1")]
     assert s.put(chain, actor="t")["records"] == [("f:c1", 1, "created"), ("f:c2", 1, "created")]
+
+
+# ------------------------------------------------------------------------------------------------ the check order
+# §6.2: capability, NotFound, D014, record validation, references and pointers, D008, D016 with the disputed-key
+# rule, D011, D012, D018. Each write below breaks two rules; the earlier one is reported.
+
+KRAKOW = {"set": {"status": "asserted"}, "drop": ["status_ref"]}
+
+
+def test_the_key_invariant_comes_before_transaction_time(ms, entities, rec):
+    ms.put(entities + [rec("f:born-skłodowska-warszawa")], actor="t", at="2026-10-01T00:00:05Z")
+    with pytest.raises(KeyCollision) as e:  # D016, though at is not after the latest either (D018)
+        ms.put(rec("f:born-skłodowska-kraków", **KRAKOW), actor="t", at="2026-10-01T00:00:01Z")
+    assert e.value.codes == ("KHG-D016",)
+
+
+def test_nesting_comes_before_the_key_invariant(schema, entities, rec):
+    doc = copy.deepcopy(schema.doc)
+    doc["roles"].append({"id": "cited", "label": "cited"})
+    doc["relations"].append({"id": "cites", "roles": [{"role": "cited", "slot": "core", "fillers": [{"fact": []}],
+                                                       "min": 1, "max": 1}]})
+    s = MemoryStore(doc, clock=ScenarioClock())
+    s.put(entities + [rec("f:born-skłodowska-warszawa")], actor="t")
+    with pytest.raises(ValidationError) as e:  # D008, though Kraków collides with Warszawa too (D016)
+        s.put([_cites("f:a", "f:b"), _cites("f:b", "f:a"), rec("f:born-skłodowska-kraków", **KRAKOW)], actor="t")
+    assert e.value.codes == ("KHG-D008",)
+
+
+def test_the_key_invariant_comes_before_supersession_constraints(ms, entities, rec):
+    from khg_contracts.store import conformance
+
+    suite = conformance.suite()
+    scenario = suite.scenarios["S-LIFE-014"]
+    conformance.run_given(ms, scenario["given"], suite, ms.capabilities)
+    ms.put(rec("f:born-skłodowska-warszawa"), actor="t")
+    moved = suite.resolve(scenario["when"][0]["args"]["records"][0])  # a key literal refined away: D011
+    with pytest.raises(VersionError) as e:
+        ms.put([moved], actor="t")
+    assert e.value.codes == ("KHG-D011",)
+    with pytest.raises(KeyCollision):  # with a collision in the same batch, D016 comes first
+        ms.put([moved, rec("f:born-skłodowska-kraków", **KRAKOW)], actor="t")
+
+
+def test_a_missing_capability_comes_before_not_found(schema, cur, T):
+    s = MemoryStore(schema, clock=ScenarioClock(), capabilities=ALL_FLAGS - {"atomic_writes", "valid_time"})
+    for event, flag in (({"op": "supersede", "id": "m:s", "superseded": ["f:nope"], "reason": "other",
+                          "evidence": [cur]}, "atomic_writes"),
+                        ({"op": "transition", "targets": ["f:nope"], "to": "disputed", "id": "m:d",
+                          "evidence": [cur]}, "atomic_writes"),
+                        ({"op": "transition", "targets": ["m:nope"], "to": "retracted", "id": "m:r",
+                          "evidence": [cur]}, "atomic_writes"),
+                        ({"op": "end_validity", "target": "f:nope", "end": T("+1700-01-01T00:00:00Z"),
+                          "evidence": [cur]}, "valid_time")):
+        with pytest.raises(CapabilityMissing) as e:
+            s.apply(event, actor="t")
+        assert e.value.flag == flag
+
+
+def test_a_status_rule_comes_before_record_validation(ms, entities, rec):
+    ms.put(entities, actor="t")
+    for status in ("retracted", "candidate"):
+        bad = rec("f:born-skłodowska-warszawa", set={"status": status, "status_ref": "m:x", "rank": "sky-high"})
+        with pytest.raises(KHGError) as e:  # D014 (D017), though the rank is not in the vocabulary (C002)
+            ms.put(bad, actor="t")
+        assert e.value.codes == (("KHG-D014",) if status == "retracted" else ("KHG-D017",))
 
 
 def test_a_redirected_entity_is_refused_only_where_it_is_written(ms, entities, rec, cur):
@@ -338,6 +468,32 @@ def test_find_matches_multisets_positions_and_unbound_slots(loaded):
     assert ids(loaded.find("position_held", [{"role": "holder", "value": {"any": True}}], where=goals)) == \
         ["g:who-1774"]
     assert ids(loaded.find("position_held", [], limit=1, after="f:king-13")) == ["f:king-14"]
+
+
+def test_find_pairs_many_patterns_without_a_frame_per_binding(schema, fixture_doc):
+    """``find`` pairs patterns with bindings through the refinement matcher, which keeps its own stack: here under a
+    recursion limit 60 frames above the caller, which a search recursing once per binding exceeded."""
+    import sys
+
+    doc = copy.deepcopy(fixture_doc)
+    coadmin = next(r for r in doc["records"] if r["id"] == "f:coadmin-1")
+    n = 150
+    coadmin["bindings"] = [b for b in coadmin["bindings"] if b["role"] != "agent"] + [
+        {"bid": f"b{10 + k}", "role": "agent", "value": {"entity": "ex:insulin"}} for k in range(n)]
+    s = MemoryStore(schema, clock=ScenarioClock())
+    s.load(doc)  # trusted: 150 agents of one entity
+    any_agent = {"role": "agent", "value": {"any": True}}
+    depth, f = 0, sys._getframe()
+    while f is not None:
+        depth, f = depth + 1, f.f_back
+    old = sys.getrecursionlimit()
+    sys.setrecursionlimit(depth + 60)
+    try:
+        found = ids(s.find("co_administration_causes", [any_agent] * n))
+        too_many = s.find("co_administration_causes", [any_agent] * (n + 1))
+    finally:
+        sys.setrecursionlimit(old)
+    assert found == ["f:coadmin-1"] and too_many == []
 
 
 def test_find_refuses_malformed_patterns(loaded):

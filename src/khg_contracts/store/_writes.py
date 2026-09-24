@@ -288,10 +288,12 @@ class WriteMixin:
         found = keys.collisions(before, batch, self.schema, post=after, disputed_rule=disputed_rule)
         if found:
             raise keys.key_collision(found)
-        old = {(v.relation, v.key_digest, v.ids) for v in keys.key_invariant_violations(before, self.schema,
-                                                                                         keys=touched)}
+        # a violation already there (after a trusted load) is not blamed on the write, nor is what is left of it
+        # when the write takes facts out of it (retracting one of three normal facts on one key)
+        old = [(v.relation, v.key_digest, set(v.ids)) for v in keys.key_invariant_violations(before, self.schema,
+                                                                                              keys=touched)]
         new = [v for v in keys.key_invariant_violations(after, self.schema, keys=touched)
-               if (v.relation, v.key_digest, v.ids) not in old]
+               if not any((rel, kd) == (v.relation, v.key_digest) and set(v.ids) <= ids for rel, kd, ids in old)]
         if new:
             listed = [{"relation": v.relation, "key_digest": v.key_digest, "temporal": v.temporal,
                        "ids": list(v.ids), "at": v.at} for v in new]

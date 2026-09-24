@@ -25,7 +25,8 @@ from typing import Any, Iterable, Iterator, Literal, Mapping, Sequence
 
 from .. import CONTRACTS, jsonio
 from ..errors import CapabilityMissing, ConcurrencyError, ValidationError, VersionError
-from ..record import identity_key, injective_match, iter_jsonl, lifecycle, normalize, read_container
+from ..record import (carried_supports, identity_key, injective_match, iter_jsonl, lifecycle, normalize,
+                      read_container)
 from ..record._structure import version_findings
 from ..schema import LIFECYCLE_RELATIONS
 from ._events import EventsMixin
@@ -93,7 +94,7 @@ class MemoryStore(EventsMixin, StoreBase):
         self._need_data(batch)
         if expect:
             self._expect(expect)
-        incoming = [self._incoming(r, f"/records/{i}") for i, r in enumerate(batch)]
+        incoming = [self._incoming(self._carried(r), f"/records/{i}") for i, r in enumerate(batch)]
         seen: set[str] = set()
         for rec in incoming:
             if rec["id"] in seen:
@@ -118,6 +119,16 @@ class MemoryStore(EventsMixin, StoreBase):
                               if (cur := self._table.current(rec["id"])) is not None])
         self._check_references(pending)
         return self._commit(pending, actor=actor, at=when, noops=noops, disputed_rule=True)
+
+    def _carried(self, record: Any) -> Any:
+        """``record`` with ``supports`` written out on the evidence it carries over from the stored version without
+        it: such evidence keeps what it supported where it was first written (§2.8.1), not every bid of the new
+        version."""
+        rid = record.get("id") if isinstance(record, Mapping) else None
+        current = self._table.current(jsonio.nfc(rid)) if isinstance(rid, str) else None
+        if current is None or current.get("kind") != "hyperedge":
+            return record
+        return carried_supports([current, record])[1]
 
     def _expect(self, expect: Mapping[str, int]) -> None:
         if not isinstance(expect, Mapping):
@@ -149,7 +160,7 @@ class MemoryStore(EventsMixin, StoreBase):
         if content == "history":
             self.need("history_export")
         default = self._write_time(when)
-        documents, staged = [], []
+        documents, raw = [], []
         for i, r in enumerate(rows):
             if isinstance(r, Mapping) and r.get("kind") == "relation-schema":
                 documents.append(copy.deepcopy(dict(r)))
@@ -158,7 +169,8 @@ class MemoryStore(EventsMixin, StoreBase):
                     r.get("id"), str):
                 raise fail("KHG-C010", "a loaded record is an entity or a hyperedge with a string id",
                            f"/records/{i}")
-            staged.append(normalize(r))
+            raw.append(r)
+        staged = [normalize(r) for r in self._carry_loaded(raw)]
         skipped = self._missing(staged, on_missing)
         kept = [r for r in staged if r["id"] not in skipped]
         timed = self._versions(kept, default, head.get("as_at") if content == "history" else None)
@@ -173,6 +185,27 @@ class MemoryStore(EventsMixin, StoreBase):
         self._advance_clock(latest)
         return {"records": len({r["id"] for r in kept}), "versions": len(kept), "skipped": sorted(skipped),
                 "seconds": time.perf_counter() - started}
+
+    def _carry_loaded(self, records: list[Mapping[str, Any]]) -> list[Mapping[str, Any]]:
+        """The loaded records, in their order, with ``supports`` written out on evidence that a later version of an
+        id carries without it (§2.8.1): the versions of each hyperedge id in the order ``_versions`` gives them
+        (numbered ones by number, then the others), after the version the store holds."""
+        out = list(records)
+        groups: dict[str, list[int]] = {}
+        for i, r in enumerate(out):
+            if r.get("kind") == "hyperedge":
+                groups.setdefault(jsonio.nfc(r["id"]), []).append(i)
+        for rid, idx in groups.items():
+            current = self._table.current(rid)
+            held = [current] if current is not None and current.get("kind") == "hyperedge" else []
+            if len(idx) + len(held) < 2:
+                continue
+            idx = sorted(idx, key=lambda i: (0, out[i]["version"] if type(out[i]["version"]) is int else 0)
+                         if "version" in out[i] else (1, 0))
+            carried = carried_supports(held + [out[i] for i in idx])[len(held):]
+            for i, r in zip(idx, carried, strict=True):
+                out[i] = r
+        return out
 
     @staticmethod
     def _split(container: Any, header: Mapping[str, Any] | None) -> tuple[Mapping[str, Any], Iterator[Any]]:
@@ -287,11 +320,13 @@ class MemoryStore(EventsMixin, StoreBase):
     @staticmethod
     def _passes(e: Entry, where: Where, as_of: int | None) -> bool:
         r = e.record
-        if r.get("kind") != "hyperedge" or r.get("status") not in where.status:
+        axes = (r.get("status"), r.get("rank", "normal"), r.get("visibility", "visible"), r.get("relation"))
+        if r.get("kind") != "hyperedge" or not all(isinstance(x, str) for x in axes):
+            return False  # a malformed record that a trusted load kept passes no filter (as _table reads it)
+        status, rank, visibility, relation = axes
+        if status not in where.status or rank not in where.rank or visibility not in where.visibility:
             return False
-        if r.get("rank", "normal") not in where.rank or r.get("visibility", "visible") not in where.visibility:
-            return False
-        if ("lifecycle" if r.get("relation") in LIFECYCLE_RELATIONS else "fact") not in where.kinds:
+        if ("lifecycle" if relation in LIFECYCLE_RELATIONS else "fact") not in where.kinds:
             return False
         if as_of is None:
             return True

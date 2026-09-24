@@ -1,7 +1,9 @@
 """W3: the refinement order on values and facts (DESIGN §2.3, §2.9)."""
 from __future__ import annotations
 
+import contextlib
 import copy
+import sys
 
 import pytest
 
@@ -200,3 +202,67 @@ def test_injective_match_uses_augmenting_paths():
     assert not record.injective_match(3, 2, lambda i, j: True)
     assert record.injective_match(0, 0, lambda i, j: False)
     assert record.injective_match(40, 40, lambda i, j: j in (i, (i + 1) % 40))
+
+
+# ------------------------------------------------------------------------------------------------ long augmenting paths
+
+
+@contextlib.contextmanager
+def a_shallow_stack(frames: int):
+    """A recursion limit ``frames`` above the caller's depth: a search that recursed once per matched row fails."""
+    depth, f = 0, sys._getframe()
+    while f is not None:
+        depth, f = depth + 1, f.f_back
+    old = sys.getrecursionlimit()
+    sys.setrecursionlimit(depth + frames)
+    try:
+        yield
+    finally:
+        sys.setrecursionlimit(old)
+
+
+def test_injective_match_follows_augmenting_paths_of_any_length():
+    """A staircase forces one augmenting path through every row: rows i < n-1 take column i or i+1 and the last row
+    only column 0 (the recursive search needed a Python frame per row, and met the recursion limit near 1000)."""
+    n = 1500
+    assert record.injective_match(n, n, lambda i, j: j in (i, i + 1) if i < n - 1 else j == 0)
+    assert not record.injective_match(n, n, lambda i, j: j in (i, i + 1) if i < n - 2 else j == 0)
+    assert record.injective_match(n, n, lambda i, j: True)
+    with a_shallow_stack(60):
+        assert record.injective_match(300, 300, lambda i, j: j in (i, i + 1) if i < 299 else j == 0)
+
+
+def test_injective_match_agrees_with_brute_force():
+    import itertools
+    import random
+
+    rnd = random.Random(5)
+    for _ in range(400):
+        a, b = rnd.randint(0, 5), rnd.randint(0, 6)
+        edges = {(i, j) for i in range(a) for j in range(b) if rnd.random() < 0.4}
+        want = any(all((i, p[i]) in edges for i in range(a)) for p in itertools.permutations(range(b), a))
+        assert record.injective_match(a, b, lambda i, j, e=edges: (i, j) in e) == want, (a, b, edges)
+
+
+def test_fact_refinement_matches_a_long_staircase_of_fillers():
+    """Readings 100000..100099 refine the unit ranges [100000+i, 100001+i] and [99999, 100000] only through one long
+    augmenting path; fact_refines (D011, keys.classify, identity.relate) runs it without a frame per filler."""
+    doc = {"kind": "relation-schema", "format": "khg-relation-schema/1.0.0", "id": "m", "version": "1.0.0",
+           "roles": [{"id": "subject"}, {"id": "reading"}], "entity_types": [{"id": "Thing"}],
+           "relations": [{"id": "measured", "roles": [
+               {"role": "subject", "slot": "core", "fillers": [{"entity": ["Thing"]}], "min": 1, "max": 1},
+               {"role": "reading", "slot": "core", "fillers": [{"literal": "quantity", "units": ["1"]}], "min": 1,
+                "max": None}]}]}
+    schema = load_schema(doc)
+    n, base = 100, 100000
+
+    def fact(fid, values):
+        return {"kind": "hyperedge", "id": fid, "relation": "measured", "status": "asserted",
+                "bindings": [{"bid": "b1", "role": "subject", "value": {"entity": "ex:x"}}] +
+                            [{"bid": f"b{k + 2}", "role": "reading", "value": v} for k, v in enumerate(values)]}
+
+    a = fact("f:a", [Q(f"+{base + j}") for j in range(n)])
+    b = fact("f:b", [Q(f"+{base + i}", f"+{base + i}", f"+{base + i + 1}") for i in range(n - 1)] +
+             [Q(f"+{base - 1}", f"+{base - 1}", f"+{base}")])
+    with a_shallow_stack(50):
+        assert record.fact_refines(a, b, schema)

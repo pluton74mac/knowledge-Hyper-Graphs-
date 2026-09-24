@@ -51,7 +51,7 @@
      "kind": {},
      "format": {
       "type": "string",
-      "pattern": "^khg-c4-items/[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "pattern": "^khg-c4-items/[0-9]+\\.[0-9]+\\.[0-9]+(?!\\n)$",
       "x-khg-code": {
        "default": "KHG-I002"
       }
@@ -906,8 +906,7 @@
         "type": "integer",
         "minimum": 1,
         "x-khg-code": {
-         "default": "KHG-I002",
-         "required": "KHG-I004"
+         "default": "KHG-I002"
         }
        },
        "subtype": {
@@ -918,16 +917,14 @@
          "abstention"
         ],
         "x-khg-code": {
-         "default": "KHG-I002",
-         "required": "KHG-I004"
+         "default": "KHG-I002"
         }
        },
        "text": {
         "type": "string",
         "minLength": 1,
         "x-khg-code": {
-         "default": "KHG-I002",
-         "required": "KHG-I004"
+         "default": "KHG-I002"
         }
        },
        "relation": {
@@ -952,13 +949,11 @@
           }
          },
          "x-khg-code": {
-          "default": "KHG-I002",
-          "required": "KHG-I004"
+          "default": "KHG-I002"
          }
         },
         "x-khg-code": {
-         "default": "KHG-I002",
-         "required": "KHG-I004"
+         "default": "KHG-I002"
         }
        },
        "target_role": {
@@ -1087,19 +1082,27 @@
             "expired",
             "revised"
            ],
-           "x-khg-code": "KHG-I004"
+           "x-khg-code": {
+            "default": "KHG-I002"
+           }
           }
          },
-         "x-khg-code": "KHG-I004"
+         "x-khg-code": {
+          "default": "KHG-I002"
+         }
         },
-        "x-khg-code": "KHG-I004"
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
        },
        "future_values": {
         "type": "array",
         "items": {
          "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/value"
         },
-        "x-khg-code": "KHG-I004"
+        "x-khg-code": {
+         "default": "KHG-I002"
+        }
        },
        "disputed_values": {
         "type": "array",
@@ -1107,8 +1110,7 @@
          "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/value"
         },
         "x-khg-code": {
-         "default": "KHG-I002",
-         "required": "KHG-I004"
+         "default": "KHG-I002"
         }
        },
        "support": {
@@ -1117,28 +1119,24 @@
          "$ref": "tag:khg-contracts,2026:schema/khg-record/1.0.0#/definitions/id"
         },
         "x-khg-code": {
-         "default": "KHG-I002",
-         "required": "KHG-I004"
+         "default": "KHG-I002"
         }
        },
        "answerable": {
         "type": "boolean",
         "x-khg-code": {
-         "default": "KHG-I002",
-         "required": "KHG-I004"
+         "default": "KHG-I002"
         }
        },
        "tolerance": {
         "type": "object",
         "x-khg-code": {
-         "default": "KHG-I002",
-         "required": "KHG-I004"
+         "default": "KHG-I002"
         }
        }
       },
       "x-khg-code": {
-       "default": "KHG-I002",
-       "required": "KHG-I004"
+       "default": "KHG-I002"
       }
      },
      {

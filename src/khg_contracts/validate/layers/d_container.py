@@ -28,7 +28,7 @@ from ...record import keys as keyrules
 from ...record.lifecycle import Problem
 from ...schema import Schema
 from ..context import Context
-from .s import latest_records
+from .s import _integral, latest_records
 
 __all__ = ["IMPLEMENTED", "LETTER", "OWNER", "container_findings", "record_findings", "run"]
 
@@ -100,6 +100,21 @@ def _problem_findings(problems: Iterable[Problem | None], paths: Mapping[Any, st
     return [_f(p.code, paths.get(p.id, "") + p.pointer, p.message) for p in problems if p is not None]
 
 
+def _versioned(record: Mapping[str, Any]) -> Mapping[str, Any]:
+    """The record with an integral float ``version`` read as its int (F10: ``2.0`` is version 2), so the history
+    rules see the versions a canonically equal container has; the record itself otherwise."""
+    version = record.get("version")
+    if isinstance(version, float) and _integral(version) is not None:
+        return {**record, "version": _integral(version)}
+    return record
+
+
+def _version_key(version: Any) -> Any:
+    """A version as a key: its integral value, else its ``repr`` (a malformed version is layer C's)."""
+    n = _integral(version)
+    return n if n is not None else repr(version)
+
+
 def _usable(record: Mapping[str, Any], schema: Schema) -> bool:
     """A fact whose key digest and bounds can be computed (what cannot is C's or S's to report)."""
     try:
@@ -156,8 +171,7 @@ def _declaration_findings(records: list[Any], schema: Schema, history: bool) -> 
             continue
         rid, path = r["id"], f"/records/{i}"
         version = r.get("version")
-        key = (rid, version if isinstance(version, int) and not isinstance(version, bool) else repr(version)) \
-            if history else rid
+        key = (rid, _version_key(version)) if history else rid
         if key in seen:
             what = f"{rid} version {version}" if history else rid
             out.append(_f("KHG-D001", path, f"{what} is declared twice"))
@@ -184,13 +198,13 @@ def _history_findings(records: list[Any], schema: Schema, as_at: Any) -> list[Fi
             continue  # D007
         at = {}
         for i, r in versions:
-            at.setdefault(repr(r.get("version")), f"/records/{i}")
+            at.setdefault(_version_key(r.get("version")), f"/records/{i}")
         try:
-            problems = lifecycle.history_problems([r for _, r in versions], schema, as_at=as_at)
+            problems = lifecycle.history_problems([_versioned(r) for _, r in versions], schema, as_at=as_at)
         except _UNREADABLE:
             continue
-        out += [_f(p.code, at.get(repr(p.version), f"/records/{versions[0][0]}") + p.pointer, f"{rid}: {p.message}")
-                for p in problems]
+        out += [_f(p.code, at.get(_version_key(p.version), f"/records/{versions[0][0]}") + p.pointer,
+                   f"{rid}: {p.message}") for p in problems]
     return out
 
 

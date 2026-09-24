@@ -20,18 +20,62 @@ def fail(code: str, message: str, path: str = "") -> ValidationError:
 
 def nfc_deep(obj: Any) -> Any:
     """A deep copy of a JSON value with every string, and every object key, in NFC. An object whose keys would
-    collide under NFC keeps its keys as they are (canonical JSON reports that as S020)."""
+    collide under NFC keeps its keys as they are (canonical JSON reports that as S020). Any depth is copied (a value
+    too deep for the Python stack is copied iteratively); a container that holds itself is ``ValueError``."""
+    try:
+        return _nfc_deep(obj)
+    except RecursionError:
+        return _nfc_deep_iterative(obj)
+
+
+def _object(items: list[tuple[Any, Any]]) -> dict[Any, Any]:
+    keys = [nfc(k) if isinstance(k, str) else k for k, _ in items]
+    if len(set(keys)) == len(keys):
+        return {k: v for k, (_, v) in zip(keys, items, strict=True)}
+    return dict(items)
+
+
+def _nfc_deep(obj: Any) -> Any:
     if isinstance(obj, str):
         return nfc(obj)
     if isinstance(obj, Mapping):
-        items = [(k, nfc_deep(v)) for k, v in obj.items()]
-        keys = [nfc(k) if isinstance(k, str) else k for k, _ in items]
-        if len(set(keys)) == len(keys):
-            return {k: v for k, (_, v) in zip(keys, items, strict=True)}
-        return dict(items)
+        return _object([(k, _nfc_deep(v)) for k, v in obj.items()])
     if isinstance(obj, (list, tuple)):
-        return [nfc_deep(x) for x in obj]
+        return [_nfc_deep(x) for x in obj]
     return obj
+
+
+def _nfc_deep_iterative(obj: Any) -> Any:
+    """``_nfc_deep`` with an explicit stack of (members still to copy, members copied, is an object, id, the key
+    in the parent)."""
+    if not isinstance(obj, (Mapping, list, tuple)):
+        return _nfc_deep(obj)
+
+    def frame(x: Any, key: Any) -> tuple[Any, list[Any], bool, int, Any]:
+        if id(x) in open_ids:
+            raise ValueError("not JSON: a container holds itself")
+        open_ids.add(id(x))
+        is_object = isinstance(x, Mapping)
+        return iter(x.items()) if is_object else iter(x), [], is_object, id(x), key
+
+    open_ids: set[int] = set()
+    stack = [frame(obj, None)]
+    while True:
+        members, done, is_object, oid, key = stack[-1]
+        for member in members:
+            k, v = member if is_object else (None, member)
+            if isinstance(v, (Mapping, list, tuple)):
+                stack.append(frame(v, k))
+                break
+            done.append((k, _nfc_deep(v)) if is_object else _nfc_deep(v))
+        else:  # every member copied
+            stack.pop()
+            open_ids.discard(oid)
+            copied = _object(done) if is_object else done
+            if not stack:
+                return copied
+            parent = stack[-1]
+            parent[1].append((key, copied) if parent[2] else copied)
 
 
 def value_kind(value: Any) -> str:

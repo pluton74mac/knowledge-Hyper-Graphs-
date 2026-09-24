@@ -11,8 +11,11 @@
 Every subschema that carries a constraint also carries ``x-khg-code``: a code, or a map from keyword to code with an
 optional ``"default"``. Codes are authored at a few levels and propagated to every constraint-bearing subschema, so
 both engines can name the code of a failure (jsonschema from ``error.schema``, fastjsonschema from
-``exception.definition``). Every ``$ref`` is absolute. The packaged files are the output of this module, byte for
-byte (``tests/schema/test_codegen.py``). Nothing here runs when the package is imported for use.
+``exception.definition``). Every ``$ref`` is absolute. Every pattern that ends in ``$`` ends in ``END``
+(``(?!\\n)$``): in ECMA-262 that is the plain end anchor, and in Python's ``re``, which jsonschema uses, ``$`` alone
+would also match before a final newline (fastjsonschema rewrites ``$`` to ``\\Z``), so both engines refuse a value
+that ends in a newline. The packaged files are the output of this module, byte for byte
+(``tests/schema/test_codegen.py``). Nothing here runs when the package is imported for use.
 """
 from __future__ import annotations
 
@@ -24,7 +27,8 @@ from typing import Any, Callable
 
 from .builtins import CONSTRAINT_TYPES, DATATYPES, POLICIES, SEVERITIES, SLOTS, TIME_MODELS
 
-__all__ = ["TAG", "X", "iff", "propagate", "absolutise", "render", "build", "build_all", "write_all", "main"]
+__all__ = ["END", "TAG", "X", "anchor", "end_anchors", "iff", "patterns", "propagate", "absolutise", "render", "build",
+           "build_all", "write_all", "main"]
 
 TAG = "tag:khg-contracts,2026:schema/"
 HIF_ID = "https://raw.githubusercontent.com/pszufe/HIF_validators/main/schemas/hif_schema_v0.1.0.json"
@@ -41,6 +45,9 @@ CHILD_ONE = ("items", "additionalProperties", "not", "if", "then", "else", "prop
              "additionalItems")
 CHILD_LIST = ("allOf", "anyOf", "oneOf")
 SEMVER = "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+#: The end of a pattern: the end of the string in ECMA-262 and in Python's ``re`` alike (``$`` alone also matches
+#: before a final newline in Python).
+END = "(?!\\n)$"
 
 
 # ------------------------------------------------------------------------------------------------ helpers
@@ -95,6 +102,50 @@ def absolutise(s: Any, base: str) -> None:
     elif isinstance(s, list):
         for v in s:
             absolutise(v, base)
+
+
+def anchor(pattern: str) -> str:
+    """``pattern`` with a final unescaped ``$`` written as ``END``; other patterns unchanged (idempotent)."""
+    if pattern.endswith("$") and not pattern.endswith("\\$") and not pattern.endswith(END):
+        return pattern[:-1] + END
+    return pattern
+
+
+def end_anchors(s: Any) -> None:
+    """Write the end anchor of every ``pattern`` and ``patternProperties`` key of a schema as ``END`` (in place)."""
+    if isinstance(s, dict):
+        for k in list(s):
+            v = s[k]
+            if k in ("x-khg-code", "enum", "const"):
+                continue
+            if k == "pattern" and isinstance(v, str):
+                s[k] = anchor(v)
+            elif k == "patternProperties" and isinstance(v, dict):
+                s[k] = {anchor(pk): pv for pk, pv in v.items()}
+                end_anchors(s[k])
+            else:
+                end_anchors(v)
+    elif isinstance(s, list):
+        for v in s:
+            end_anchors(v)
+
+
+def patterns(s: Any) -> Any:
+    """Every ``pattern`` and ``patternProperties`` key of a schema, in document order."""
+    if isinstance(s, dict):
+        for k, v in s.items():
+            if k in ("x-khg-code", "enum", "const"):
+                continue
+            if k == "pattern" and isinstance(v, str):
+                yield v
+            elif k == "patternProperties" and isinstance(v, dict):
+                yield from v
+                yield from patterns(v)
+            else:
+                yield from patterns(v)
+    elif isinstance(s, list):
+        for v in s:
+            yield from patterns(v)
 
 
 def render(schema: dict[str, Any]) -> str:
@@ -209,7 +260,9 @@ def _record() -> dict[str, Any]:
             "properties": {"bid": LOCAL("bid"), "role": LOCAL("vocab_id"), "value": LOCAL("value"),
                            "position": {"type": "integer", "minimum": 1}, "direction": {"enum": ["head", "tail"]},
                            "extensions": LOCAL("extensions")}}),
-        "value": X({"default": "KHG-C001", "enum": "KHG-C002"}, {
+        # an unknown kind is C002 whichever engine reports it: jsonschema reads the propertyNames child (enum),
+        # fastjsonschema the parent (propertyNames)
+        "value": X({"default": "KHG-C001", "enum": "KHG-C002", "propertyNames": "KHG-C002"}, {
             "type": "object", "minProperties": 1, "maxProperties": 1,
             "propertyNames": {"enum": ["entity", "literal", "fact", "special", "unbound"]},
             "properties": {"entity": LOCAL("id"), "fact": LOCAL("id"), "literal": LOCAL("literal"),
@@ -430,6 +483,31 @@ def _relation_schema() -> dict[str, Any]:
 # ------------------------------------------------------------------------------------------------ khg-hif/1.0.0
 
 
+def _edge_attrs() -> dict[str, Any]:
+    """The edge ``attrs`` of §4.2, each with the shape of its C1 field (P012 by propagation): enums, lexical forms,
+    and the fixed shapes of ``khg-confidence`` and ``khg-goal``. ``khg-evidence`` is an array of objects; the content
+    of each evidence object, like a literal node's ``khg-literal``, is layer C's on the decoded container."""
+    defs = _record()["definitions"]
+    hyperedge = defs["hyperedge"]["properties"]
+
+    def plain(sub: Any) -> Any:  # a khg-record subschema with its local $refs inlined and without its codes
+        if isinstance(sub, dict):
+            ref = sub.get("$ref")
+            if isinstance(ref, str) and ref.startswith("#/definitions/") and len(sub) == 1:
+                return plain(defs[ref[len("#/definitions/"):]])
+            return {k: plain(v) for k, v in sub.items() if k != "x-khg-code"}
+        if isinstance(sub, list):
+            return [plain(v) for v in sub]
+        return sub
+
+    out: dict[str, Any] = {"relation": {"type": "string", "minLength": 1}, "khg-status": {"enum": STATUSES}}
+    for field in ("status_ref", "rank", "rank_reason", "visibility", "confidence", "source_text", "goal", "reason",
+                  "note", "typed_under", "version", "recorded_at", "recorded_by", "extensions"):
+        out["khg-" + field.replace("_", "-")] = plain(hyperedge[field])
+    out["khg-evidence"] = {"type": "array", "items": {"type": "object"}}
+    return out
+
+
 def _profile() -> dict[str, Any]:
     khg_md = ["khg-profile", "khg-record", "khg-schema", "khg-schema-sha256", "khg-document-id", "khg-complete",
               "khg-slice", "khg-schema-document", "khg-literal-nodes"]
@@ -479,8 +557,7 @@ def _profile() -> dict[str, Any]:
                         "required": ["attrs"],
                         "properties": {"edge": LOCAL("hif_id"),
                                        "attrs": {"type": "object", "required": ["relation", "khg-status"],
-                                                 "properties": {"relation": {"type": "string", "minLength": 1},
-                                                                "khg-status": {"enum": STATUSES}}}}})},
+                                                 "properties": _edge_attrs()}}})},
                     "incidences": {"type": "array",
                                    "items": X({"default": "KHG-P005", "propertyNames": "KHG-P014"}, {
                         "required": ["attrs"],
@@ -586,10 +663,10 @@ def _c4() -> dict[str, Any]:
                  "subtype": {"enum": ["current_value", "past_value", "future_value", "abstention"]},
                  "text": {"type": "string", "minLength": 1}, "relation": ref("vocab_id"), "key": keypat,
                  "target_role": ref("vocab_id"), "where": where, "answer": answer,
-                 "stale_values": X("KHG-I004", {"type": "array", "items": {
+                 "stale_values": {"type": "array", "items": {
                      "type": "object", "required": ["value", "kind"], "additionalProperties": False,
-                     "properties": {"value": ref("value"), "kind": {"enum": ["expired", "revised"]}}}}),
-                 "future_values": X("KHG-I004", {"type": "array", "items": ref("value")}),
+                     "properties": {"value": ref("value"), "kind": {"enum": ["expired", "revised"]}}}},
+                 "future_values": {"type": "array", "items": ref("value")},
                  "disputed_values": {"type": "array", "items": ref("value")},
                  "support": {"type": "array", "items": ref("id")}, "answerable": {"type": "boolean"},
                  "tolerance": {"type": "object"}})),
@@ -599,11 +676,11 @@ def _c4() -> dict[str, Any]:
                                "splits": {"type": "object",
                                           "additionalProperties": {"enum": ["train", "valid", "test"]}}}}),
         ]})
-    # a memory question missing stale_values or future_values is I004, not the generic I002
+    # a memory question missing stale_values or future_values is I004 (the registry's meaning, ruling 7 of §14); any
+    # other missing field, and a malformed stale_values or future_values, is the item structure's I002
     for sub in c4["allOf"]:
         th = sub["then"]
         if th.get("properties", {}).get("stale_values"):
-            th["x-khg-code"] = {"default": "KHG-I002", "required": "KHG-I004"}
             th["required"] = [r for r in th["required"] if r not in ("stale_values", "future_values")]
             sub["then"] = {"allOf": [th, X("KHG-I004", {"required": ["stale_values", "future_values"]})]}
     return c4
@@ -686,6 +763,7 @@ def build(name: str) -> dict[str, Any]:
     schema = BUILDERS[name]()
     absolutise(schema, schema["$id"])
     propagate(schema)
+    end_anchors(schema)
     return schema
 
 

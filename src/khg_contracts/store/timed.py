@@ -41,7 +41,10 @@ def _jsonable(x: Any) -> Any:
     if isinstance(x, (list, tuple)):
         return [_jsonable(v) for v in x]
     if isinstance(x, (set, frozenset)):
-        return sorted((_jsonable(v) for v in x), key=jsonio.canonical)
+        items = [_jsonable(v) for v in x]
+        if all(isinstance(v, str) for v in items):  # a set of ids: sorted as strings (§6.3), as Where.as_dict does
+            return sorted(items)
+        return sorted(items, key=jsonio.canonical)  # mixed members: by canonical text, a total order
     if is_dataclass(x) and not isinstance(x, type):
         return {f.name: _jsonable(getattr(x, f.name)) for f in fields(x)}
     if hasattr(x, "__iter__"):

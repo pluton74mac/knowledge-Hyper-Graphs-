@@ -13,7 +13,7 @@ from __future__ import annotations
 from typing import Any, Iterable, Mapping
 
 from .. import jsonio
-from ..record import normalize
+from ..record import normalize, resolve_supports
 
 __all__ = ["compare_containers"]
 
@@ -32,7 +32,8 @@ def _escape(part: Any) -> str:
 def _keyed(container: Mapping[str, Any], ignore: Iterable[str], history: bool) -> dict[tuple[str, int], Any]:
     out: dict[tuple[str, int], Any] = {}
     records = container.get("records")
-    for r in records if isinstance(records, list) else []:
+    records = records if isinstance(records, list) else []
+    for r in resolve_supports(records) if history else records:  # carried evidence keeps its supports (§2.8.1)
         if not isinstance(r, Mapping):
             continue
         rec = normalize(r)

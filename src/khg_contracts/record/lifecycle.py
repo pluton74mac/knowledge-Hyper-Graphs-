@@ -30,7 +30,7 @@ from .. import jsonio
 from ..errors import KHGError, ValidationError, VersionError, make_finding
 from ..schema.builtins import LIFECYCLE_RELATIONS
 from ._common import SchemaLike, as_schema, fail, hyperedge, is_special, nfc_deep
-from .canonical import STORE_FIELDS
+from .canonical import STORE_FIELDS, carried_supports
 from .derive import content_key, key_digest
 from .refine import fact_refines, value_refines
 from .validity import valid_time
@@ -38,6 +38,7 @@ from .windows import parse_instant
 
 __all__ = [
     "AXES",
+    "COMPOSITE_STEPS",
     "EDITABLE",
     "FROZEN",
     "LIFECYCLE_ROLE",
@@ -286,8 +287,8 @@ def transition_problem(old: Any, new: Any, *, relation: Any = None, id: Any = No
 
 def put_problem(record: Record, current: Record | None = None) -> Problem | None:
     """What ``put`` refuses before checking content (§6.2): a candidate (D017); a lifecycle record, a new id in a
-    status other than asserted, quoted or goal, or a status change of the ``current`` version (D014). Entities
-    have no status."""
+    status other than asserted, quoted or goal, or a change of the ``current`` version's status or ``status_ref``
+    (D014: both are the belief axis, which only events move). Entities have no status."""
     if record.get("kind") != "hyperedge":
         return None
     rid, status = record.get("id"), record.get("status")
@@ -303,6 +304,10 @@ def put_problem(record: Record, current: Record | None = None) -> Problem | None
     if current.get("status") != status:
         return Problem("KHG-D014", rid, "/status",
                        f"a status changes only through events: put cannot move {current.get('status')} -> {status}")
+    if current.get("status_ref") != record.get("status_ref"):
+        return Problem("KHG-D014", rid, "/status_ref",
+                       f"status_ref changes only through events: put cannot move {current.get('status_ref')!r} -> "
+                       f"{record.get('status_ref')!r}")
     return None
 
 
@@ -420,20 +425,38 @@ def _binding_problems(old: Record, new: Record, s: Any, allow_novalue_end: bool,
     return out
 
 
+def _evidence_key(eid: Any) -> Any:
+    """A hashable key for an evidence id as written (an id that is not a string is layer C's C010)."""
+    return eid if isinstance(eid, str) else ("not a string", repr(eid))
+
+
 def _evidence_problems(old: Record, new: Record, problem: Any) -> list[Problem]:
+    """Every earlier evidence record is kept unchanged (the n-th record of an id against the n-th of the new version),
+    and no new version gives an evidence id more often than the old one did: a second record under a held id would
+    rewrite what the id names."""
     bids = [b.get("bid") for _, b in _bindings(old)]
     listed_old, listed_new = old.get("evidence"), new.get("evidence")
     oe = [e for e in listed_old if isinstance(e, Mapping)] if isinstance(listed_old, list) else []
-    ne = {e.get("id"): (k, e) for k, e in enumerate(listed_new)
-          if isinstance(e, Mapping)} if isinstance(listed_new, list) else {}
+    ne: dict[Any, list[tuple[int, Mapping[str, Any]]]] = {}
+    for k, e in enumerate(listed_new if isinstance(listed_new, list) else []):
+        if isinstance(e, Mapping):
+            ne.setdefault(_evidence_key(e.get("id")), []).append((k, e))
     out = []
+    held: dict[Any, int] = {}
     for e in oe:
         eid = e.get("id")
-        if eid not in ne:
+        key = _evidence_key(eid)
+        n = held[key] = held.get(key, 0) + 1
+        found = ne.get(key, [])
+        if len(found) < n:
             out.append(problem(f"evidence {eid} was removed: evidence is append-only", "/evidence"))
-        elif _evidence_form(e, bids) != _evidence_form(ne[eid][1], bids):
+        elif _evidence_form(e, bids) != _evidence_form(found[n - 1][1], bids):
             out.append(problem(f"evidence {eid} was changed: earlier evidence stays as written (event_hash "
-                               "included)", f"/evidence/{ne[eid][0]}"))
+                               "included)", f"/evidence/{found[n - 1][0]}"))
+    for key, found in ne.items():
+        if isinstance(key, str) and len(found) > max(1, held.get(key, 0)):
+            out.append(problem(f"evidence {key} is given {len(found)} times: an evidence id names one record",
+                               f"/evidence/{found[-1][0]}"))
     return out
 
 
@@ -472,16 +495,28 @@ def _as_asserted(record: Record, goal: bool) -> dict[str, Any]:
     return out
 
 
+def _version_number(value: Any, other: Any = 0) -> Any:
+    """A version number: an int, or an integral float read as its int (F10: canonical JSON writes ``2.0`` as ``2``);
+    ``other`` for anything else."""
+    if isinstance(value, float) and value.is_integer():
+        return int(value)
+    return value if isinstance(value, int) and not isinstance(value, bool) else other
+
+
 def history_problems(versions: Iterable[Record], schema: SchemaLike, *, as_at: Any = None) -> list[Problem]:
     """The rules on the versions of one id in a history container: versions 1..n (D001); each version recorded
     after the previous one and not after the header's ``as_at`` (D018); consecutive statuses in the transition
-    table (D014); and the version rule between consecutive versions (D013; a ``novalue`` end may be replaced)."""
-    vs = sorted(_values(versions), key=lambda r: r.get("version") if isinstance(r.get("version"), int) else 0)
+    table, or the one composite step of an undo resolved by a dispute (``COMPOSITE_STEPS``) (D014); and the version
+    rule between consecutive versions (D013; a ``novalue`` end may be replaced).
+    Evidence carried without ``supports`` supports what it did in the first version that carries it (§2.8.1,
+    ``carried_supports``), as the canonical form writes it."""
+    vs = sorted(_values(versions), key=lambda r: _version_number(r.get("version")))
     if not vs:
         return []
+    vs = carried_supports(vs)
     out: list[Problem] = []
     rid = vs[0].get("id")
-    numbers = [v.get("version") for v in vs]
+    numbers = [_version_number(v.get("version"), v.get("version")) for v in vs]
     if numbers != list(range(1, len(vs) + 1)):
         out.append(Problem("KHG-D001", rid, "/version", f"the versions of {rid} are {numbers}, not 1..{len(vs)}",
                            vs[0].get("version")))
@@ -503,12 +538,20 @@ def history_problems(versions: Iterable[Record], schema: SchemaLike, *, as_at: A
     return out
 
 
+#: Consecutive statuses that one event writes as one version although no single row of the table gives them: an
+#: undo whose ``resolve_superseding`` is ``dispute`` restores a superseded fact and disputes it at once (§2.7,
+#: S-LIFE-013). The event path keeps refusing a direct move (``transition_problem``).
+COMPOSITE_STEPS = frozenset({("superseded", "disputed")})
+
+
 def _step_problems(prev: Record, v: Record, schema: SchemaLike) -> list[Problem]:
     if v.get("kind") != "hyperedge" or prev.get("status") == v.get("status"):
         return version_problems(prev, v, schema, allow_novalue_end=True)
     out = []
-    moved = transition_problem(prev.get("status"), v.get("status"), relation=prev.get("relation"), id=v.get("id"),
-                               version=v.get("version"))
+    composite = (prev.get("status"), v.get("status")) in COMPOSITE_STEPS and not _is_lifecycle(prev)
+    moved = None if composite else transition_problem(prev.get("status"), v.get("status"),
+                                                      relation=prev.get("relation"), id=v.get("id"),
+                                                      version=v.get("version"))
     if moved is not None:
         out.append(moved)
     goal = prev.get("status") == "goal"

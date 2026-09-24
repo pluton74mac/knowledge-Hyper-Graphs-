@@ -3,11 +3,17 @@
 DESIGN §2.1, §2.9 and §8.1:
 
 - ``loads``/``load`` parse one JSON document strictly and raise ``ValidationError`` with a J code: J001 not JSON,
-  empty or truncated; J002 a byte-order mark or invalid UTF-8; J003 a duplicate key; J004 NaN or +/-Infinity (also a
-  number that overflows to infinity); J005 a lone surrogate; J006 an integer outside +/-(2**53 - 1); J007 a top level
-  that is not an object. ``loads_lines``/``load_lines`` do the same for each line of a ``.jsonl`` file.
+  empty or truncated, or objects and arrays nested deeper than ``MAX_DEPTH`` levels; J002 a byte-order mark or
+  invalid UTF-8; J003 a duplicate key; J004 NaN or +/-Infinity (also a number that overflows to infinity); J005 a
+  lone surrogate; J006 an integer outside +/-(2**53 - 1), however many digits it has; J007 a top level that is not an
+  object. ``loads_lines``/``load_lines`` do the same for each line of a ``.jsonl`` file (each line is a document).
+- The nesting limit is explicit, so the verdict does not depend on the Python version (the parser's own limit is
+  near 1000 levels on 3.10 and 3.11 and far higher on 3.13) and stays well inside what the package's recursive
+  walkers process; layer J applies the same limit to objects in memory.
 - ``canonical`` writes object keys sorted by code point, no white space, UTF-8, NFC strings, and numbers as RFC 8785
   (ECMAScript ``Number::toString``) serialises them, so ``2.0`` is ``2`` and exponents read ``1e-7`` and ``1e+21``.
+  Any depth is written (a structure too deep for the Python stack is written iteratively); a container that holds
+  itself is ``ValueError``.
 - ``digest(domain, payload) = "sha256:" + hex(SHA-256(UTF-8(domain + "\\n" + canonical(payload))))``.
 """
 from __future__ import annotations
@@ -24,6 +30,7 @@ from typing import Any, Mapping
 from .errors import ValidationError, make_finding
 
 __all__ = [
+    "MAX_DEPTH",
     "MAX_SAFE_INTEGER",
     "loads",
     "load",
@@ -37,6 +44,11 @@ __all__ = [
 ]
 
 MAX_SAFE_INTEGER = 2 ** 53 - 1
+#: A JSON integer literal (no leading zeros) with more digits than this is outside +/-(2^53-1).
+_SAFE_DIGITS = len(str(MAX_SAFE_INTEGER))
+#: The deepest nesting of objects and arrays accepted in a document or JSONL line (J001 beyond it): the same limit
+#: as layer J's for objects in memory, and well inside Python's default recursion limit at two frames a level.
+MAX_DEPTH = 256
 _BOM = "\ufeff"
 _RAW_SURROGATE = re.compile("[\ud800-\udfff]")
 _SURROGATE_ESCAPE = re.compile(r"\\u[dD][89a-fA-F][0-9a-fA-F]{2}")
@@ -70,7 +82,15 @@ def _constant(name: str) -> Any:
     raise _Fault("KHG-J004", f"non-finite number {name}")
 
 
+def _excerpt(digits: str) -> str:
+    return digits if len(digits) <= 40 else f"{digits[:20]}...{digits[-4:]} ({len(digits)} characters)"
+
+
 def _int(s: str) -> int:
+    # count the digits first: int() refuses a literal of more than sys.get_int_max_str_digits() digits (4300 by
+    # default) with a plain ValueError, and every literal of 17 digits or more is out of range anyway
+    if len(s) - s.startswith("-") > _SAFE_DIGITS:
+        raise _Fault("KHG-J006", f"integer {_excerpt(s)} outside +/-(2^53-1)")
     v = int(s)
     if abs(v) > MAX_SAFE_INTEGER:
         raise _Fault("KHG-J006", f"integer {s} outside +/-(2^53-1)")
@@ -99,6 +119,34 @@ def _has_lone_surrogate(o: Any) -> bool:
     return False
 
 
+def _deeper_than_max(doc: Any) -> bool:
+    """True when objects and arrays nest deeper than ``MAX_DEPTH`` levels in a parsed document (level by level)."""
+    level = [doc]
+    for _ in range(MAX_DEPTH):
+        level = [v for value in level for v in (value.values() if type(value) is dict else value)
+                 if type(v) is dict or type(v) is list]
+        if not level:
+            return False
+    return True
+
+
+def _too_deep(doc: Any) -> str | None:
+    """The JSON pointer of the first object or array of a parsed document nested deeper than ``MAX_DEPTH`` levels,
+    depth first in document order (as layer J finds it in an object in memory); None when there is none."""
+    stack: list[tuple[Any, Any, int]] = [(doc, None, 0)]
+    while stack:
+        value, link, depth = stack.pop()
+        if depth >= MAX_DEPTH:
+            parts: list[str] = []
+            while link is not None:
+                link, key = link
+                parts.append("/" + str(key).replace("~", "~0").replace("/", "~1"))
+            return "".join(reversed(parts))
+        items = value.items() if isinstance(value, dict) else enumerate(value)
+        stack.extend(reversed([(v, (link, k), depth + 1) for k, v in items if isinstance(v, (dict, list))]))
+    return None
+
+
 def _decode(data: str | bytes | bytearray | memoryview) -> str:
     if isinstance(data, str):
         return data
@@ -125,12 +173,15 @@ def _parse(text: str, path: str) -> dict[str, Any]:
     except json.JSONDecodeError as e:
         raise _fail("KHG-J001", f"not JSON: {e.msg} (line {e.lineno}, column {e.colno})", path,
                     lineno=e.lineno, colno=e.colno) from None
-    except RecursionError:
+    except RecursionError:  # deeper than the parser can go from the caller's stack: deeper than MAX_DEPTH too
         raise _fail("KHG-J001", "nesting too deep", path) from None
     if (_RAW_SURROGATE.search(text) or _SURROGATE_ESCAPE.search(text)) and _has_lone_surrogate(obj):
         raise _fail("KHG-J005", "lone surrogate in a string", path)
     if not isinstance(obj, dict):
         raise _fail("KHG-J007", f"top level is {type(obj).__name__}, not an object", path)
+    # a text with no more brackets than MAX_DEPTH cannot nest deeper (a JSONL record line, as a rule): no walk
+    if text.count("{") + text.count("[") > MAX_DEPTH and _deeper_than_max(obj):
+        raise _fail("KHG-J001", f"nesting deeper than {MAX_DEPTH} levels", path + (_too_deep(obj) or ""))
     return obj
 
 
@@ -191,8 +242,9 @@ def number(x: int | float) -> str:
     if isinstance(x, bool) or not isinstance(x, (int, float)):
         raise TypeError(f"not a JSON number: {x!r}")
     if isinstance(x, int):
-        if abs(x) > MAX_SAFE_INTEGER:
-            raise _fail("KHG-J006", f"integer {x} outside +/-(2^53-1)")
+        if abs(x) > MAX_SAFE_INTEGER:  # str() of an int beyond 4300 digits is itself a ValueError: name its size
+            text = str(x) if x.bit_length() <= 256 else f"of {x.bit_length()} bits"
+            raise _fail("KHG-J006", f"integer {text} outside +/-(2^53-1)")
         return str(x)
     if math.isnan(x) or math.isinf(x):
         raise _fail("KHG-J004", f"non-finite number {x!r}")
@@ -219,7 +271,36 @@ def number(x: int | float) -> str:
     return (digits if k == 1 else digits[0] + "." + digits[1:]) + "e" + ("+" if e1 >= 0 else "-") + str(abs(e1))
 
 
+def _items(o: Mapping[str, Any]) -> list[tuple[str, Any]]:
+    """The members of an object with NFC keys, in code-point key order (S020 when two keys normalise to one), as
+    ``_write`` writes them."""
+    items: dict[str, Any] = {}
+    for k, v in o.items():
+        if not isinstance(k, str):
+            raise TypeError(f"object key {k!r} is not a string")
+        nk = nfc(k)
+        if nk in items:
+            raise _fail("KHG-S020", f"two keys normalise to {nk!r}")
+        items[nk] = v
+    return [(k, items[k]) for k in sorted(items)]  # code-point order
+
+
+def _scalar(o: Any) -> str:
+    if o is None:
+        return "null"
+    if o is True:
+        return "true"
+    if o is False:
+        return "false"
+    if isinstance(o, str):
+        return _quote(nfc(o))
+    if isinstance(o, (int, float)):
+        return number(o)
+    raise TypeError(f"not JSON: {type(o).__name__}")
+
+
 def _write(o: Any, out: list[str]) -> None:
+    """The canonical text of ``o``, recursively (the fast path; ``_write_deep`` when the stack runs out)."""
     if o is None:
         out.append("null")
     elif o is True:
@@ -258,10 +339,56 @@ def _write(o: Any, out: list[str]) -> None:
         raise TypeError(f"not JSON: {type(o).__name__}")
 
 
+def _write_deep(obj: Any, out: list[str]) -> None:
+    """The text ``_write`` gives, with an explicit stack, so any depth is written; a container that holds itself
+    (which the recursive writer meets as a RecursionError) is ``ValueError``."""
+    stack: list[tuple[Any, str, int]] = []  # (the members or items still to write, the closing text, the id)
+    open_ids: set[int] = set()
+
+    def enter(o: Any) -> bool:
+        if not isinstance(o, (Mapping, list, tuple)):
+            out.append(_scalar(o))
+            return False
+        if id(o) in open_ids:
+            raise ValueError("not JSON: a container holds itself")
+        open_ids.add(id(o))
+        if isinstance(o, Mapping):
+            out.append("{")
+            stack.append((iter(_items(o)), "}", id(o)))
+        else:
+            out.append("[")
+            stack.append((iter(o), "]", id(o)))
+        return True
+
+    enter(obj)
+    while stack:
+        members, closer, oid = stack[-1]
+        for member in members:
+            if closer == "}":
+                out.append(_quote(member[0]) + ":")
+                member = member[1]
+            if enter(member):
+                break
+            out.append(",")
+        else:  # every member written: close, replacing the separator after the last one
+            stack.pop()
+            open_ids.discard(oid)
+            if out[-1] == ",":
+                out[-1] = closer
+            else:
+                out.append(closer)
+            if stack:
+                out.append(",")
+
+
 def canonical(obj: Any) -> str:
     """The canonical JSON text of ``obj``: code-point key order, no white space, NFC strings, RFC 8785 numbers."""
     out: list[str] = []
-    _write(obj, out)
+    try:
+        _write(obj, out)
+    except RecursionError:  # nested deeper than the Python stack allows: the same text, iteratively
+        out = []
+        _write_deep(obj, out)
     return "".join(out)
 
 

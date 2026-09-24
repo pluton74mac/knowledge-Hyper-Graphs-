@@ -24,13 +24,15 @@ from ...errors import make_finding
 from ...schema.checks import version_findings as schema_version_findings
 from ..context import Context
 
-__all__ = ["IMPLEMENTED", "LETTER", "OWNER", "detect_kind", "gate", "run"]
+__all__ = ["HEADER_KINDS", "IMPLEMENTED", "LETTER", "OWNER", "detect_kind", "gate", "lone_header", "run"]
 
 LETTER = "V"
 OWNER = "W4"
 IMPLEMENTED = True
 
 _SEMVER = r"(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)"
+#: The kind of the header line of each JSONL format, and the input kind of its file.
+HEADER_KINDS = {"header": "container", "queue-header": "queue", "c4-header": "item"}
 
 Finding = dict[str, str]
 
@@ -79,21 +81,32 @@ def run(ctx: Context) -> list[Finding]:
     return []
 
 
+def lone_header(doc: Any) -> bool:
+    """True for a JSONL file's header line given alone (an object whose ``kind`` is a header line's, and that is not
+    a ``{header, records}`` container): a text of one line parses to it."""
+    return isinstance(doc, Mapping) and not ("header" in doc and "records" in doc) and \
+        isinstance(doc.get("kind"), str) and doc["kind"] in HEADER_KINDS
+
+
 def detect_kind(doc: Any) -> str | None:
     """The kind of a parsed input, or None when it cannot be told.
 
     - lines (a list): by line 0's ``kind``: ``header`` a container, ``queue-header`` a queue, ``c4-header`` C4 items;
     - an object with ``header`` and ``records``: a container;
+    - a lone header line (an object whose ``kind`` is one of those three): its file, of that one line (a text of one
+      line parses to one object; the runner reads it as the lines of the file);
     - ``kind`` ``relation-schema``: a schema; ``entity`` or ``hyperedge``: a record;
     - an object with ``incidences``, ``nodes``, ``edges``, ``network-type`` or ``metadata`` (HIF): ``hif`` when its
       metadata has ``khg-profile``, else ``role-convention`` when it declares ``role-convention``, else ``hif``.
     """
     if isinstance(doc, list):
-        return {"header": "container", "queue-header": "queue", "c4-header": "item"}.get(_line0(doc).get("kind"))
+        return HEADER_KINDS.get(_line0(doc).get("kind"))
     if not isinstance(doc, Mapping):
         return None
     if "header" in doc and "records" in doc:
         return "container"
+    if lone_header(doc):
+        return HEADER_KINDS[doc["kind"]]
     k = doc.get("kind")
     if k == "relation-schema":
         return "schema"

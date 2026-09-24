@@ -18,16 +18,20 @@ from typing import Any, Callable, Mapping
 from .. import data, jsonio
 from ..errors import ValidationError, make_finding
 from .builtins import DATATYPES, DEFAULT_TIME, RESERVED_PREFIX
-from .model import Schema
+from .model import Schema, json_copy
 
-__all__ = ["META_SCHEMA", "META_SCHEMA_ID", "FORMAT", "version_findings", "meta_findings", "python_findings",
-           "check_schema", "load_schema"]
+__all__ = ["META_SCHEMA", "META_SCHEMA_ID", "FORMAT", "MAX_DEPTH", "version_findings", "meta_findings",
+           "python_findings", "nesting_fault", "check_schema", "load_schema"]
 
 META_SCHEMA = "schemas/khg-relation-schema-1.0.0.schema.json"
 META_SCHEMA_ID = "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0"
 FORMAT = "khg-relation-schema/1.0.0"
 _FORMAT_RE = re.compile(r"khg-relation-schema/(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)")
 _ENGINES = ("jsonschema", "fastjsonschema")
+#: The nesting limit of layer J (J001), for parsed text and objects alike: the deepest nesting of objects and arrays
+#: in a document. ``validate.layers.j`` and ``check_schema`` apply it; it is well inside what the recursive walkers
+#: of the package and of the engines process under Python's default recursion limit (two frames a level).
+MAX_DEPTH = 256
 
 Finding = dict[str, str]
 
@@ -47,6 +51,30 @@ def _list(x: Any) -> list[Any]:
 def _items(x: Any) -> list[tuple[int, dict[str, Any]]]:
     """(index, item) for the dict items of a list; anything else is left to the meta-schema."""
     return [(i, v) for i, v in enumerate(_list(x)) if isinstance(v, dict)]
+
+
+# ------------------------------------------------------------------------------------------------ J
+
+
+def nesting_fault(doc: Any) -> str | None:
+    """The JSON pointer of the first object or array of ``doc`` nested deeper than ``MAX_DEPTH`` levels, depth
+    first in document order (``doc`` itself is level 1); None when there is none. Mappings, lists and tuples are
+    containers. Built without recursion."""
+    stack: list[tuple[Any, Any, int]] = [(doc, None, 0)]
+    while stack:
+        value, link, depth = stack.pop()
+        if not isinstance(value, (Mapping, list, tuple)):
+            continue
+        if depth >= MAX_DEPTH:
+            parts: list[Any] = []
+            while link is not None:
+                link, key = link
+                parts.append(key)
+            return _pointer(reversed(parts))
+        items = value.items() if isinstance(value, Mapping) else enumerate(value)
+        stack.extend(reversed([(v, (link, k), depth + 1) for k, v in items
+                               if isinstance(v, (Mapping, list, tuple))]))
+    return None
 
 
 # ------------------------------------------------------------------------------------------------ V
@@ -220,8 +248,8 @@ def _relation_findings(r: dict[str, Any], p: str, types: set[str], roles: set[st
                               f"the time model's {end} {role!r} is not a time usage with max 1 and one time literal"))
         if tm.get("start") == tm.get("end"):
             out.append(_f("KHG-M007", f"{p}/time" if own else p, "the time model's start and end are one role"))
-    for j, u in usages:
-        if u.get("slot") == "time" and u.get("role") not in named:
+    for j, u in usages:  # a role that is not a string is the meta-schema's M015
+        if u.get("slot") == "time" and isinstance(u.get("role"), str) and u["role"] not in named:
             out.append(_f("KHG-M007", f"{p}/roles/{j}", f"time usage {u.get('role')!r} is not named by the time model"))
     # the key
     key = r.get("key")
@@ -257,9 +285,14 @@ def _relation_findings(r: dict[str, Any], p: str, types: set[str], roles: set[st
 
 
 def python_findings(doc: Any) -> list[Finding]:
-    """The M checks that need the whole document (see the module docstring)."""
-    if not isinstance(doc, dict):
+    """The M checks that need the whole document (see the module docstring). Integral floats are read as ints
+    (``json_copy``), so a ``max`` of ``1.0`` below a ``min`` of ``2.0`` is M010 as with integers."""
+    if not isinstance(doc, Mapping):
         return []
+    return _python_findings(json_copy(doc))
+
+
+def _python_findings(doc: dict[str, Any]) -> list[Finding]:
     out: list[Finding] = []
     types = set(_ids(doc, "entity_types", out))
     roles = set(_ids(doc, "roles", out))
@@ -271,17 +304,18 @@ def python_findings(doc: Any) -> list[Finding]:
         for k, x in enumerate(_list(t.get("parents"))):
             if isinstance(x, str) and x not in types:
                 out.append(_f("KHG-M016", f"/entity_types/{i}/parents/{k}", f"unknown parent type {x!r}"))
-        if t.get("id") in cyc:
+        if isinstance(t.get("id"), str) and t["id"] in cyc:  # an id that is not a string is the meta-schema's
             out.append(_f("KHG-M016", f"/entity_types/{i}/parents",
                           f"entity type {t.get('id')!r} is on a parents cycle"))
-    seen_scales: set[Any] = set()
+    seen_scales: set[str] = set()
     for i, s in _items(doc.get("confidence_scales")):
         sid = s.get("id")
         if sid == "probability":
             out.append(_f("KHG-M015", f"/confidence_scales/{i}/id", "the scale probability is built in"))
-        elif sid in seen_scales:
+        elif isinstance(sid, str) and sid in seen_scales:
             out.append(_f("KHG-M015", f"/confidence_scales/{i}/id", f"duplicate confidence scale {sid!r}"))
-        seen_scales.add(sid)
+        if isinstance(sid, str):
+            seen_scales.add(sid)
         lo, hi = s.get("min"), s.get("max")
         if isinstance(lo, (int, float)) and isinstance(hi, (int, float)) and not lo < hi:
             out.append(_f("KHG-M015", f"/confidence_scales/{i}", f"scale min {lo} is not below max {hi}"))
@@ -294,25 +328,21 @@ def python_findings(doc: Any) -> list[Finding]:
 # ------------------------------------------------------------------------------------------------ entry points
 
 
-def _plain(x: Any) -> Any:
-    """Mappings as dicts and tuples as lists, so both engines see JSON types."""
-    if isinstance(x, Mapping):
-        return {k: _plain(v) for k, v in x.items()}
-    if isinstance(x, (list, tuple)):
-        return [_plain(v) for v in x]
-    return x
-
-
 def check_schema(doc: Any, *, engine: str = "jsonschema") -> list[Finding]:
-    """The findings of the ``J V M`` pipeline on a parsed document: J007 for a non-object, else V001 (which stops
-    the run), else the meta-schema's findings followed by the Python checks'. [] means valid."""
+    """The findings of the ``J V M`` pipeline on a parsed document: J007 for a non-object and J001 for nesting
+    deeper than ``MAX_DEPTH`` levels (either stops the run), else V001 (which stops the run), else the meta-schema's
+    findings followed by the Python checks'. [] means valid. Both halves read a plain copy (``json_copy``: mappings
+    as dicts, tuples as lists, integral floats as ints, built without recursion)."""
     if not isinstance(doc, Mapping):
         return [_f("KHG-J007", "", f"top level is {type(doc).__name__}, not an object")]
+    deep = nesting_fault(doc)
+    if deep is not None:
+        return [_f("KHG-J001", deep, f"nesting deeper than {MAX_DEPTH} levels")]
     v = version_findings(doc)
     if v:
         return v
-    plain = _plain(doc)
-    return meta_findings(plain, engine=engine) + python_findings(plain)
+    plain = json_copy(doc)
+    return meta_findings(plain, engine=engine) + _python_findings(plain)
 
 
 def load_schema(source: str | os.PathLike[str] | Mapping[str, Any] | Schema) -> Schema:

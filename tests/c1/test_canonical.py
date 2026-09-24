@@ -4,6 +4,8 @@ from __future__ import annotations
 import copy
 import unicodedata
 
+import pytest
+
 from khg_contracts import data, jsonio, record
 from khg_contracts.schema import load_schema
 
@@ -95,6 +97,58 @@ def test_normalize_is_idempotent():
         assert record.normalize(once) == once
 
 
+def _without_e1_supports(container):
+    doc = copy.deepcopy(container)
+    for r in doc["records"]:
+        if r.get("id") == "f:king-13":
+            r["evidence"][0].pop("supports")  # e1, which v1 (bids b1-b3) and v2 (b1-b4) carry
+    return doc
+
+
+def test_carried_evidence_keeps_the_supports_of_the_first_version_that_carries_it():
+    """§2.8.1: an omitted ``supports`` means every bid where the evidence is first written; a later version that
+    carries the evidence without ``supports`` keeps that list, so writing a history changes no evidence."""
+    doc = _without_e1_supports(HISTORY)
+    assert record.canonical_container(doc) == HISTORY  # v2's e1 supports b1-b3, not b4
+    shuffled = {"header": doc["header"], "records": list(reversed(doc["records"]))}
+    assert record.canonical_container(shuffled) == HISTORY
+    v1, v2 = [r for r in doc["records"] if r.get("id") == "f:king-13"]
+    assert record.normalize(v2)["evidence"][0]["supports"] == ["b1", "b2", "b3", "b4"]  # alone: every bid
+    out = record.carried_supports([v1, v2])
+    assert out[0] is v1 and [e["supports"] for e in out[1]["evidence"]] == [["b1", "b2", "b3"], ["b4"]]
+    assert "supports" not in v2["evidence"][0]  # the input is not changed
+    narrow = copy.deepcopy(v1)
+    narrow["evidence"][0]["supports"] = ["b3", "b1"]
+    assert record.carried_supports([narrow, v2])[1]["evidence"][0]["supports"] == ["b3", "b1"]
+    new_in_v2 = copy.deepcopy(v2)
+    del new_in_v2["evidence"][1]["supports"]  # e2 is first written in v2: normalize gives it every bid
+    assert "supports" not in record.carried_supports([v1, new_in_v2])[1]["evidence"][1]
+    assert record.resolve_supports(list(reversed(doc["records"])))[3]["evidence"][0]["supports"] == \
+        ["b1", "b2", "b3"]  # by version number, whatever the order
+    snapshot = dict(doc, header=dict(doc["header"], content="snapshot"))  # one version per id: nothing carried
+    assert record.canonical_container(snapshot) != HISTORY
+
+
+def test_normalize_copies_any_depth_and_refuses_a_cycle():
+    """What layer J accepts is well inside the Python stack; an object in memory may nest deeper, and is then
+    normalised iteratively, to the same result."""
+    deep = "e\u0301"
+    for _ in range(3000):
+        deep = {"k": [deep]}
+    out = record.normalize({"kind": "entity", "id": "ex:x", "types": ["T"], "extensions": {"ex:deep": deep}})
+    x = out["extensions"]["ex:deep"]
+    for _ in range(3000):
+        x = x["k"][0]
+    assert x == "\u00e9"
+    from khg_contracts.record._common import _nfc_deep, _nfc_deep_iterative
+    for doc in (C1, HISTORY, {"\u00e9": 1, "e\u0301": [("x",)]}, [], "e\u0301", None):
+        assert _nfc_deep_iterative(doc) == _nfc_deep(doc)
+    loop: dict = {"a": []}
+    loop["a"].append(loop)
+    with pytest.raises(ValueError):
+        record.normalize({"kind": "entity", "id": "ex:x", "extensions": loop})
+
+
 def test_entities_are_kept_as_they_are():
     tp53 = next(r for r in C1["records"] if r.get("id") == "ex:TP53")
     assert record.normalize(tp53) == tp53 and "rank" not in record.normalize(tp53)
@@ -118,6 +172,16 @@ def test_history_containers_order_versions():
         [(r["id"], r.get("version")) for r in HISTORY["records"]]
     assert [(r["id"], r["version"]) for r in out["records"] if r["kind"] == "hyperedge"] == \
         [("f:king-13", 1), ("f:king-13", 2), ("f:reg-1", 1), ("f:reg-1", 2), ("m:ret-1", 1)]
+
+
+def test_an_integral_float_version_is_its_integer():
+    """F10: canonical JSON writes ``2.0`` as ``2``, so the canonical order (and which version first carries a piece of
+    evidence) reads it as version 2, not as a record without a version; a round trip keeps the order."""
+    doc = _without_e1_supports(HISTORY)
+    for r in doc["records"]:
+        r["version"] = float(r["version"])
+    out = record.canonical_container({"header": doc["header"], "records": list(reversed(doc["records"]))})
+    assert jsonio.canonical(out) == jsonio.canonical(HISTORY)
 
 
 def test_decision_view_reproduces_the_smoke_decision_hash():

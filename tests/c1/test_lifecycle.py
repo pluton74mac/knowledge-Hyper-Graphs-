@@ -230,6 +230,20 @@ def test_earlier_evidence_stays_as_written():
     assert lifecycle.version_problems(implicit, reg, S) == lifecycle.version_problems(reg, implicit, S) == []
 
 
+def test_a_new_version_gives_an_evidence_id_once():
+    """A second record under a held evidence id would rewrite what the id names, in whichever order it comes."""
+    reg = FIX["f:reg-1"]
+    forged = {"id": "e1", "type": "curated", "mode": "manual", "source": {"doc_id": "doc:forged"}, "supports": ["b1"]}
+    for evidence in ([forged, reg["evidence"][0]], [reg["evidence"][0], forged]):
+        problems = lifecycle.version_problems(reg, fact("f:reg-1", evidence=copy.deepcopy(evidence)), S)
+        assert "KHG-D013" in codes(problems) and any("given 2 times" in p.message for p in problems)
+    twice = copy.deepcopy(reg)
+    twice["evidence"].append(copy.deepcopy(reg["evidence"][0]))  # a legacy duplicate kept as it is: no new record
+    assert lifecycle.version_problems(twice, copy.deepcopy(twice), S) == []
+    odd = fact("f:reg-1", evidence=[{"id": ["e1"]}, {"id": ["e1"]}])  # ids that are not strings are layer C's
+    assert all(p.code == "KHG-D013" for p in lifecycle.version_problems(reg, odd, S))
+
+
 def test_superseded_and_retracted_facts_are_frozen():
     krakow = FIX["f:born-skłodowska-kraków"]
     more = copy.deepcopy(krakow)
@@ -280,6 +294,47 @@ def test_history_rules():
     r1, r2 = versions("f:reg-1")
     again = lifecycle.with_status(r2, "asserted") | {"version": 3, "recorded_at": "2026-10-01T00:00:06Z"}
     assert [(p.code, p.version) for p in lifecycle.history_problems([r1, r2, again], S)] == [("KHG-D014", 3)]  # MC138
+
+
+def test_history_evidence_without_supports_supports_what_it_did_where_first_written():
+    """§2.8.1: evidence that a later version carries without ``supports`` supports what it resolved to in the first
+    version that carries it, as the canonical form writes it; not every bid of the later version."""
+    v1, v2 = versions("f:king-13")  # v2 adds b4 (the end) and e2
+    for v in (v1, v2):
+        del v["evidence"][0]["supports"]  # e1
+    assert lifecycle.history_problems([v1, v2], S) == []
+    narrow = copy.deepcopy(v1)
+    narrow["evidence"][0]["supports"] = ["b1"]
+    assert lifecycle.history_problems([narrow, v2], S) == []  # v2's e1 still supports b1 only
+    widened = copy.deepcopy(v2)
+    widened["evidence"][0]["supports"] = ["b1", "b2", "b3", "b4"]  # written out, it is a change
+    assert [(p.code, p.pointer) for p in lifecycle.history_problems([v1, widened], S)] == [
+        ("KHG-D013", "/evidence/0")]
+    assert "supports" not in v2["evidence"][0]  # the versions given are not changed
+
+
+def test_an_undo_resolved_by_a_dispute_is_one_step_of_a_history():
+    """S-LIFE-013: undoing a correction with ``resolve_superseding: dispute`` restores the superseded fact and disputes
+    it in one event, so its history goes from superseded to disputed in one version. No single row of the table does
+    that, and an event still may not (D014)."""
+    k = FIX["f:born-skłodowska-kraków"]  # superseded by m:sup-1
+    v1 = lifecycle.with_status(k, "asserted") | {"version": 1, "recorded_at": "2026-10-01T00:00:01Z"}
+    v2 = dict(k) | {"version": 2, "recorded_at": "2026-10-01T00:00:02Z"}
+    v3 = lifecycle.with_status(k, "disputed", "m:dis-9") | {"version": 3, "recorded_at": "2026-10-01T00:00:03Z"}
+    assert lifecycle.history_problems([v1, v2, v3], S) == []
+    assert codes([lifecycle.transition_problem("superseded", "disputed")]) == ["KHG-D014"]
+    quoted = dict(v3, status="quoted")
+    quoted.pop("status_ref")
+    assert [(p.code, p.version) for p in lifecycle.history_problems([v1, v2, quoted], S)] == [("KHG-D014", 3)]
+    assert ("superseded", "disputed") not in lifecycle.TRANSITIONS
+
+
+def test_history_versions_that_are_integral_floats_are_their_integers():
+    """F10: canonical JSON writes ``2.0`` as ``2``; the history rules sort and number versions the same way."""
+    v1, v2 = versions("f:king-13")
+    floats = [dict(v2, version=2.0), dict(v1, version=1.0)]
+    assert lifecycle.history_problems(floats, S) == []
+    assert codes(lifecycle.history_problems([dict(v1, version=1.5), v2], S)) == ["KHG-D001"]
 
 
 def test_history_transitions_check_the_content_too():

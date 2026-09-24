@@ -190,6 +190,26 @@ def test_auto_picks_the_kind_of_an_object():
     assert report.kind == "container" and [f["path"] for f in report.findings] == ["/records/31", "/records/29"]
 
 
+@pytest.mark.parametrize(("rel", "kind"), [("fixture/smoke-queue.khg-queue.jsonl", "queue"),
+                                           ("fixture/c4-items.jsonl", "item"), ("fixture/fixture.c1.jsonl", "container")])
+def test_auto_reads_a_lone_header_line_as_a_file_of_one_line(rel, kind):
+    """b-validate-12: a JSONL file of its header line only (a fresh queue, as ``Queue.create`` writes it) parses to
+    one object; auto reads it as the file it is, as the explicit kinds do."""
+    header = data.load_jsonl(rel)[0]
+    bases = [data.load_json("fixture/smoke-base.c1.json")]  # the queue header names it
+    for source in (header, (json.dumps(header, ensure_ascii=False) + "\n").encode("utf-8"), [header]):
+        report = run(source, schema=SCHEMA, bases=bases)
+        assert report.kind == kind and report.ok, (source, report.findings)
+        assert report.findings == run([header], kind=kind, schema=SCHEMA, bases=bases).findings
+
+
+def test_auto_tells_a_lone_header_from_other_objects():
+    assert run({"incidences": [], "kind": ["header"]}).kind == "hif"  # an unhashable kind is not a header's
+    doc = dict(copy.deepcopy(FIXTURE), kind="header")  # a container object, whatever else it carries
+    report = run(doc, schema=SCHEMA)
+    assert report.kind == "container" and [f["code"] for f in report.errors] == ["KHG-C009"]
+
+
 @pytest.mark.parametrize("obj", [{"a": 1}, {"kind": "claim"}, [{"kind": "line"}], {"records": []}])
 def test_auto_reports_v001_when_it_cannot_tell_the_kind(obj):
     report = run(obj)

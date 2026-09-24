@@ -58,23 +58,46 @@ def value_refines(a: Mapping[str, Any], b: Mapping[str, Any]) -> bool:
 
 def injective_match(n_from: int, n_to: int, ok: Callable[[int, int], bool]) -> bool:
     """True when every i in ``range(n_from)`` can be paired with its own j in ``range(n_to)`` such that
-    ``ok(i, j)`` (bipartite matching by augmenting paths; deterministic)."""
+    ``ok(i, j)`` (bipartite matching by augmenting paths after a greedy first pass; deterministic). The search keeps
+    its own stack, so an augmenting path may run through any number of bindings (a recursive search met Python's
+    recursion limit near a thousand)."""
     if n_from > n_to:
         return False
     edges = [[j for j in range(n_to) if ok(i, j)] for i in range(n_from)]
     owner: list[int | None] = [None] * n_to
-
-    def augment(i: int, seen: list[bool]) -> bool:
-        for j in edges[i]:
-            if not seen[j]:
-                seen[j] = True
-                o = owner[j]
-                if o is None or augment(o, seen):
-                    owner[j] = i
-                    return True
-        return False
-
-    return all(augment(i, [False] * n_to) for i in range(n_from))
+    unmatched = []
+    for i, columns in enumerate(edges):  # each row takes its first free column; augmenting paths place the rest
+        j = next((c for c in columns if owner[c] is None), None)
+        if j is None:
+            unmatched.append(i)
+        else:
+            owner[j] = i
+    for root in unmatched:
+        seen = [False] * n_to
+        # rows[k] is a row on the path and cols[k] the column it takes: its owner is rows[k + 1]
+        rows: list[int] = [root]
+        cols: list[int] = []
+        tried = [iter(edges[root])]
+        while rows:
+            j = next((c for c in tried[-1] if not seen[c]), None)
+            if j is None:  # the row is exhausted: back to the row before it
+                rows.pop()
+                tried.pop()
+                if cols:
+                    cols.pop()
+                continue
+            seen[j] = True
+            cols.append(j)
+            o = owner[j]
+            if o is None:  # a free column: flip ownership along the path
+                for row, col in zip(rows, cols, strict=True):
+                    owner[col] = row
+                break
+            rows.append(o)
+            tried.append(iter(edges[o]))
+        else:
+            return False
+    return True
 
 
 def _by_role(record: Mapping[str, Any], schema: Schema, rel: str) -> dict[str, list[Mapping[str, Any]]]:

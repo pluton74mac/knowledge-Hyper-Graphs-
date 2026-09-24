@@ -171,6 +171,22 @@ def _failing_keywords(sub):
 
 
 @pytest.mark.parametrize("sid", OURS)
+def test_property_names_carry_one_code_for_both_engines(sid):
+    """b-validate-06: jsonschema reports a failing ``propertyNames`` at the child's failing keyword, fastjsonschema at
+    the parent with the rule ``propertyNames``; both must name the same code."""
+    doc = data.schema_documents()[sid]
+    seen = 0
+    for path, sub in _subschemas(doc):
+        child = sub.get("propertyNames")
+        if isinstance(child, dict):
+            seen += 1
+            parent_code = engines.code_of(sub, "propertyNames")
+            child_codes = {engines.code_of(child, k) for k in _failing_keywords(child)}
+            assert child_codes == {parent_code}, (sid, path, parent_code, child_codes)
+    assert seen or sid in (engines.C4_SCHEMA_ID, engines.C5_SCHEMA_ID, QUEUE_SCHEMA_ID)
+
+
+@pytest.mark.parametrize("sid", OURS)
 def test_every_constraint_names_a_registered_active_code_of_its_layer(sid):
     """The coverage test of §8.1: the generator propagated a code to every constraint-bearing subschema."""
     reg = registry()

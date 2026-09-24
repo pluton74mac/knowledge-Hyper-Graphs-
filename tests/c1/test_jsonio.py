@@ -82,6 +82,71 @@ def test_strict_parse_codes(raw, code):
     assert _codes(jsonio.loads, raw).codes == (code,)
 
 
+@pytest.mark.parametrize("raw, code", [
+    (b'{"a": 10000000000000000}', "KHG-J006"),
+    (b'{"a": 1' + b"0" * 4300 + b'}', "KHG-J006"),  # beyond int()'s 4300 digits: a plain ValueError before
+    (b'{"a": -1' + b"0" * 5000 + b'}', "KHG-J006"),
+    (b'{"a": ' + b"[" * 256 + b"1" + b"]" * 256 + b'}', "KHG-J001"),  # 257 levels, one more than MAX_DEPTH
+], ids=["17-digits", "4301-digits", "negative-5001-digits", "257-levels"])
+def test_strict_parse_codes_of_long_and_deep_documents(raw, code):
+    assert _codes(jsonio.loads, raw).codes == (code,)
+    assert _codes(jsonio.loads_lines, raw).codes == (code,)
+
+
+def test_integers_of_any_length_are_j006_on_every_path():
+    big = "1" + "0" * 5000
+    err = _codes(jsonio.loads_lines, '{"a": 1}\n{"b": ' + big + "}\n")
+    assert err.codes == ("KHG-J006",) and err.info["findings"][0]["path"] == "/lines/1"
+    assert len(err.info["findings"][0]["message"]) < 200  # the digits are not all repeated
+    assert jsonio.loads('{"a": 9007199254740991, "b": -9007199254740991, "c": -0}') == \
+        {"a": 2 ** 53 - 1, "b": -(2 ** 53 - 1), "c": 0}
+    for x in (2 ** 53, 10 ** 5000, -(10 ** 5000)):  # str() of the last two is itself a ValueError
+        assert _codes(jsonio.canonical, {"x": x}).codes == ("KHG-J006",)
+    from khg_contracts import validate
+    for source in (b'{"header": {"n": ' + big.encode() + b'}, "records": []}', ('{"n": ' + big + "}").encode()):
+        report = validate.validate(source, kind="container")
+        assert report["ok"] is False and [f["code"] for f in report["findings"]] == ["KHG-J006"]
+
+
+def test_nesting_is_limited_to_max_depth_levels_whatever_the_python_version():
+    """An explicit limit (the parser's own is near 1000 levels on 3.10 and 3.11 and far higher on 3.13); the finding
+    points at the first value too deep, as layer J's does for an object in memory."""
+    assert jsonio.MAX_DEPTH == 256
+
+    def text(levels):  # levels of nested objects under the key "a"
+        return '{"a":' * levels + "1" + "}" * levels
+
+    assert jsonio.loads(text(jsonio.MAX_DEPTH))["a"]["a"]["a"]
+    for levels in (jsonio.MAX_DEPTH + 1, 600, 3000):
+        err = _codes(jsonio.loads, text(levels))
+        assert err.codes == ("KHG-J001",)
+        if levels < 900:  # beyond what the parser reaches from the caller's stack the path is the document's
+            assert err.info["findings"][0]["path"] == "/a" * jsonio.MAX_DEPTH
+            assert err.info["findings"][0]["message"] == f"nesting deeper than {jsonio.MAX_DEPTH} levels"
+    err = _codes(jsonio.loads_lines, '{"k": 1}\n{"x~y/z": [[' + "[" * 300 + "]" * 300 + "]]}\n")
+    assert err.codes == ("KHG-J001",)
+    assert err.info["findings"][0]["path"] == "/lines/1/x~0y~1z" + "/0" * (jsonio.MAX_DEPTH - 1)
+    wide = '{"a": [' + ", ".join(["[[]]"] * 400) + "]}"  # many brackets, little depth
+    assert len(jsonio.loads(wide)["a"]) == 400
+
+
+def test_canonical_writes_any_depth_and_refuses_a_cycle():
+    deep = 1
+    for _ in range(5000):  # deeper than the Python stack: written iteratively, the same text
+        deep = [deep, {"k": "e\u0301"}]
+    text = jsonio.canonical(deep)
+    assert text.startswith("[" * 5000 + "1,{") and text.endswith('{"k":"\u00e9"}]') and len(text) == 5000 * 12 + 1
+    shallow = {"b": [1, {"c": None, "a": "x"}], "a": []}
+    from khg_contracts.jsonio import _write_deep
+    out: list = []
+    _write_deep(shallow, out)
+    assert "".join(out) == jsonio.canonical(shallow) == '{"a":[],"b":[1,{"a":"x","c":null}]}'
+    loop: dict = {"a": []}
+    loop["a"].append(loop)
+    with pytest.raises(ValueError):
+        jsonio.canonical(loop)
+
+
 def test_raw_lone_surrogate_in_text_is_j005():
     assert _codes(jsonio.loads, '{"a": "x\ud800y"}').codes == ("KHG-J005",)
 
