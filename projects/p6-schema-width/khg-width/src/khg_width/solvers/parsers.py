@@ -28,6 +28,19 @@ class Parsed:
     edges_echoed: int | None
     tree: dict | None
     algorithm: str | None
+    check_failures: tuple = ()  # the tool's own check rejected a decomposition it found (not a "no")
+
+
+#: What BalancedGo's and log-k-decomp's ``Decomp.Correct`` print when a decomposition they found fails their own
+#: check (lib/decomp.go at the pinned commits). A "no" (no decomposition of width k) prints none of them: its
+#: decomposition is empty and ``Correct`` returns false silently.
+CHECK_FAILURES = (
+    re.compile(r"^Decomp of different graph"),
+    re.compile(r"^Empty Decomp"),
+    re.compile(r"Bags not subsets of edge labels"),
+    re.compile(r"^Edge .* isn't covered"),
+    re.compile(r"^Vertex .* doesn't span connected subtree"),
+)
 
 
 _SET = re.compile(r"\{([^}]*)\}")
@@ -100,8 +113,9 @@ def parse_stdout(text: str) -> Parsed:
         m = re.search(r"#hyperedges\"?\s*[:=]\s*(\d+)", s) or re.match(r"(?:Edges|edges|hyperedges):\s*(\d+)$", s)
         if m:
             echoed = int(m.group(1))
+    failures = tuple(ln.strip() for ln in text.splitlines() if any(rx.search(ln.strip()) for rx in CHECK_FAILURES))
     return Parsed(k=k, width=width, correct=correct, scv="SCV found!" in text, edges_echoed=echoed,
-                  tree=parse_tree_text(text), algorithm=algorithm)
+                  tree=parse_tree_text(text), algorithm=algorithm, check_failures=failures)
 
 
 def _from_balancedgo(node: dict | None) -> dict | None:

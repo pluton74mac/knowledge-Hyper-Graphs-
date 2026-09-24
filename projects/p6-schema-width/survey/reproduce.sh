@@ -9,8 +9,9 @@
 # 2. Verify the dataset manifests. A missing raw file gets its fetch command: Biolink and Zenodo return identical
 #    bytes; WDQS returns a *new* snapshot (then regenerate with --new-snapshot).
 # 3. Generate the schemas (from P3a's counts when --p3a-counts is given, else from SQID) into a temporary directory
-#    and compare them with the committed files (file sha256 and the C1 schema sha256). A mismatch stops the run
-#    unless --new-snapshot is given, which replaces the committed files.
+#    and install them (run_survey.py install): files identical to the committed ones (file sha256 and C1 schema
+#    sha256) are left untouched; SQID-based observed files replaced by P3a-based ones move, with their reports, to
+#    results/superseded/ (DESIGN §6.6); any other difference stops the run unless --new-snapshot.
 # 4. Run the rows, then the HyperBench baseline, then the table and the figure.
 #
 # Run time on 4 cores at the default 600 s per step: generation ~2.5 min; Biolink and control rows under a minute
@@ -74,33 +75,14 @@ sys.exit(1 if bad else 0)
 PYEOF
 
 echo "== 3. schemas"
-TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
-GEN=("$PY" "$HERE/run_survey.py" generate --out "$TMP")
+GEN=("$PY" "$HERE/run_survey.py" generate --out "$OUT")
 [ -n "$P3A" ] && GEN+=(--p3a-counts "$P3A")
-"${GEN[@]}" > "$TMP/generated.json"
-"$PY" - "$TMP" "$OUT" "$NEW" <<'PYEOF'
-import json, shutil, sys
-from pathlib import Path
-tmp, out, new = Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3] == "1"
-(out / "schemas").mkdir(parents=True, exist_ok=True)
-diff = []
-for prov in sorted((tmp / "schemas").glob("*.provenance.json")):
-    p = json.loads(prov.read_text())
-    old = out / "schemas" / prov.name
-    if old.exists():
-        q = json.loads(old.read_text())
-        if (q["file_sha256"], q["schema_sha256"]) != (p["file_sha256"], p["schema_sha256"]):
-            diff.append(p["schema_id"])
-    else:
-        diff.append(p["schema_id"] + " (new)")
-if diff and not new:
-    sys.exit("generated schemas differ from the committed ones: " + ", ".join(diff) + "\n(rerun with --new-snapshot to replace them)")
-for f in (tmp / "schemas").iterdir():
-    shutil.copy2(f, out / "schemas" / f.name)
-if (tmp / "p3a-crosscheck.json").exists():
-    shutil.copy2(tmp / "p3a-crosscheck.json", out / "p3a-crosscheck.json")
-print(f"  {len(list((tmp / 'schemas').glob('*.provenance.json')))} schema files match" if not diff else f"  replaced: {diff}")
-PYEOF
+[ "$NEW" = 1 ] && GEN+=(--new-snapshot)
+# generates into a temporary directory, then installs: identical files are left as they are; with P3a's counts the
+# SQID-based observed files and their reports move to superseded/ (expected); any other difference stops the run
+# unless --new-snapshot. Rows whose files were installed are listed in pending-rerun.json.
+"${GEN[@]}" > /dev/null
+"$PY" "$HERE/run_survey.py" pending --out "$OUT"
 
 echo "== 4. rows, baseline, table, figure"
 "$PY" "$HERE/run_survey.py" run --out "$OUT" --rows "$ROWS" --jobs "$JOBS" --time-limit "$LIMIT" --solver "$SOLVER"

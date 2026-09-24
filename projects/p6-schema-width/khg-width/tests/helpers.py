@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import csv
 import itertools
+import json
 import os
 import random
 from fractions import Fraction
@@ -159,3 +160,246 @@ def brute_force_class(edges: dict) -> str:
     gamma = beta and not _gamma_triangle(h)
     berge = _berge_acyclic(edges)
     return "berge" if berge else "gamma" if gamma else "beta" if beta else "alpha" if alpha else "cyclic"
+
+
+# ------------------------------------------------------------------------------------------------ named instances
+def grid(n: int) -> dict[str, list[str]]:
+    """The n x n grid graph as binary relations (R01's instances.py)."""
+    edges: dict[str, list[str]] = {}
+    for r in range(n):
+        for c in range(n):
+            if c + 1 < n:
+                edges[f"h{r}_{c}"] = [f"r{r}c{c}", f"r{r}c{c + 1}"]
+            if r + 1 < n:
+                edges[f"v{r}_{c}"] = [f"r{r}c{c}", f"r{r + 1}c{c}"]
+    return edges
+
+
+def clique(n: int) -> dict[str, list[str]]:
+    return {f"e{i}_{j}": [f"x{i}", f"x{j}"] for i, j in itertools.combinations(range(1, n + 1), 2)}
+
+
+def grohe_marx(n: int) -> dict[str, list[str]]:
+    """Grohe and Marx (TALG 2014), Example 4.2 (R01's instances.py)."""
+    subsets = list(itertools.combinations(range(1, 2 * n + 1), n))
+
+    def name(s: tuple) -> str:
+        return "s" + "_".join(map(str, s))
+
+    return {f"e{i}": [name(s) for s in subsets if i in s] for i in range(1, 2 * n + 1)}
+
+
+ADLER = {"E1": ["V1", "V2", "V9"], "E2": ["V2", "V3", "V10"], "E3": ["V3", "V4"], "E4": ["V4", "V5", "V9"],
+         "E5": ["V5", "V6", "V10"], "E6": ["V6", "V7", "V9"], "E7": ["V7", "V8", "V10"], "E8": ["V8", "V1"]}
+
+
+def named_set() -> dict[str, dict[str, list[str]]]:
+    """R01's named instances with hw 2 to 3 (§2.2 and §4.4)."""
+    return {"b_triangle": clique(3), "k5": clique(5), "adler": dict(ADLER), "c_grid4": grid(4), "c_grid5": grid(5),
+            "grohe_marx_3": grohe_marx(3)}
+
+
+def dense_set(count: int = 150, seed: int = SEED + 1) -> list[dict[str, list[str]]]:
+    """Denser random hypergraphs (6-9 roles, 8-14 relations of 2-4 roles), where hw 3 occurs."""
+    rng = random.Random(seed)
+    out = []
+    for _ in range(count):
+        n = rng.randint(6, 9)
+        m = rng.randint(8, 14)
+        verts = [f"v{i}" for i in range(n)]
+        out.append({f"e{j}": rng.sample(verts, rng.choice([2, 2, 3, 3, 4])) for j in range(m)})
+    return out
+
+
+# ------------------------------------------------------------------------------------------------ independent oracles (F2)
+def _solve(rows: list, rhs: list) -> list | None:
+    """Solve a square system over Fractions; None when singular."""
+    n = len(rows)
+    a = [list(r) + [b] for r, b in zip(rows, rhs)]
+    for c in range(n):
+        p = next((r for r in range(c, n) if a[r][c] != 0), None)
+        if p is None:
+            return None
+        a[c], a[p] = a[p], a[c]
+        pv = a[c][c]
+        a[c] = [x / pv for x in a[c]]
+        for r in range(n):
+            if r != c and a[r][c] != 0:
+                f = a[r][c]
+                a[r] = [x - f * y for x, y in zip(a[r], a[c])]
+    return [a[r][n] for r in range(n)]
+
+
+def rho_star_oracle(bag: frozenset, edges: list) -> Fraction:
+    """rho*(bag): the dual LP (max sum y, sum over each trace <= 1, y >= 0) solved exactly by enumerating its
+    vertices: every choice of |bag| tight constraints, solved over Fractions, kept when feasible."""
+    verts = sorted(bag)
+    n = len(verts)
+    if n == 0:
+        return Fraction(0)
+    trs = {frozenset(e & bag) for e in edges if e & bag}
+    trs = [t for t in trs if not any(t < u for u in trs)]
+    if any(t == frozenset(bag) for t in trs):
+        return Fraction(1)
+    cons = [[Fraction(1) if v in t else Fraction(0) for v in verts] for t in trs]  # sum_{v in t} y_v <= 1
+    zero = [[Fraction(1) if j == i else Fraction(0) for j in range(n)] for i in range(n)]  # y_i >= 0 (tight: = 0)
+    best = Fraction(0)
+    allc = [(r, Fraction(1)) for r in cons] + [(r, Fraction(0)) for r in zero]
+    for choice in itertools.combinations(range(len(allc)), n):
+        y = _solve([allc[i][0] for i in choice], [allc[i][1] for i in choice])
+        if y is None or any(v < 0 for v in y):
+            continue
+        if any(sum((y[j] for j in range(n) if row[j]), Fraction(0)) > 1 for row in cons):
+            continue
+        best = max(best, sum(y, Fraction(0)))
+    return best
+
+
+def rho_oracle(bag: frozenset, edges: list) -> int:
+    """rho(bag) by trying every set of 1, 2, ... traces."""
+    if not bag:
+        return 0
+    es = list({e & bag for e in edges if e & bag})
+    for k in range(1, len(es) + 1):
+        for comb in itertools.combinations(es, k):
+            if frozenset().union(*comb) >= bag:
+                return k
+    raise ValueError
+
+
+def widths_by_orderings(edges: list) -> tuple[int, int, Fraction]:
+    """(tw, ghw, fhw) of a small set hypergraph by brute force over ALL elimination orderings of its roles: each
+    ordering gives the bags {v} + v's later neighbours in the filled primal graph; the width is the minimum over
+    orderings of the maximum bag cost |B| - 1, rho(B), rho*(B) (Moll, Tazari and Thurley 2012). Independent of
+    khg_width: for the random set (at most 7 roles)."""
+    verts = sorted({v for e in edges for v in e})
+    n = len(verts)
+    idx = {v: i for i, v in enumerate(verts)}
+    adj0 = [0] * n
+    for e in edges:
+        m = sum(1 << idx[v] for v in e)
+        for v in e:
+            adj0[idx[v]] |= m & ~(1 << idx[v])
+    best = [None, None, None]
+    cost_cache = {}
+
+    def costs(mask):
+        c = cost_cache.get(mask)
+        if c is None:
+            b = frozenset(verts[i] for i in range(n) if mask >> i & 1)
+            c = (len(b) - 1, rho_oracle(b, edges), rho_star_oracle(b, edges))
+            cost_cache[mask] = c
+        return c
+
+    for order in itertools.permutations(range(n)):
+        adj = list(adj0)
+        alive = (1 << n) - 1
+        worst = [0, 0, Fraction(0)]
+        for v in order:
+            nb = adj[v] & alive
+            bag = nb | (1 << v)
+            c = costs(bag)
+            worst = [max(a, b) for a, b in zip(worst, c)]
+            x = nb
+            while x:
+                lb = x & -x
+                u = lb.bit_length() - 1
+                adj[u] |= nb & ~lb
+                x ^= lb
+            alive &= ~(1 << v)
+        best = [w if b is None else min(b, w) for b, w in zip(best, worst)]
+    return best[0], max(1, best[1]), max(Fraction(1), best[2])
+
+
+def recorded_hw() -> dict:
+    """``fixtures/random-hw.json``: hw recorded with BalancedGo -exact -det and log-k-decomp -exact
+    (tests/record_random_hw.py) for random_set(), dense_set() and named_set()."""
+    return json.loads((FIXTURES / "random-hw.json").read_text())
+
+
+# ------------------------------------------------------------------------------------------------ lower-bound witnesses (F9)
+def primal_of(edges) -> dict[str, set]:
+    nb: dict[str, set] = {}
+    for e in edges:
+        for v in e:
+            nb.setdefault(v, set()).update(e)
+    for v, s in nb.items():
+        s.discard(v)
+    return nb
+
+
+def min_degree_minor_bound(adj: dict[str, set]) -> int:
+    """Minor-min-width, written again here (contract a minimum-degree vertex into its minimum-degree neighbour;
+    the bound is the largest minimum degree met). tw(G) >= min degree of any minor of G."""
+    nb = {v: set(s) for v, s in adj.items()}
+    best = 0
+    while nb:
+        v = min(nb, key=lambda x: (len(nb[x]), x))
+        best = max(best, len(nb[v]))
+        ns = nb.pop(v)
+        if not ns:
+            continue
+        u = min(ns, key=lambda w: (len(nb[w]), w))
+        for w in ns:
+            nb[w].discard(v)
+        for w in ns:
+            if w != u:
+                nb[u].add(w)
+                nb[w].add(u)
+    return best
+
+
+def check_lower_witness(h, measure: str, w: dict, acyclicity: dict) -> str:
+    """Check a report's ``widths.<measure>.lower_witness`` against H cheaply; returns the method checked.
+    A clique must be a clique of H's primal graph; a fractional dual must be feasible on every relation of H."""
+    from khg_width.covers import rho
+
+    lw = w["lower_witness"]
+    assert lw is not None and lw["method"] == w["lower_method"], (measure, lw, w["lower_method"])
+    lower = Fraction(str(w["lower"])) if measure == "fhw" else int(w["lower"])
+    edges = [e for _, e in h.edges]
+    adj = primal_of(edges)
+    method = lw["method"]
+
+    def is_clique(roles) -> bool:
+        return all(b in adj.get(a, ()) for a, b in itertools.combinations(roles, 2))
+
+    if method == "join-tree":
+        assert acyclicity["class"] != "cyclic" and lower == 1 and h.edges
+    elif method == "empty":
+        assert not h.edges and lower == 0
+    elif method == "cyclic":
+        assert acyclicity["class"] == "cyclic"
+        assert (lower, w["lower_exclusive"]) == ((Fraction(1), True) if measure == "fhw" else (2, False))
+    elif method == "clique" and measure == "ghw":
+        k = frozenset(lw["roles"])
+        assert is_clique(k) and lw["rho"] == lower
+        # a clique lies in one bag of every GHD, so ghw >= rho(K); the checker may have used the cheaper
+        # ceil(|K| / largest trace) <= rho(K) on cliques with more than 60 traces
+        assert rho(k, list(h.edges))[0] >= lower
+    elif method == "clique" and measure == "fhw":
+        k = frozenset(lw["roles"])
+        y = {v: Fraction(x) for v, x in lw["dual"].items()}
+        assert is_clique(k) and set(y) <= k and all(x >= 0 for x in y.values())
+        assert all(sum((y.get(v, Fraction(0)) for v in e & k), Fraction(0)) <= 1 for e in edges)
+        assert sum(y.values(), Fraction(0)) == Fraction(lw["rho_star"]) == lower
+    elif method in ("rank", "simplicial"):
+        k = lw["clique"]
+        assert measure == "tw" and is_clique(k) and len(k) - 1 == lower
+    elif method == "minor-min-width":
+        blk = set(lw["block"])
+        sub = {v: adj[v] & blk for v in blk}
+        assert not blk & set(lw["universal"]) and len(lw["universal"]) == lw["offset"]
+        assert all(u in adj and set(adj[u]) >= set(adj) - {u} for u in lw["universal"])
+        assert min_degree_minor_bound(sub) == lw["value"] and lower == lw["value"] + lw["offset"]
+    elif method in ("induced-dp", "induced-hd-search"):
+        assert set(lw["roles"]) <= set(adj) and len(lw["roles"]) <= 18
+    elif method.startswith("refutation:") or method == "hd-search":
+        assert lower == lw["refuted_k"] + 1
+    elif method == "inequality":
+        assert lw["from"] in ("hw", "ghw", "fhw") and lw["rule"]
+    elif method == "dp":
+        pass  # an exact procedure: the value is the DP's; its certificate is the validated decomposition
+    else:
+        raise AssertionError(f"unknown lower-bound method {method}")
+    return method

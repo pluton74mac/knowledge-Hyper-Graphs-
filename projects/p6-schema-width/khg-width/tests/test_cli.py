@@ -31,7 +31,7 @@ def test_fixture_table(row, capsys):
                                ",".join(row["slot_tuple"]))
     assert status == 0, err
     rep = json.loads(out)
-    assert rep["format"] == "khg-width-report/0.1.0"
+    assert rep["format"] == "khg-width-report/0.2.0"
     assert rep["slots"] == list(row["slot_tuple"])
     acy = rep["acyclicity"]
     assert acy["class"] == row["class"]

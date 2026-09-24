@@ -132,18 +132,30 @@ def max_cliques(adj: Mapping[str, set], *, deadline: Deadline | None = None) -> 
         stack.append(frame(cr, cp, cx))
 
 
+@dataclass
+class CliqueBounds:
+    """The clique lower bounds found: ghw >= ``ghw`` from the clique ``ghw_clique`` (rho), fhw >= ``fhw`` from
+    ``fhw_clique`` (rho*, with the dual certificate ``fhw_dual``: role -> weight, sum = fhw, at most 1 on every
+    relation); ``seen`` cliques; ``complete`` is False when the enumeration stopped at its deadline (F7)."""
+
+    ghw: int = 0
+    fhw: Fraction = Fraction(0)
+    ghw_clique: frozenset | None = None
+    fhw_clique: frozenset | None = None
+    fhw_dual: dict = field(default_factory=dict)
+    seen: int = 0
+    complete: bool = True
+
+
 def clique_bounds(adj: Mapping[str, set], edges: Sequence[tuple[str, frozenset]], *, deadline: Deadline,
-                  want_fhw: bool = True, max_cover_trace: int = 60) -> tuple[int, Fraction, frozenset | None,
-                                                                              frozenset | None, int]:
-    """(ghw lower, fhw lower, clique for ghw, clique for fhw, cliques seen) over the maximal cliques of ``adj``.
-    rho(K) is exact when K has at most ``max_cover_trace`` traces (else ceil(|K| / largest trace)); rho*(K) is exact
-    on small cliques, else the certified dual bound |K| / largest trace."""
-    best_g, best_f = 0, Fraction(0)
-    kg = kf = None
-    seen = 0
+                  want_fhw: bool = True, max_cover_trace: int = 60) -> CliqueBounds:
+    """Lower bounds over the maximal cliques of ``adj``. rho(K) is exact when K has at most ``max_cover_trace``
+    traces (else ceil(|K| / largest trace)); rho*(K) is exact on small cliques, else the dual bound |K| / largest
+    trace (weight 1 / largest trace on every role of K). The best bounds found by the deadline are kept."""
+    out = CliqueBounds()
     try:
         for k in max_cliques(adj, deadline=deadline):
-            seen += 1
+            out.seen += 1
             ts = traces(k, edges)
             if len(ts) == 1:
                 continue  # inside one edge: rho = 1
@@ -152,19 +164,21 @@ def clique_bounds(adj: Mapping[str, set], edges: Sequence[tuple[str, frozenset]]
                 g = rho(k, edges, deadline=deadline)[0]
             else:
                 g = -(-len(k) // big)
-            if g > best_g:
-                best_g, kg = g, k
+            if g > out.ghw:
+                out.ghw, out.ghw_clique = g, k
             if want_fhw:
                 if len(k) <= EXACT_LP_ROLES and len(ts) <= EXACT_LP_EDGES:
-                    f = rho_star(k, edges, deadline=deadline).value
+                    fc = rho_star(k, edges, deadline=deadline)
+                    f, dual = fc.value, dict(fc.dual)
                 else:
-                    f = Fraction(len(k), big)
-                if f > best_f:
-                    best_f, kf = f, k
+                    f, dual = Fraction(len(k), big), {v: Fraction(1, big) for v in k}
+                if f > out.fhw:
+                    out.fhw, out.fhw_clique, out.fhw_dual = f, k, dual
     except Exception as e:  # a timeout keeps the best found so far
         if type(e).__name__ != "StepTimeout":
             raise
-    return best_g, best_f, kg, kf, seen
+        out.complete = False
+    return out
 
 
 # ------------------------------------------------------------------------------------------------ induced sets
@@ -233,15 +247,20 @@ class Bound:
     certificate_kind: str | None = None
     validation: Any = None
     notes: list = field(default_factory=list)
+    lower_witness: dict | None = None
 
-    def raise_lower(self, value: Any, method: str, *, exclusive: bool = False, prefer: bool = False) -> bool:
-        """Raise the lower bound to ``value``; ``prefer`` also relabels an equal bound (an exact procedure)."""
+    def raise_lower(self, value: Any, method: str, *, exclusive: bool = False, prefer: bool = False,
+                    witness: dict | None = None) -> bool:
+        """Raise the lower bound to ``value``; ``prefer`` also relabels an equal bound (an exact procedure).
+        ``witness`` (F9) is what the bound rests on: a clique, an induced set, a minor-min-width block, a refuting
+        run; it is kept with the bound as ``lower_witness``."""
         if value is None:
             return False
         if value > self.lower or (value == self.lower and self.lower_exclusive and not exclusive) or (
                 prefer and value == self.lower and not exclusive and not self.lower_exclusive
                 and self.lower_method != method):
             self.lower, self.lower_method, self.lower_exclusive = value, method, exclusive
+            self.lower_witness = {"method": method, **(witness or {})}
             return True
         return False
 
@@ -265,16 +284,18 @@ def propagate(b: Mapping[str, Bound], convert: Callable[[Bound, str], tuple[Any,
     for _ in range(10):
         changed = False
         # lower bounds
-        changed |= hw.raise_lower(ghw.lower, "inequality") if not ghw.lower_exclusive else False
+        if not ghw.lower_exclusive:
+            changed |= hw.raise_lower(ghw.lower, "inequality", witness={"rule": "hw >= ghw", "from": "ghw"})
         if fhw.lower_exclusive:
             fl = math.floor(fhw.lower) + 1 if Fraction(fhw.lower).denominator == 1 else math.ceil(fhw.lower)
         else:
             fl = math.ceil(fhw.lower)
-        changed |= ghw.raise_lower(fl, "inequality")
+        changed |= ghw.raise_lower(fl, "inequality", witness={"rule": "ghw >= ceil(fhw)", "from": "fhw"})
         if hw.lower:
-            changed |= ghw.raise_lower(max(0, math.ceil((hw.lower - 1) / 3)), "inequality")
+            changed |= ghw.raise_lower(max(0, math.ceil((hw.lower - 1) / 3)), "inequality",
+                                       witness={"rule": "ghw >= ceil((hw - 1) / 3)", "from": "hw"})
         if ghw.lower:
-            changed |= tw.raise_lower(ghw.lower - 1, "inequality")
+            changed |= tw.raise_lower(ghw.lower - 1, "inequality", witness={"rule": "tw >= ghw - 1", "from": "ghw"})
         # upper bounds (with certificates)
         if hw.upper is not None and (ghw.upper is None or hw.upper < ghw.upper) and convert is not None:
             got = convert(hw, "ghd")

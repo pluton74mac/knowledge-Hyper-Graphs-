@@ -15,7 +15,7 @@ from .decomposition import Decomposition, Validation, frac_str
 
 __all__ = ["Width", "WidthReport", "FORMAT", "MEASURES", "fmt_value"]
 
-FORMAT = "khg-width-report/0.1.0"
+FORMAT = "khg-width-report/0.2.0"  # 0.2.0: lower_witness, solver_attempts, the invalid outcome (review F1, F9)
 MEASURES = ("hw", "ghw", "fhw", "tw")
 KIND_OF = {"hw": "hd", "ghw": "ghd", "fhw": "fhd", "tw": "td"}
 
@@ -43,6 +43,7 @@ class Width:
     validation: Validation | None = None
     steps: tuple = ()
     detail: str = ""
+    lower_witness: dict | None = None
 
     @property
     def exact(self) -> bool:
@@ -70,7 +71,7 @@ class Width:
         return {"measure": self.measure, "lower": fmt_value(self.measure, self.lower),
                 "upper": fmt_value(self.measure, self.upper), "lower_exclusive": self.lower_exclusive,
                 "exact": self.exact, "lower_method": self.lower_method, "upper_method": self.upper_method,
-                "detail": self.detail, "certificate": cert,
+                "detail": self.detail, "lower_witness": self.lower_witness, "certificate": cert,
                 "validation": self.validation.to_json() if self.validation is not None else None,
                 "steps": list(self.steps)}
 

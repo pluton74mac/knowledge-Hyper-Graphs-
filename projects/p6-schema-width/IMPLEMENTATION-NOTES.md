@@ -7,7 +7,7 @@ created: 2026-09-24
 
 # P6 implementation notes
 
-What was built against [DESIGN.md](DESIGN.md) (with the director's rulings Q1–Q5) and [wd-roles.md](wd-roles.md) r1,
+What was built against [DESIGN.md](DESIGN.md) (with the director's rulings Q1–Q11) and [wd-roles.md](wd-roles.md) r1,
 and every place where the implementation had to choose. Where DESIGN is specific it was followed; where it was
 ambiguous the research prototypes' behaviour was preferred and the choice is listed here.
 
@@ -17,13 +17,14 @@ ambiguous the research prototypes' behaviour was preferred and the choice is lis
 |---|---|---|
 | §4 package | `khg-width/` (pyproject, `src/khg_width/`, `tests/`, `scripts/build-solvers.sh`, MIT) | done |
 | §4.5 solver build | `khg-width/scripts/build-solvers.sh` | built here (Go 1.24.7): both binaries pass the smoke test |
-| §5 fixtures and tests | `khg-width/tests/` (fixture table `fixtures/expected.csv`) | CI setting (Python 3.10, no extras, no solvers): 73 pass, 23 skip; with SciPy, linkml and both solvers: 93 pass, 3 skip (the `survey` tests) |
+| §5 fixtures and tests | `khg-width/tests/` (fixture table `fixtures/expected.csv`; recorded hw `fixtures/random-hw.json`) | after the review fixes (§7): CI setting (fresh Python 3.10 venv, `[dev]` only, no solvers): 88 pass, 20 skip; with SciPy, linkml, both solvers and the committed survey results: 108 pass |
 | §4.4 CI (F7) | `.github/workflows/ci.yml`, job `khg-width`, appended as given | simulated locally on Python 3.10 |
-| §6 survey scripts | `survey/run_survey.py`, `hyperbench_baseline.py`, `make_figure.py`, `reproduce.sh`, `crosscheck.sh` | smoke run only |
+| §6 survey scripts | `survey/run_survey.py`, `hyperbench_baseline.py`, `make_figure.py`, `reproduce.sh`, `crosscheck.sh` | smoke run here; the full run is commit 5f8683d (coordinator) |
 | §6.1 HyperBench manifest (Q1) | `datasets/hypergraph-benchmarks/hyperbench/MANIFEST.json`; family added to `datasets/README.md` | done |
-| §6.2 schema files | `results/schemas/` (9 files with provenance) | generated; the survey itself has **not** run |
+| §6.2 schema files | `results/schemas/` (9 files with provenance) | generated; the two observed-robust Wikidata files regenerated under ruling Q10 (§7) |
 
-`results/survey.csv` does not exist, so the `survey` tests skip (as DESIGN §1 intends).
+The first full survey (15 rows, the HyperBench baseline and the figure) is commit 5f8683d. After the review fixes (§7)
+the rows listed in `results/pending-rerun.json` wait for a re-run; the `survey` tests check every other row.
 
 ## 2. Package
 
@@ -91,7 +92,8 @@ relations. Universal roles are reported only when there are two relations or mor
 
 - Clique bounds: ρ(K) exact when K has at most 60 maximal traces, else ⌈|K| / largest trace⌉; ρ\*(K) exact up to
   40 roles and 160 traces, else the dual bound |K| / largest trace (a feasible dual: certified). Enumeration is
-  Bron–Kerbosch with pivoting under the step limit; the best bound found by then is kept.
+  Bron–Kerbosch with pivoting under the step limit; the best bound found by then is kept, and the step is logged
+  `timeout (partial kept)` rather than `done` (review F7; likewise the tw simplicial rule).
 - Induced bounds: one set per measure, grown greedily from the highest-degree core role. For hw the set shrinks (18,
   16, …) until H[X] has at most 60 distinct traces; on the Wikidata cores this leaves small sets and weak bounds.
 - Heuristic orderings: min-degree and min-fill with ties broken by a random key seeded 20260924. Min-fill recomputes
@@ -102,8 +104,8 @@ relations. Universal roles are reported only when there are two relations or mor
   declared table). One pre-order pass makes any GHD satisfy the special condition: at node t, each role of
   (∪λ_t) ∩ χ(T_t) missing from χ_t is added to χ_t and to the nodes below t whose subtree holds it, each with the
   guard of t that holds it; nodes above t are not touched again, so the pass ends with an HD. It runs on the lifted
-  GHD and on the tw decomposition with greedy guards, and every result is validated. On the declared table it gives
-  hw ≤ 52.
+  GHD, on the tw decomposition with greedy guards and on every GHD demoted from a solver (ruling Q11, method
+  `hd-repair:<tool>-demoted`), and every result is validated. On the declared table it gives hw ≤ 52.
 - **Added (kept by ruling Q7):** the lifted GHD is also validated as an HD (`ghd-is-hd`); the tw decomposition with
   greedy guards is offered as a ghw certificate (`tw-covers`), which is how ghw ≤ tw + 1 enters with a certificate.
   Both Python HDs (from the GHD and from the tw decomposition) are made before the solver bisection starts, so it
@@ -123,8 +125,8 @@ relations. Universal roles are reported only when there are two relations or mor
      `-t -h -g -heuristic 1`; a decomposition that validates as an HD on the unreduced H lowers hi to its width;
   2. otherwise *refute*: BalancedGo (log-k-decomp when it is the only tool) `-width k` without preprocessing; its
      "no" raises lo to k + 1 (Q2); a validated yes lowers hi;
-  3. a k that neither decides (timeouts, errors, invalid output) is left undecided and the search continues in
-     (k, hi).
+  3. a k that neither decides (timeouts, errors, invalid output, a decomposition the tool's own check rejected) is
+     left undecided and the search continues in (k, hi).
   Each attempt runs at most min(120 s, the step limit); the row's attempts, both tools together, at most 1,200 s.
   When the bounds meet at hw ≥ 2, one confirmation run without preprocessing at hw − 1 by the second-opinion tool
   (log-k-decomp under `auto`; the tool itself in single-tool modes), unless that exact run was already made. This
@@ -139,10 +141,16 @@ relations. Universal roles are reported only when there are two relations or mor
   the search up, the budget caps the attempts); `test_live_bisection_from_the_trivial_bound` runs it with the real
   binaries from [2, 10] on p6-qualifier-k5.
 - log-k-decomp has no `-det`; its runs are `-width k` (LogKHybrid), with the same flags when finding.
+- Both tools print `Correct: false` in two cases: no decomposition (empty tree, `Width: 0`) and a decomposition
+  found but rejected by their own check (a tree, and a line such as `Edge … isn't covered`). Only the first is a
+  "no"; the second is the outcome `invalid` (review F1): logged in `disagreements[]` as `solver-invalid` with the
+  tool's check lines, and never a bound.
 - Claims are resolved at the end: a sound refutation at k contradicted by any validated HD of width ≤ k is dropped
-  and logged (`refutation-contradicted`); a yes failing (4) or printing "SCV found!" is demoted to a ghw bound
-  (`demotion`); other invalid ones are logged (`invalid`). These go to `disagreements[]` with `kind`, the commands,
-  output tails and times (so the report needs no separate demotion list).
+  and logged (`refutation-contradicted`); a yes failing (4) or printing "SCV found!" is demoted: its GHD is offered
+  as a ghw bound and, repaired by `hd-repair`, as an hw bound (Q11); the `demotion` entry says whether each was used
+  (`ghw_bound_used`, `repaired_hd_width`, `hw_bound_used`), and so does the attempt's `used_as` (review F8). Other
+  invalid ones are logged (`invalid`). These go to `disagreements[]` with `kind`, the commands, output tails and
+  times (so the report needs no separate demotion list).
 - Neither BalancedGo nor log-k-decomp echoes an edge count. The echoed-count check applies to any output that has one
   (fraSMT's `#hyperedges`); for these two tools, validating every decomposition on H is the guard (a decomposition of
   a misparsed graph fails condition (1)).
@@ -159,6 +167,12 @@ relations. Universal roles are reported only when there are two relations or mor
 - Extra report fields: `solver`, `seed`, `wall_seconds`, `Width.detail`, `acyclicity.gyo_residue_size`, and in
   `stats` `distinct_role_sets`, `incidences`, `components_without_universal`, `core_roles`, `core_relations`.
 - The text form follows §4.3; value columns show `3`, `[2, 4]`, or `(1, 3/2]` for an exclusive fhw lower bound.
+- **Format `khg-width-report/0.2.0`** (§4.2 said 0.1.0; review F9): each `widths.<m>` gains `lower_witness`, what the
+  lower bound rests on, checkable against H: the clique (with ρ, or ρ* and its dual) for the clique bounds; the
+  clique and the relation (rank) or the simplicial neighbourhood for tw; the block, the universal roles and the
+  offset for minor-min-width; the induced set X; the refuted k with the tool and command; the inequality and the
+  measure it came from; the join tree, `cyclic`, `empty` or `dp`. `test_survey` checks the 0.1.0 reports of 5f8683d
+  as they are and the witnesses of every 0.2.0 report.
 - `bad-json` is a truncated document (J001).
 
 ### 2.7 Tests and the gate
@@ -168,14 +182,15 @@ relations. Universal roles are reported only when there are two relations or mor
 | `test_cli.py` | G2 | every row of `fixtures/expected.csv` (12 rows: DESIGN §5.1 plus P2's `+time` variants): class, first failed test, the implied tests (`None`), witness, four exact widths with validated certificates; the §4.3 text; exit codes 0/1/2; `.json.gz` (Q5); a missing requested solver |
 | `test_gate.py` | G3 | the four constructed cyclic schemas are flagged, residue equal to P2's `is_alpha_acyclic`; one fixture per boundary gives the five classes in order |
 | `test_acyclicity.py` | G2, G3 | R01's 400 seeded random hypergraphs against the brute-force definitions (class split 72/118/78/31/101, as R01); witnesses; join trees; α against P2 |
-| `test_widths.py` | G2 | on the same 400, the reported widths equal an independent computation on the *unreduced* H (so the reductions are checked); the inequalities; lifted certificates validate; bounds contain the truth at `time_limit=0.01`; Q3's +1 per universal role and no twin merging for tw |
+| `test_widths.py` | G2 | on the same 400, the reported widths equal the truth from outside khg_width (review F2): tw, ghw and fhw by brute force over every elimination ordering of the *unreduced* H (≤ 7 roles; ρ over every set of traces, ρ* by an LP solved through its dual's vertices), hw as recorded from BalancedGo `-exact -det` and log-k-decomp `-exact` (`fixtures/random-hw.json`), also for 150 denser hypergraphs and R01's named instances; the inequalities; lifted certificates validate; bounds contain the truth at `time_limit=0.01`; Q3's +1 per universal role and no twin merging for tw; the lazy Bron–Kerbosch against brute force; partial steps logged (F7); every lower bound's witness checks out (F9) |
 | `test_validate.py` | G2 | each condition's injected violation, (4) on p6-adler's width-2 GHD, demotion, a 5,000-node chain |
 | `test_covers.py` | G2 | ρ\* of the triangle (3/2) and K5 (5/2) with both certificates; exact ρ; SciPy rounding (skips without SciPy) |
 | `test_solver_parsers.py` | G2 | recorded outputs (built here and R01's), "SCV found!" demotion, neutral-id round trip, echoed edge counts, contradicted refutations |
-| `test_schedule.py` | G2 | ruling Q8 on p6-adler with a scripted stand-in for BalancedGo: bisection order and bounds, a preprocessed "no" is no bound, an undecided k moves the search up, the budget caps all attempts (always runs) |
+| `test_schedule.py` | G2 | ruling Q8 on p6-adler with a scripted stand-in for BalancedGo: bisection order and bounds, a preprocessed "no" is no bound, an undecided k moves the search up, the budget caps all attempts; a decomposition the tool rejected itself is `invalid`, not a refutation (F1); a demoted GHD's attempt label follows what was used, and its `hd-repair` HD becomes an hw bound (F8, Q11) (always runs) |
 | `test_solvers_live.py` | G2 | (`solvers`) both tools and `auto` agree with Python on every cyclic fixture; second opinion at k − 1; a timeout kills the process group; discovery order (fake binaries, always run) |
-| `test_sources.py` | G1 | the mini raw set (rules 5, 6a, 8, time, meta, end cause, required, no value, deprecated, unknown ids); P3a counts in both scopes win over SQID; a wrong naming is refused; the P3a cross-check; `manifest.verify`; Biolink rows and extraction (skips without linkml) |
-| `test_survey.py` | G1 | (`survey`) as DESIGN §5.2 |
+| `test_sources.py` | G1 | the mini raw set (rules 5, 6a, 8, time, meta, end cause, required, no value, deprecated, unknown ids); P3a counts in both scopes win over SQID; a wrong naming is refused; the P3a cross-check; the time model from any observed use (Q10); `manifest.verify`; Biolink rows and extraction (skips without linkml) |
+| `test_survey.py` | G1 | (`survey`) as DESIGN §5.2, and every lower, upper, exact and method cell equals the report, each `survey.md` line equals one rendered from the report (F5), and the lower-bound witnesses of 0.2.0 reports check out on H (F9); rows in `pending-rerun.json` are skipped |
+| `test_survey_scripts.py` | G1 | `install`: P3a-based files supersede SQID-based ones, which move with their reports to `superseded/` (F3); identical files are left untouched, provenance included (F4); other differences need `--new-snapshot`; `reproduce.sh` installs through `run_survey.py` |
 | `test_hygiene.py` | — | import loads nothing heavy and spawns nothing; the API names are functions |
 
 ## 3. Sources and generation (§2.4, §2.5, §6.2)
@@ -183,6 +198,11 @@ relations. Universal roles are reported only when there are two relations or mor
 - **Rule 8** is read as wd-roles states it: the 57 properties are out of scope *as relations*. They stay qualifier
   roles wherever they are used as qualifiers. The prototype dropped them as qualifiers of the observed tables (not of
   the declared one); wd-roles is the naming authority, so this follows it.
+- **Rule 6 (ruling Q10).** "Uses" means any observed use in the source's scope: the interval model (and its two
+  time usages) is decided on the unthresholded usage in every observed table, as `crosscheck_p3a` and P3a's
+  `time_model` define it; the robust thresholds still choose the qualifier roles. The declared table keeps its
+  allowed-qualifier constraints. The note `time_model_from_unthresholded_use` counts the relations that get the
+  model only this way (observed-robust: 1,367).
 - `primary {subject, object}` is written on every relation (r1 rules 2–3; the prototype wrote none). Relations are
   sorted by numeric property id. A self-qualifier role is labelled "<label> (as a qualifier of itself)"; roles of the
   relation-local control carry no labels or mappings. A required qualifier gets min 1 unless it is a time bound.
@@ -208,11 +228,22 @@ relations. Universal roles are reported only when there are two relations or mor
 - Provenance records `git describe --dirty` (the files are generated before their commit, so it reads the previous commit with `-dirty`)
   and the sha256 of the generator sources used (`sources/wikidata.py`, `data/wd-roles-r1.json`,
   `sources/biolink.py`), which identify the generator exactly.
-- `reproduce.sh` compares both the file sha256 and the C1 schema digest: a different zlib could change the gzip bytes
-  without changing the schema; `--new-snapshot` then replaces the files.
+- `run_survey.py generate` builds into a temporary directory and installs from it (`install`, review F3/F4); a file
+  counts as unchanged only when both its sha256 and its C1 schema digest match (a different zlib could change the
+  gzip bytes without changing the schema), and is then left untouched, provenance included. Any other difference
+  stops, unless `--new-snapshot` replaces the files, or the difference is the expected one of P3a's counts replacing
+  SQID's (§4).
 
 ## 4. Survey scripts (§6)
 
+- **Installing schema files (review F3, F4).** `install` (inside `generate`, and `run_survey.py install --from DIR`)
+  handles each generated file: identical to the committed one: untouched; new: installed; an SQID-based observed
+  file replaced by a P3a-based one: expected, and the SQID-based schema, its provenance and its rows' reports move to
+  `results/superseded/` (DESIGN §6.6); any other difference: refused unless `--new-snapshot`. The rows of every
+  installed file are listed with the reason in `results/pending-rerun.json`; `run` removes a row from it when the row
+  re-runs, and the file goes when it is empty. `run_survey.py pending --add ROWS --reason TEXT` lists rows whose
+  reports a checker change made stale. `reproduce.sh` step 3 is `generate` (with `--p3a-counts` and
+  `--new-snapshot` passed through) followed by `pending`.
 - Rows as §6.3, with ids `wd-<table>[-slice]-<naming>-<cq|cqt>` and `biolink-<qualifiers>-<naming>-cq`; `--rows`
   takes ids, fnmatch patterns and the groups `wikidata`, `biolink`, `declared`, `observed`, `slice`, `controls`,
   `headline`, `all`. Rows run as `python -m khg_width` subprocesses; `--jobs N` runs N at a time.
@@ -273,3 +304,51 @@ The 4 slice rows add about 1.2 h serially once P3a's counts land.
 | Report size (4 MB per large row) | **Q6**: commit reports as `.json.gz`, deterministic | `run_survey.py` writes and reads `reports/<row>.json.gz`; `test_survey` checks the gzip mtime (§4) |
 | Keep `hd-repair` and the tw-based ghw certificate? | **Q7**: keep both | unchanged (§2.4) |
 | Solver budget (up to 80 min per row at 600 s per k) | **Q8**: bisection, 120 s per attempt, 20 min per row | the schedule of §2.5; `test_schedule.py` |
+
+## 7. Review fixes F1–F9 and the rulings Q10–Q11 (2026-09-24; DESIGN §9)
+
+The review of the first full survey (5f8683d) found no wrong number in the table. It found nine defects in the
+checker, its tests and the survey scripts. Each fix below has a regression test. The regression tests were run
+against the source of 5f8683d: every one listed fails there. The exceptions are the test-only findings F2 and F5,
+whose checks are shown differently. `test_cli`'s format assertion (0.2.0) also fails there.
+
+| Finding | Fix | Regression test (fails before the fix) |
+|---|---|---|
+| **F1** `Correct: false` read as "no" | `parse_stdout` collects the tools' check-failure lines (`Decomp of different graph`, `Empty Decomp`, `Bags not subsets of edge labels`, `Edge … isn't covered`, `Vertex … doesn't span connected subtree`). "no" requires an empty tree and none of them. Otherwise the outcome is `invalid`: it is logged as `solver-invalid`, it is never a bound, and it decides nothing at its k (§2.5) | `test_schedule.py::test_self_rejected_decomposition_is_not_a_refutation`: the stand-in prints a tree, `Edge  R2  isn't covered` and `Correct: false` for the unflagged run; the old code took it as a refutation |
+| **F2** widths tested against khg-width itself | `helpers.py` gains independent oracles: brute force over all elimination orderings (tw, ghw, fhw, ≤ 7 roles), ρ over every set of traces, and ρ* by an LP solved through the vertices of its dual (Fraction Gaussian elimination). hw comes from `fixtures/random-hw.json`, recorded by `tests/record_random_hw.py` with BalancedGo `-exact -det` and log-k-decomp `-exact`, which must agree: the 400 random hypergraphs (hw 1/2: 299/101), 150 denser ones (seed + 1; hw 1/2/3: 1/148/1) and R01's named instances (b_triangle 2; k5, adler, c_grid4, c_grid5, grohe_marx_3: 3). CI needs no binaries | Test-only. The reviewer's mutation (`exact.py:274`, `em[j] & scope` → `em[j] & c`) passes the old suite and fails the new one: `test_hw_matches_the_recorded_solvers` (a dense hypergraph: 3 against the recorded 2). The random 400 alone could not catch it, because none has hw 3 |
+| **F3** P3a regeneration overwrote the SQID files in place | `_supersede_sqid` is gone. `generate` builds into a temporary directory, and `install` moves each SQID-based observed schema, its provenance and its rows' reports to `results/superseded/` when a P3a-based file replaces it (DESIGN §6.6). That replacement is expected; any other difference needs `--new-snapshot` (§4) | `test_survey_scripts.py::test_p3a_counts_supersede_sqid_files_and_reports`, `::test_other_differences_need_a_new_snapshot` and `::test_reproduce_installs_through_run_survey` |
+| **F4** provenance rewritten when schemas match | `install` leaves identical files (file sha256 and C1 digest) untouched, provenance included | `test_survey_scripts.py::test_identical_schemas_are_left_untouched` (bytes and mtimes unchanged) |
+| **F5** `check_row` compared only the upper cells | Every lower (with the `>` of an exclusive bound), upper, exact and method cell is compared with the report, and so are the stats cells. Each `survey.md` line must equal one rendered in the test from the report and the CSV row | Test-only. On a copy of `results/` (`KHG_WIDTH_SURVEY_RESULTS`), two tampered cells pass the old `test_biolink_rows` and fail the new one: `tw_lower` 19 → 18 in `survey.csv`, and the hw cell 2 → 3 in `survey.md` |
+| **F6** rule 6 read against thresholded use | Ruling Q10 (below) | `test_sources.py::test_time_model_from_any_observed_use`: P31, used with P580 below the robust threshold, gets the interval model in observed-robust and observed-all under both namings |
+| **F7** a step stopped at its deadline was logged `done` | `clique_bounds` returns `CliqueBounds` with `complete`, and `TwReduced` records the clique behind its bound. `StepLog.run` logs a result with `complete=False` as `timeout (partial kept)` | `test_widths.py::test_partial_steps_are_logged` |
+| **F8** demoted attempts labelled "ghw upper bound" even when not used | The label follows `offer_upper`'s return value: `ghw upper bound g (demoted HD)` or `no ghw bound (…; ghw <= u already)`. Then, by Q11, it adds `hw upper bound w (hd-repair)` or `no hw bound (…)` | `test_schedule.py::test_demoted_attempt_label_and_hd_repair` and `::test_demoted_ghd_can_lower_ghw_and_hw`; `test_solver_parsers.py::test_scv_demotes_to_ghw` updated |
+| **F9** lower bounds without witnesses | `Bound.raise_lower(…, witness=…)` at every site, stored as `widths.<m>.lower_witness`. The report format is now `khg-width-report/0.2.0` (§2.6) | `test_widths.py::test_lower_bound_witnesses` (a 24-ring plus K5, and every fixture, through `helpers.check_lower_witness`); `test_survey` checks the witnesses of every 0.2.0 report |
+
+**Ruling Q10** (F6). In wd-roles r1 rule 6, "uses" means any observed use in the source's scope, with unthresholded
+counts. `build()` now decides the interval model from `observed-all`'s qualifier usage for every observed table.
+The declared table still uses its constraints (§3). Only `p6-wikidata-observed-robust-*` change. Under wd-roles r1,
+1,367 relations get the interval model only this way: time bounds added 260 → 2,994, `slot_time` 1,612 → 4,346, and
+5 end causes move from meta to the built-in. In the relation-local control, roles go from 39,587 to 42,316. Both files
+and their provenance were regenerated with `run_survey.py generate --new-snapshot`. The other four Wikidata files
+came out byte-identical and were left untouched (F4). The `core,qualifier` hypergraphs of both changed files are
+identical to before, because only time roles changed. With time, the wd-roles r1 GYO residue goes from 755/545 to
+765/552.
+
+**Ruling Q11** (F8). A demoted GHD also goes through `hd-repair`. The repaired HD, once validated on H, is offered as an
+hw upper bound (method `hd-repair:<tool>-demoted`). The `demotion` entry records `ghw_bound_used`,
+`repaired_hd_width` and `hw_bound_used`.
+
+**Rows to re-run** (`results/pending-rerun.json`; `test_survey` skips them until then):
+
+- The six wd-roles r1 rows (declared, observed-robust and observed-all; cq and cqt). Their reports predate F1, F8,
+  Q11 and F9: `wd-declared-wd-roles-r1-cqt` had a demotion that Q11 now repairs, and 0.1.0 reports carry no
+  witnesses. The two observed-robust ones also have a new schema file (Q10).
+- `wd-observed-robust-relation-local-{cq,cqt}`. Their schema file changed under Q10, so the table's sha256 no
+  longer matches. They are α-acyclic, take seconds and make no solver calls.
+
+The Biolink rows and the four other relation-local rows keep their 0.1.0 reports. Their numbers cannot change: the
+relation-local rows make no solver calls, and each Biolink row's only call refutes k = 1 on a cyclic H, where
+hw ≥ 2 holds anyway.
+
+**Test counts after the fixes.** In a fresh Python 3.10 venv with `[dev]` only, as the CI job runs:
+88 pass and 20 skip. With SciPy, linkml, both solvers and the committed results: 108 pass. `pyflakes` is clean.

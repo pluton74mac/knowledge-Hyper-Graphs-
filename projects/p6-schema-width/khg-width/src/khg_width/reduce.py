@@ -313,8 +313,9 @@ class TwReduced:
     adj: dict[str, set]
     blocks: list[frozenset]
     lower: int
-    complete: bool = True  # False when the simplicial pass stopped at the deadline
+    complete: bool = True  # False when the simplicial pass stopped at the deadline (F7)
     summary: dict[str, int] = field(default_factory=dict)
+    lower_clique: tuple = ()  # the clique behind ``lower`` (without the universal roles): |clique| - 1 = lower
 
 
 def tw_reduce(h: Hypergraph, *, deadline: Deadline | None = None, max_degree: int = 1000) -> TwReduced:
@@ -331,11 +332,13 @@ def tw_reduce(h: Hypergraph, *, deadline: Deadline | None = None, max_degree: in
     edges = [(n, e) for n, e in edges if e]
     g = gyo(edges)
     lower = 0
-    # the bag of a lonely batch is the edge before the batch: replay to get its size
+    clique: tuple = ()
+    # the bag of a lonely batch is the relation before the batch: replay to get its size
     cur = {n: set(e) for n, e in edges}
     for s in g.steps:
         if s[0] == "lonely":
-            lower = max(lower, len(cur[s[1]]) - 1)
+            if len(cur[s[1]]) - 1 > lower:
+                lower, clique = len(cur[s[1]]) - 1, tuple(sorted(cur[s[1]]))
             cur[s[1]] -= s[2]
         elif s[0] in ("subsumed", "empty"):
             cur.pop(s[1], None)
@@ -360,7 +363,8 @@ def tw_reduce(h: Hypergraph, *, deadline: Deadline | None = None, max_degree: in
                     if not all(len(nbrs - adj[a]) == 1 for a in nbrs):
                         continue
                 known.add(v)
-                lower = max(lower, len(nbrs))
+                if len(nbrs) > lower:
+                    lower, clique = len(nbrs), tuple(sorted(nbrs | {v}))
                 simplicial.append((v, frozenset(nbrs)))
                 for a in nbrs:
                     adj[a].discard(v)
@@ -376,7 +380,8 @@ def tw_reduce(h: Hypergraph, *, deadline: Deadline | None = None, max_degree: in
     summary = {"universal": len(uni), "simplicial": sum(len(s[2]) for s in g.steps if s[0] == "lonely")
                + len(simplicial), "blocks": len(blks), "remaining_roles": len(adj)}
     return TwReduced(offset=len(uni), universal=uni, steps=g.steps, residue_edges=dict(g.residue),
-                     simplicial=simplicial, adj=adj, blocks=blks, lower=lower, complete=complete, summary=summary)
+                     simplicial=simplicial, adj=adj, blocks=blks, lower=lower, complete=complete, summary=summary,
+                     lower_clique=clique)
 
 
 def lift_tw(h: Hypergraph, r: TwReduced, parts: Sequence[tuple[frozenset, Tree]]) -> Decomposition:

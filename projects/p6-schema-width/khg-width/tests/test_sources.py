@@ -84,6 +84,28 @@ def test_observed_tables_from_sqid():
     assert rel(doc, "P31")["time"]["model"] == "interval"  # uses P580: interval model, P582 added
 
 
+def test_time_model_from_any_observed_use():
+    """F6, ruling Q10: in wd-roles r1 rule 6 "uses" is any observed use in the source's scope (unthresholded), so
+    the interval model and its two time usages are decided on unthresholded usage in every observed table. P31 in
+    the mini set has 3 uses of P580 (below the robust threshold of 0.1 % of 100,000 main statements)."""
+    tb, _ = wikidata.tables(wikidata.load(RAW))
+    assert "P580" not in tb["observed-robust"]["P31"] and "P580" in tb["observed-all"]["P31"]
+    for table in ("observed-robust", "observed-all"):
+        for naming in wikidata.NAMINGS:
+            doc, notes = wikidata.build(RAW, table, naming)
+            assert check_schema(doc) == []
+            p31 = rel(doc, "P31")
+            assert p31["time"]["model"] == "interval", (table, naming)
+            u = roles(doc, "P31")
+            start, end = p31["time"]["start"], p31["time"]["end"]
+            assert u[start]["slot"] == u[end]["slot"] == "time" and u[start]["min"] == u[end]["min"] == 0
+            assert notes.get("time_model_from_unthresholded_use", 0) == (1 if table == "observed-robust" else 0)
+    # the P3a counts behave the same: P39 in the slice has 1 use of P582 (below 10), and P580 decides anyway
+    sl = wikidata.read_counts(P3A, scope="slice")
+    doc, _ = wikidata.build(RAW, "observed-robust", "wd-roles-r1", counts=sl)
+    assert rel(doc, "P39")["time"] == {"model": "interval", "start": "P580", "end": "P582"}
+
+
 def test_p3a_counts_win_over_sqid_both_scopes():
     """Ruling Q9's format: ``all`` (every entity) for scope dump, ``kept`` (items with an English Wikipedia article)
     for scope slice; the optional per-relation extras are tolerated."""

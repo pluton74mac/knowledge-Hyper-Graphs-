@@ -591,6 +591,12 @@ submits it. The post draft goes in `post-draft.md`.
   dump (items and the property entities' own statements); `kept` is the items with an English Wikipedia article. The
   reader matches this exactly and tolerates the extras.
 
+**Director's rulings on the review (2026-09-24;** [IMPLEMENTATION-NOTES](IMPLEMENTATION-NOTES.md) §7**).**
+- **Q10.** In wd-roles r1 rule 6, "uses" means any observed use in the source's scope (unthresholded counts). This
+  matches `crosscheck_p3a` and P3a's `time_model` definition. So the interval model (and its two time usages) is
+  computed from unthresholded usage in every observed table.
+- **Q11.** Also run `hd-repair` on a demoted GHD, and offer the repaired, validated HD as an hw upper bound.
+
 ## 10. KB corrections at base-update time
 
 From R01 §1.5, applied in the same commit as the register update, together with the PLAN §9 row and the run log.

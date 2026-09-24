@@ -97,11 +97,14 @@ def test_scv_demotes_to_ghw():
     r = run_for(h)
     claims: list = []
     got = r._take(outcome(to_neutral(h, ghd), scv=True), claims)
-    assert got is None
-    assert r.b["hw"].upper is None
+    assert got is None  # never an hw bound as it is ...
     assert r.b["ghw"].upper == 2 and r.b["ghw"].upper_method == "balancedgo-demoted"
+    # ... but ruling Q11: hd-repair turns it into a validated HD, offered as an hw upper bound
+    assert r.b["hw"].upper_method == "hd-repair:balancedgo-demoted"
+    assert validate(h, r.b["hw"].certificate, kind="hd").ok and r.b["hw"].upper >= 3
     dem = [d for d in r.disagreements if d["kind"] == "demotion"]
     assert len(dem) == 1 and dem[0]["scv_printed"] is True and dem[0]["ghd_ok"] is True
+    assert dem[0]["ghw_bound_used"] is True and dem[0]["hw_bound_used"] is True
     assert any(f.startswith("(4)") for f in dem[0]["failures"])
 
 

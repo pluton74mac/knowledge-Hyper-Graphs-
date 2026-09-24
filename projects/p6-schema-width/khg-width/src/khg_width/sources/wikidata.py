@@ -4,7 +4,8 @@ Ported from R02's ``wd_schema_survey.py`` (``load``, ``tables``, ``build_schema`
 
 - rule 5: a self-qualifier is role ``P<id>:qualifier`` (the probe dropped it);
 - rule 6: ``time`` is P580/P582 (a relation that allows or uses either gets the interval model, the missing bound
-  added with min 0); **6a**: relations P580 and P582 get no time model, their P580/P582 qualifiers are ``qualifier``
+  added with min 0; "uses" is any observed use in the source's scope, unthresholded, in every observed table: ruling
+  Q10); **6a**: relations P580 and P582 get no time model, their P580/P582 qualifiers are ``qualifier``
   usages and the self one is ``P580:qualifier`` / ``P582:qualifier``; ``meta`` is the 24 listed properties plus
   P2241 and P7452; P1534 is the built-in ``khg:end_cause`` on interval relations and ``meta`` otherwise; everything
   else is ``qualifier``;
@@ -344,7 +345,13 @@ def build(raw_dir: str | Path | None, table: str, naming: str, counts: Counts | 
         label = props.get(p, {}).get("label")
         s_id = f"{p}:subject" if local else subj
         v_id = f"{p}:value" if local else p
-        interval = p not in no_time and any(q in (t_start, t_end) for q in quals)
+        # rule 6, as ruling Q10 reads "uses": a relation gets the interval model when it allows (declared) or has ANY
+        # observed use (count >= 1 in the source's scope, unthresholded) of P580 or P582, in every observed table;
+        # so observed-robust keeps the time model even where the bounds fall below the robustness threshold
+        basis = quals if table == "declared" else [q for q in tbls["observed-all"].get(p, []) if q in props]
+        interval = p not in no_time and any(q in (t_start, t_end) for q in basis)
+        if interval and not any(q in (t_start, t_end) for q in quals):
+            notes["time_model_from_unthresholded_use"] += 1
         if interval:
             added = [t for t in (t_start, t_end) if t not in quals]
             notes["time_bound_added"] += len(added)

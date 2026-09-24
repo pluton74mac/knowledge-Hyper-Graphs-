@@ -2,8 +2,8 @@
  "schema_id": "p6-wikidata-observed-robust-relation-local",
  "version": "1.0.0",
  "file": "schemas/p6-wikidata-observed-robust-relation-local.json.gz",
- "file_sha256": "fac7f8e13ca521ee9a09c68ba7c977565944cc13db804995dd54c15fd87d66eb",
- "schema_sha256": "sha256:2237d834523f36ae0035dfa8763d1186cdaacbb2e222ea9b8f1878c479357a50",
+ "file_sha256": "8ca37560662932c85aaa933b202e2401f2a246b83a5b211354f676a321144df1",
+ "schema_sha256": "sha256:a0871a540141faf4a1cb5a5ece50e6d8b5bdffff1ac13cd2e58448ffedf21f33",
  "source": "wikidata",
  "table": "observed-robust",
  "naming": "relation-local",
@@ -27,22 +27,23 @@
  "generator": {
   "khg_width": "0.1.0",
   "sources": {
-   "khg_width/sources/wikidata.py": "f3dea7daf7df53b3fc068ae3ef2c5f52315bcfeee76d5a448b2cff6d144a86d5",
+   "khg_width/sources/wikidata.py": "1fb9bd5280aa31928819222719470fe04a218c4d182a291652b5f836ad5541e2",
    "khg_width/data/wd-roles-r1.json": "f90c133cf3665c2c3f095e325f811e29b173974d7ebb16a3c60d98bd107e608a"
   }
  },
- "commit": "a9b91c0afa19",
+ "commit": "5f8683d6a4b4-dirty",
  "notes": {
   "declared_unknown_qualifier_ids": 0,
   "observed_unknown_qualifier_ids": 0,
-  "time_bound_added": 260,
+  "time_bound_added": 2994,
   "slot_qualifier": 7256,
-  "required_qualifier_usages": 553,
-  "slot_time": 1612,
-  "end_cause_as_builtin": 45,
-  "slot_meta": 3503,
+  "required_qualifier_usages": 554,
+  "slot_time": 4346,
+  "end_cause_as_builtin": 50,
+  "slot_meta": 3498,
+  "time_model_from_unthresholded_use": 1367,
   "relations": 13608,
-  "roles": 39587,
+  "roles": 42316,
   "excluded_relations": 57
  },
  "licence": "CC0-1.0 (Wikidata structured data); only numbers are taken from the DeltaBot templates"

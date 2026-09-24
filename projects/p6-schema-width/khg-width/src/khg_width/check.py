@@ -31,12 +31,12 @@ from .acyclicity import Acyclicity, InternalError, classify
 from .bounds import (INDUCED_ROLES, INDUCED_ROLES_FHW, Bound, clique_bounds, grow_induced, min_degree_order,
                      min_fill_order, minor_min_width, propagate, repair_special)
 from .covers import fractional_cover, greedy_cover, rho, rho_star
-from .decomposition import Decomposition, Tree, Validation, demote, single_node, validate
+from .decomposition import Decomposition, Tree, Validation, demote, frac_str, single_node, validate
 from .exact import (DP_LIMIT, DP_LIMIT_FHW, HD_SEARCH_BUDGET, HD_SEARCH_RELATIONS, dp_width, elimination_tree,
                     hd_search, rho_cost, rho_star_cost)
 from .hypergraph import HEADLINE_SLOTS, Hypergraph, UsageError, check_slots, read_schema
 from .reduce import Core, core, lift_core, lift_tw, primal, tw_reduce
-from .report import MEASURES, Width, WidthReport
+from .report import MEASURES, Width, WidthReport, fmt_value
 from .steps import Budget, Deadline, StepLog
 
 __all__ = ["check", "check_hypergraph", "width", "SOLVER_MODES", "K_MAX", "SEED", "DEFAULT_TIME_LIMIT",
@@ -98,6 +98,7 @@ class _Run:
         self.solver_attempt = float(solver_attempt)
         self.solver_budget = float(solver_budget)
         self.attempts: list[dict] = []  # every external-solver attempt (ruling Q8)
+        self._last_take: dict = {}
         self.solver_spent = 0.0
         self.detail: dict[str, str] = {m: "" for m in MEASURES}
 
@@ -125,7 +126,7 @@ class _Run:
             out[m] = Width(measure=m, lower=b.lower, upper=b.upper, lower_exclusive=b.lower_exclusive,
                            lower_method=b.lower_method, upper_method=b.upper_method or "", certificate=b.certificate,
                            validation=b.validation, steps=tuple(self.log.for_measure(m)),
-                           detail=self._detail(m, b))
+                           detail=self._detail(m, b), lower_witness=b.lower_witness)
         return out
 
     def _detail(self, m: str, b: Bound) -> str:
@@ -144,6 +145,7 @@ class _Run:
             for m in MEASURES:
                 self.b[m].lower = self.b[m].upper = (Fraction(0) if m == "fhw" else 0)
                 self.b[m].lower_method = self.b[m].upper_method = "empty"
+                self.b[m].lower_witness = {"method": "empty", "note": "H has no relation"}
                 self.b[m].certificate = Decomposition()
                 self.b[m].validation = validate(h, Decomposition(), kind=KIND[m])
             return self.finish()
@@ -157,11 +159,14 @@ class _Run:
                 b = self.b[m]
                 b.lower = b.upper = Fraction(1) if m == "fhw" else 1
                 b.lower_method = b.upper_method = "join-tree"
+                b.lower_witness = {"method": "join-tree", "note": "H has a relation, so every width is at least 1; "
+                                   "the join tree (acyclicity.join_tree) gives 1"}
                 b.certificate, b.certificate_kind, b.validation = jt, KIND[m], v
         else:
-            self.b["hw"].raise_lower(2, "cyclic")
-            self.b["ghw"].raise_lower(2, "cyclic")
-            self.b["fhw"].raise_lower(Fraction(1), "cyclic", exclusive=True)
+            cyc = {"see": "acyclicity.witness (the GYO residue: H is not alpha-acyclic, so every width is above 1)"}
+            self.b["hw"].raise_lower(2, "cyclic", witness=cyc)
+            self.b["ghw"].raise_lower(2, "cyclic", witness=cyc)
+            self.b["fhw"].raise_lower(Fraction(1), "cyclic", exclusive=True, witness=cyc)
         if "tw" in measures:
             self.tw()
         if not alpha:
@@ -181,7 +186,10 @@ class _Run:
     # ---------------------------------------------------------------- tw
     def tw(self) -> None:
         h, b = self.h, self.b["tw"]
-        b.raise_lower(max(0, h.stats["rank"] - 1), "rank")
+        if h.edges:
+            big = max(h.edges, key=lambda ne: (len(ne[1]), ne[0]))
+            b.raise_lower(max(0, len(big[1]) - 1), "rank",
+                          witness={"clique": sorted(big[1]), "relation": big[0]})
         outcome, tr = self.step(lambda dl: tw_reduce(h, deadline=dl), measure="tw", method="simplicial-rule")
         assert tr is not None  # tw_reduce keeps a partial result at the deadline
         self.reductions += [
@@ -190,7 +198,8 @@ class _Run:
              "complete": tr.complete},
             {"reduction": "blocks", "blocks": len(tr.blocks), "measures": ["tw"]},
         ]
-        b.raise_lower(tr.lower + tr.offset, "simplicial")
+        b.raise_lower(tr.lower + tr.offset, "simplicial",
+                      witness={"clique": sorted(set(tr.lower_clique) | set(tr.universal))})
         parts: list[tuple[frozenset, Tree]] = []
         exact_vals: list[int] = []
         all_exact = True
@@ -216,7 +225,8 @@ class _Run:
                 tree = self._heuristic_td(verts, adj, "tw")
                 lb = self._tw_block_lower(verts, adj)
                 if lb is not None:
-                    b.raise_lower(lb[0] + tr.offset, lb[1])
+                    b.raise_lower(lb[0] + tr.offset, lb[1], witness={**lb[2], "offset": tr.offset,
+                                                                     "universal": list(tr.universal)})
             parts.append((blk, tree))
         d = lift_tw(h, tr, parts)
         v = self.offer("tw", d, "dp" if all_exact else "heuristic")
@@ -224,7 +234,8 @@ class _Run:
             raise InternalError(f"the lifted tree decomposition fails validation: {v.failures}")
         self.tw_td = d
         if all_exact:
-            b.raise_lower(max([tr.lower] + exact_vals) + tr.offset, "dp", prefer=True)
+            b.raise_lower(max([tr.lower] + exact_vals) + tr.offset, "dp", prefer=True,
+                          witness={"blocks": [len(x) for x in tr.blocks], "offset": tr.offset})
             self.detail["tw"] = "subset DP after the simplicial rule" + (
                 f", +{tr.offset} universal" if tr.offset else "")
         else:
@@ -249,19 +260,19 @@ class _Run:
             return t
         return best[1]
 
-    def _tw_block_lower(self, verts: list[str], adj: dict) -> tuple[int, str] | None:
+    def _tw_block_lower(self, verts: list[str], adj: dict) -> tuple[int, str, dict] | None:
         out = None
         outcome, mmw = self.step(lambda dl: minor_min_width(adj, deadline=dl), measure="tw",
                                  method="minor-min-width")
         if outcome == "done":
-            out = (mmw, "minor-min-width")
+            out = (mmw, "minor-min-width", {"block": sorted(verts), "value": mmw})
         deg = {v: len(adj[v]) for v in verts}
         x = grow_induced(adj, deg, INDUCED_ROLES)
         sub = {v: adj[v] & x for v in x}
         outcome, res = self.step(lambda dl: dp_width(sorted(x), sub, lambda m: m.bit_count() - 1, dl),
                                  measure="tw", method="induced-dp", detail=f"{len(x)} roles")
         if outcome == "done" and (out is None or res[0] > out[0]):
-            out = (res[0], "induced-dp")
+            out = (res[0], "induced-dp", {"roles": sorted(x), "value": res[0]})
         return out
 
     # ---------------------------------------------------------------- ghw, fhw
@@ -327,20 +338,24 @@ class _Run:
         else:
             self._repair(gd, "ghd")
         if g_all and g_vals:
-            gb.raise_lower(max(g_vals), "dp", prefer=True)
+            gb.raise_lower(max(g_vals), "dp", prefer=True, witness={"core_blocks": [len(x) for x in c.blocks]})
         if want_fhw and f_parts and len(f_parts) == len(g_parts):
             fd = lift_core(h, c, f_parts)
             v = self.offer("fhw", fd, "dp" if f_all else "heuristic")
             if not v.ok:
                 raise InternalError(f"the lifted FHD fails validation: {v.failures}")
             if f_all and f_vals:
-                fb.raise_lower(max(f_vals), "dp", prefer=True)
+                fb.raise_lower(max(f_vals), "dp", prefer=True,
+                               witness={"core_blocks": [len(x) for x in c.blocks]})
         roles = s["core_roles"]
         self.detail["ghw"] = f"core {roles} roles, {s['core_relations']} relations, {s['blocks']} blocks"
         self.detail["fhw"] = self.detail["ghw"]
 
-    def _repair(self, d: Decomposition, source: str) -> None:
-        """An hw upper bound from a GHD (or a TD with greedy guards) made to satisfy the special condition."""
+    def _repair(self, d: Decomposition, source: str, *, method: str = "hd-repair",
+                offer_guarded: bool = False) -> tuple[int | None, bool]:
+        """An hw upper bound from a GHD (or a TD with greedy guards) made to satisfy the special condition. With
+        ``offer_guarded`` the guarded TD is also offered as a ghw certificate (``tw-covers``). Returns the repaired
+        HD's validated width and whether it became hw's upper bound (None, False when the step timed out)."""
         es = dict(self.h.edges)
         hes = list(self.h.edges)
 
@@ -355,16 +370,17 @@ class _Run:
             return guarded, t.freeze()
 
         outcome, res = self.step(build, measure="hw", method="hd-repair", detail=f"from the {source}")
-        if outcome == "done":
-            guarded, hd = res
-            if source != "ghd":
-                vg = validate(self.h, guarded, kind="ghd")
-                if vg.ok:
-                    self.b["ghw"].offer_upper(vg.width, "tw-covers", guarded, "ghd", vg)
-            v = validate(self.h, hd, kind="hd")
-            if not v.ok:
-                raise InternalError(f"the repaired HD fails validation: {v.failures}")
-            self.b["hw"].offer_upper(v.width, "hd-repair", hd, "hd", v)
+        if outcome != "done":
+            return None, False
+        guarded, hd = res
+        if offer_guarded:
+            vg = validate(self.h, guarded, kind="ghd")
+            if vg.ok:
+                self.b["ghw"].offer_upper(vg.width, "tw-covers", guarded, "ghd", vg)
+        v = validate(self.h, hd, kind="hd")
+        if not v.ok:
+            raise InternalError(f"the repaired HD fails validation: {v.failures}")
+        return v.width, self.b["hw"].offer_upper(v.width, method, hd, "hd", v)
 
     def _covered(self, t: Tree, be: list, *, fractional: bool) -> Tree:
         for i, bag in enumerate(t.bags):
@@ -434,11 +450,14 @@ class _Run:
         outcome, res = self.step(lambda dl: clique_bounds(adj, be, deadline=dl, want_fhw=need_f),
                                  measure="ghw" if need_g else "fhw", method="clique")
         if res is not None:
-            g, f, _, _, seen = res
-            if need_g and g:
-                gb.raise_lower(g, "clique")
-            if need_f and f > 1:
-                fb.raise_lower(f, "clique")
+            if need_g and res.ghw:
+                gb.raise_lower(res.ghw, "clique", witness={"roles": sorted(res.ghw_clique), "rho": res.ghw,
+                                                           "cliques_seen": res.seen, "complete": res.complete})
+            if need_f and res.fhw > 1:
+                fb.raise_lower(res.fhw, "clique", witness={
+                    "roles": sorted(res.fhw_clique), "rho_star": frac_str(res.fhw),
+                    "dual": {v: frac_str(w) for v, w in sorted(res.fhw_dual.items())},
+                    "cliques_seen": res.seen, "complete": res.complete})
         deg = {v: sum(1 for _, e in be if v in e) for v in verts}
         for measure, size, need in (("ghw", INDUCED_ROLES, need_g), ("fhw", INDUCED_ROLES_FHW, need_f)):
             if not need:
@@ -448,7 +467,8 @@ class _Run:
             outcome, val = self.step(lambda dl: _exact_small(sub, measure, dl), measure=measure,
                                      method="induced-dp", detail=f"{len(x)} roles")
             if outcome == "done" and val is not None:
-                (gb if measure == "ghw" else fb).raise_lower(val, "induced-dp")
+                (gb if measure == "ghw" else fb).raise_lower(
+                    val, "induced-dp", witness={"roles": sorted(x), "value": fmt_value(measure, val)})
 
     # ---------------------------------------------------------------- hw
     def hw(self) -> None:
@@ -463,7 +483,7 @@ class _Run:
         # was repaired in ghw_fhw), so that the bisection starts from the smallest validated upper bound
         if not b.exact and self.tw_td is not None and self.b["tw"].upper is not None and (
                 b.upper is None or self.b["tw"].upper + 1 < b.upper):
-            self._repair(self.tw_td, "tree decomposition of tw")
+            self._repair(self.tw_td, "tree decomposition of tw", offer_guarded=True)
         roles = self._solver_roles()
         if roles is not None:
             propagate(self.b, self.convert)  # the bisection starts from hw >= ghw's lower bound
@@ -530,9 +550,18 @@ class _Run:
                     used = f"upper bound {w} (validated HD)"
                 elif o.outcome == "no":
                     used = "none: a run with preprocessing refutes nothing" if flags else f"lower bound {k + 1}"
-                elif o.outcome == "yes":
+                elif o.outcome == "yes" and self._last_take:
+                    lt = self._last_take  # F8: say what the demoted decomposition was actually used for
+                    g = lt["demoted_ghd_width"]
+                    parts = [f"ghw upper bound {g} (demoted HD)" if lt["ghw_used"] else
+                             f"no ghw bound (demoted HD of width {g}; ghw <= {self.b['ghw'].upper} already)"]
+                    if lt["repaired_hd_width"] is not None:
+                        parts.append(f"hw upper bound {lt['repaired_hd_width']} (hd-repair)" if lt["hw_used"] else
+                                     f"no hw bound (hd-repair gave {lt['repaired_hd_width']}; hw <= {b.upper} already)")
+                    used = "; ".join(parts)
+                elif o.outcome in ("yes", "invalid"):
                     kinds = [x["kind"] for x in self.disagreements[n_dis:]]
-                    used = "ghw bound (demoted)" if "demotion" in kinds else "none: " + (", ".join(kinds) or "invalid")
+                    used = "none: " + (", ".join(kinds) or o.outcome)
                 else:
                     used = "none"
                 self.attempts.append({"k": k, "tool": tool, "flags": flags, "limit": round(limit, 3),
@@ -622,7 +651,9 @@ class _Run:
             self.offer("fhw", fd, method)
 
     def _take(self, o: Any, claims: list[dict]) -> int | None:
-        """Record a solver outcome; returns the validated HD width on a validated 'yes'."""
+        """Record a solver outcome; returns the validated HD width on a validated 'yes'. What a demoted yes gave
+        (a ghw bound, a repaired HD) is left in ``self._last_take`` for the attempt log."""
+        self._last_take = {}
         d = self.d
         neutral = d.neutral
         entry = {"tool": o.tool, "k": o.k_reported if o.exact_mode else o.k, "outcome": o.outcome,
@@ -636,6 +667,12 @@ class _Run:
             entry["sound"] = not o.flags
             if o.exact_mode:
                 entry["sound"] = False
+            claims.append(entry)
+            return None
+        if o.outcome == "invalid":  # F1: the tool's own check rejected what it found; never a bound
+            self.disagreements.append({"kind": "solver-invalid", "tool": o.tool, "k": entry["k"],
+                                       "flags": o.flags, "check_failures": list(o.check_failures),
+                                       "run": o.to_json()})
             claims.append(entry)
             return None
         if o.outcome != "yes":
@@ -660,10 +697,16 @@ class _Run:
         kind = demote(v)
         if kind == "ghd" or o.scv:
             vg = validate(self.h, dec, kind="ghd")
-            if vg.ok:
-                self.b["ghw"].offer_upper(vg.width, f"{o.tool}-demoted", dec, "ghd", vg)
+            ghw_used = vg.ok and self.b["ghw"].offer_upper(vg.width, f"{o.tool}-demoted", dec, "ghd", vg)
+            # ruling Q11: the demoted GHD also goes through hd-repair; the repaired HD, once validated, is offered
+            # as an hw upper bound
+            rep_w, hw_used = self._repair(dec, f"GHD demoted from {o.tool}", method=f"hd-repair:{o.tool}-demoted") \
+                if vg.ok else (None, False)
+            self._last_take = {"demoted_ghd_width": vg.width if vg.ok else None, "ghw_used": ghw_used,
+                               "repaired_hd_width": rep_w, "hw_used": hw_used}
             self.disagreements.append({"kind": "demotion", "tool": o.tool, "k": entry["k"], "scv_printed": o.scv,
-                                       "failures": list(v.failures), "ghd_ok": vg.ok, "run": o.to_json()})
+                                       "failures": list(v.failures), "ghd_ok": vg.ok, "ghw_bound_used": ghw_used,
+                                       "repaired_hd_width": rep_w, "hw_bound_used": hw_used, "run": o.to_json()})
         else:
             self.disagreements.append({"kind": "invalid", "tool": o.tool, "k": entry["k"],
                                        "failures": list(v.failures), "run": o.to_json()})
@@ -690,7 +733,10 @@ class _Run:
                 best = c
         if best is not None:
             method = "hd-search" if best["tool"] == "python" else f"refutation:{best['tool']}"
-            b.raise_lower(best["k"] + 1, method)
+            wit = {"refuted_k": best["k"], "tool": best["tool"]}
+            if best.get("run"):
+                wit["cmd"] = best["run"].get("cmd")
+            b.raise_lower(best["k"] + 1, method, witness=wit)
         # solver against solver: a validated HD of width w and a sound refutation at k >= w were logged above;
         # solver yes/no at the same k disagreeing without a validated decomposition are logged here
         by_k: dict[int, dict[str, set]] = {}
@@ -729,7 +775,7 @@ class _Run:
             if outcome != "done":
                 return
             if res is None:
-                b.raise_lower(k + 1, "induced-hd-search")
+                b.raise_lower(k + 1, "induced-hd-search", witness={"roles": sorted(x), "refuted_k": k})
                 k += 1
                 continue
             return

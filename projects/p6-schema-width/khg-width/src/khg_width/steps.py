@@ -11,7 +11,10 @@ import time
 from dataclasses import dataclass, field
 from typing import Any, Callable, TypeVar
 
-__all__ = ["Budget", "Deadline", "StepLog", "StepTimeout", "BudgetExhausted"]
+__all__ = ["Budget", "Deadline", "StepLog", "StepTimeout", "BudgetExhausted", "PARTIAL"]
+
+#: the outcome of a step that stopped at its deadline and kept a partial (still sound) result
+PARTIAL = "timeout (partial kept)"
 
 T = TypeVar("T")
 
@@ -74,12 +77,15 @@ class StepLog:
     def run(self, fn: Callable[[Deadline], T], *, measure: str, method: str, limit: float | None,
             tool: str = "python", k: int | None = None, detail: str | None = None) -> tuple[str, T | None]:
         """Run ``fn(deadline)`` as one step. Returns ``(outcome, result)``: outcome ``done`` with the result,
-        ``timeout`` or ``budget`` with None. The step is logged either way."""
+        ``timeout`` or ``budget`` with None, or ``timeout (partial kept)`` with a result whose ``complete`` attribute
+        is False (a step that stopped at its deadline and kept what it had, F7). The step is logged either way."""
         t0 = time.monotonic()
         deadline = Deadline(limit)
         outcome, result = "done", None
         try:
             result = fn(deadline)
+            if getattr(result, "complete", True) is False:
+                outcome = PARTIAL
         except StepTimeout:
             outcome = "timeout"
         except BudgetExhausted:

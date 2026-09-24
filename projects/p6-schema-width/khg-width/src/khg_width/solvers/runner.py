@@ -46,9 +46,10 @@ FLAGS = ("-t", "-h", "-g", "-heuristic", "1")
 
 @dataclass(frozen=True)
 class Outcome:
-    """One solver call at one k (or ``-exact``): ``outcome`` is ``yes`` (a decomposition claimed correct),
-    ``no`` (``Correct: false``: a refutation when unflagged), ``timeout`` or ``error``. ``tree`` holds the
-    decomposition in the tool's neutral names."""
+    """One solver call at one k (or ``-exact``): ``outcome`` is ``yes`` (a decomposition claimed correct), ``no``
+    (``Correct: false`` with an empty decomposition and no check-failure message: a refutation when unflagged),
+    ``invalid`` (``Correct: false`` for a decomposition the tool found but its own check rejected: never a bound),
+    ``timeout`` or ``error``. ``tree`` holds the decomposition in the tool's neutral names."""
 
     tool: str
     cmd: tuple[str, ...]
@@ -65,12 +66,13 @@ class Outcome:
     returncode: int | None
     stdout_tail: str
     stderr_tail: str
+    check_failures: tuple = ()
 
     def to_json(self) -> dict:
         return {"tool": self.tool, "cmd": list(self.cmd), "k": self.k, "exact": self.exact_mode, "flags": self.flags,
                 "outcome": self.outcome, "k_reported": self.k_reported, "width": self.width, "scv": self.scv,
-                "seconds": round(self.seconds, 3), "returncode": self.returncode,
-                "stdout_tail": self.stdout_tail, "stderr_tail": self.stderr_tail}
+                "check_failures": list(self.check_failures), "seconds": round(self.seconds, 3),
+                "returncode": self.returncode, "stdout_tail": self.stdout_tail, "stderr_tail": self.stderr_tail}
 
 
 def call(tool: str, cmd: Sequence[str], *, k: int | None, exact_mode: bool, flags: bool, timeout: float,
@@ -97,10 +99,12 @@ def call(tool: str, cmd: Sequence[str], *, k: int | None, exact_mode: bool, flag
         outcome = "error"
     elif p.correct:
         outcome = "yes"
-    else:
+    elif p.tree is None and not p.check_failures:
         outcome = "no"
+    else:
+        outcome = "invalid"  # F1: a found decomposition that failed the tool's own check is not a refutation
     tail = lambda s: s[-2000:]  # noqa: E731
     return Outcome(tool=tool, cmd=tuple(cmd), k=k, exact_mode=exact_mode, flags=flags, outcome=outcome,
                    k_reported=p.k, width=p.width, scv=p.scv, edges_echoed=p.edges_echoed,
-                   tree=tree if outcome == "yes" else None, seconds=r.seconds, returncode=r.returncode,
-                   stdout_tail=tail(r.stdout), stderr_tail=tail(r.stderr))
+                   tree=tree if outcome in ("yes", "invalid") else None, seconds=r.seconds, returncode=r.returncode,
+                   stdout_tail=tail(r.stdout), stderr_tail=tail(r.stderr), check_failures=p.check_failures)

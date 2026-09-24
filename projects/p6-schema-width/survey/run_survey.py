@@ -4,7 +4,10 @@
     python run_survey.py run [--rows SELECTION] [--jobs N] [--time-limit 600] [--solver auto] [--out RESULTS]
     python run_survey.py table [--out RESULTS]
 
-``generate`` verifies the dataset manifests (a sha256 mismatch stops it), then writes
+``generate`` verifies the dataset manifests (a sha256 mismatch stops it), generates into a temporary directory and
+installs the result into ``--out`` (``install``: identical files are left untouched; SQID-based observed files
+replaced by P3a-based ones move to ``superseded/`` with their reports; any other difference needs
+``--new-snapshot``; the rows of installed files are listed in ``pending-rerun.json``). It writes
 
 - the 6 Wikidata files ``p6-wikidata-<table>-<naming>.json.gz`` (canonical JSON, deterministic gzip with mtime 0;
   3 tables x wd-roles r1 / relation-local), plus the 4 slice files when P3a's counts are given (and the dump-scope
@@ -137,7 +140,7 @@ def _write_schema(doc: dict, path: Path, compress: bool) -> tuple[str, str]:
     return hashlib.sha256(blob).hexdigest(), Schema(doc).sha256
 
 
-def generate(out: Path, *, p3a: str | None, only: str | None, new_snapshot: bool = True) -> dict[str, Any]:
+def generate(out: Path, *, p3a: str | None, only: str | None) -> dict[str, Any]:
     from khg_width import __version__
     from khg_width.sources import biolink, manifest, wikidata
 
@@ -155,7 +158,6 @@ def generate(out: Path, *, p3a: str | None, only: str | None, new_snapshot: bool
             cc = wikidata.crosscheck_p3a(counts["dump"], raw)
             cc["slice"] = wikidata.crosscheck_p3a(counts["slice"], raw)["mismatches"]
             (out / "p3a-crosscheck.json").write_text(json.dumps(cc, indent=1) + "\n")
-            _supersede_sqid(out)
         jobs = [(t, n, None) for t in wikidata.TABLES for n in wikidata.NAMINGS]
         if counts:
             jobs = [(t, n, counts["dump"] if t != "declared" else None) for t in wikidata.TABLES
@@ -218,19 +220,97 @@ def generate(out: Path, *, p3a: str | None, only: str | None, new_snapshot: bool
     return written
 
 
-def _supersede_sqid(out: Path) -> None:
-    """When P3a's counts land, the SQID-based observed rows already run move to superseded/."""
-    sup = out / "superseded"
-    for prov in sorted((out / "schemas").glob("p6-wikidata-observed-*.provenance.json")):
+PENDING = "pending-rerun.json"
+
+
+def load_pending(out: Path) -> dict[str, str]:
+    """Rows whose report is known stale (their schema file changed, or the checker changed under them) and must be
+    re-run: ``{row_id: reason}``. ``run`` clears a row when it re-runs it; the file goes when it is empty."""
+    p = out / PENDING
+    return json.loads(p.read_text())["rows"] if p.exists() else {}
+
+
+def _save_pending(out: Path, pend: dict[str, str]) -> None:
+    p = out / PENDING
+    if pend:
+        p.write_text(json.dumps({"note": "rows to re-run with run_survey.py run; see IMPLEMENTATION-NOTES.md",
+                                 "rows": dict(sorted(pend.items()))}, indent=1) + "\n")
+    elif p.exists():
+        p.unlink()
+
+
+def add_pending(out: Path, rows_: dict[str, str]) -> None:
+    pend = load_pending(out)
+    pend.update(rows_)
+    _save_pending(out, pend)
+
+
+def clear_pending(out: Path, row_ids: list[str]) -> None:
+    pend = load_pending(out)
+    for r in row_ids:
+        pend.pop(r, None)
+    _save_pending(out, pend)
+
+
+def _rows_of(out: Path, schema_id: str) -> list[str]:
+    return [r["row_id"] for r in rows(out) if Path(r["file"]).name.split(".json")[0] == schema_id]
+
+
+def install(src: Path, out: Path, *, new_snapshot: bool = False) -> dict[str, list[str]]:
+    """Install the schema files generated into ``src`` into the results ``out`` (DESIGN §6.6; review F3, F4):
+
+    - identical to the committed file (file and C1 schema sha256): nothing is touched, provenance included (F4);
+    - a new file: installed;
+    - an SQID-based observed file replaced by a P3a-based one (P3a's counts landed): expected; the SQID-based schema,
+      its provenance and the reports of its rows move to ``out/superseded/`` (F3);
+    - any other difference: refused (nothing is touched) unless ``new_snapshot``, which replaces it.
+
+    Every row whose schema file is installed is listed in ``pending-rerun.json``."""
+    plan: list[tuple[str, dict, dict | None]] = []
+    summary: dict[str, list[str]] = {"unchanged": [], "new": [], "superseded": [], "replaced": []}
+    refused = []
+    for prov in sorted((src / "schemas").glob("*.provenance.json")):
         p = json.loads(prov.read_text())
-        if p.get("counts_source") != "SQID":
+        old = out / "schemas" / prov.name
+        if not old.exists():
+            plan.append(("new", p, None))
             continue
-        sup.mkdir(parents=True, exist_ok=True)
-        for f in (prov, out / p["file"]):
-            if f.exists():
-                shutil.move(str(f), str(sup / f.name))
-        for rep in (out / "reports").glob(f"wd-{p['table']}-{p['naming']}-*"):
-            shutil.move(str(rep), str(sup / rep.name))
+        q = json.loads(old.read_text())
+        if (q["file_sha256"], q["schema_sha256"]) == (p["file_sha256"], p["schema_sha256"]):
+            summary["unchanged"].append(p["schema_id"])
+        elif q.get("counts_source") == "SQID" and p.get("counts_source") == "P3a":
+            plan.append(("superseded", p, q))
+        elif new_snapshot:
+            plan.append(("replaced", p, q))
+        else:
+            refused.append(p["schema_id"])
+    if refused:
+        raise SystemExit("generated schemas differ from the committed ones: " + ", ".join(refused)
+                         + "\n(rerun with --new-snapshot to replace them)")
+    (out / "schemas").mkdir(parents=True, exist_ok=True)
+    sup = out / "superseded"
+    pending: dict[str, str] = {}
+    for action, p, q in plan:
+        sid = p["schema_id"]
+        if action == "superseded":
+            sup.mkdir(parents=True, exist_ok=True)
+            for rid in _rows_of(out, sid):
+                for f in (out / "reports").glob(f"{rid}.*"):
+                    shutil.move(str(f), str(sup / f.name))
+            for f in (out / q["file"], out / "schemas" / f"{sid}.provenance.json"):
+                if f.exists():
+                    shutil.move(str(f), str(sup / f.name))
+        for f in (src / p["file"], src / "schemas" / f"{sid}.provenance.json"):
+            shutil.copy2(f, out / "schemas" / f.name)
+        summary[action].append(sid)
+        reason = {"new": "new schema file", "superseded": "rebuilt from P3a's counts (the SQID-based row moved to "
+                  "superseded/)", "replaced": "schema file replaced (--new-snapshot)"}[action]
+        for rid in _rows_of(out, sid):
+            pending[rid] = reason
+    if (src / "p3a-crosscheck.json").exists():
+        shutil.copy2(src / "p3a-crosscheck.json", out / "p3a-crosscheck.json")
+    add_pending(out, pending)
+    return summary
 
 
 # ------------------------------------------------------------------------------------------------ run
@@ -273,6 +353,7 @@ def run(out: Path, spec: str, *, jobs: int, time_limit: float, solver: str) -> l
             res = f.result()
             results.append(res)
             print(f"row {res['row_id']}: status {res['status']}, {res['wall_seconds']:.1f} s", file=sys.stderr)
+    clear_pending(out, [r["row_id"] for r in results if r["status"] == 0])
     return results
 
 
@@ -412,6 +493,16 @@ def main(argv: list[str] | None = None) -> int:
     g.add_argument("--p3a-counts", default=None)
     g.add_argument("--only", choices=("wikidata", "biolink"))
     g.add_argument("--out", default=str(RESULTS))
+    g.add_argument("--new-snapshot", action="store_true", dest="new_snapshot",
+                   help="replace committed schema files that differ (a new WDQS snapshot)")
+    ins = sub.add_parser("install")
+    ins.add_argument("--from", dest="src", required=True)
+    ins.add_argument("--out", default=str(RESULTS))
+    ins.add_argument("--new-snapshot", action="store_true", dest="new_snapshot")
+    pe = sub.add_parser("pending")
+    pe.add_argument("--out", default=str(RESULTS))
+    pe.add_argument("--add", default="", help="rows (ids, patterns or groups) to mark for a re-run")
+    pe.add_argument("--reason", default="")
     r = sub.add_parser("run")
     r.add_argument("--rows", default="all")
     r.add_argument("--jobs", type=int, default=1)
@@ -427,8 +518,18 @@ def main(argv: list[str] | None = None) -> int:
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     if a.cmd == "generate":
-        written = generate(out, p3a=a.p3a_counts, only=a.only)
-        print(json.dumps(written, indent=1))
+        import tempfile
+
+        with tempfile.TemporaryDirectory(prefix="p6-generate-") as tmp:
+            written = generate(Path(tmp), p3a=a.p3a_counts, only=a.only)
+            summary = install(Path(tmp), out, new_snapshot=a.new_snapshot)
+        print(json.dumps({"generated": written, "install": summary}, indent=1))
+    elif a.cmd == "install":
+        print(json.dumps(install(Path(a.src), out, new_snapshot=a.new_snapshot), indent=1))
+    elif a.cmd == "pending":
+        if a.add:
+            add_pending(out, {r: a.reason for r in [x["row_id"] for x in select(rows(out), a.add)]})
+        print(json.dumps(load_pending(out), indent=1))
     elif a.cmd == "run":
         res = run(out, a.rows, jobs=a.jobs, time_limit=a.time_limit, solver=a.solver)
         print(json.dumps(sorted(res, key=lambda x: x["row_id"]), indent=1))
