@@ -57,8 +57,12 @@ report.acyclicity.cls, report.acyclicity.witness, report.widths["hw"].show(), re
 `scripts/build-solvers.sh [DEST]` builds BalancedGo (`872c662c`, v1.7.2-2) and log-k-decomp (`5e021dd4`, v1.1.0),
 both MIT, with Go (`GOTOOLCHAIN=local`) into `DEST/bin` (default `~/.cache/khg-width/solvers`; a DEST inside a git
 working tree is refused) and writes `DEST/solvers.json`. They are found through `KHG_WIDTH_BALANCEDGO` /
-`KHG_WIDTH_LOGK`, `KHG_WIDTH_SOLVERS=DEST`, the default DEST, then `PATH`. Every decomposition they return is
-validated in Python; a special-condition violation demotes it to a ghw bound; disagreements are kept in the report.
+`KHG_WIDTH_LOGK`, `KHG_WIDTH_SOLVERS=DEST`, the default DEST, then `PATH`. hw is then bisected between its
+validated bounds: at each k, BalancedGo (then log-k-decomp) runs with the preprocessing flags to find a
+decomposition, and a run without them to refute k; only such a "no" raises the lower bound. Each attempt runs at most
+120 s (and at most `--time-limit`), all of a schema's attempts at most 20 minutes; every attempt is in the report's
+`solver_attempts`. Every decomposition they return is validated in Python; a special-condition violation demotes it
+to a ghw bound; disagreements are kept in the report.
 
 ## Tests
 

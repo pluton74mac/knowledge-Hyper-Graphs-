@@ -17,7 +17,7 @@ ambiguous the research prototypes' behaviour was preferred and the choice is lis
 |---|---|---|
 | §4 package | `khg-width/` (pyproject, `src/khg_width/`, `tests/`, `scripts/build-solvers.sh`, MIT) | done |
 | §4.5 solver build | `khg-width/scripts/build-solvers.sh` | built here (Go 1.24.7): both binaries pass the smoke test |
-| §5 fixtures and tests | `khg-width/tests/` (fixture table `fixtures/expected.csv`) | CI setting (Python 3.10, no extras, no solvers): 68 pass, 23 skip; with SciPy, linkml and both solvers: 88 pass, 3 skip (the `survey` tests) |
+| §5 fixtures and tests | `khg-width/tests/` (fixture table `fixtures/expected.csv`) | CI setting (Python 3.10, no extras, no solvers): 73 pass, 23 skip; with SciPy, linkml and both solvers: 93 pass, 3 skip (the `survey` tests) |
 | §4.4 CI (F7) | `.github/workflows/ci.yml`, job `khg-width`, appended as given | simulated locally on Python 3.10 |
 | §6 survey scripts | `survey/run_survey.py`, `hyperbench_baseline.py`, `make_figure.py`, `reproduce.sh`, `crosscheck.sh` | smoke run only |
 | §6.1 HyperBench manifest (Q1) | `datasets/hypergraph-benchmarks/hyperbench/MANIFEST.json`; family added to `datasets/README.md` | done |
@@ -98,14 +98,16 @@ relations. Universal roles are reported only when there are two relations or mor
   the fill of the eliminated role's neighbours only (approximate bookkeeping; any ordering is valid) and is skipped
   above 1,500 roles. ghw upper bounds use greedy covers of the bags; fhw computes ρ\* only for bags whose greedy value
   can still raise the maximum (exact simplex on small bags, else SciPy rounded up, else greedy).
-- **Added:** `hd-repair`. With Python alone, the only hw upper bound on a large H was the trivial |E| (1,154 on the
+- **Added (kept by ruling Q7):** `hd-repair`. With Python alone, the only hw upper bound on a large H was the trivial |E| (1,154 on the
   declared table). One pre-order pass makes any GHD satisfy the special condition: at node t, each role of
   (∪λ_t) ∩ χ(T_t) missing from χ_t is added to χ_t and to the nodes below t whose subtree holds it, each with the
   guard of t that holds it; nodes above t are not touched again, so the pass ends with an HD. It runs on the lifted
   GHD and on the tw decomposition with greedy guards, and every result is validated. On the declared table it gives
   hw ≤ 52.
-- **Added:** the lifted GHD is also validated as an HD (`ghd-is-hd`); the tw decomposition with greedy guards is
-  offered as a ghw certificate (`tw-covers`), which is how ghw ≤ tw + 1 enters with a certificate.
+- **Added (kept by ruling Q7):** the lifted GHD is also validated as an HD (`ghd-is-hd`); the tw decomposition with
+  greedy guards is offered as a ghw certificate (`tw-covers`), which is how ghw ≤ tw + 1 enters with a certificate.
+  Both Python HDs (from the GHD and from the tw decomposition) are made before the solver bisection starts, so it
+  starts from the smallest validated upper bound.
 - **Propagation, one deviation.** §3.4 passes bounds through all four inequalities, while §3.6 says no upper bound is
   reported without a validated decomposition. Upper bounds therefore move only with a certificate (an HD is a GHD, a
   GHD an FHD); hw ≤ 3·ghw + 1 moves lower bounds only (ghw ≥ ⌈(hw_l − 1)/3⌉), and ghw ≤ tw + 1 enters as the
@@ -114,12 +116,29 @@ relations. Universal roles are reported only when there are two relations or mor
 
 ### 2.5 Solvers (§3.5, §4.5)
 
-- Schedule as §3.5: with ≤ 60 distinct relations `-exact -det` (limit T), whose result K implies unflagged
-  refutations of every k < K; otherwise k from the lower bound to 10, unflagged for T/4, then with
-  `-t -h -g -heuristic 1` for 3T/4 after a timeout, stopping at the first validated yes, or at k ≥ an existing
-  validated hw upper bound. Under `auto` the Python search also runs (≤ 60 relations) and log-k-decomp reruns k_yes and
-  k_yes − 1 when the primary refuted it. log-k-decomp has no `-det`; its runs are `-width k` (LogKHybrid) with the
-  same flags. Under `auto` with only log-k-decomp found, it is the primary.
+- **Schedule (ruling Q8, replacing §3.5's).** Bisection between hw's validated lower bound (after propagation and
+  the Python search) and its validated upper bound (the smallest of the trivial HD, `ghd-is-hd`, `hd-repair` and the
+  Python search). At the midpoint k of [lo, hi):
+  1. *find*: BalancedGo, then log-k-decomp (under `auto`, when found), each `-width k` with
+     `-t -h -g -heuristic 1`; a decomposition that validates as an HD on the unreduced H lowers hi to its width;
+  2. otherwise *refute*: BalancedGo (log-k-decomp when it is the only tool) `-width k` without preprocessing; its
+     "no" raises lo to k + 1 (Q2); a validated yes lowers hi;
+  3. a k that neither decides (timeouts, errors, invalid output) is left undecided and the search continues in
+     (k, hi).
+  Each attempt runs at most min(120 s, the step limit); the row's attempts, both tools together, at most 1,200 s.
+  When the bounds meet at hw ≥ 2, one confirmation run without preprocessing at hw − 1 by the second-opinion tool
+  (log-k-decomp under `auto`; the tool itself in single-tool modes), unless that exact run was already made. This
+  replaces §3.5's second opinion, and it means a small row that Python already decided costs one solver call. The
+  `-exact` path for ≤ 60 relations and k_max = 10 are gone: the bisection covers every size and range.
+  `check(…, solver_attempt=120, solver_budget=1200)` sets the two limits (the CLI keeps §4.3's options).
+- Every attempt is logged in the report's `solver_attempts` (k, tool, flags, limit, seconds, outcome, validated width,
+  what it was used as, the command) and summarised in `solver_budget` (attempt and budget seconds, seconds used);
+  the text report has a `solvers` line; the survey's `solver-log.jsonl` lists the attempts of every row, and the
+  table gains `solver_attempts` and `solver_seconds` columns. `test_schedule.py` checks the schedule on p6-adler
+  with a scripted stand-in for BalancedGo (bisection order, a preprocessed "no" is not a bound, an undecided k moves
+  the search up, the budget caps the attempts); `test_live_bisection_from_the_trivial_bound` runs it with the real
+  binaries from [2, 10] on p6-qualifier-k5.
+- log-k-decomp has no `-det`; its runs are `-width k` (LogKHybrid), with the same flags when finding.
 - Claims are resolved at the end: a sound refutation at k contradicted by any validated HD of width ≤ k is dropped
   and logged (`refutation-contradicted`); a yes failing (4) or printing "SCV found!" is demoted to a ghw bound
   (`demotion`); other invalid ones are logged (`invalid`). These go to `disagreements[]` with `kind`, the commands,
@@ -153,6 +172,7 @@ relations. Universal roles are reported only when there are two relations or mor
 | `test_validate.py` | G2 | each condition's injected violation, (4) on p6-adler's width-2 GHD, demotion, a 5,000-node chain |
 | `test_covers.py` | G2 | ρ\* of the triangle (3/2) and K5 (5/2) with both certificates; exact ρ; SciPy rounding (skips without SciPy) |
 | `test_solver_parsers.py` | G2 | recorded outputs (built here and R01's), "SCV found!" demotion, neutral-id round trip, echoed edge counts, contradicted refutations |
+| `test_schedule.py` | G2 | ruling Q8 on p6-adler with a scripted stand-in for BalancedGo: bisection order and bounds, a preprocessed "no" is no bound, an undecided k moves the search up, the budget caps all attempts (always runs) |
 | `test_solvers_live.py` | G2 | (`solvers`) both tools and `auto` agree with Python on every cyclic fixture; second opinion at k − 1; a timeout kills the process group; discovery order (fake binaries, always run) |
 | `test_sources.py` | G1 | the mini raw set (rules 5, 6a, 8, time, meta, end cause, required, no value, deprecated, unknown ids); P3a counts in both scopes win over SQID; a wrong naming is refused; the P3a cross-check; `manifest.verify`; Biolink rows and extraction (skips without linkml) |
 | `test_survey.py` | G1 | (`survey`) as DESIGN §5.2 |
@@ -166,12 +186,18 @@ relations. Universal roles are reported only when there are two relations or mor
 - `primary {subject, object}` is written on every relation (r1 rules 2–3; the prototype wrote none). Relations are
   sorted by numeric property id. A self-qualifier role is labelled "<label> (as a qualifier of itself)"; roles of the
   relation-local control carry no labels or mappings. A required qualifier gets min 1 unless it is a time bound.
-- **P3a's file** is not published yet, so its layout is an assumption, read tolerantly: top-level `format`
-  (`p3a-qualifier-usage/1`), `naming` (must be `wd-roles r1`), `dump.date`, `all.relations`, `kept` (either
-  `{relations: …}` or the relations map), `out_of_scope`; per relation `statements`, optional `time_model`, and
-  `qualifiers` keyed by r1 role id with `statements` (optional `snaks`, `slot`). `P<id>:qualifier` maps back to the
-  self-qualifier and `khg:end_cause` to P1534. With P3a's file, the dump-scope observed files are rebuilt from it too
-  (§2.5: P3a first, SQID otherwise); the SQID-based ones move to `results/superseded/`.
+- **P3a's file (ruling Q9).** The reader follows the format the P3a session gave on 2026-09-24: top level `dump`
+  (`"20260922"`, read as the counts date 2026-09-22), `naming` (must be `wd-roles r1`, else refused), `all`
+  (`relations`, `out_of_scope_relations`), `kept` (`relations`), `out_of_scope`; per relation an integer
+  `statements` and `qualifiers` `{role: {statements, snaks}}` keyed by r1 role ids. `P<id>:qualifier` maps back to
+  the self-qualifier and `khg:end_cause` to P1534; a qualifier keyed by the relation's own id (the main-value role)
+  is refused. A `format` key is not in the given top level; when present it must be `p3a-qualifier-usage/1`. The
+  optional extras (`slot`, `time_model`, `left_out_6b`, `rank_reason_mismatch`, `self_qualified`, `arity`) are
+  tolerated; `slot`, `time_model` (a string or `{"model": …}`), `out_of_scope` and the ids of
+  `all.out_of_scope_relations` go to the cross-check (`p3a-crosscheck.json`). Scope `dump` reads `all.relations`,
+  scope `slice` reads `kept.relations`. With P3a's file, the dump-scope observed files are rebuilt from it too (§2.5:
+  P3a first, SQID otherwise); the SQID-based ones move to `results/superseded/`. The test fixture
+  `tests/mini/wikidata/p3a-qualifier-usage-mini.json` has exactly this shape, every optional extra included.
 - Biolink: ids `p6-biolink-{formal,formal-domain}-{global,relation-local}`; the extraction reproduces the probe's
   `biolink-associations.json` exactly; residues 5/18 (formal) and 5/19 (formal + domain) as R02.
 - Wikidata residues under r1 (core,qualifier): declared 391/615 (R02's value exactly; 392/617 with time),
@@ -179,7 +205,7 @@ relations. Universal roles are reported only when there are two relations or mor
   5, rule 6a and the kept out-of-scope qualifiers; R02's numbers were expectations, not targets.
 - Generation takes 142 s (DESIGN: about 2 minutes), dominated by `check_schema` on the large documents, and is
   deterministic: two runs gave identical bytes. The Wikidata `.json.gz` files total 3.6 MB (DESIGN: about 4 MB).
-- Provenance records `git describe --dirty` (the files were generated before this commit, so it reads `5fd5801…-dirty`)
+- Provenance records `git describe --dirty` (the files are generated before their commit, so it reads the previous commit with `-dirty`)
   and the sha256 of the generator sources used (`sources/wikidata.py`, `data/wd-roles-r1.json`,
   `sources/biolink.py`), which identify the generator exactly.
 - `reproduce.sh` compares both the file sha256 and the C1 schema digest: a different zlib could change the gzip bytes
@@ -190,7 +216,8 @@ relations. Universal roles are reported only when there are two relations or mor
 - Rows as §6.3, with ids `wd-<table>[-slice]-<naming>-<cq|cqt>` and `biolink-<qualifiers>-<naming>-cq`; `--rows`
   takes ids, fnmatch patterns and the groups `wikidata`, `biolink`, `declared`, `observed`, `slice`, `controls`,
   `headline`, `all`. Rows run as `python -m khg_width` subprocesses; `--jobs N` runs N at a time.
-- Reports are written as compact JSON: an indented report of a 13,608-relation row is 9 MB (4 MB compact).
+- Reports are compact JSON in deterministic gzip (`reports/<row>.json.gz`, mtime 0, level 9; ruling Q6). An
+  indented report of a 13,608-relation row was 9 MB, compact 4 MB; gzip reduces that several-fold.
 - The CSV has DESIGN's columns plus `file_sha256` (the file hash Q5 asks for; `schema_sha256` is the C1 digest).
 - `hyperbench_baseline.py` reads `Run.csv` and `Type_of.csv` straight from the verified zips and reproduces R01 §3.5
   exactly (n = 1,113; hw 1/2/3 = 673/432/8; one inconsistent graph, `rand_q0135.hg`; exactness by size as R01).
@@ -224,23 +251,25 @@ Probes at a 5 s step limit, Python only (scratch): `wd-declared-relation-local-c
 72 s. Heuristics without a limit: min-degree 0.4 s / 0.1 s / 58–64 s and min-fill 103–115 s / 10 s / skipped (over
 1,500 roles) on the declared / observed-robust / observed-all blocks.
 
-**Estimate for the full survey at 600 s per step** (4 cores): generation 2.5 min; Biolink rows under 1 s each; the
-6 relation-local control rows 6–60 s each; each wd-roles row about 15–25 min of Python steps (the clique enumeration
-uses its full 600 s, min-fill up to 2 min, the rest seconds) plus up to 8 × 600 s = 80 min of BalancedGo when no k
-is decided, plus up to 20 min of second opinion when one is: about 1.5–2 h per wd-roles row, about 10–12 h serial for
-the 6 dump-scope wd-roles rows, about 4–5 h with `--jobs 3` (three rows of two solver CPUs each share 4 cores). The
-4 slice rows add about 7 h serial when P3a's counts land. Python-only (`--solver python`): about 2–2.5 h for all rows.
-DESIGN §6.6 estimated up to 2.5 h per wd-roles row.
+**After ruling Q8: the declared row at the survey's own settings** (`--solver auto --time-limit 600`, scratch):
+2,017 s in all, 809 s of Python steps (clique enumeration 600 s, min-fill 95 s and 106 s, the rest seconds) and
+exactly 1,200 s of solver attempts. The bisection started from [4, 38] (the clique bound and hd-repair) and probed
+k = 21, 30, 34 and 36: every attempt, BalancedGo and log-k-decomp with preprocessing and BalancedGo without, timed
+out at 120 s, so the budget ran out with hw in [4, 38]; ghw [4, 25], fhw [3, 24], tw [116, 235]; no disagreements.
+The reports of this probe are 136 KB (declared) and 4–11 KB (Biolink) as `.json.gz`.
 
-## 6. Open questions for the director
+**Estimate for the full survey** (dump-scope rows, Biolink, controls, baseline; `--time-limit 600`, `--jobs 3`, 4
+cores): generation 2.5 min; each wd-roles row about 30–36 min (11–14 min of Python steps plus the 20-minute solver
+budget, which the Wikidata cores use in full); the 6 relation-local controls 6–60 s each (α-acyclic: no solver);
+Biolink under 1 s each plus one confirming solver call; baseline, table and figure seconds. The 6 wd-roles rows
+take about 3.5 h serially and about **1.25–1.5 h with `--jobs 3`** (two waves of three rows, the controls in between).
+The 4 slice rows add about 1.2 h serially once P3a's counts land.
 
-1. **P3a's file layout** (§3 above) is assumed; please confirm it with P3a before the observed rows are regenerated.
-2. **Report size.** Compact reports of the six large wd-roles rows are about 4 MB each; the survey's `reports/` will
-   be roughly 30–40 MB. Commit them as `.json.gz` (as Q5 did for the schema files), or keep only the table and the
-   certificates of the headline rows?
-3. **The two additions** (`hd-repair`, and `tw-covers` as the certified form of ghw ≤ tw + 1) are not in DESIGN. They
-   only add validated upper bounds; keep them?
-4. **Solver budget.** At 30 s per k BalancedGo decided nothing on the declared core (391 relations). At 600 s per k
-   the hw loop alone can take 8 k-values × 600 s = 80 minutes per wd-roles row even when nothing is decided, and the
-   upper bounds then stay Python's (hd-repair: 52 declared, 68 observed-robust). A cheaper plan would cap k at the
-   ghw upper bound's neighbourhood or run the flagged mode first; DESIGN's schedule is implemented as written.
+## 6. The director's rulings on these notes (2026-09-24; DESIGN §9, Q6–Q9)
+
+| Question raised here | Ruling | What changed |
+|---|---|---|
+| P3a's file layout was assumed | **Q9**: the format P3a specified | `sources.wikidata.read_counts` and `crosscheck_p3a` rewritten to it; the mini fixture and `test_sources` follow it exactly (§3) |
+| Report size (4 MB per large row) | **Q6**: commit reports as `.json.gz`, deterministic | `run_survey.py` writes and reads `reports/<row>.json.gz`; `test_survey` checks the gzip mtime (§4) |
+| Keep `hd-repair` and the tw-based ghw certificate? | **Q7**: keep both | unchanged (§2.4) |
+| Solver budget (up to 80 min per row at 600 s per k) | **Q8**: bisection, 120 s per attempt, 20 min per row | the schedule of §2.5; `test_schedule.py` |

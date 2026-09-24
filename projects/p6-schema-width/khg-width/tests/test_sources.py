@@ -85,17 +85,27 @@ def test_observed_tables_from_sqid():
 
 
 def test_p3a_counts_win_over_sqid_both_scopes():
+    """Ruling Q9's format: ``all`` (every entity) for scope dump, ``kept`` (items with an English Wikipedia article)
+    for scope slice; the optional per-relation extras are tolerated."""
     dump = wikidata.read_counts(P3A, scope="dump")
+    assert dump.date == "2026-09-22" and dump.source == "p3a"
+    assert dump.relations["P39"]["qualifiers"] == {"P580": 15000, "P582": 11000, "P2937": 9000, "P1365": 5,
+                                                   "P813": 30, "P1534": 40}
+    assert dump.relations["P131"]["qualifiers"] == {"P131": 25}  # P131:qualifier is the self-qualifier
+    assert "P1855" not in dump.relations  # out_of_scope_relations are not relations of any table
     doc, notes = wikidata.build(RAW, "observed-all", "wd-roles-r1", counts=dump)
     assert check_schema(doc) == []
-    assert [r["id"] for r in doc["relations"]] == ["P39", "P131"]  # P3a's relations with statements
+    assert [r["id"] for r in doc["relations"]] == ["P39", "P131", "P580"]  # P166 has no statements
     assert set(roles(doc, "P39")) == {"subject", "P39", "P580", "P582", "P813", "P1365"}  # not SQID's P2241
-    assert "P131:qualifier" in roles(doc, "P131")  # mapped back from P3a's r1 role id
+    assert "P1534" not in roles(doc, "P39")  # the end cause is built in on an interval relation
+    assert "P131:qualifier" in roles(doc, "P131")
+    assert set(roles(doc, "P580")) == {"subject", "P580", "P580:qualifier", "P582"} and "time" not in rel(doc, "P580")
     assert "counts P3a 2026-09-22" in doc["label"]
     assert notes["observed_unknown_qualifier_ids"] == 1  # P2937 is not in the mini property list
     robust, _ = wikidata.build(RAW, "observed-robust", "wd-roles-r1", counts=dump)
     assert set(roles(robust, "P39")) == {"subject", "P39", "P580", "P582", "P813"}  # P1365: 5 uses
     sl = wikidata.read_counts(P3A, scope="slice")
+    assert sl.relations["P39"]["statements"] == 2000
     doc2, _ = wikidata.build(RAW, "observed-robust", "wd-roles-r1", counts=sl)
     assert doc2["id"] == "p6-wikidata-observed-robust-slice-wd-roles-r1"
     assert set(roles(doc2, "P39")) == {"subject", "P39", "P580", "P582"}  # P582: 1 use in the slice
@@ -103,21 +113,32 @@ def test_p3a_counts_win_over_sqid_both_scopes():
         wikidata.build(RAW, "declared", "wd-roles-r1", counts=dump)
 
 
-def test_p3a_wrong_naming_refused(tmp_path):
+def test_p3a_wrong_naming_or_shape_refused():
     data = json.loads(P3A.read_text())
-    data["naming"] = "wd-roles r0"
+    bad = dict(data, naming="wd-roles r0")
     with pytest.raises(ValueError, match="refused"):
-        wikidata.read_counts(data)
-    data["naming"], data["format"] = "wd-roles r1", "p3a-qualifier-usage/2"
+        wikidata.read_counts(bad)
     with pytest.raises(ValueError, match="not a p3a-qualifier-usage/1"):
-        wikidata.read_counts(data)
+        wikidata.read_counts(dict(data, format="p3a-qualifier-usage/2"))
+    assert wikidata.read_counts(dict(data, format="p3a-qualifier-usage/1")).date == "2026-09-22"
+    with pytest.raises(ValueError, match="YYYYMMDD"):
+        wikidata.read_counts(dict(data, dump={"date": "2026-09-22"}))
+    with pytest.raises(ValueError, match="no relations object"):
+        wikidata.read_counts(dict(data, kept={"P39": {"statements": 1, "qualifiers": {}}}), scope="slice")
+    merged = json.loads(P3A.read_text())
+    merged["all"]["relations"]["P131"]["qualifiers"]["P131"] = {"statements": 1, "snaks": 1}
+    with pytest.raises(ValueError, match="main-value role"):
+        wikidata.read_counts(merged)
 
 
 def test_p3a_crosscheck():
     cc = wikidata.crosscheck_p3a(wikidata.read_counts(P3A), wikidata.load(RAW))
+    assert cc["dump"] == "2026-09-22"
     assert {"relation": "P39", "role": "P813", "field": "slot", "p3a": "qualifier", "p6": "meta"} in cc["mismatches"]
+    assert not any(m.get("role") in ("P580", "P582", "khg:end_cause") for m in cc["mismatches"])
     oos = next(m for m in cc["mismatches"] if m["field"] == "out_of_scope")
     assert oos["only_p3a"] == ["P2302"] and oos["only_p6"] == []
+    assert not any(m["field"] == "out_of_scope_relations" for m in cc["mismatches"])  # P1855 is excluded by P6
 
 
 def test_manifest_verify(tmp_path):

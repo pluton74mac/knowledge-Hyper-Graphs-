@@ -69,25 +69,52 @@ def test_commands():
 @pytest.mark.parametrize("row", CYCLIC_ROWS, ids=[f"{r['fixture']}-{r['slots']}" for r in CYCLIC_ROWS])
 @pytest.mark.parametrize("solver", ["balancedgo", "logk", "auto"])
 def test_tools_agree_with_python(row, solver):
+    """Each mode reaches the fixture's hw with no disagreement. ``balancedgo`` and ``logk`` use only their tool;
+    ``auto`` lets Python decide the small fixtures and log-k-decomp confirm the refutation at hw - 1."""
     rep = check(row["path"], slots=row["slot_tuple"], solver=solver, time_limit=60)
     hw = rep.widths["hw"]
-    assert hw.exact and hw.value == int(row["hw"])
+    want = int(row["hw"])
+    assert hw.exact and hw.value == want
     assert rep.disagreements == []
-    tools = {s["tool"] for s in hw.steps}
-    if solver == "auto":
-        assert {"balancedgo", "logk"} <= tools  # primary and second opinion
-    else:
-        assert solver in tools and ({"balancedgo", "logk"} - {solver}).isdisjoint(tools)
-    for s in hw.steps:
-        assert set(s) >= {"measure", "method", "tool", "k", "limit", "seconds", "outcome"}
-    assert rep.tools[solver if solver != "auto" else "balancedgo"]["sha256"]
+    tools = {a["tool"] for a in rep.solver_attempts}
+    allowed = {"auto": {"balancedgo", "logk"}}.get(solver, {solver})
+    assert tools and tools <= allowed
+    confirm = "logk" if solver == "auto" else solver
+    assert any(a["tool"] == confirm and a["k"] == want - 1 and not a["flags"] and a["outcome"] == "no"
+               for a in rep.solver_attempts)
+    for a in rep.solver_attempts:
+        assert set(a) >= {"k", "tool", "flags", "seconds", "outcome", "used_as", "cmd"}
+        assert ("-t" in a["cmd"]) == a["flags"] and "-cpu" in a["cmd"]
+    assert rep.solver_budget["used_seconds"] <= rep.solver_budget["budget_seconds"]
+    assert rep.tools[confirm]["sha256"]
 
 
 @pytest.mark.solvers
-def test_second_opinion_reruns_k_minus_one():
-    rep = check(str(FIXTURES / "p6-qualifier-k5.relation-schema.json"), solver="auto")
-    ks = [(s["tool"], s["k"], s["outcome"]) for s in rep.widths["hw"].steps if s["tool"] == "logk"]
-    assert ("logk", 3, "yes") in ks and ("logk", 2, "no") in ks
+def test_live_bisection_from_the_trivial_bound():
+    """p6-qualifier-k5 (hw 3) from [2, 10], the trivial one-node HD: BalancedGo with preprocessing at the midpoint
+    6 finds a decomposition that validates on H, and the bisection closes on 3 with a refutation without
+    preprocessing at 2 (ruling Q8)."""
+    from khg_width.acyclicity import classify
+    from khg_width.check import _Run
+    from khg_width.decomposition import single_node
+    from khg_width.hypergraph import hypergraph
+
+    h = hypergraph(str(FIXTURES / "p6-qualifier-k5.relation-schema.json"))
+    r = _Run(h, classify(h), time_limit=60, solver="balancedgo", seed=20260924, tools=find_solvers())
+    r.b["hw"].raise_lower(2, "cyclic")
+    r.offer("hw", single_node(h.distinct()), "trivial")
+    assert r.b["hw"].upper == 10
+    claims: list = []
+    r._bisect(["balancedgo"], "balancedgo", "balancedgo", claims)
+    r._resolve(claims)
+    first = r.attempts[0]
+    assert (first["k"], first["tool"], first["flags"], first["outcome"]) == (6, "balancedgo", True, "yes")
+    assert first["validated_width"] is not None and first["validated_width"] <= 6
+    assert r.b["hw"].lower == r.b["hw"].upper == 3
+    assert r.b["hw"].lower_method == "refutation:balancedgo"
+    assert any(a["k"] == 2 and not a["flags"] and a["outcome"] == "no" and a["used_as"] == "lower bound 3"
+               for a in r.attempts)
+    assert all(a["k"] < 10 for a in r.attempts)
 
 
 @pytest.mark.solvers

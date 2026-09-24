@@ -26,11 +26,11 @@
  "generator": {
   "khg_width": "0.1.0",
   "sources": {
-   "khg_width/sources/wikidata.py": "784c25923a800fb1bd8e8ea36e72aca3845ba09a179d6daaec92f385edc4b6a4",
+   "khg_width/sources/wikidata.py": "f3dea7daf7df53b3fc068ae3ef2c5f52315bcfeee76d5a448b2cff6d144a86d5",
    "khg_width/data/wd-roles-r1.json": "f90c133cf3665c2c3f095e325f811e29b173974d7ebb16a3c60d98bd107e608a"
   }
  },
- "commit": "5fd5801a40ec-dirty",
+ "commit": "b6b1f3fd238e-dirty",
  "notes": {
   "declared_unknown_qualifier_ids": 0,
   "observed_unknown_qualifier_ids": 0,

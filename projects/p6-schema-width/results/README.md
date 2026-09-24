@@ -21,9 +21,10 @@ them byte for byte from the manifested raw files. The observed files rest on SQI
 
 ## What the survey adds
 
-`survey.{csv,md,json}`, `reports/<row>.json` (full `khg-width --json` reports with decompositions and steps),
-`hyperbench-baseline.json`, `figure-data.csv`, `figure-widths.{svg,png}`, `solver-log.jsonl` (disagreements and
-demotions), `machine.json`, `crosschecks/` (manual, `survey/crosscheck.sh`) and, with P3a's counts,
+`survey.{csv,md,json}`, `reports/<row>.json.gz` (full `khg-width --json` reports with decompositions, steps and
+every external-solver attempt; compact JSON in deterministic gzip, ruling Q6),
+`hyperbench-baseline.json`, `figure-data.csv`, `figure-widths.{svg,png}`, `solver-log.jsonl` (every solver
+attempt, disagreement and demotion), `machine.json`, `crosschecks/` (manual, `survey/crosscheck.sh`) and, with P3a's counts,
 `p3a-crosscheck.json`. Reproduce with `../survey/reproduce.sh` (see its header for the steps and run time).
 
 ## Licences and attribution

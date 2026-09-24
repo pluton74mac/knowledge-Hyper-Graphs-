@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import csv
+import gzip
 import hashlib
 import json
 from fractions import Fraction
@@ -30,7 +31,10 @@ def table() -> dict[str, dict]:
 
 
 def report(row_id: str) -> dict:
-    return json.loads((RESULTS / "reports" / f"{row_id}.json").read_text())
+    """Ruling Q6: reports are gzip-compressed JSON written with mtime 0."""
+    raw = (RESULTS / "reports" / f"{row_id}.json.gz").read_bytes()
+    assert raw[4:8] == b"\x00\x00\x00\x00"  # the gzip header's mtime
+    return json.loads(gzip.decompress(raw))
 
 
 def num(m: str, x):
@@ -44,6 +48,10 @@ def check_row(row: dict, *, recompute_widths: bool = False) -> None:
     assert prov["file_sha256"] == row["file_sha256"] and prov["schema_sha256"] == row["schema_sha256"]
     rep = report(row["row_id"])
     assert rep["schema"]["sha256"] == row["schema_sha256"]
+    # ruling Q8: the solver attempts stay within the budget, and only runs without preprocessing are lower bounds
+    sb = rep["solver_budget"]
+    assert sum(a["seconds"] for a in rep["solver_attempts"]) <= sb["budget_seconds"] + 5 * len(rep["solver_attempts"])
+    assert all(not a["used_as"].startswith("lower") for a in rep["solver_attempts"] if a["flags"])
     slots = row["slots"].split(",")
     h = hypergraph(str(f), slots=slots)
     a = classify(h)

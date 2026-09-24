@@ -39,11 +39,16 @@ from .reduce import Core, core, lift_core, lift_tw, primal, tw_reduce
 from .report import MEASURES, Width, WidthReport
 from .steps import Budget, Deadline, StepLog
 
-__all__ = ["check", "check_hypergraph", "width", "SOLVER_MODES", "K_MAX", "SEED", "DEFAULT_TIME_LIMIT"]
+__all__ = ["check", "check_hypergraph", "width", "SOLVER_MODES", "K_MAX", "SEED", "DEFAULT_TIME_LIMIT",
+           "SOLVER_ATTEMPT_SECONDS", "SOLVER_BUDGET_SECONDS"]
 
 SOLVER_MODES = ("auto", "python", "balancedgo", "logk")
 K_MAX = 10
 SEED = 20260924
+#: ruling Q8: each external-solver attempt runs at most this long (and never longer than the step limit) ...
+SOLVER_ATTEMPT_SECONDS = 120.0
+#: ... and all attempts of one row, both tools together, at most this long
+SOLVER_BUDGET_SECONDS = 1200.0
 DEFAULT_TIME_LIMIT = 60.0
 KIND = {"hw": "hd", "ghw": "ghd", "fhw": "fhd", "tw": "td"}
 
@@ -75,7 +80,8 @@ def _tools_for(solver: str) -> dict:
 # ------------------------------------------------------------------------------------------------ the run
 class _Run:
     def __init__(self, h: Hypergraph, acy: Acyclicity, *, time_limit: float, solver: str, seed: int,
-                 tools: Mapping[str, Any]):
+                 tools: Mapping[str, Any], solver_attempt: float = SOLVER_ATTEMPT_SECONDS,
+                 solver_budget: float = SOLVER_BUDGET_SECONDS):
         self.h = h
         self.d = h.distinct()
         self.acy = acy
@@ -89,6 +95,10 @@ class _Run:
         self.b: dict[str, Bound] = {m: Bound(m) for m in MEASURES}
         self.core: Core | None = None
         self.tw_td: Decomposition | None = None
+        self.solver_attempt = float(solver_attempt)
+        self.solver_budget = float(solver_budget)
+        self.attempts: list[dict] = []  # every external-solver attempt (ruling Q8)
+        self.solver_spent = 0.0
         self.detail: dict[str, str] = {m: "" for m in MEASURES}
 
     # ---------------------------------------------------------------- helpers
@@ -445,27 +455,127 @@ class _Run:
         d, b = self.d, self.b["hw"]
         triv = single_node(d)
         self.offer("hw", triv, "trivial")
-        claims: list[dict] = []  # refutations {tool, k, sound} and validated HDs {tool, width}
+        claims: list[dict] = []  # refutations {tool, k, sound} and validated HDs {tool, hd}
         py_done = False
         if self.solver in ("auto", "python") and len(d) <= HD_SEARCH_RELATIONS:
             py_done = self._python_hw(claims)
-        primary = None
-        if self.solver in ("auto", "balancedgo") and "balancedgo" in self.tools:
-            primary = "balancedgo"
-        elif self.solver in ("auto", "logk") and "logk" in self.tools:
-            primary = "logk"
-        if primary is not None:
-            propagate(self.b, self.convert)  # the solver schedule starts from hw >= ghw's lower bound
-            self._solver_hw(primary, claims)
-        self._resolve(claims)
+        # Python's own HD before the solvers: the tree decomposition of tw, guarded and repaired (the lifted GHD
+        # was repaired in ghw_fhw), so that the bisection starts from the smallest validated upper bound
         if not b.exact and self.tw_td is not None and self.b["tw"].upper is not None and (
                 b.upper is None or self.b["tw"].upper + 1 < b.upper):
             self._repair(self.tw_td, "tree decomposition of tw")
+        roles = self._solver_roles()
+        if roles is not None:
+            propagate(self.b, self.convert)  # the bisection starts from hw >= ghw's lower bound
+            self._bisect(*roles, claims)
+        self._resolve(claims)
         if not b.exact and not py_done:
             self._induced_hw()
         if not self.detail["hw"]:
             self.detail["hw"] = (f"{len(self.d)} distinct relations: over the Python search limit "
-                                 f"({HD_SEARCH_RELATIONS}); no solver" if primary is None else "")
+                                 f"({HD_SEARCH_RELATIONS}); no solver" if roles is None else "")
+
+    def _solver_roles(self) -> tuple[list[str], str, str | None] | None:
+        """(tools that search with preprocessing, BalancedGo first; the tool that refutes without it; the tool that
+        confirms an exact value) for the solver mode, or None without a usable tool."""
+        found = [t for t in ("balancedgo", "logk") if t in self.tools]
+        if self.solver == "auto" and found:
+            return found, found[0], found[-1]
+        if self.solver in ("balancedgo", "logk") and self.solver in self.tools:
+            return [self.solver], self.solver, self.solver
+        return None
+
+    def _sound_lower(self, claims: list[dict]) -> int:
+        """hw's lower bound with the sound refutations so far (those below the validated upper bound)."""
+        b = self.b["hw"]
+        lo = int(b.lower)
+        for c in claims:
+            if c.get("sound") and c.get("k") is not None and (b.upper is None or c["k"] < b.upper):
+                lo = max(lo, c["k"] + 1)
+        return lo
+
+    def _bisect(self, find: list[str], refute: str, confirm: str | None, claims: list[dict]) -> None:
+        """Ruling Q8. Bisection between hw's validated lower and upper bounds. At the midpoint k: each tool of
+        ``find`` in turn (BalancedGo first) runs ``-width k`` with the preprocessing flags ``-t -h -g -heuristic 1``
+        to *find* a decomposition, which is validated on the unreduced H and, when it passes, lowers the upper
+        bound; if none is found, ``refute`` runs ``-width k`` without preprocessing, whose "no" is the only kind that
+        raises the lower bound (ruling Q2). A k that no run decides is left undecided and the search moves above it.
+        Each attempt runs at most ``solver_attempt`` seconds (and at most the step limit); all attempts of the row,
+        every tool together, at most ``solver_budget`` seconds. When the bounds meet, ``confirm`` reruns the
+        refutation at hw - 1 without preprocessing (the second opinion), unless that very run was already made."""
+        from .solvers import balancedgo, logk
+
+        mods = {"balancedgo": balancedgo, "logk": logk}
+        b = self.b["hw"]
+        neutral = self.d.neutral
+        spent = 0.0
+
+        with tempfile.TemporaryDirectory(prefix="khg-width-") as work:
+            graph = os.path.join(work, "h.hg")
+            with open(graph, "w", encoding="utf-8") as fh:
+                fh.write(neutral.text)
+
+            def attempt(tool: str, k: int, flags: bool) -> tuple[str, int | None]:
+                nonlocal spent
+                limit = min(self.solver_attempt, self.T, self.solver_budget - spent)
+                if limit <= 0.05 * min(self.solver_attempt, self.T):
+                    return "budget", None
+                o = mods[tool].solve(self.tools[tool].path, graph, work, k=k, flags=flags, timeout=limit)
+                spent += o.seconds
+                self.log.add(measure="hw", method="find-flags" if flags else "refute", tool=tool, k=k,
+                             limit=round(limit, 3), seconds=o.seconds, outcome=o.outcome)
+                n_dis = len(self.disagreements)
+                w = self._take(o, claims)
+                if w is not None:
+                    used = f"upper bound {w} (validated HD)"
+                elif o.outcome == "no":
+                    used = "none: a run with preprocessing refutes nothing" if flags else f"lower bound {k + 1}"
+                elif o.outcome == "yes":
+                    kinds = [x["kind"] for x in self.disagreements[n_dis:]]
+                    used = "ghw bound (demoted)" if "demotion" in kinds else "none: " + (", ".join(kinds) or "invalid")
+                else:
+                    used = "none"
+                self.attempts.append({"k": k, "tool": tool, "flags": flags, "limit": round(limit, 3),
+                                      "seconds": round(o.seconds, 3), "outcome": o.outcome, "validated_width": w,
+                                      "used_as": used, "cmd": list(o.cmd)})
+                return o.outcome, w
+
+            floor = 0
+            stop = False
+            while not stop:
+                lo = self._sound_lower(claims)
+                hi = b.upper
+                start = max(lo, floor)
+                if hi is None or start >= hi:
+                    break
+                k = (start + hi) // 2
+                found = False
+                for tool in find:
+                    out, w = attempt(tool, k, True)
+                    if out == "budget":
+                        stop = True
+                        break
+                    if w is not None:
+                        found = True
+                        break
+                if stop or found:
+                    continue
+                out, w = attempt(refute, k, False)
+                if out == "budget":
+                    break
+                if w is None and out != "no":
+                    floor = k + 1  # undecided: look above it
+            lo, hi = self._sound_lower(claims), b.upper
+            if confirm is not None and hi is not None and lo == hi and hi >= 2:
+                done = any(a["tool"] == confirm and a["k"] == hi - 1 and not a["flags"] for a in self.attempts)
+                if not done:
+                    attempt(confirm, hi - 1, False)
+        self.solver_spent = spent
+        tools = ", ".join(sorted({a["tool"] for a in self.attempts}))
+        if tools:
+            note = (f"solvers: {tools}, {len(self.attempts)} attempts, {spent:.0f} of {self.solver_budget:.0f} s "
+                    f"budget")
+            self.detail["hw"] = (self.detail["hw"] + "; " if self.detail["hw"] else "") + note
 
     def _python_hw(self, claims: list[dict]) -> bool:
         b = self.b["hw"]
@@ -510,57 +620,6 @@ class _Run:
         outcome, fd = self.step(build, measure="fhw", method=method)
         if outcome == "done":
             self.offer("fhw", fd, method)
-
-    def _solver_hw(self, primary: str, claims: list[dict]) -> None:
-        from .solvers import balancedgo, logk
-
-        mods = {"balancedgo": balancedgo, "logk": logk}
-        d, b = self.d, self.b["hw"]
-        neutral = d.neutral
-        with tempfile.TemporaryDirectory(prefix="khg-width-") as work:
-            graph = os.path.join(work, "h.hg")
-            with open(graph, "w", encoding="utf-8") as fh:
-                fh.write(neutral.text)
-
-            def call(tool: str, *, k: int | None, exact: bool = False, flags: bool = False, share: float = 1.0):
-                o = mods[tool].solve(self.tools[tool].path, graph, work, k=k, exact=exact, flags=flags,
-                                     timeout=self.T * share)
-                self.log.add(measure="hw", method="exact" if exact else ("flags" if flags else "width"), tool=tool,
-                             k=k, limit=round(self.T * share, 3), seconds=o.seconds, outcome=o.outcome,
-                             detail=f"k_reported={o.k_reported}")
-                return self._take(o, claims)
-
-            k_yes = None
-            if len(d) <= HD_SEARCH_RELATIONS:
-                k_yes = call(primary, k=None, exact=True)
-            else:
-                k = max(1, int(b.lower))
-                while k <= K_MAX and k_yes is None and (b.upper is None or k < b.upper):
-                    got = call(primary, k=k, share=0.25)
-                    if got is None and self._last_outcome(claims, primary, k) == "timeout":
-                        got = call(primary, k=k, flags=True, share=0.75)
-                    if got is not None:
-                        k_yes = got
-                        break
-                    k += 1
-            second = "logk" if primary == "balancedgo" and self.solver == "auto" and "logk" in self.tools else None
-            if second and k_yes is not None:
-                for kk in [k_yes] + ([k_yes - 1] if any(c.get("tool") == primary and c.get("k") == k_yes - 1
-                                                        and c.get("sound") for c in claims) else []):
-                    if kk < 1:
-                        continue
-                    got = call(second, k=kk, share=0.25)
-                    if got is None and self._last_outcome(claims, second, kk) == "timeout":
-                        call(second, k=kk, flags=True, share=0.75)
-        tools = ", ".join(sorted({c["tool"] for c in claims if c.get("tool") not in (None, "python")}))
-        if tools:
-            self.detail["hw"] = (self.detail["hw"] + "; " if self.detail["hw"] else "") + f"solvers: {tools}"
-
-    def _last_outcome(self, claims: list[dict], tool: str, k: int) -> str | None:
-        for c in reversed(claims):
-            if c.get("tool") == tool and c.get("k") == k and "outcome" in c:
-                return c["outcome"]
-        return None
 
     def _take(self, o: Any, claims: list[dict]) -> int | None:
         """Record a solver outcome; returns the validated HD width on a validated 'yes'."""
@@ -713,8 +772,10 @@ def _tools_block(tools: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def check(schema: Any, *, slots: Sequence[str] = HEADLINE_SLOTS, time_limit: float = DEFAULT_TIME_LIMIT,
-          solver: str = "auto", seed: int = SEED) -> WidthReport:
-    """Class and widths of a schema file (``.json`` / ``.json.gz``), mapping or ``Schema``.
+          solver: str = "auto", seed: int = SEED, solver_attempt: float = SOLVER_ATTEMPT_SECONDS,
+          solver_budget: float = SOLVER_BUDGET_SECONDS) -> WidthReport:
+    """Class and widths of a schema file (``.json`` / ``.json.gz``), mapping or ``Schema``. ``solver_attempt`` and
+    ``solver_budget`` bound each external-solver attempt and all of them together (ruling Q8).
 
     Raises ``UsageError`` (bad slots, limit or solver; a requested solver missing), ``SchemaInvalid`` (the document
     fails layers J, V or M) and ``OSError`` (the file cannot be read)."""
@@ -728,7 +789,8 @@ def check(schema: Any, *, slots: Sequence[str] = HEADLINE_SLOTS, time_limit: flo
     hg = schema_hypergraph(s, slots=sl)
     h = Hypergraph.from_mapping(hg["hyperedges"])
     acy = classify(h)
-    r = _Run(h, acy, time_limit=limit, solver=solver, seed=seed, tools=tools)
+    r = _Run(h, acy, time_limit=limit, solver=solver, seed=seed, tools=tools, solver_attempt=solver_attempt,
+             solver_budget=solver_budget)
     widths = r.run()
     info = {"id": s.id, "version": s.version, "sha256": s.sha256, "file_sha256": src.file_sha256,
             "path": src.path, "label": s.doc.get("label")}
@@ -738,7 +800,9 @@ def check(schema: Any, *, slots: Sequence[str] = HEADLINE_SLOTS, time_limit: flo
     stats["core_relations"] = c.summary["core_relations"] if c is not None else 0
     return WidthReport(schema=info, slots=sl, stats=stats, acyclicity=acy, widths=widths, reductions=r.reductions,
                        disagreements=r.disagreements, tools=_tools_block(tools), time_limit=limit, solver=solver,
-                       seed=seed, wall_seconds=time.monotonic() - t0)
+                       seed=seed, wall_seconds=time.monotonic() - t0, solver_attempts=r.attempts,
+                       solver_budget={"attempt_seconds": min(r.solver_attempt, limit),
+                                      "budget_seconds": r.solver_budget, "used_seconds": round(r.solver_spent, 3)})
 
 
 def width(h: Hypergraph, measure: str, *, time_limit: float = DEFAULT_TIME_LIMIT, solver: str = "auto",
@@ -753,10 +817,12 @@ def width(h: Hypergraph, measure: str, *, time_limit: float = DEFAULT_TIME_LIMIT
 
 
 def check_hypergraph(h: Hypergraph, *, time_limit: float = DEFAULT_TIME_LIMIT, solver: str = "auto",
-                     seed: int = SEED) -> tuple[Acyclicity, dict[str, Width], list[dict]]:
+                     seed: int = SEED, solver_attempt: float = SOLVER_ATTEMPT_SECONDS,
+                     solver_budget: float = SOLVER_BUDGET_SECONDS) -> tuple[Acyclicity, dict[str, Width], list[dict]]:
     """Class, the four widths (propagated) and the disagreements of a ``Hypergraph`` given directly."""
     limit = _check_limit(time_limit)
     tools = _tools_for(solver)
     acy = classify(h)
-    r = _Run(h, acy, time_limit=limit, solver=solver, seed=seed, tools=tools)
+    r = _Run(h, acy, time_limit=limit, solver=solver, seed=seed, tools=tools, solver_attempt=solver_attempt,
+             solver_budget=solver_budget)
     return acy, r.run(), r.disagreements

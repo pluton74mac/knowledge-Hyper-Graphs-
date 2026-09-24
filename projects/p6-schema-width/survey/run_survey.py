@@ -13,7 +13,8 @@
 - ``<name>.provenance.json`` beside each: input hashes, naming version, count source, scope and date, thresholds,
   generator version and source hashes, and the git commit.
 
-``run`` runs ``khg-width FILE --slots ... --time-limit T --solver S --json`` per row into ``reports/<row>.json``
+``run`` runs ``khg-width FILE --slots ... --time-limit T --solver S --json`` per row into ``reports/<row>.json.gz``
+(compact JSON in deterministic gzip, ruling Q6)
 (``--jobs N`` rows at a time; each solver call uses ``-cpu 2``). ``--rows`` takes row ids, fnmatch patterns or the
 groups ``wikidata``, ``biolink``, ``declared``, ``observed``, ``slice``, ``controls``, ``headline``, ``all``.
 
@@ -228,11 +229,21 @@ def _supersede_sqid(out: Path) -> None:
         for f in (prov, out / p["file"]):
             if f.exists():
                 shutil.move(str(f), str(sup / f.name))
-        for rep in (out / "reports").glob(f"wd-{p['table']}-{p['naming']}-*.json"):
+        for rep in (out / "reports").glob(f"wd-{p['table']}-{p['naming']}-*"):
             shutil.move(str(rep), str(sup / rep.name))
 
 
 # ------------------------------------------------------------------------------------------------ run
+def write_report(path: Path, rep: dict) -> None:
+    """Ruling Q6: a report is compact JSON (keys in the report's order) in deterministic gzip (mtime 0, level 9)."""
+    data = (json.dumps(rep, ensure_ascii=False, separators=(",", ":")) + "\n").encode("utf-8")
+    path.write_bytes(gzip.compress(data, compresslevel=9, mtime=0))
+
+
+def read_report(path: Path) -> dict:
+    return json.loads(gzip.decompress(path.read_bytes()).decode("utf-8"))
+
+
 def run_row(row: dict, out: Path, *, time_limit: float, solver: str) -> dict:
     rep_dir = out / "reports"
     rep_dir.mkdir(parents=True, exist_ok=True)
@@ -246,9 +257,7 @@ def run_row(row: dict, out: Path, *, time_limit: float, solver: str) -> dict:
         return {"row_id": row["row_id"], "status": r.returncode, "wall_seconds": wall, "error": r.stderr[-2000:]}
     rep = json.loads(r.stdout)
     rep["survey"] = {"row_id": row["row_id"], "command": ["khg-width"] + cmd[3:], "wall_seconds": round(wall, 3)}
-    # compact JSON: the certificates of 13,608-relation schemas make an indented report twice as large
-    (rep_dir / f"{row['row_id']}.json").write_text(json.dumps(rep, ensure_ascii=False, separators=(",", ":"))
-                                                   + "\n")
+    write_report(rep_dir / f"{row['row_id']}.json.gz", rep)
     return {"row_id": row["row_id"], "status": 0, "wall_seconds": wall}
 
 
@@ -274,7 +283,8 @@ COLUMNS = (["row_id", "source", "scope", "counts_source", "counts_date", "naming
             "relations", "roles", "rank", "max_degree", "bip", "duplicate_groups", "universal_roles", "components",
             "class", "first_failed", "witness_kind", "witness_size", "core_roles", "core_relations"]
            + [f"{m}_{x}" for m in MEASURES for x in ("lower", "upper", "exact", "method")]
-           + ["validated", "disagreements", "tools", "time_limit", "wall_seconds"])
+           + ["validated", "disagreements", "tools", "solver_attempts", "solver_seconds", "time_limit",
+              "wall_seconds"])
 
 
 def _witness_size(w: dict | None) -> int | str:
@@ -305,6 +315,8 @@ def table_row(row: dict, rep: dict, prov: dict) -> dict:
         "disagreements": len(rep["disagreements"]),
         "tools": ";".join(f"{k}:{(v.get('commit') or '')[:7]}" for k, v in rep["tools"].items()
                           if isinstance(v, dict) and "sha256" in v) or "python",
+        "solver_attempts": len(rep.get("solver_attempts", [])),
+        "solver_seconds": (rep.get("solver_budget") or {}).get("used_seconds", 0),
         "time_limit": rep["time_limit"], "wall_seconds": rep.get("survey", {}).get("wall_seconds",
                                                                                  rep["wall_seconds"]),
     }
@@ -328,10 +340,10 @@ def table(out: Path) -> list[dict]:
     trs = []
     reports = {}
     for row in rows(out):
-        rp = out / "reports" / f"{row['row_id']}.json"
+        rp = out / "reports" / f"{row['row_id']}.json.gz"
         if not rp.exists():
             continue
-        rep = json.loads(rp.read_text())
+        rep = read_report(rp)
         prov = json.loads((out / "schemas" / f"{rep['schema']['id']}.provenance.json").read_text())
         reports[row["row_id"]] = rep
         trs.append(table_row(row, rep, prov))
@@ -381,8 +393,10 @@ def table(out: Path) -> list[dict]:
     # solver log and machine
     with open(out / "solver-log.jsonl", "w", encoding="utf-8") as fh:
         for rid, rep in sorted(reports.items()):
+            for a in rep.get("solver_attempts", []):
+                fh.write(json.dumps({"row_id": rid, "record": "attempt", **a}, ensure_ascii=False) + "\n")
             for d in rep["disagreements"]:
-                fh.write(json.dumps({"row_id": rid, **d}, ensure_ascii=False) + "\n")
+                fh.write(json.dumps({"row_id": rid, "record": "disagreement", **d}, ensure_ascii=False) + "\n")
     machine = {"platform": platform.platform(), "python": platform.python_version(), "cpus": os.cpu_count(),
                "processor": platform.processor() or platform.machine(),
                "tools": next((rep["tools"] for rep in reports.values()), {})}

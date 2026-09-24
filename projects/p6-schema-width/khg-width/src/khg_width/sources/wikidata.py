@@ -138,68 +138,117 @@ class Counts:
     raw: dict = field(default_factory=dict)
 
 
+#: the per-relation fields P3a may add beside ``statements`` and ``qualifiers`` (tolerated; ``time_model`` and each
+#: qualifier's ``slot`` are cross-checked)
+P3A_RELATION_EXTRAS = ("time_model", "left_out_6b", "rank_reason_mismatch", "self_qualified", "arity")
+
+
+def _p3a_relations(section: Any, where: str) -> Mapping:
+    """``section["relations"]``, the relations of ``all`` or ``kept``."""
+    if not isinstance(section, Mapping):
+        raise ValueError(f"{where} is not an object")
+    rels = section.get("relations")
+    if not isinstance(rels, Mapping):
+        raise ValueError(f"{where} has no relations object")
+    return rels
+
+
+def _p3a_qualifier(role: str) -> str:
+    """The qualifier property of an r1 role id: ``P131:qualifier`` -> P131 (the self-qualifier), ``khg:end_cause``
+    -> P1534, ``P580`` -> P580."""
+    if role.endswith(":qualifier"):
+        return role.split(":", 1)[0]
+    if role == "khg:end_cause":
+        return "P1534"
+    return role
+
+
+def _p3a_date(dump: Any) -> str:
+    """``"20260922"`` -> ``"2026-09-22"``."""
+    if not (isinstance(dump, str) and re.fullmatch(r"\d{8}", dump)):
+        raise ValueError(f"dump must be the dump date as YYYYMMDD, got {dump!r}")
+    return f"{dump[:4]}-{dump[4:6]}-{dump[6:]}"
+
+
 def read_counts(data: Mapping[str, Any] | str | Path, *, scope: str = "dump") -> Counts:
-    """Read a ``p3a-qualifier-usage/1`` file (or its parsed content) for scope ``dump`` (``all.relations``) or
-    ``slice`` (``kept``). Refuses another format or a ``naming`` other than ``wd-roles r1``. Role ids are r1 ids:
-    ``P<id>:qualifier`` maps back to the self-qualifier, ``khg:end_cause`` to P1534."""
+    """Read P3a's ``p3a-qualifier-usage/1`` file (or its parsed content), as the P3a session specified it on
+    2026-09-24 (ruling Q9)::
+
+        {"dump": "20260922", "naming": "wd-roles r1",
+         "all":  {"relations": {P: rel, ...}, "out_of_scope_relations": {P: rel, ...}},
+         "kept": {"relations": {P: rel, ...}, ...},
+         "out_of_scope": [P, ...]}
+        rel = {"statements": n, "qualifiers": {role: {"statements": n, "snaks": m[, "slot": s]}, ...}
+               [, "time_model", "left_out_6b", "rank_reason_mismatch", "self_qualified", "arity"]}
+
+    Scope ``dump`` reads ``all.relations`` (every entity of the dump), scope ``slice`` reads ``kept.relations``
+    (items with an English Wikipedia article). Roles are r1 ids: ``P<id>:qualifier`` is the self-qualifier (never
+    merged with the main-value role, which is not a qualifier). A ``format`` key, when present, must be
+    ``p3a-qualifier-usage/1``; ``naming`` must be ``wd-roles r1`` (else the file is refused). The optional
+    per-relation extras are tolerated; ``out_of_scope_relations`` are not relations of any table."""
     if not isinstance(data, Mapping):
         data = json.loads(Path(data).read_text(encoding="utf-8"))
-    if data.get("format") != P3A_FORMAT:
+    if "format" in data and data["format"] != P3A_FORMAT:
         raise ValueError(f"not a {P3A_FORMAT} file (format {data.get('format')!r})")
     if data.get("naming") != NAMING_VERSION:
         raise ValueError(f"the counts use naming {data.get('naming')!r}, not {NAMING_VERSION!r}; refused")
     if scope not in ("dump", "slice"):
         raise ValueError("scope must be dump or slice")
-    part = data.get("all") if scope == "dump" else data.get("kept")
-    if not isinstance(part, Mapping):
-        raise ValueError(f"the counts have no {'all' if scope == 'dump' else 'kept'} section")
-    rels = part.get("relations", part)
+    date = _p3a_date(data.get("dump"))
+    section = "all" if scope == "dump" else "kept"
+    rels = _p3a_relations(data.get(section), section)
     out: dict[str, dict] = {}
     for p, r in rels.items():
-        if not isinstance(r, Mapping):
-            continue
+        if not isinstance(r, Mapping) or not isinstance(r.get("statements"), int):
+            raise ValueError(f"{section}.relations.{p} has no integer statements count")
         qs: dict[str, int] = {}
         for role, c in (r.get("qualifiers") or {}).items():
-            q = role
-            if role.endswith(":qualifier"):
-                q = role.split(":", 1)[0]
-            elif role == "khg:end_cause":
-                q = "P1534"
-            n = c.get("statements", 0) if isinstance(c, Mapping) else int(c)
-            qs[q] = qs.get(q, 0) + int(n)
-        out[p] = {"statements": int(r.get("statements", 0)), "qualifiers": qs}
-    dump = data.get("dump") or {}
-    date = dump.get("date") if isinstance(dump, Mapping) else None
-    return Counts(scope=scope, date=date or data.get("date"), relations=out, source="p3a", raw=dict(data))
+            if not isinstance(c, Mapping) or not isinstance(c.get("statements"), int):
+                raise ValueError(f"{section}.relations.{p}.qualifiers.{role} has no integer statements count")
+            if role == p:
+                raise ValueError(f"{section}.relations.{p}: qualifier role {role} is the main-value role (rule 5 "
+                                 f"names the self-qualifier {p}:qualifier)")
+            q = _p3a_qualifier(role)
+            qs[q] = qs.get(q, 0) + c["statements"]
+        out[p] = {"statements": r["statements"], "qualifiers": qs}
+    return Counts(scope=scope, date=date, relations=out, source="p3a", raw=dict(data))
 
 
 def crosscheck_p3a(counts: Counts, raw: Raw) -> dict:
-    """P3a's optional ``slot`` / ``time_model`` fields and ``out_of_scope`` list against P6's own r1 classification."""
+    """P3a's optional ``time_model`` and per-qualifier ``slot`` fields, its ``out_of_scope`` list and the ids of
+    ``all.out_of_scope_relations`` against P6's own r1 classification (DESIGN §2.5)."""
     r1 = rules()
     ex = excluded(raw)
     mism: list[dict] = []
     part = counts.raw.get("all") if counts.scope == "dump" else counts.raw.get("kept")
-    rels = (part or {}).get("relations", part or {})
+    rels = part.get("relations", {}) if isinstance(part, Mapping) else {}
     for p, rec in sorted(rels.items(), key=lambda x: _pnum(x[0])):
         if not isinstance(rec, Mapping):
             continue
-        quals = {q for q in counts.relations.get(p, {}).get("qualifiers", {})}
+        quals = set(counts.relations.get(p, {}).get("qualifiers", {}))
         interval = p not in r1["no_time_model_relations"] and bool(quals & set(r1["time_bounds"].values()))
         tm = rec.get("time_model")
-        if tm is not None and (tm == "interval") != interval:
+        tm_model = tm.get("model") if isinstance(tm, Mapping) else tm
+        if "time_model" in rec and (tm_model == "interval") != interval:
             mism.append({"relation": p, "field": "time_model", "p3a": tm, "p6": "interval" if interval else None})
         for role, c in (rec.get("qualifiers") or {}).items():
             if not isinstance(c, Mapping) or "slot" not in c:
                 continue
-            q = role.split(":", 1)[0] if role.endswith(":qualifier") else ("P1534" if role == "khg:end_cause" else role)
+            q = _p3a_qualifier(role)
             mine = _slot(q, p, interval, r1)
-            if mine != c["slot"] and not (mine is None and role == "khg:end_cause"):
+            if role == "khg:end_cause" and mine is None:
+                continue  # the built-in end cause: P3a's slot for it is its own
+            if mine != c["slot"]:
                 mism.append({"relation": p, "role": role, "field": "slot", "p3a": c["slot"], "p6": mine})
     oos = set(counts.raw.get("out_of_scope") or [])
-    if oos and oos != ex:
+    if oos != ex:
         mism.append({"field": "out_of_scope", "only_p3a": sorted(oos - ex, key=_pnum),
                      "only_p6": sorted(ex - oos, key=_pnum)})
-    return {"naming": NAMING_VERSION, "scope": counts.scope, "mismatches": mism}
+    all_part = counts.raw.get("all")
+    oos_rel = set((all_part.get("out_of_scope_relations") or {}) if isinstance(all_part, Mapping) else {})
+    if oos_rel - ex:
+        mism.append({"field": "out_of_scope_relations", "not_excluded_by_p6": sorted(oos_rel - ex, key=_pnum)})
+    return {"naming": NAMING_VERSION, "scope": counts.scope, "dump": counts.date, "mismatches": mism}
 
 
 # ------------------------------------------------------------------------------------------------ tables

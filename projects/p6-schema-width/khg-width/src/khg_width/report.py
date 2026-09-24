@@ -91,6 +91,8 @@ class WidthReport:
     solver: str = "auto"
     seed: int = 20260924
     wall_seconds: float = 0.0
+    solver_attempts: list = field(default_factory=list)
+    solver_budget: dict = field(default_factory=dict)
     format: str = FORMAT
 
     def to_json(self) -> dict[str, Any]:
@@ -104,6 +106,8 @@ class WidthReport:
             "widths": {m: self.widths[m].to_json(jt) for m in MEASURES if m in self.widths},
             "reductions": list(self.reductions),
             "disagreements": list(self.disagreements),
+            "solver_attempts": list(self.solver_attempts),
+            "solver_budget": dict(self.solver_budget),
             "tools": dict(self.tools),
             "time_limit": self.time_limit,
             "solver": self.solver,
@@ -131,6 +135,13 @@ class WidthReport:
             lines.append(f"{m:<4} {w.show():<6} {state:<6} {w.detail}")
         if self.reductions:
             lines.append("reductions  " + "; ".join(_reduction_text(r) for r in self.reductions))
+        if self.solver_attempts:
+            sb = self.solver_budget
+            att = ", ".join(f"{a['tool']} k={a['k']}{' flags' if a['flags'] else ''} {a['outcome']}"
+                            for a in self.solver_attempts[:8])
+            more = f", … ({len(self.solver_attempts)} in all)" if len(self.solver_attempts) > 8 else ""
+            lines.append(f"solvers     {att}{more}; {sb.get('used_seconds', 0):.0f} of "
+                         f"{sb.get('budget_seconds', 0):.0f} s budget")
         if self.disagreements:
             lines.append(f"disagreements  {len(self.disagreements)} (see --json)")
         st = self.stats

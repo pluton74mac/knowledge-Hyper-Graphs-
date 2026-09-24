@@ -574,6 +574,23 @@ submits it. The post draft goes in `post-draft.md`.
 - **Q5.** Yes. Commit the Wikidata schema files as `.json.gz`, with their sha256 in the survey table; the checker
   reads `.json` and `.json.gz`. Biolink and the fixtures stay plain JSON.
 
+**Director's rulings on the implementation's questions (2026-09-24;** [IMPLEMENTATION-NOTES](IMPLEMENTATION-NOTES.md) §6**).**
+- **Q6.** Commit the survey reports as `.json.gz`, deterministic like the schema files.
+- **Q7.** Keep `hd-repair` and the tw-based ghw certificate: both yield validated certificates.
+- **Q8.** Replace §3.5's linear k schedule with bisection between the current validated lower and upper bounds:
+  120 s per attempt, at most 20 minutes of external-solver time per row (both tools together). BalancedGo is tried
+  first with the preprocessing flags to *find* decompositions, which are validated on the unreduced H (a success
+  lowers the upper bound). A "no" counts as a lower bound only from a run without preprocessing (Q2). Every attempt
+  (k, tool, flags, seconds, outcome) is logged in the row's report.
+- **Q9.** P3a's file (`projects/p3a-clean-nary-corpus/qualifier-usage-20260922.json`, branch
+  `claude/p3a-wikidata-slice`, format `p3a-qualifier-usage/1`) has the top level `{"dump": "20260922", "naming":
+  "wd-roles r1", "all": {"relations": {…}, "out_of_scope_relations": {…}}, "kept": {…}, "out_of_scope": […]}`. Per
+  relation: `statements` and `qualifiers` as `{role: {statements, snaks}}`, keyed by r1 role ids (the
+  self-qualifier as `P<id>:qualifier`, never merged with the main-value role); optional extras `slot` per qualifier,
+  `time_model`, `left_out_6b`, `rank_reason_mismatch`, `self_qualified` and `arity`. `all` is every entity of the
+  dump (items and the property entities' own statements); `kept` is the items with an English Wikipedia article. The
+  reader matches this exactly and tolerates the extras.
+
 ## 10. KB corrections at base-update time
 
 From R01 §1.5, applied in the same commit as the register update, together with the PLAN §9 row and the run log.

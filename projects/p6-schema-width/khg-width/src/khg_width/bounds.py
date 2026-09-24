@@ -103,22 +103,33 @@ def min_fill_order(adj: Mapping[str, set], *, seed: int, deadline: Deadline | No
 
 # ------------------------------------------------------------------------------------------------ cliques
 def max_cliques(adj: Mapping[str, set], *, deadline: Deadline | None = None) -> Iterable[frozenset]:
-    """Maximal cliques by Bron-Kerbosch with pivoting, iteratively (a generator)."""
-    stack: list[tuple[set, set, set]] = [(set(), set(adj), set())]
+    """Maximal cliques by Bron-Kerbosch with pivoting (a generator). Depth-first with one frame per level, each
+    expanding its candidates lazily, so memory stays within (clique size) x (roles) however long it runs."""
+    if not adj:
+        return
+
+    def frame(r: set, p: set, x: set) -> list:
+        pivot = max(p | x, key=lambda u: (len(adj[u] & p), u))
+        return [r, p, x, iter(sorted(p - adj[pivot]))]
+
+    stack = [frame(set(), set(adj), set())]
     while stack:
         if deadline is not None:
             deadline.tick()
-        r, p, x = stack.pop()
-        if not p and not x:
-            yield frozenset(r)
+        top = stack[-1]
+        v = next(top[3], None)
+        if v is None:
+            stack.pop()
             continue
-        if not p:
+        r, p, x = top[0], top[1], top[2]
+        cr, cp, cx = r | {v}, p & adj[v], x & adj[v]
+        top[1] = p - {v}
+        top[2] = x | {v}
+        if not cp:
+            if not cx:
+                yield frozenset(cr)
             continue
-        pivot = max(p | x, key=lambda u: (len(adj[u] & p), u))
-        for v in sorted(p - adj[pivot]):
-            stack.append((r | {v}, p & adj[v], x & adj[v]))
-            p = p - {v}
-            x = x | {v}
+        stack.append(frame(cr, cp, cx))
 
 
 def clique_bounds(adj: Mapping[str, set], edges: Sequence[tuple[str, frozenset]], *, deadline: Deadline,

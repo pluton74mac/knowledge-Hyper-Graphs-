@@ -129,3 +129,25 @@ def test_width_api_single_measure():
     assert width(h, "fhw", solver="python").value == Fraction(3, 2)
     assert width(h, "tw", solver="python").value == 2
     assert width(h, "hw", solver="python").value == 2
+
+
+def test_max_cliques_are_exactly_the_maximal_cliques():
+    """The lazy Bron-Kerbosch enumeration behind the clique bounds, against brute force on 300 random graphs."""
+    import itertools
+    import random
+
+    from khg_width.bounds import max_cliques
+
+    rng = random.Random(20260924)
+    for _ in range(300):
+        n = rng.randint(1, 8)
+        vs = [f"v{i}" for i in range(n)]
+        adj = {v: set() for v in vs}
+        for a, b in itertools.combinations(vs, 2):
+            if rng.random() < 0.5:
+                adj[a].add(b)
+                adj[b].add(a)
+        got = sorted(sorted(c) for c in max_cliques(adj))
+        cl = [set(c) for r in range(1, n + 1) for c in itertools.combinations(vs, r)
+              if all(b in adj[a] for a, b in itertools.combinations(c, 2))]
+        assert got == sorted(sorted(c) for c in cl if not any(c < d for d in cl))
