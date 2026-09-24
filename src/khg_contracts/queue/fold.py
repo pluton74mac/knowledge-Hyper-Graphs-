@@ -1,11 +1,14 @@
 """The state fold over a queue's lines (DESIGN §7), and the structural checks that layer Q, ``Queue.open``,
 ``replay`` and ``queue_items`` share.
 
-An item's state is a fold over its log entries; items are never edited (F9). ``check`` runs, line by line, the queue
-schema and ``Fold.feed``, which reports:
+An item's state is a fold over its log entries; items are never edited (F9). ``check`` first reads the header's
+stamps (``version_findings``: V001 for a ``format`` other than ``khg-queue/1.0.x`` or a ``record_format`` other than
+``khg-record/1.0.x``, DESIGN §11.2; nothing else is checked then, as a V failure stops a validator run). Then it runs,
+line by line, the queue schema and ``Fold.feed``, which reports:
 
 - Q008 a file whose line 1 is not its ``queue-header`` (nothing else is checked then), a repeated header, a qid or
-  lid used twice, and an id that is well formed but not scoped by the queue (``q:``/``l:<queue_id>.<seq>``);
+  lid used twice, an id that is well formed but not scoped by the queue (``q:``/``l:<queue_id>.<seq>``), and a
+  timestamp with the schema's pattern that is no calendar date-time (``time_findings``);
 - Q007 an entry whose target is not an item of the queue, or whose ``parent`` is not the item's previous entry (the
   entry is then left out of the fold);
 - Q005 an entry whose ``state_before`` is not the item's state, a move the table forbids, or an ``accept`` while
@@ -20,11 +23,17 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Mapping
 
-from ..errors import make_finding
+from ..errors import ValidationError, make_finding
+from ..record.lifecycle import parse_timestamp
+from ..validate.layers.v import gate
 from .lines import line_findings
-from .model import ACTIONS, ITEM_KINDS, LID_PATTERN, MOVES, QID_PATTERN, QUEUE_ID_PATTERN, STATES, seq_of
+from .model import (ACTIONS, ITEM_KINDS, LID_PATTERN, MOVES, QID_PATTERN, QUEUE_ID_PATTERN, STATES, TIMESTAMP_PATTERN,
+                    seq_of)
 
-__all__ = ["Fold", "check"]
+__all__ = ["Fold", "check", "time_findings", "version_findings"]
+
+#: The timestamp of each line kind.
+_TIMES = {"queue-header": "created_at", "queue-item": "submitted_at", "log-entry": "at"}
 
 Finding = dict[str, str]
 
@@ -33,13 +42,22 @@ def _f(code: str, path: str, message: str) -> Finding:
     return make_finding(code, path, message)
 
 
+class _Items(dict[str, dict[str, Any]]):
+    """The items by qid. A value that is not a string is not in it (``False``, not ``TypeError``): the lines hold any
+    JSON value, and layer Q and ``Queue`` ask whether a line's ``target`` names an item whatever the schema said of
+    it (an unhashable list target is the schema's Q008 and the fold's Q007)."""
+
+    def __contains__(self, key: object) -> bool:
+        return isinstance(key, str) and dict.__contains__(self, key)
+
+
 @dataclass
 class Fold:
     """The folded state of a queue: its header, its hyperedge items by qid (in file order) with their line, state,
     last entry and entries, and the verdict and accept entries in log order."""
 
     header: dict[str, Any] | None = None
-    items: dict[str, dict[str, Any]] = field(default_factory=dict)
+    items: dict[str, dict[str, Any]] = field(default_factory=_Items)
     item_line: dict[str, int] = field(default_factory=dict)
     state: dict[str, str] = field(default_factory=dict)
     last: dict[str, Any] = field(default_factory=dict)
@@ -163,14 +181,47 @@ class Fold:
             self.accepts.append((n, dict(line)))
 
 
+def version_findings(header: Mapping[str, Any]) -> list[Finding]:
+    """V001 for each stamp of a queue-header that this reader does not accept (DESIGN §11.2: a reader rejects a newer
+    stamp): a ``format`` other than ``khg-queue/1.0.x``, and a ``record_format``, when there is one, other than
+    ``khg-record/1.0.x`` (a missing one is the schema's Q008)."""
+    out = []
+    for name, want, required in (("format", "khg-queue", True), ("record_format", "khg-record", False)):
+        if (required or name in header) and not gate(header.get(name), want, 1, 0):
+            out.append(_f("KHG-V001", f"/lines/0/{name}", f"{header.get(name)!r} is not {want}/1.0.0 (or a version "
+                                                          f"this reader accepts)"))
+    return out
+
+
+def time_findings(line: Any, path: str = "") -> list[Finding]:
+    """Q008 for the timestamp of a line (``created_at``, ``submitted_at`` or ``at``) that has the schema's pattern
+    but names no calendar date-time, such as ``2026-02-30T25:61:61Z``: queue times are RFC 3339 and read as the
+    store reads its transaction times (``record.lifecycle.parse_timestamp``). The schema reports any other value."""
+    kind = line.get("kind") if isinstance(line, Mapping) else None
+    name = _TIMES.get(kind) if isinstance(kind, str) else None  # a list or object kind is the schema's Q003
+    value = line.get(name) if name is not None else None
+    if not isinstance(value, str) or re.fullmatch(TIMESTAMP_PATTERN, value) is None:
+        return []
+    try:
+        parse_timestamp(value)
+    except ValidationError:
+        return [_f("KHG-Q008", f"{path}/{name}", f"{value!r} is not a calendar date-time")]
+    return []
+
+
 def check(lines: list[Any], *, engine: str = "jsonschema") -> tuple[Fold, list[Finding]]:
-    """The fold of a queue's lines and its structural findings: Q008 when line 1 is not the header (and nothing
-    else), else each line against the queue schema followed by the fold's findings, line by line."""
+    """The fold of a queue's lines and its structural findings: Q008 when line 1 is not the header, else V001 when
+    the header has a stamp this reader does not accept (nothing else is checked in either case), else each line
+    against the queue schema followed by the fold's findings, line by line."""
     fold = Fold()
     if not lines or not isinstance(lines[0], Mapping) or lines[0].get("kind") != "queue-header":
         return fold, [_f("KHG-Q008", "/lines/0", "a queue file starts with its queue-header line")]
+    stamps = version_findings(lines[0])
+    if stamps:
+        return fold, stamps
     out: list[Finding] = []
     for n, line in enumerate(lines):
         out += line_findings(line, engine=engine, path=f"/lines/{n}")
+        out += time_findings(line, f"/lines/{n}")
         out += fold.feed(line, n)
     return fold, out

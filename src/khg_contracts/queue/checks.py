@@ -140,7 +140,8 @@ def _key_findings(item: Mapping[str, Any], payload: Mapping[str, Any], schema: S
 
 def _entity_findings(item: Mapping[str, Any], payload: Mapping[str, Any], entities: Any,
                      path: str) -> list[Finding]:
-    known = {e.get("id") for e in _list(item.get("entities")) if isinstance(e, Mapping)}
+    # string ids only: the entity schema reports any other (C010), and a list is not even hashable
+    known = {e["id"] for e in _list(item.get("entities")) if isinstance(e, Mapping) and isinstance(e.get("id"), str)}
     known.update(entities)
     out = []
     for j, b in enumerate(_list(payload.get("bindings"))):

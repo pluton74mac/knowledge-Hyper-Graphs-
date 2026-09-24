@@ -148,8 +148,8 @@
   "schemas/khg-c4-items-0.1.0.schema.json": "sha256:ac57f477403716042ae6abae6e5e15c549dfd7abc9777c27277c125b188ae858",
   "schemas/khg-c5-io-1.0.0.schema.json": "sha256:a51da48facfdf88dbf9f4043b409e37d89e545db33314c8c73e46ea641e9cd3d",
   "schemas/khg-hif-1.0.0.schema.json": "sha256:ad9b3074c1e9f2f61c6791ed8c5d24b17a1b6d02fff1973ca36097efc75183e4",
-  "schemas/khg-queue-1.0.0.schema.json": "sha256:da7be40aa704ba3e1f64289397b8685865afc9c4c24b396bb08ee81e2db444f6",
-  "schemas/khg-record-1.0.0.schema.json": "sha256:80dca779acb6959628be3a1f16cc6534a10f4c4e779b6c549c841c557626b256",
+  "schemas/khg-queue-1.0.0.schema.json": "sha256:baac084558698b4d8210d8a6922ae659849819f4c3adcef66d6dd124a7d79eb9",
+  "schemas/khg-record-1.0.0.schema.json": "sha256:965990c518fa887deeb24c0b2b775029ac3779651abf49619827207a4b65c11a",
   "schemas/khg-relation-schema-1.0.0.schema.json": "sha256:bd321ee2318ea553d5b079e3800bc6f4f9dbcd50acab4b02dcf78034496ee36e"
  }
 }

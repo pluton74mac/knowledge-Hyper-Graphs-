@@ -362,6 +362,40 @@ def test_what_to_hif_refuses(c1, schema, change, code):
     assert code in e.value.codes
 
 
+def _record(c, rid):
+    return next(r for r in c["records"] if r.get("id") == rid)
+
+
+@pytest.mark.parametrize("weight", ["0.5", True, None, [1], {}, float("nan"), float("inf")],
+                         ids=["string", "bool", "null", "array", "object", "nan", "inf"])
+@pytest.mark.parametrize("where", ["entity", "hyperedge", "binding"])
+def test_a_hif_weight_that_is_not_a_finite_number_is_c010(c1, schema, where, weight):
+    """§4.2: ``extensions["hif:weight"]`` becomes the HIF ``weight``, which HIF requires to be a number (H009). It was
+    copied unchecked: a string, boolean, array or object gave an invalid file that ``from_hif`` and the loaders
+    refused with H009, and null was dropped together with the whole ``extensions`` object."""
+    c = copy.deepcopy(c1)
+    owner = {"entity": lambda: _record(c, "ex:TP53"), "hyperedge": lambda: _record(c, "f:reg-1"),
+             "binding": lambda: _record(c, "f:coadmin-1")["bindings"][0]}[where]()
+    assert "hif:weight" in owner["extensions"]  # the fixture's weights: 3, 0.5 and 0.25
+    owner["extensions"]["hif:weight"] = weight
+    with pytest.raises(ValidationError) as e:
+        hif.to_hif(c, schema)
+    assert e.value.codes == ("KHG-C010",)
+    assert "hif:weight" in e.value.info["findings"][0]["message"]
+
+
+def test_a_hif_weight_of_any_json_number_is_written(c1, schema):
+    """The other side: integers (a large one too) and floats pass, with their JSON number type."""
+    c = copy.deepcopy(c1)
+    _record(c, "ex:TP53")["extensions"]["hif:weight"] = 2 ** 40
+    _record(c, "f:reg-1")["extensions"]["hif:weight"] = -1.5
+    _record(c, "f:coadmin-1")["bindings"][0]["extensions"]["hif:weight"] = 0
+    h = hif.to_hif(c, schema)
+    assert _node(h, "ex:TP53")["weight"] == 2 ** 40 and next(e for e in h["edges"] if e["edge"] == "f:reg-1")[
+        "weight"] == -1.5
+    assert _incidences(h, "f:coadmin-1")[0]["weight"] == 0 and type(_incidences(h, "f:coadmin-1")[0]["weight"]) is int
+
+
 @pytest.mark.parametrize("engine", ["jsonschema", "fastjsonschema"])
 @pytest.mark.parametrize("options", [{}, {"relations": SLICE_RELATIONS}, {"literal_nodes": "per_binding"},
                                      {"schema_document": True}, {"relations": ["claims"]},

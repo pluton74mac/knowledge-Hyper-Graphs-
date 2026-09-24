@@ -198,7 +198,8 @@ def run(obj_or_path: Any, *, kind: str = "auto", schema: Any = None, doc_texts: 
     dict, or a list of line dicts for a queue or C4 file (a JSONL container too). ``schema`` is a ``Schema``, a
     schema document or a path; ``doc_texts`` maps doc ids to texts (or is a ``khg-doc-texts`` document or path);
     ``bases`` gives the base containers of a queue. Findings on the input never raise; an unknown ``kind``,
-    ``engine``, ``stop`` or step is ``ValueError``, a bad ``schema`` or base ``ValidationError``, and an
+    ``engine``, ``stop`` or step is ``ValueError``, and so is a base path whose suffix is not ``.json`` or
+    ``.jsonl`` (``record.read_container``, ruling 4); a bad ``schema`` or base is ``ValidationError``, and an
     unreadable path ``OSError``.
     """
     if kind != "auto" and kind not in KINDS:

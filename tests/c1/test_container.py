@@ -147,6 +147,25 @@ def test_the_written_file_gets_the_mode_the_umask_allows(tmp_path, umask, mode):
     assert [p.name for p in tmp_path.iterdir()] == ["x.khg.jsonl"]
 
 
+@pytest.mark.skipif(os.name != "posix", reason="POSIX file modes")
+@pytest.mark.parametrize("mode", [0o600, 0o640, 0o444], ids=["0600", "0640", "0444"])
+def test_an_existing_file_keeps_its_mode(tmp_path, mode):
+    """Review integration (CLI-FILE-MODE, group ex's request): replacing a file keeps its mode, as the CLI's outputs
+    and shell redirection do; it became 0644 under umask 022. A new file still gets the umask's mode."""
+    out = tmp_path / "x.khg.jsonl"
+    out.write_bytes(b"old\n")
+    out.chmod(mode)
+    old = os.umask(0o022)
+    try:
+        record.write_container(C1, out)
+        record.write_container(C1, tmp_path / "new.khg.json")
+    finally:
+        os.umask(old)
+    assert stat.S_IMODE(out.stat().st_mode) == mode and out.read_bytes() == JSONL_BYTES
+    assert stat.S_IMODE((tmp_path / "new.khg.json").stat().st_mode) == 0o644
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["new.khg.json", "x.khg.jsonl"]
+
+
 def test_a_failed_rename_keeps_the_old_file_and_leaves_no_temporary_file(tmp_path, monkeypatch):
     out = tmp_path / "x.khg.jsonl"
     out.write_text("old\n", encoding="utf-8")

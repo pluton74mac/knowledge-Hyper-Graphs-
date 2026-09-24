@@ -255,8 +255,11 @@ def _check_bundle(bundle: Bundle) -> None:
 def export_hnx(bundle: Bundle, *, strict: bool = True) -> dict[str, Any]:
     """The HIF document of a HyperNetX bundle, reconciled with its context (DESIGN §5). Sets ``bundle.report``.
     ``strict=True`` raises ``LoaderError`` (P005) on an unlabelled membership, a partial fact or a non-injective
-    move; ``strict=False`` drops and reports them. A record whose ``khg-bid`` now sits on another node through an
-    injective map (a rename) is exported and reported under ``moved``."""
+    move. ``strict=False`` raises nothing: unlabelled memberships and partial facts are dropped and reported, and a
+    record moved by a non-injective map (a collapse) is exported on the node the library holds it on and reported
+    under ``moved_conflict``; only a record repeating a ``khg-bid`` that another cell carries is not exported
+    (reported there too). A record whose ``khg-bid`` now sits on another node through an injective map (a rename)
+    is exported and reported under ``moved``."""
     _check_bundle(bundle)
     graph, ctx = bundle.graph, bundle.context
     edges_now = {tkey(plain(e)) for e in graph.edges}
@@ -280,25 +283,33 @@ def records(bundle: Bundle, edge: Any, node: Any = None) -> list[dict[str, Any]]
             if tkey(r["edge"]) == tkey(edge) and (node is None or tkey(r["node"]) == tkey(node))]
 
 
-def _cell_properties(graph: Any, edge: Any, node: Any) -> dict[str, Any] | None:
+def _cell_properties(graph: Any, edge: Any, node: Any) -> tuple[dict[str, Any] | None, Any]:
+    """The misc properties of the cell ``(edge, node)`` and its direction column (None when missing); ``(None,
+    None)`` when there is no such cell."""
     frame = graph.incidences.to_dataframe
     for (e, n), row in frame.iterrows():
         if tkey(plain(e)) == tkey(edge) and tkey(plain(n)) == tkey(node):
             misc = row["misc_properties"] if "misc_properties" in frame.columns else None
-            return misc if isinstance(misc, dict) else {}
-    return None
+            direction = row["direction"] if "direction" in frame.columns else None
+            return (misc if isinstance(misc, dict) else {}), (None if is_missing(direction) else plain(direction))
+    return None, None
 
 
 def attach(bundle: Bundle, record: dict[str, Any]) -> None:
     """Write ``record`` into the cell of its membership, which must exist: as the cell's own record when the cell
-    has no role yet (a new membership), else under ``khg-extra-incidences``."""
+    has no role yet (a new membership), else under ``khg-extra-incidences``. In a directed file the exported record
+    needs a direction (P010): its own, or for a new cell's record the cell's direction column."""
     graph = bundle.graph
     edge, node = record["edge"], record["node"]
-    props = _cell_properties(graph, edge, node)
+    props, cell_direction = _cell_properties(graph, edge, node)
     if props is None:
         what = membership(record)
         raise LoaderError(f"KHG-P005: no HyperNetX cell {what} to label", codes=["KHG-P005"],
                           info={"findings": [make_finding("KHG-P005", "", f"no HyperNetX cell {what} to label")]})
+    if bundle.context.directed and record.get("direction") is None and (props.get("role") or cell_direction is None):
+        raise LoaderError("KHG-P010: a record of a directed file needs its direction (tail or head)",
+                          codes=["KHG-P010"], info={"findings": [make_finding(
+                              "KHG-P010", "/direction", "a record of a directed file without direction")]})
     store = graph.incidences.property_store  # PropertyStore.set_property is public in HyperNetX 2.4.3
     uid = (edge, node)
     if not props.get("role"):

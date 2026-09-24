@@ -51,7 +51,8 @@ def make_candidate(record: Mapping[str, Any], *, queue_id: str, seq: int, schema
     r = copy.deepcopy(dict(record))
     for name in STORE_FIELDS + ("derived",):
         r.pop(name, None)
-    for e in r.get("evidence") or []:
+    evidence = r.get("evidence")
+    for e in evidence if isinstance(evidence, list) else []:  # any other evidence is left to the checks (C010)
         if isinstance(e, dict):
             e.pop("recorded_at", None)
     if isinstance(r.get("bindings"), list):

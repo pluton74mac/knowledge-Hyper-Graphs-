@@ -7,7 +7,10 @@
 - **System outputs** run ``khg-c5-io-1.0.0``; their codes are the schema's (C010, and the C codes of embedded
   values).
 - **Extraction outputs** are C3 queue items (``run``, ``doc`` and ``payload``; Q001 without them) or C1 hyperedges
-  whose evidence names one document.
+  whose evidence names one document. Each predicted hyperedge runs layer C (the ``hyperedge`` definition of
+  ``khg-record``, as ``validate_queue`` checks a payload), and a goal is C010: the scorers score facts. The S checks
+  the scorers need to read a fact (S001, S002, S007, S015) are raised where they prepare it, at the record's path
+  (``located``).
 
 Both schemas are run by jsonschema with a closed resolver over the packaged schemas; nothing is fetched.
 """
@@ -21,7 +24,7 @@ from .. import data
 from ..errors import ValidationError, make_finding
 
 __all__ = ["C4_SCHEMA_ID", "C5_SCHEMA_ID", "Prediction", "c4_findings", "c5_findings", "check_items",
-           "check_outputs", "embedded_error", "predictions"]
+           "check_outputs", "embedded_error", "located", "predictions"]
 
 C4_SCHEMA_ID = "tag:khg-contracts,2026:schema/khg-c4-items/0.1.0"
 C5_SCHEMA_ID = "tag:khg-contracts,2026:schema/khg-c5-io/1.0.0"
@@ -126,6 +129,13 @@ def embedded_error(error: ValidationError, path: str) -> ValidationError:
     return ValidationError.from_findings(out)
 
 
+def located(error: ValidationError, path: str) -> list[Finding]:
+    """The findings of an error met while reading a system output, their paths prefixed with the output's ``path``
+    (a finding of a record is relative to the record)."""
+    inner = error.info.get("findings") or [make_finding(c, "", str(error)) for c in error.codes]
+    return [{**f, "path": path + str(f.get("path", ""))} for f in inner]
+
+
 def check_outputs(records: Iterable[Any], *, kind: str) -> list[dict[str, Any]]:
     """Check system outputs against ``khg-c5-io-1.0.0`` and their ``kind``; return them as a list."""
     out: list[dict[str, Any]] = []
@@ -147,8 +157,9 @@ def check_outputs(records: Iterable[Any], *, kind: str) -> list[dict[str, Any]]:
 
 @dataclass(frozen=True)
 class Prediction:
-    """One extracted fact: its unit ``(run_id, order_id)``, document, id (qid or record id), the C1 hyperedge and
-    the entity records it carries."""
+    """One extracted fact: its unit ``(run_id, order_id)``, document, id (qid or record id), the C1 hyperedge, the
+    entity records it carries and the JSON pointer of the hyperedge in the input (``/lines/<n>/payload`` or
+    ``/lines/<n>``)."""
 
     run_id: str | None
     order_id: str | None
@@ -156,6 +167,18 @@ class Prediction:
     pid: str
     record: Mapping[str, Any]
     entities: tuple[Mapping[str, Any], ...]
+    path: str = ""
+
+
+def _fact_findings(record: Mapping[str, Any], path: str) -> list[Finding]:
+    """Layer C on a predicted hyperedge (``#/definitions/hyperedge``), then C010 for a goal, which is no fact."""
+    from ..validate.layers import c as layer_c  # imported here: the validator's layer I imports the memory scorer
+
+    out = layer_c.record_findings(record, definition="hyperedge", path=path)
+    if not out and record.get("status") == "goal":
+        out = [make_finding("KHG-C010", f"{path}/status", "a goal is not an extraction output: the scorers score "
+                                                          "facts")]
+    return out
 
 
 def _doc_of_record(record: Mapping[str, Any]) -> str | None:
@@ -176,7 +199,8 @@ def predictions(items: Iterable[Any]) -> list[Prediction]:
     """Read extraction outputs: C3 queue items (``queue_items`` yields them, with or without their folded state)
     or C1 hyperedges whose evidence names exactly one document (their extracted evidence first). Raises
     ``ValidationError``: Q003 for another kind, Q001 for an item without ``run`` or ``doc``, C010 for a payload that
-    is not a hyperedge or a hyperedge without a document."""
+    is not a hyperedge or a hyperedge without a document, the layer-C codes of a malformed hyperedge (C010 for a
+    missing relation, bindings or value, for example) and C010 for a goal."""
     out: list[Prediction] = []
     findings: list[Finding] = []
     for n, x in enumerate(items):
@@ -196,17 +220,25 @@ def predictions(items: Iterable[Any]) -> list[Prediction]:
             if not (isinstance(payload, Mapping) and payload.get("kind") == "hyperedge"):
                 findings.append(make_finding("KHG-C010", path + "/payload", "the payload is a C1 hyperedge"))
                 continue
+            bad = _fact_findings(payload, path + "/payload")
+            if bad:
+                findings += bad
+                continue
             ents = x.get("entities") or []
             pid = x.get("qid") if isinstance(x.get("qid"), str) else payload.get("id")
             out.append(Prediction(run["run_id"], run["order_id"], doc["doc_id"], str(pid), payload,
-                                  tuple(e for e in ents if isinstance(e, Mapping))))
+                                  tuple(e for e in ents if isinstance(e, Mapping)), path + "/payload"))
         elif kind == "hyperedge":
+            bad = _fact_findings(x, path)
+            if bad:
+                findings += bad
+                continue
             doc_id = _doc_of_record(x)
             if doc_id is None:
                 findings.append(make_finding("KHG-C010", path + "/evidence", "a predicted hyperedge names its "
                                              "document in the source.doc_id of its evidence (exactly one)"))
                 continue
-            out.append(Prediction(None, None, doc_id, str(x.get("id")), x, ()))
+            out.append(Prediction(None, None, doc_id, str(x.get("id")), x, (), path))
         else:
             findings.append(make_finding("KHG-Q003", path + "/kind", f"an extraction output is a queue-item or a "
                                          f"hyperedge, not {kind!r}"))

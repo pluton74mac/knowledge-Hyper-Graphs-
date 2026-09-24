@@ -7,7 +7,8 @@ import os
 from typing import Any, Mapping
 
 from .. import jsonio
-from ..errors import ValidationError
+from ..errors import ValidationError, make_finding
+from ..schema.checks import MAX_DEPTH, nesting_fault
 from ..validate import engines
 from .model import SCHEMA_ID
 
@@ -18,7 +19,8 @@ Finding = dict[str, str]
 
 def read_lines(source: Any) -> list[dict[str, Any]]:
     """The lines of a queue file: from a path (``str``, ``os.PathLike`` such as a ``Queue``, or a packaged file),
-    raw ``bytes``, or lines already parsed (copied). Parsing follows layer J (``ValidationError`` J001-J007)."""
+    raw ``bytes``, or lines already parsed (copied). Parsing follows layer J (``ValidationError`` J001-J007); lines
+    already parsed get layer J's nesting limit (J001 for a line nested deeper than ``MAX_DEPTH`` levels)."""
     if isinstance(source, (bytes, bytearray, memoryview)):
         return jsonio.loads_lines(bytes(source))
     if isinstance(source, (str, os.PathLike)) or hasattr(source, "read_bytes"):
@@ -26,6 +28,11 @@ def read_lines(source: Any) -> list[dict[str, Any]]:
     if isinstance(source, (list, tuple)):
         if not all(isinstance(x, Mapping) for x in source):
             raise TypeError("the lines of a queue are objects")
+        for n, line in enumerate(source):
+            deep = nesting_fault(line)
+            if deep is not None:  # before the copy, which recurses a level at a time
+                raise ValidationError.from_findings([make_finding(
+                    "KHG-J001", f"/lines/{n}{deep}", f"nesting deeper than {MAX_DEPTH} levels")])
         return [copy.deepcopy(dict(x)) for x in source]
     raise TypeError(f"a queue is a path, bytes or a list of lines, not {type(source).__name__}")
 

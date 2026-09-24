@@ -14,9 +14,12 @@
   stdout). Exit 1 when a scenario is ``failed`` or ``cantTell``; ``inapplicable`` is not a failure.
 
 Every command exits with 0 on success, 1 when its input fails and 2 on a usage or I/O error: bad or conflicting
-options, a file that cannot be read or written, an argument file (``--schema``, ``--base``, ``--doc-texts``) that
-fails validation, a factory that cannot be loaded. Results go to stdout and diagnostics to stderr; output files are
-UTF-8 with ``\\n`` line ends, get the permissions the umask allows and are replaced atomically.
+options (an output named twice, or naming a file the command reads; a container file name that ends in neither
+``.json`` nor ``.jsonl``, DESIGN §14 ruling 4), a file that cannot be read or written (standard output closed by its
+reader too), an argument file (``--schema``, ``--base``, ``--doc-texts``) that fails validation, a factory that
+cannot be loaded. Results go to stdout and diagnostics to stderr. Output files are UTF-8 with ``\\n`` line ends and
+are replaced atomically, and only once all of a command's outputs are written; a new file gets the permissions the
+umask allows and an existing one keeps its own, as with shell redirection.
 ``python -m khg_contracts.cli COMMAND [ARGS]`` runs a command (``validate``, ``convert``, ``migrate`` or
 ``conformance``) without its console script.
 """
@@ -28,6 +31,7 @@ import importlib
 import json
 import os
 import secrets
+import stat
 import sys
 from collections import Counter
 from types import MappingProxyType
@@ -75,20 +79,52 @@ def _say_json(obj: Any) -> None:
         sys.stdout.write(json.dumps(obj, indent=1) + "\n")
 
 
-def _write_file(path: str, text: str) -> None:
-    """Write ``text`` to ``path`` as UTF-8 with ``\\n`` line ends, replacing the file atomically. The file gets the
-    permissions that the umask allows, like a file the shell writes."""
+def _staged(path: str, text: str) -> str:
+    """``text`` written, as UTF-8 with ``\\n`` line ends, to a new temporary file beside ``path``; returns its name.
+    It gets the permissions that the umask allows, or the mode of an existing regular file at ``path``, as shell
+    redirection gives (a private or read-only output stays so)."""
     target = os.fspath(path)
     tmp = os.path.join(os.path.dirname(target) or ".", f".khg-{secrets.token_hex(8)}.tmp")
     fh = open(tmp, "x", encoding="utf-8", newline="\n")
     try:
         with fh:
             fh.write(text)
-        os.replace(tmp, target)
+        try:
+            st = os.stat(target)
+        except FileNotFoundError:
+            pass
+        else:
+            if stat.S_ISREG(st.st_mode):
+                os.chmod(tmp, stat.S_IMODE(st.st_mode))
     except BaseException:
         with contextlib.suppress(OSError):
             os.remove(tmp)
         raise
+    return tmp
+
+
+def _write_files(outputs: Sequence[tuple[str, str]]) -> None:
+    """Write each ``(path, text)``, replacing the files atomically. Every text goes to a temporary file first
+    (``_staged``), and the files are replaced only once all are written, so a text that cannot be written leaves
+    every output as it was. Exit 2 names a path that cannot be written."""
+    staged: list[tuple[str, str]] = []
+    try:
+        for path, text in outputs:
+            try:
+                staged.append((_staged(path, text), path))
+            except OSError as e:
+                raise _Exit(USAGE, _cannot("write", path, e)) from None
+        while staged:
+            tmp, path = staged[0]
+            try:
+                os.replace(tmp, path)
+            except OSError as e:
+                raise _Exit(USAGE, _cannot("write", path, e)) from None
+            staged.pop(0)
+    finally:
+        for tmp, _ in staged:
+            with contextlib.suppress(OSError):
+                os.remove(tmp)
 
 
 def _container_text(container: Mapping[str, Any], fmt: str) -> str:
@@ -153,15 +189,62 @@ def _parser(prog: str, description: str, fails: str) -> _Parser:
 
 def _main(parser: _Parser, command: Callable[[_Parser, argparse.Namespace], int], argv: Argv) -> int:
     try:
-        return command(parser, parser.parse_args(argv))
+        status = command(parser, parser.parse_args(argv))
+        sys.stdout.flush()  # a reader that closed stdout shows here when the output was buffered
+        return status
     except _Exit as e:
         for line in e.lines:
             _warn(f"{parser.prog}: {line}")
         return e.status
+    except BrokenPipeError as e:
+        _drop_stdout()
+        _warn(f"{parser.prog}: cannot write the standard output: {e.strerror or e}")
+        return USAGE
+
+
+def _drop_stdout() -> None:
+    """Point the standard output at ``os.devnull`` after its reader went away, so that the flush at exit does not
+    fail again; nothing when it is not a file (a test's capture)."""
+    try:
+        devnull = os.open(os.devnull, os.O_WRONLY)
+        try:
+            os.dup2(devnull, sys.stdout.fileno())
+        finally:
+            os.close(devnull)
+    except (OSError, ValueError):
+        pass
 
 
 def _cannot(verb: str, path: Any, e: OSError) -> str:
     return f"cannot {verb} {path}: {e.strerror or e}"
+
+
+def _same_file(a: str, b: str) -> bool:
+    try:
+        return os.path.samefile(a, b)
+    except OSError:  # one of them does not exist yet
+        return os.path.normcase(os.path.realpath(a)) == os.path.normcase(os.path.realpath(b))
+
+
+def _distinct_outputs(parser: _Parser, inputs: Iterable[tuple[str, str | None]],
+                      outputs: Iterable[tuple[str, str | None]]) -> None:
+    """A usage error (exit 2, nothing written) when an output is also another output or a file the command reads:
+    one of them would be lost."""
+    named = [(option, path) for option, path in inputs if path is not None]
+    for option, path in outputs:
+        if path is None:
+            continue
+        for other_option, other in named:
+            if _same_file(path, other):
+                parser.error(f"{option} {path} is the file of {other_option} {other}")
+        named.append((option, path))
+
+
+def _container_name(parser: _Parser, path: str) -> None:
+    """A usage error unless ``path`` ends in ``.json`` or ``.jsonl``, the suffixes by which ``record.read_container``
+    reads a container (§14 ruling 4)."""
+    if not path.endswith((".json", ".jsonl")):
+        parser.error(f"OUT {path}: a container file name ends in .json (one JSON document) or .jsonl (JSON lines)")
 
 
 def _refused(name: str, e: ValidationError) -> list[str]:
@@ -179,6 +262,8 @@ def _argument(option: str, path: str, load: Callable[[str], Any], what: str) -> 
         raise _Exit(USAGE, f"{option}: {_cannot('read', path, e)}") from None
     except ValidationError as e:
         raise _Exit(USAGE, *_refused(path, e), f"{option}: {path} is not {what}") from None
+    except ValueError as e:  # a container named by another suffix than .json or .jsonl (§14 ruling 4)
+        raise _Exit(USAGE, f"{option}: {e}") from None
 
 
 def _schema_argument(path: str | None) -> Any:
@@ -280,6 +365,9 @@ def _check_convert_options(parser: _Parser, args: argparse.Namespace) -> None:
     if (args.to == "khg-jsonl") != args.output.endswith(".jsonl"):
         parser.error(f"OUT {args.output} does not fit --to {args.to}: a .jsonl file is read line by line, so only "
                      f"--to khg-jsonl writes one")
+    if args.to == "khg-json":
+        _container_name(parser, args.output)
+    _distinct_outputs(parser, [("IN", args.input), ("--schema", args.schema)], [("OUT", args.output)])
 
 
 def _checked_input(prog: str, path: str, schema: Any) -> str:
@@ -327,6 +415,10 @@ def _convert(parser: _Parser, args: argparse.Namespace) -> int:
         source = record.read_container(args.input) if kind == "container" else jsonio.load(args.input)
     except OSError as e:
         raise _Exit(USAGE, _cannot("read", args.input, e)) from None
+    except ValidationError:
+        raise
+    except ValueError as e:  # a container is read by its suffix, .json or .jsonl (§14 ruling 4)
+        raise _Exit(USAGE, f"IN {e}") from None
     try:
         container = source if kind == "container" else hif.from_hif(source, schema)
         if args.to == "hif":
@@ -341,10 +433,7 @@ def _convert(parser: _Parser, args: argparse.Namespace) -> int:
             text = _container_text(container, "jsonl" if args.to == "khg-jsonl" else "json")
     except ValidationError as e:
         raise _Exit(INVALID, *_refused(args.input, e), f"{args.input} cannot be converted; nothing written") from None
-    try:
-        _write_file(args.output, text)
-    except OSError as e:
-        raise _Exit(USAGE, _cannot("write", args.output, e)) from None
+    _write_files([(args.output, text)])
     _warn(f"{parser.prog}: wrote {args.output} ({args.to} from the {kind} {args.input})")
     return OK
 
@@ -376,6 +465,9 @@ def _migrate_parser() -> _Parser:
 def _migrate(parser: _Parser, args: argparse.Namespace) -> int:
     from .migrate import LAYOUT, MIGRATIONS, dumps
 
+    _container_name(parser, args.output)
+    _distinct_outputs(parser, [("IN", args.input)], [("OUT", args.output), ("--schema-out", args.schema_out),
+                                                     ("--report", args.report)])
     try:
         schema, container, report = MIGRATIONS[args.source](args.input)
         if args.output.endswith(".jsonl"):
@@ -391,11 +483,7 @@ def _migrate(parser: _Parser, args: argparse.Namespace) -> int:
         outputs.append((args.schema_out, dumps(schema, compact=LAYOUT["schema"])))
     if args.report:
         outputs.append((args.report, dumps(report, compact=LAYOUT["report"])))
-    for path, text in outputs:
-        try:
-            _write_file(path, text)
-        except OSError as e:
-            raise _Exit(USAGE, _cannot("write", path, e)) from None
+    _write_files(outputs)
     if not args.report:
         _say_json(report)
     _warn(f"{parser.prog}: wrote {', '.join(path for path, _ in outputs)}")
@@ -472,10 +560,7 @@ def _conformance(parser: _Parser, args: argparse.Namespace) -> int:
     except Exception as e:  # noqa: BLE001 - the probe store (the factory or info()) failed before any scenario ran
         raise _Exit(INVALID, f"the store could not be probed: {type(e).__name__}: {e}") from None
     if args.report:
-        try:
-            _write_file(args.report, conformance.to_json(report))
-        except OSError as e:
-            raise _Exit(USAGE, _cannot("write", args.report, e)) from None
+        _write_files([(args.report, conformance.to_json(report))])
     else:
         _say_json(report)
     summary, suite = report["summary"], report["suite"]

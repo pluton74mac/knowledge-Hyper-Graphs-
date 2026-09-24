@@ -298,3 +298,53 @@ def test_i004_is_only_a_memory_question_without_stale_or_future_values(mutate, c
     assert report.first_layer == "I"
     step = [(f["code"], f["path"]) for f in dict(report.steps)["i"] if f["severity"] == "error"]
     assert step and {c for c, _ in step} == {code}, step
+
+
+# ------------------------------------------------------------------------------------------------ year digits
+# Review integration (group ad's request 5): the packaged record schema bounds the digits of a year as
+# ``record.windows`` does. A time literal's year has 4 to 16 digits (Wikibase's bound; C004), an instant's 4 to 17
+# (C011; one more, for the upper window bound of the largest literal year). Layer C reports a longer year; before,
+# only the S step's time parse did.
+
+
+def test_the_record_schema_bounds_a_year_as_record_windows_does():
+    from khg_contracts.record import windows
+
+    assert (codegen.YEAR_DIGITS, codegen.INSTANT_YEAR_DIGITS) == (windows.YEAR_DIGITS, windows.INSTANT_YEAR_DIGITS)
+    found = list(codegen.patterns(data.load_json("schemas/khg-record-1.0.0.schema.json")))
+    assert codegen.anchor(codegen.TIME_PATTERN) in found and codegen.anchor(codegen.INSTANT_PATTERN) in found
+    assert not [p for p in found if "{4,}" in p]
+    for digits, ok in ((4, True), (16, True), (17, False)):
+        text = "+" + "1" * digits + "-00-00T00:00:00Z"
+        assert bool(re.search(codegen.anchor(codegen.TIME_PATTERN), text)) is ok
+    for digits, ok in ((4, True), (17, True), (18, False)):
+        text = "-" + "1" * digits + "-01-01T00:00:00Z"
+        assert bool(re.search(codegen.anchor(codegen.INSTANT_PATTERN), text)) is ok
+
+
+@pytest.mark.parametrize("engine", ENGINES)
+def test_a_literal_year_beyond_16_digits_is_c004_from_layer_c(engine):
+    doc = copy.deepcopy(FIXTURE)
+    i, r = _rec(doc, "f:king-14")
+    j = next(j for j, b in enumerate(r["bindings"]) if b["role"] == "end_time")
+    lit = r["bindings"][j]["value"]["literal"]
+    lit.update(time="+" + "9" * 16 + "-00-00T00:00:00Z", precision=9)
+    assert dict(run(doc, schema=SCHEMA, engine=engine).steps)["c"] == []
+    for digits in (17, 4301):
+        lit["time"] = "+" + "1" * digits + "-00-00T00:00:00Z"
+        report = run(doc, schema=SCHEMA, engine=engine)
+        at = f"/records/{i}/bindings/{j}/value/literal"
+        assert [(f["code"], f["path"]) for f in dict(report.steps)["c"]] == [("KHG-C004", f"{at}/time")]
+        assert report.first_layer == "C" and ("KHG-C004", at) in _errors(report)  # the S step's time parse agrees
+
+
+@pytest.mark.parametrize("engine", ENGINES)
+def test_an_as_of_year_beyond_17_digits_is_refused_by_the_item_structure(engine):
+    """A C4 ``where.as_of`` is the record schema's instant: an 18-digit year is the item structure's I002 at the
+    field, as any other malformed ``as_of`` is (it was I003 from the replay, with C011 nested)."""
+    lines, n = _question(lambda q: q["where"].update(as_of="+" + "1" * 18 + "-01-01T00:00:00Z"))
+    report = run(lines, kind="item", schema=SCHEMA, engine=engine)
+    assert report.first_layer == "I" and ("KHG-I002", f"/lines/{n}/where/as_of") in _errors(report)
+    lines[n]["where"]["as_of"] = "+" + "1" * 17 + "-01-01T00:00:00Z"
+    assert f"/lines/{n}/where/as_of" not in [p for _, p in _errors(run(lines, kind="item", schema=SCHEMA,
+                                                                          engine=engine))]

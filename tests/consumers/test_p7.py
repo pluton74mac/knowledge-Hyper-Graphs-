@@ -10,8 +10,8 @@ and the facts P7 already believes. The sequence runs twice:
   become ``disputed`` under the new ``khg:disputes`` record ``m:dis-7``.
 - **close_older**: the memory believes Louis XIII still holds the position (his reign has no end yet); ``new`` is
   Louis XIV's reign from 1643-05-14. ``position_held`` has a temporal key with ``close_older`` and the shape is a
-  ``succession``, so the sequence ends the older reign at the newcomer's start. §2.5's table then puts the newcomer
-  ("then the put", S-KEY-007); the §1.3 sequence stops before that step, so the test takes it afterwards.
+  ``succession``, so the sequence ends the older reign at the newcomer's start and then puts the newcomer (§2.5,
+  "end the older fact, then the put"; S-KEY-007).
 
 ``questions``, ``traces`` and the first response are the packaged C4 memory items and ``c5-outputs.jsonl``; two more
 responses answer the other two questions, one of them with a revised value.
@@ -55,6 +55,7 @@ def p7(S: Any, entities: list[dict[str, Any]], new: dict[str, Any], *, inferred_
                 if c["action"] == "close_older":
                     ms.apply({"op": "end_validity", "target": c["id"], "end": start_literal(new),
                               "evidence": [inferred_close]}, actor="p7")
+                    ms.put(new, actor="p7")                    # §2.5 close_older: end the older fact, then the put
                 elif c["action"] == "dispute":
                     ms.apply({"op": "transition", "targets": [c["id"]], "to": "disputed", "records": [new],
                               "id": "m:dis-7", "reason": "key_conflict", "evidence": [ev]}, actor="p7")
@@ -132,12 +133,18 @@ def test_p7_sequence_dispute(S, by_id, fixture_entities, inputs):
     check_memory_report(out["report"])
 
 
-def test_p7_sequence_close_older(S, by_id, fixture_entities, inputs):
+def test_p7_sequence_close_older(S, by_id, fixture_entities, inputs, monkeypatch):
     open_reign = by_id["f:king-13"]  # Louis XIII's reign, not yet ended
     open_reign["bindings"] = [b for b in open_reign["bindings"] if b["role"] != "end_time"]
     open_reign["evidence"][0]["supports"] = ["b1", "b2", "b3"]
     entities = fixture_entities + [open_reign]
     new = by_id["f:king-14"]
+    receipts, put = [], store.MemoryStore.put
+
+    def recorded(self, records, **kw):  # the sequence drops the receipts of its puts: keep them, by store
+        receipts.append((self, put(self, records, **kw)))
+        return receipts[-1][1]
+    monkeypatch.setattr(store.MemoryStore, "put", recorded)
     out = p7(S, entities, new, **inputs)
     ms = out["ms"]
 
@@ -154,16 +161,17 @@ def test_p7_sequence_close_older(S, by_id, fixture_entities, inputs):
     assert [b["value"] for b in closed["bindings"] if b["role"] == "end_time"] == [start_literal(new)]
     assert closed["evidence"][-1]["type"] == "inferred"
     assert record.valid_time(closed, S)["kind"] == "period"
-    # the sequence stops before §2.5's "then the put": nothing held the position on 1 January 1700 yet
-    assert (out["current"], out["prompt"]) == ([], [])
-    assert ms.get("f:king-14") is None
+    # §2.5, close_older: "then the put". The newcomer is written, and it holds the position on 1 January 1700
+    king14 = ms.get("f:king-14")
+    assert (king14["version"], king14["status"]) == (1, "asserted")
+    assert record.decision_view(king14) == record.decision_view(new)
+    assert [f["id"] for f in out["current"]] == ["f:king-14"]
+    assert out["prompt"] == [KING_14_TEXT]
     assert out["walk"] == {"start": "f:born-skłodowska-kraków", "direction": "forward", "steps": [],
                            "terminal": [{"id": "f:born-skłodowska-kraków", "status": None}]}
     check_memory_report(out["report"])
-    # §2.5, close_older: "then the put". The two reigns meet on 1643-05-14, a possible overlap only (L008)
-    receipt = ms.put(new, actor="p7")
-    assert receipt["records"] == [("f:king-14", 1, "created")]
-    assert [w["code"] for w in receipt["warnings"]] == ["KHG-L008"]
-    current = ms.find_by_key("position_held", inputs["key"], where=store.Where(as_of="+1700-01-01T00:00:00Z"))
-    assert [f["id"] for f in current] == ["f:king-14"]
-    assert [record.render_text(f, inputs["labels"], schema=S) for f in current] == [KING_14_TEXT]
+    # the newcomer's put (the first one raised) wrote it; the two reigns meet on 1643-05-14, a possible overlap
+    # only (L008)
+    written = [r for s, r in receipts if s is ms and any(rid == "f:king-14" for rid, *_ in r["records"])]
+    assert [r["records"] for r in written] == [[("f:king-14", 1, "created")]]
+    assert [w["code"] for w in written[0]["warnings"]] == ["KHG-L008"]

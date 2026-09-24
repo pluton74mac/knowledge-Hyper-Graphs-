@@ -14,8 +14,8 @@ from khg_contracts.errors import (CapabilityMissing, ConcurrencyError, KeyCollis
 SECTION_11_1 = {
     "khg-record": "1.0.0", "khg-relation-schema": "1.0.0", "khg-hif": "1.0.0", "role-convention": "1.0.0",
     "khg-queue": "1.0.0", "khg-store": "1.0.0", "khg-scenario": "1.0.0", "khg-scorers": "1.0.0",
-    "khg-c5-io": "1.0.0", "khg-c4-items": "0.1.0", "khg-render": "1", "khg-codes": "1.0.0",
-    "khg-malformed-cases": "1.0.0",
+    "khg-c5-io": "1.0.0", "khg-c4-items": "0.1.0", "khg-render": "1", "khg-migration-report": "1.0.0",
+    "khg-codes": "1.0.0", "khg-malformed-cases": "1.0.0",
 }
 HASH_DOMAINS = ["khg-content-key", "khg-core-key", "khg-key-digest", "khg-event", "khg-literal-node",
                 "khg-literal-binding", "khg-special-node", "khg-schema", "khg-decision", "khg-timed"]
@@ -34,6 +34,16 @@ def test_contracts_maps_every_format_id_and_hash_domain():
     with pytest.raises(TypeError):
         c["khg-record"] = "2.0.0"  # read-only
     assert dict(c)["khg-c4-items"] == "0.1.0"
+
+
+def test_the_migration_report_is_a_contract():
+    """§14 ruling 6: ``khg-migration-report/1.0.0`` is a format id (§11.1), listed in ``CONTRACTS``; the migration
+    stamps it, and the packaged report golden carries it."""
+    from khg_contracts import data, migrate
+
+    stamp = "khg-migration-report/" + khg_contracts.CONTRACTS["khg-migration-report"]
+    assert migrate.REPORT_FORMAT == stamp == "khg-migration-report/1.0.0"
+    assert data.load_json("sample/sample.migration-report.json")["format"] == stamp
 
 
 def test_the_error_hierarchy():

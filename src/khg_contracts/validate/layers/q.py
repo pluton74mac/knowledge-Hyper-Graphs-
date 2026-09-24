@@ -3,7 +3,8 @@
 In order, on the lines of a queue file:
 
 - the structure and the state fold (``queue.fold.check``): Q008 a file whose line 1 is not its header (nothing else
-  is checked then), a repeated header and ids used twice or not scoped by the queue; each line against the queue
+  is checked then), V001 a header stamp this reader does not accept (layer V reports it first in a run, and the run
+  stops there), a repeated header and ids used twice or not scoped by the queue; each line against the queue
   schema (Q001-Q005, Q008, Q010, and C codes for item entities); Q007 and Q005 the log against the fold;
 - Q012 when the header names a base that ``bases`` does not supply with the header's ``record.container_sha256``
   (``Context.queue_base``);
@@ -82,7 +83,7 @@ def run(ctx: Context) -> list[Finding]:
         if line.get("kind") == "queue-item" and line.get("item_kind") == "hyperedge":
             out += item_findings(line, queue_id=fold.queue_id, schema=pinned, entities=entities, path=f"/lines/{n}")
         elif line.get("kind") == "log-entry" and line.get("action") == "verdict" and \
-                line.get("target") in fold.items:
+                isinstance(line.get("target"), str) and line["target"] in fold.items:
             out += verdict_findings(line, fold.items[line["target"]], schema=pinned, path=f"/lines/{n}")
     if pinned is not None and not errors(out):
         out += replay_accepts(fold, pinned, memory_factory, base)[1]

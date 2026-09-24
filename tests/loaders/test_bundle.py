@@ -178,6 +178,9 @@ def test_xgi_keeps_a_label_in_the_context(full):
     ({"role": "context", "bid": "b4", "direction": "up"}, "KHG-H005"),
     ({"role": "context", "bid": "b4", "position": 0}, "KHG-R004"),
     ({"role": "context", "bid": "b4", "position": True}, "KHG-R004"),
+    ({"role": "context", "bid": "b4", "position": 2.5}, "KHG-R004"),
+    ({"role": "context", "bid": "b4", "position": 0.0}, "KHG-R004"),
+    ({"role": "context", "bid": "b4", "position": "4"}, "KHG-R004"),
     ({"role": "context", "bid": "b4", "weight": "heavy"}, "KHG-H009"),
     ({"role": "context", "bid": "b4", "extensions": ["x"]}, "KHG-H009"),
 ])
@@ -225,6 +228,76 @@ def test_a_directed_xgi_membership_is_named_by_its_direction(directed_slice):
     out = loaders.export_xgi(b)
     assert _incidences(out, "f:reg-1", "ex:Paris") == [
         {"edge": "f:reg-1", "node": "ex:Paris", "direction": "tail", "attrs": {"role": "context", "khg-bid": "b4"}}]
+
+
+@pytest.mark.parametrize("lib", LIBS)
+def test_no_library_labels_a_record_without_direction_in_a_directed_file(directed_slice, lib):
+    """§5: the loaders refuse a directed file with an incidence without direction (P010), so ``label`` refuses to
+    make one in both libraries. HyperNetX accepted it (a new cell's record, or a further record of a labelled pair)
+    and exported a directed file that the loaders and ``from_hif`` then refused with P010."""
+    b = LOAD[lib](directed_slice)
+    if lib == "xgi":
+        b.graph.add_node_to_edge("f:reg-1", "ex:Paris", "in")
+    else:
+        b.graph.add_incidence("f:reg-1", "ex:Paris")
+    assert _code(lambda: b.label("f:reg-1", "ex:Paris", role="context", bid="b4")) == ("KHG-P010",)
+    assert b.records("f:reg-1", "ex:Paris") == ()  # nothing was attached
+    assert _code(lambda: b.label("f:reg-1", "ex:HeLa", role="regulator", bid="b4")) == ("KHG-P010",)
+    assert b.roles("f:reg-1", "ex:HeLa") == ["context"]
+    b.label("f:reg-1", "ex:Paris", role="context", bid="b4", direction="tail")
+    out = EXPORT[lib](b)
+    assert out["network-type"] == "directed" and all("direction" in i for i in out["incidences"])
+    assert not any(b.report.values())
+    assert EXPORT[lib](LOAD[lib](out)) == out  # the loaders accept their own export
+
+
+def test_a_new_hypernetx_cell_gives_its_record_the_cells_direction(directed_slice):
+    """The HyperNetX P010 check reads the cell: a new cell added with a direction gives a record labelled without
+    one that direction (the direction column is the record's direction)."""
+    b = loaders.load_hnx(directed_slice)
+    b.graph.add_incidence("f:reg-1", "ex:Paris", direction="tail")
+    b.label("f:reg-1", "ex:Paris", role="context", bid="b4")
+    out = loaders.export_hnx(b)
+    assert _incidences(out, "f:reg-1", "ex:Paris") == [
+        {"edge": "f:reg-1", "node": "ex:Paris", "direction": "tail", "attrs": {"role": "context", "khg-bid": "b4"}}]
+    assert out["network-type"] == "directed" and not any(b.report.values())
+
+
+@pytest.mark.parametrize("lib", LIBS)
+def test_label_refuses_an_exact_repeat_of_a_record_of_the_pair(full, lib):
+    """§4.1 rule 2: the records of one (edge, node) pair may differ in direction, and must differ in role or in
+    role-position; an exact repeat is R002. ``label`` accepted one, and the strict export wrote a file that the
+    loaders then refused with R002."""
+    b = LOAD[lib](full)
+    for direction in ("tail", "head", None):
+        with pytest.raises(LoaderError) as err:
+            b.label("f:reg-1", "ex:TP53", role="regulator", bid="b4", direction=direction)
+        assert err.value.codes == ("KHG-R002",)
+    assert _code(lambda: b.label("f:route-1", "ex:YYZ", role="stop", bid="b5", direction="head",
+                                 position=3.0)) == ("KHG-R002",)  # 3.0 is 3, as layer R reads it
+    assert EXPORT[lib](b) == full and not any(b.report.values())  # nothing was attached
+    _add(b, "f:reg-1", "ex:Paris")
+    b.label("f:reg-1", "ex:Paris", role="context", bid="b4", direction="tail")
+    assert _code(lambda: b.label("f:reg-1", "ex:Paris", role="context", bid="b5", direction="head")) == \
+        ("KHG-R002",)  # a repeat of a label
+
+
+@pytest.mark.parametrize("lib", LIBS)
+def test_another_role_or_role_position_of_a_pair_is_a_record_of_its_own(full, schema, lib):
+    """The other side of R002: YUL at a second stop and TP53 in a third role are new records. An integral float
+    position is read as layer R reads it and written as the integer (F10: ``4.0`` is 4; it was R004)."""
+    b = LOAD[lib](full)
+    b.label("f:route-1", "ex:YUL", role="stop", bid="b5", direction="head", position=4.0)
+    b.label("f:reg-1", "ex:TP53", role="context", bid="b4", direction="tail")
+    assert b.roles("f:reg-1", "ex:TP53") == ["regulator", "target", "context"]
+    out = EXPORT[lib](b)
+    assert not any(b.report.values())
+    stops = [(i["node"], i["attrs"]["role-position"]) for i in _incidences(out, "f:route-1")
+             if i["attrs"]["role"] == "stop"]
+    assert stops == [("ex:YYZ", 1), ("ex:YUL", 2), ("ex:YYZ", 3), ("ex:YUL", 4)] and type(stops[-1][1]) is int
+    assert EXPORT[lib](LOAD[lib](out)) == out  # no R002: the loaders accept their own export
+    route = next(r for r in hif.from_hif(out, schema)["records"] if r.get("id") == "f:route-1")
+    assert next(x for x in route["bindings"] if x["bid"] == "b5")["position"] == 4
 
 
 @pytest.mark.parametrize("lib", LIBS)

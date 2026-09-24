@@ -19,6 +19,7 @@
 from __future__ import annotations
 
 import copy
+import math
 import os
 from typing import Any, Iterable, Mapping
 
@@ -108,12 +109,23 @@ def _binding_ok(b: Any) -> bool:
     return isinstance(b, Mapping) and isinstance(b.get("bid"), str) and isinstance(b.get("role"), str) and "value" in b
 
 
+def _weight_ok(w: Any) -> bool:
+    """A HIF weight: a finite number, not a boolean (H009 in the HIF file otherwise)."""
+    if isinstance(w, bool) or not isinstance(w, (int, float)):
+        return False
+    return isinstance(w, int) or math.isfinite(w)
+
+
 def _split(extensions: Any, owner: str) -> tuple[Any, Any]:
     """``(weight, rest)`` of an ``extensions`` object: ``hif:weight`` becomes the weight and the other keys stay in
     ``rest``; ``rest`` is None when nothing else is left (an empty ``extensions`` stays ``{}``). C010 when
-    ``extensions`` is not an object (``owner`` names the record or binding)."""
+    ``extensions`` is not an object, or its ``hif:weight`` is not a finite number (null included), which HIF could
+    not carry (``owner`` names the record or binding)."""
     if not isinstance(extensions, Mapping):
         raise _fail("KHG-C010", "", f"{owner}: extensions is an object")
+    if WEIGHT in extensions and not _weight_ok(extensions[WEIGHT]):
+        shown = repr(extensions[WEIGHT])[:60]
+        raise _fail("KHG-C010", "", f"{owner}: extensions[{WEIGHT!r}] is a finite number, not {shown}")
     rest = {k: copy.deepcopy(v) for k, v in extensions.items() if k != WEIGHT}
     keep = rest or WEIGHT not in extensions
     return extensions.get(WEIGHT), (rest if keep else None)

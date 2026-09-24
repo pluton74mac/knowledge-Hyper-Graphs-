@@ -111,3 +111,14 @@ def test_complete_fills_the_keys_from_the_item(smoke_lines):
                  "event_hash": item["payload"]["evidence"][1]["event_hash"], "bindings": [], "missing": []}
     given = complete({"evidence_id": "e1", "label": "correct", "core_key": "sha256:" + "3" * 64}, item)
     assert given["core_key"] == "sha256:" + "3" * 64 and "event_hash" not in given  # kept; checked later
+
+
+def test_an_event_hash_that_is_not_a_string_names_no_event(tmp_path, smoke_lines):
+    """The queue schema leaves the payload to layer C, so ``queue_items`` reads a payload whose event hash is a list
+    (C010 in ``validate_queue``); that evidence attaches no verdict. It raised ``TypeError`` while iterating."""
+    lines = copy.deepcopy(smoke_lines)
+    lines[1]["payload"]["evidence"][1]["event_hash"] = ["sha256:x"]
+    path = tmp_path / "q.khg-queue.jsonl"
+    path.write_text("".join(dump_line(x) for x in lines), encoding="utf-8")
+    assert [(i["qid"], i["state"], i["verdicts"]) for i in queue_items([path])] == [
+        ("q:p2-smoke.000001", "accepted", [])]

@@ -91,22 +91,22 @@
  "definitions": {
   "timestamp": {
    "type": "string",
-   "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$",
+   "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z(?!\\n)$",
    "x-khg-code": "KHG-Q008"
   },
   "sha256": {
    "type": "string",
-   "pattern": "^sha256:[0-9a-f]{64}$",
+   "pattern": "^sha256:[0-9a-f]{64}(?!\\n)$",
    "x-khg-code": "KHG-Q008"
   },
   "qid": {
    "type": "string",
-   "pattern": "^q:[0-9A-Za-z][0-9A-Za-z._:-]{0,127}\\.[0-9]+$",
+   "pattern": "^q:[0-9A-Za-z][0-9A-Za-z._:-]{0,127}\\.[0-9]+(?!\\n)$",
    "x-khg-code": "KHG-Q008"
   },
   "lid": {
    "type": "string",
-   "pattern": "^l:[0-9A-Za-z][0-9A-Za-z._:-]{0,127}\\.[0-9]+$",
+   "pattern": "^l:[0-9A-Za-z][0-9A-Za-z._:-]{0,127}\\.[0-9]+(?!\\n)$",
    "x-khg-code": "KHG-Q008"
   },
   "actor": {
@@ -172,7 +172,7 @@
    "properties": {
     "code": {
      "type": "string",
-     "pattern": "^KHG-[A-Z][0-9]{3}$",
+     "pattern": "^KHG-[A-Z][0-9]{3}(?!\\n)$",
      "x-khg-code": "KHG-Q004"
     },
     "severity": {
@@ -208,7 +208,7 @@
    "properties": {
     "evidence_id": {
      "type": "string",
-     "pattern": "^e[1-9][0-9]*$",
+     "pattern": "^e[1-9][0-9]*(?!\\n)$",
      "x-khg-code": "KHG-Q008"
     },
     "core_key": {
@@ -264,7 +264,7 @@
        },
        "bid": {
         "type": "string",
-        "pattern": "^b[1-9][0-9]*$",
+        "pattern": "^b[1-9][0-9]*(?!\\n)$",
         "x-khg-code": "KHG-Q008"
        },
        "label": {
@@ -372,17 +372,17 @@
     },
     "format": {
      "type": "string",
-     "pattern": "^khg-queue/(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+     "pattern": "^khg-queue/(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?!\\n)$",
      "x-khg-code": "KHG-Q008"
     },
     "queue_id": {
      "type": "string",
-     "pattern": "^[0-9A-Za-z][0-9A-Za-z._:-]{0,127}$",
+     "pattern": "^[0-9A-Za-z][0-9A-Za-z._:-]{0,127}(?!\\n)$",
      "x-khg-code": "KHG-Q008"
     },
     "record_format": {
      "type": "string",
-     "pattern": "^khg-record/1\\.0\\.(0|[1-9][0-9]*)$",
+     "pattern": "^khg-record/(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?!\\n)$",
      "x-khg-code": "KHG-Q008"
     },
     "schema": {
@@ -401,7 +401,7 @@
       },
       "version": {
        "type": "string",
-       "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+       "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?!\\n)$",
        "x-khg-code": "KHG-Q008"
       },
       "sha256": {
@@ -464,7 +464,7 @@
     },
     "submitted_by": {
      "type": "string",
-     "pattern": "^[^\\s]+/[^\\s/]+$",
+     "pattern": "^[^\\s]+/[^\\s/]+(?!\\n)$",
      "x-khg-code": "KHG-Q001"
     },
     "run": {
@@ -563,7 +563,7 @@
       },
       "doc_sha256": {
        "type": "string",
-       "pattern": "^sha256:[0-9a-f]{64}$",
+       "pattern": "^sha256:[0-9a-f]{64}(?!\\n)$",
        "x-khg-code": {
         "default": "KHG-Q001",
         "additionalProperties": "KHG-Q008"
@@ -590,12 +590,12 @@
      "properties": {
       "content_key": {
        "type": "string",
-       "pattern": "^sha256:[0-9a-f]{64}$",
+       "pattern": "^sha256:[0-9a-f]{64}(?!\\n)$",
        "x-khg-code": "KHG-Q010"
       },
       "core_key": {
        "type": "string",
-       "pattern": "^sha256:[0-9a-f]{64}$",
+       "pattern": "^sha256:[0-9a-f]{64}(?!\\n)$",
        "x-khg-code": "KHG-Q010"
       },
       "key_digest": {
@@ -603,7 +603,7 @@
         "string",
         "null"
        ],
-       "pattern": "^sha256:[0-9a-f]{64}$",
+       "pattern": "^sha256:[0-9a-f]{64}(?!\\n)$",
        "x-khg-code": "KHG-Q010"
       }
      },
@@ -662,7 +662,7 @@
         "properties": {
          "id": {
           "type": "string",
-          "pattern": "^cand:[0-9A-Za-z][0-9A-Za-z._:-]{0,127}\\.[0-9]+$",
+          "pattern": "^cand:[0-9A-Za-z][0-9A-Za-z._:-]{0,127}\\.[0-9]+(?!\\n)$",
           "x-khg-code": "KHG-Q002"
          },
          "status": {
@@ -719,7 +719,7 @@
       "string",
       "null"
      ],
-     "pattern": "^l:[0-9A-Za-z][0-9A-Za-z._:-]{0,127}\\.[0-9]+$",
+     "pattern": "^l:[0-9A-Za-z][0-9A-Za-z._:-]{0,127}\\.[0-9]+(?!\\n)$",
      "x-khg-code": "KHG-Q008"
     },
     "target": {

@@ -98,8 +98,9 @@ only incident items: a node `iso` and an edge `empty` disappear. *Ask:* export t
 
 ### 7. Repeated incidence records are dropped
 
-HIF allows several records for one (edge, node) pair (the standard's own compliant `duplicated_nodes_edges.json` has
-one). The factory keeps the first row of a pair (`hypernetx/classes/factory.py` 87:
+The HIF schema accepts several records for one (edge, node) pair, and the standard's own compliant
+`duplicated_nodes_edges.json` has one; whether the formal model's incidence set allows it is asked in
+<HIF issue>. The factory keeps the first row of a pair (`hypernetx/classes/factory.py` 87:
 `dfp[~dfp.index.duplicated(keep="first")]`), whatever `aggregate_by` says: `tail-head` 3 → 2 (the `head`/`target`
 record of TP53 goes), `ordered` 4 → 3, and a node with two roles keeps one. *Ask:* keep the other records, for
 example in a reserved cell property, or document that a pair keeps its first record.

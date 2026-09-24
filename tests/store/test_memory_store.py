@@ -362,6 +362,19 @@ def test_the_key_invariant_comes_before_supersession_constraints(ms, entities, r
         ms.put([moved, rec("f:born-skłodowska-kraków", **KRAKOW)], actor="t")
 
 
+def test_the_key_invariant_comes_before_the_refinement_an_event_asks_for(ms, entities, rec, cur):
+    """The supersede event's own D011 (a ``refinement`` whose superseding fact does not refine) comes after D016."""
+    ms.put(entities + [rec("f:born-skłodowska-warszawa"), rec("f:reg-1")], actor="t")
+    event = {"op": "supersede", "id": "m:s", "superseded": ["f:reg-1"], "reason": "refinement", "evidence": [cur]}
+    with pytest.raises(VersionError) as e:  # a born_in fact does not refine a regulates fact
+        ms.apply(dict(event, records=[rec("f:born-louis14-paris", set={"status": "asserted", "evidence": [cur]})]),
+                 actor="t")
+    assert e.value.codes == ("KHG-D011",)
+    with pytest.raises(KeyCollision) as e:  # Kraków does not refine it either, and collides with Warszawa
+        ms.apply(dict(event, records=[rec("f:born-skłodowska-kraków", **KRAKOW)]), actor="t")
+    assert e.value.codes == ("KHG-D016",) and ms.get("f:reg-1")["status"] == "asserted"
+
+
 def test_a_missing_capability_comes_before_not_found(schema, cur, T):
     s = MemoryStore(schema, clock=ScenarioClock(), capabilities=ALL_FLAGS - {"atomic_writes", "valid_time"})
     for event, flag in (({"op": "supersede", "id": "m:s", "superseded": ["f:nope"], "reason": "other",

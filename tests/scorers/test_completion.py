@@ -3,12 +3,13 @@ presets, missing outputs, the adjusted measures and the report."""
 from __future__ import annotations
 
 import json
+from fractions import Fraction as F
 
 import pytest
 
 from khg_contracts import data
 from khg_contracts.errors import ValidationError
-from khg_contracts.record import literal_node_id
+from khg_contracts.record import arity_bin, literal_node_id
 from khg_contracts.scorers import _inputs, completion
 from khg_contracts.scorers.bootstrap import Bootstrap
 
@@ -151,6 +152,67 @@ def test_missing_and_unmatched_outputs(fixture_records, fixture_schema):
     with pytest.raises(ValidationError) as e:
         completion.score(queries, inconsistent, config=config())
     assert e.value.codes == ("KHG-C010",)
+
+
+def test_a_model_rank_outside_the_tie_block_is_c010(fixture_records, fixture_schema):
+    """``model_rank`` only orders the target's tie block [1 + n_greater, 1 + n_greater + n_equal] (§9.3), which
+    ``rank_stats`` checks too: a record that ranks the target first although 49 candidates scored above it is C010,
+    not an MRR of 1 (review f-scorers-05)."""
+    queries = completion.build_queries([r for r in fixture_records if r["id"] == "f:king-14"], fixture_schema)[:1]
+    assert queries[0]["qid"] == "cq:f:king-14#b1"
+    record = {"kind": "completion-rank", "qid": "cq:f:king-14#b1", "n_candidates": 100, "n_filtered_out": 0,
+              "n_greater": 49, "n_equal": 0, "model_rank": 1}
+    for kw in (dict(config=config(rank="model")), dict(config=config(preset="stare"), schema=fixture_schema),
+               dict(config=config())):
+        with pytest.raises(ValidationError) as e:
+            completion.score(queries, [record], **kw)
+        assert e.value.codes == ("KHG-C010",)
+        assert e.value.info["findings"][0]["path"] == "/cq:f:king-14#b1/model_rank"
+    tied = dict(record, n_greater=1, n_equal=2)  # the tie block is [2, 4]
+    for model_rank in (1, 5):
+        with pytest.raises(ValidationError):
+            completion.score(queries, [dict(tied, model_rank=model_rank)], config=config(rank="model"))
+    for model_rank in (2, 3, 4):
+        rep = completion.score(queries, [dict(tied, model_rank=model_rank)], config=config(rank="model"))
+        assert rep["aggregate"]["per_task"]["mrr"] == 1 / model_rank
+
+
+def test_every_per_arity_table_is_given_on_model_arity_too(fixture_records, fixture_schema):
+    """DESIGN §9.1: every per-arity table is given on ``arity`` and on ``model_arity``. The fixture's facts with
+    literals have a smaller model arity (the population fact: 3 and 1), so the two tables differ. Here their targets
+    rank first with a right top-1, the others fifth with a wrong one, and every table is checked against its own
+    bins (review f-scorers-09)."""
+    queries = completion.build_queries(fixture_records, fixture_schema)
+    good = {q["qid"] for q in queries if q["arity"] != q["model_arity"]}
+    assert 0 < len(good) < len(queries)
+    records = [{"kind": "completion-rank", "qid": q["qid"], "n_candidates": 20, "n_filtered_out": 0,
+                "n_greater": 0 if q["qid"] in good else 4, "n_equal": 0,
+                "top1": {"value": q["target"]["value"] if q["qid"] in good else {"entity": "ex:Nobody"}, "prob": 0.9}}
+               for q in queries]
+    rep = completion.score(queries, records, config=config(min_bin_queries=1))
+    rr = {q["qid"]: F(1) if q["qid"] in good else F(1, 5) for q in queries}
+    facts: dict[str, list] = {}
+    for q in queries:
+        facts.setdefault(q["fact_id"], []).append(q)
+    tables = {}
+    for kind in ("arity", "model_arity"):
+        bins: dict[str, list] = {}
+        for q in queries:
+            bins.setdefault(arity_bin(q[kind]), []).append(q)
+        by_arity, cal = rep["breakdowns"]["by_arity"][kind], rep["breakdowns"]["calibration_by_arity"][kind]
+        assert set(by_arity) == set(cal) == set(bins), kind
+        for b, qs in bins.items():
+            assert by_arity[b]["n_queries"] == len(qs) == cal[b]["n"], (kind, b)
+            assert by_arity[b]["mrr"] == float(sum(rr[q["qid"]] for q in qs) / len(qs)), (kind, b)
+            assert cal[b]["accuracy"] == float(F(sum(q["qid"] in good for q in qs), len(qs))), (kind, b)
+        per_bin: dict[str, list] = {}
+        for qs in facts.values():  # macro over the bins of the per-fact means
+            per_bin.setdefault(arity_bin(qs[0][kind]), []).append(sum(rr[q["qid"]] for q in qs) / len(qs))
+        macro = rep["aggregate"][f"macro_{kind}"]
+        assert macro["n_bins"] == len(per_bin), kind
+        assert macro["mrr"] == float(sum(sum(v) / len(v) for v in per_bin.values()) / len(per_bin)), kind
+        tables[kind] = (macro["n_bins"], macro["mrr"], sorted(by_arity))
+    assert tables["arity"] != tables["model_arity"]  # (5 bins, 0.5886) against (4 bins, 0.45)
 
 
 def test_adjusted_measures_and_the_audit(fixture_records, fixture_schema):

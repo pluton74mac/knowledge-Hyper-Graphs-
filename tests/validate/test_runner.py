@@ -191,7 +191,8 @@ def test_auto_picks_the_kind_of_an_object():
 
 
 @pytest.mark.parametrize(("rel", "kind"), [("fixture/smoke-queue.khg-queue.jsonl", "queue"),
-                                           ("fixture/c4-items.jsonl", "item"), ("fixture/fixture.c1.jsonl", "container")])
+                                           ("fixture/c4-items.jsonl", "item"),
+                                           ("fixture/fixture.c1.jsonl", "container")])
 def test_auto_reads_a_lone_header_line_as_a_file_of_one_line(rel, kind):
     """b-validate-12: a JSONL file of its header line only (a fresh queue, as ``Queue.create`` writes it) parses to
     one object; auto reads it as the file it is, as the explicit kinds do."""
@@ -245,6 +246,22 @@ def test_layer_v_gates_queue_and_c4_headers():
     assert _codes(validate_item(items, schema=SCHEMA)) == ["KHG-V001"]
     items[0]["format"] = "khg-c4-items/0.1.7"
     assert validate_item(items, schema=SCHEMA)["ok"]
+
+
+@pytest.mark.parametrize("engine", ["jsonschema", "fastjsonschema"])
+@pytest.mark.parametrize("stamp", ["khg-record/1.1.0", "khg-record/2.0.0", "khg-record/1.0", "khg-hif/1.0.0", 7])
+def test_layer_v_gates_the_record_format_of_a_queue_header(stamp, engine):
+    """Review integration (group ex's request, §8.1, §11.2): a queue header's ``record_format`` that this reader does
+    not accept is V001 from step v, and the run stops there. It came from the Q step, and C, S and D ran after it."""
+    queue = data.load_jsonl("fixture/smoke-queue.khg-queue.jsonl")
+    base = data.load_json("fixture/smoke-base.c1.json")
+    queue[0]["record_format"] = stamp
+    report = run(queue, kind="queue", schema=SCHEMA, bases=[base], engine=engine)
+    assert [(f["code"], f["path"]) for f in report.findings] == [("KHG-V001", "/lines/0/record_format")]
+    assert report.stopped == "v" and report.first_rejecting_step == "v" and report.first_layer == "V"
+    assert [name for name, _ in report.steps] == ["j", "v"]
+    queue[0]["record_format"] = "khg-record/1.0.9"  # another patch is read
+    assert run(queue, kind="queue", schema=SCHEMA, bases=[base], engine=engine).ok
 
 
 def test_a_hif_file_without_khg_profile_passes_v():
@@ -304,6 +321,21 @@ def test_bases_are_a_mapping_a_container_or_an_iterable():
         assert report.ok
     with pytest.raises(TypeError):
         run(queue, kind="queue", schema=SCHEMA, bases=[42])
+
+
+@pytest.mark.parametrize("name", ["base.txt", "base.c1", "base.JSON"])
+def test_a_base_path_whose_suffix_is_not_a_containers_is_a_value_error(tmp_path, name):
+    """Review integration (group ad's request; ruling 4): ``record.read_container`` reads ``.json`` and ``.jsonl``
+    only, so a base path with another suffix is ``ValueError``, as ``run``'s docstring now says; it is an argument
+    error, not a finding (not ``ValidationError``, which is also a ``ValueError``)."""
+    queue = data.path("fixture/smoke-queue.khg-queue.jsonl")
+    base = tmp_path / name
+    base.write_bytes(data.read_bytes("fixture/smoke-base.c1.json"))
+    with pytest.raises(ValueError) as exc:
+        run(queue, kind="queue", schema=SCHEMA, bases=[base])
+    assert not isinstance(exc.value, ValidationError)
+    renamed = base.rename(tmp_path / "base.json")
+    assert run(queue, kind="queue", schema=SCHEMA, bases=[renamed]).ok
 
 
 @pytest.mark.parametrize("kwargs", [{"kind": "c1"}, {"engine": "ajv"}, {"stop": "never"}])

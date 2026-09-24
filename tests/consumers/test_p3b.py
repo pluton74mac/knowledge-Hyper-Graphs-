@@ -110,3 +110,19 @@ def test_p3b_a_fact_target_is_in_its_own_universe(S, splits):
     assert claim["target"]["value"] == {"fact": "f:born-louis14-paris"}
     assert claim["candidate_universe"] == {"kind": "list",
                                            "ids": ["f:born-louis14-paris", "f:born-skłodowska-kraków"]}
+
+
+@pytest.mark.parametrize(("name", "where"), [("train", 0), ("valid", 1), ("test", 2)])
+def test_p3b_filters_the_known_answers_of_every_split(S, by_id, name, where):
+    """§1.3 builds ``FilterIndex.from_records(train, valid, test)``, and §9.2 filters the known answers of every
+    split. The sequence's one filtered answer is in train, so an index that skipped the valid split went unnoticed:
+    here Maria's other birthplace, ex:Warszawa, is filtered out of the Kraków query from whichever split holds it."""
+    krakow, warszawa = by_id["f:born-skłodowska-kraków"], by_id["f:born-skłodowska-warszawa"]
+    splits: list[list[dict[str, Any]]] = [[], [], [krakow]]
+    splits[where].append(warszawa)
+    index = completion.FilterIndex.from_records(*splits)
+    assert index.split_of(warszawa["id"]) == name and index.split_of(krakow["id"]) == "test"
+    query = next(q for q in completion.build_queries([krakow], S) if q["qid"] == "cq:f:born-skłodowska-kraków#b2")
+    assert query["target"]["value"] == {"entity": "ex:Kraków"}
+    out = completion.rank_stats(query, {"ex:Kraków": 1.0, "ex:Warszawa": 2.0, "ex:Paris": 0.0}, index)
+    assert (out["n_filtered_out"], out["n_greater"], out["n_equal"]) == (1, 0, 0)  # rank 1, not 2

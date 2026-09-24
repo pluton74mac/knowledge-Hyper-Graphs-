@@ -1,12 +1,14 @@
 """``replay(path, *, schema, factory, base=None) -> dict`` (DESIGN §7): re-run a queue's accepts on a fresh store.
 
-The queue is read and its structure checked (layer J, the queue schema, the fold; D009 for another schema). The
-base must be the header's (Q012: the same ``document_id`` and ``record.container_sha256``; a header without a base
-takes none). Then ``factory(schema, clock)`` builds a store, which loads the base, and every ``accept`` runs again in
-log order at its ``at``: one ``put`` of the item's entities and of the payload with the fact's id and status
-asserted. Q006 when the put fails, or when the versions written or the recomputed ``decision_hash`` differ from the
-entry's. The base is loaded just before the first accept (at the header's ``created_at``, or earlier), since a
-store's transaction time only moves forward.
+The queue is read and its structure checked (layer J, V001 for a header stamp this reader does not take, the queue
+schema, the fold; D009 for another schema). The base must be the header's (Q012: the same ``document_id`` and
+``record.container_sha256``; a header without a base takes none). Then ``factory(schema, clock)`` builds a store,
+which loads the base, and every ``accept`` runs again in log order at its ``at``: one ``put`` of the item's entities
+and of the payload with the fact's id and status asserted. Q006 when the put fails (a store error, or Python's
+recursion limit), or when the versions written or the recomputed ``decision_hash`` differ from the entry's. The base
+is loaded just before the first accept (at the header's ``created_at``, or earlier, but never before
+``0000-01-01T00:00:00Z``, the first instant a queue timestamp names), since a store's transaction time only moves
+forward.
 
 The result is ``{ok, findings, decisions, store}``: ``decisions`` lists ``{lid, target, after, decision_hash}``
 as recomputed, and ``store`` is the replayed store (None when the checks before the replay failed).
@@ -27,7 +29,12 @@ from .lines import errors, read_lines
 __all__ = ["replay", "replay_accepts"]
 
 Finding = dict[str, str]
-_FAILURES = (KHGError, ValueError, TypeError, KeyError, LookupError)
+#: What a replayed write or read may raise; each is a Q006 finding on the entry, not an exception (Python's
+#: recursion limit included: a store may copy a record recursively).
+_FAILURES = (KHGError, ValueError, TypeError, KeyError, LookupError, RecursionError)
+#: The first instant a queue timestamp names (``TIMESTAMP_PATTERN``); the base is never loaded before it, since no
+#: RFC 3339 timestamp can say so.
+_FLOOR = parse_timestamp("0000-01-01T00:00:00Z")
 
 
 def replay(path: Any, *, schema: Any, factory: Callable[[Schema, Any], Any], base: Any = None) -> dict[str, Any]:
@@ -56,19 +63,20 @@ def _micros(value: Any) -> int | None:
 
 
 def _load_time(fold: Fold) -> str:
-    """Before every accept: the header's ``created_at``, or a microsecond before the first accept."""
+    """Before every accept: the header's ``created_at``, or a microsecond before the first accept, but not before
+    ``_FLOOR`` (an accept at that very instant then shares it with the base load)."""
     times = [_micros((fold.header or {}).get("created_at"))]
     times += [t - 1 for _, entry in fold.accepts if (t := _micros(entry.get("at"))) is not None]
     known = [t for t in times if t is not None]
-    return format_timestamp(min(known)) if known else "1970-01-01T00:00:00Z"
+    return format_timestamp(max(min(known), _FLOOR)) if known else "1970-01-01T00:00:00Z"
 
 
 def _fact_id(entry: Mapping[str, Any], item: Mapping[str, Any]) -> str | None:
     """The fact an accept wrote or read: the one id of ``after`` and ``before`` that is not an item entity."""
-    entities = {e.get("id") for e in item.get("entities") or [] if isinstance(e, Mapping)}
-    named = {w.get("id") for w in list(entry.get("after") or []) + list(entry.get("before") or [])
-             if isinstance(w, Mapping)}
-    facts = sorted(x for x in named - entities if isinstance(x, str))
+    entities = {e["id"] for e in item.get("entities") or [] if isinstance(e, Mapping) and isinstance(e.get("id"), str)}
+    named = {w["id"] for w in list(entry.get("after") or []) + list(entry.get("before") or [])
+             if isinstance(w, Mapping) and isinstance(w.get("id"), str)}
+    facts = sorted(named - entities)
     return facts[0] if len(facts) == 1 else None
 
 
@@ -91,8 +99,8 @@ def replay_accepts(fold: Fold, schema: Schema, factory: Callable[[Schema, Any], 
             out.append(make_finding("KHG-Q006", f"/lines/{n}", "the accept names no single fact in after or before"))
             continue
         entities = [dict(e) for e in item.get("entities") or [] if isinstance(e, Mapping)]
-        record = accepted_record(item, fact)
         try:
+            record = accepted_record(item, fact)
             receipt = store.put(entities + [record] if entities else record, actor=entry["actor"]["id"],
                                 at=entry["at"])
             after = written_versions(receipt)

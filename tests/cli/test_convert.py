@@ -214,3 +214,34 @@ def test_a_failed_write_leaves_no_temporary_file(packaged, tmp_path, capsys):
     assert cli.convert_main([str(packaged(FIXTURE)), str(out), "--to", "hif", "--schema", str(packaged(SCHEMA))]) == 2
     assert capsys.readouterr().err.splitlines()[-1].startswith(f"khg-convert: cannot write {out}: ")
     assert _files(tmp_path) == ["taken"] and _files(out) == []
+
+
+def test_out_may_not_be_a_file_the_command_reads(packaged, tmp_path, capsys):
+    """OUT on IN or on --schema replaced that file (a schema turned into HIF, exit 0); it is a usage error now."""
+    container, schema = tmp_path / "fixture.khg.json", tmp_path / "schema.json"
+    container.write_bytes(data.read_bytes(FIXTURE))
+    schema.write_bytes(data.read_bytes(SCHEMA))
+    for argv, message in (([str(container), str(schema), "--to", "hif", "--schema", str(schema)],
+                           f"OUT {schema} is the file of --schema {schema}"),
+                          ([str(container), str(container), "--to", "khg-json", "--schema", str(schema)],
+                           f"OUT {container} is the file of IN {container}")):
+        assert cli.convert_main(argv) == 2
+        err = capsys.readouterr().err
+        assert "usage: khg-convert" in err and message in err
+    assert container.read_bytes() == data.read_bytes(FIXTURE) and schema.read_bytes() == data.read_bytes(SCHEMA)
+    assert _files(tmp_path) == ["fixture.khg.json", "schema.json"]
+
+
+def test_container_files_are_named_by_their_suffix(packaged, tmp_path, capsys):
+    """§14 ruling 4: a container is read and written by its suffix, .json or .jsonl. A container OUT with another
+    one, or a container IN with another one (a ``ValueError`` traceback before), is a usage error."""
+    assert cli.convert_main([str(packaged(FIXTURE)), str(tmp_path / "fixture.khg"), "--to", "khg-json",
+                             "--schema", str(packaged(SCHEMA))]) == 2
+    assert "OUT " + str(tmp_path / "fixture.khg") + ": a container file name ends in .json" in capsys.readouterr().err
+    renamed = tmp_path / "fixture.txt"
+    renamed.write_bytes(data.read_bytes(FIXTURE))
+    assert cli.convert_main([str(renamed), str(tmp_path / "x.hif.json"), "--to", "hif",
+                             "--schema", str(packaged(SCHEMA))]) == 2
+    err = capsys.readouterr().err.splitlines()  # the input's warnings, then record.read_container's ValueError
+    assert err[-1].startswith("khg-convert: IN ") and "a container file name ends in .json" in err[-1]
+    assert _files(tmp_path) == ["fixture.txt"]

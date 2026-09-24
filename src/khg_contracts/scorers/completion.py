@@ -12,7 +12,8 @@
   vector.
 - ``score`` reads queries and records. Ranks: o = 1 + n_greater, p = o + n_equal; ``tie_exact`` (the default) takes
   the expectation under uniformly random tie-breaking (E[RR] = Σ_{r=o..p} (1/r)/(p−o+1)), with ``optimistic``,
-  ``pessimistic``, ``realistic`` and ``model`` (the model's own order, ``model_rank``) beside it. MRR, Hits@k and
+  ``pessimistic``, ``realistic`` and ``model`` (the model's own order, ``model_rank``) beside it. A record whose p
+  exceeds the unfiltered candidates, or whose ``model_rank`` lies outside [o, p], is C010. MRR, Hits@k and
   MR are averaged per task, per fact and macro over the arity bins (on ``arity`` and ``model_arity``). Calibration
   is top-1: equal-width and equal-mass ECE, the reliability tables and Brier, overall and per arity bin.
 - Presets: ``hype`` (all positions, pessimistic ties, the full-tuple filter, per-task average), ``hyper`` (all
@@ -593,8 +594,14 @@ def _rows(queries: list[dict[str, Any]], outputs: Mapping[str, dict[str, Any]], 
         if p > size:
             raise ValidationError.from_findings([make_finding(
                 "KHG-C010", f"/{q['qid']}", f"n_greater + n_equal + 1 = {p} exceeds the {size} unfiltered candidates")])
-        row.update(missing=False, o=o, p=p, size=size, model_rank=rec.get("model_rank"),
-                   **_measures(o, p, rank, rec.get("model_rank"), config.hits))
+        model_rank = rec.get("model_rank")
+        if model_rank is not None and not o <= model_rank <= p:  # the model's order only breaks the tie (§9.3)
+            raise ValidationError.from_findings([make_finding(
+                "KHG-C010", f"/{q['qid']}/model_rank", f"model_rank {model_rank} lies outside the tie block "
+                                                       f"[{o}, {p}] (n_greater {rec['n_greater']}, n_equal "
+                                                       f"{rec['n_equal']})")])
+        row.update(missing=False, o=o, p=p, size=size, model_rank=model_rank,
+                   **_measures(o, p, rank, model_rank, config.hits))
         if "top1" in rec:
             got = identity_key(rec["top1"]["value"])
             correct = got == identity_key(q["target"]["value"])

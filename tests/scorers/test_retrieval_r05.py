@@ -77,6 +77,14 @@ def test_r5_joint(build):
     assert (it["joint_p"], it["joint_r"]) == (0.5, 0.2)
     assert it["joint_f1"] == float(F(2, 7))
     assert round(it["joint_f1"], 6) == 0.285714
+    # joint EM (R-M10) needs both EMs: a right value answer with part of the support set is 0, with the set 1
+    vq = build.question("q5v", [["h1", "h2"]], answer={"values": [{"entity": "Q1"}]})
+    right = {"values": [{"entity": "Q1"}], "abstained": False}
+    part, rep = one(build, vq, build.response("q5v", ["h1", "h2"], answer=right, support_claimed=["h1"]))
+    assert (part["em"], part["support_em"], part["joint_em"]) == (1.0, 0.0, 0.0)
+    assert rep["aggregate"]["joint"]["joint_em"] == 0.0
+    full, _ = one(build, vq, build.response("q5v", ["h1", "h2"], answer=right, support_claimed=["h2", "h1"]))
+    assert (full["em"], full["support_em"], full["joint_em"]) == (1.0, 1.0, 1.0)
 
 
 def test_r6_gated_em(build):
@@ -115,6 +123,8 @@ def test_r9_binding_coverage(build):
     it, rep = one(build, q, r, facts={"h": h})
     assert it["binding_coverage@1"] == float(F(2, 3)) and it["binding_coverage@2"] == 1.0
     assert rep["aggregate"]["ranking"]["binding_coverage@1"] == float(F(2, 3))
+    # both units point at h, the only support hyperedge: it counts at its first unit only, so nDCG stays 1
+    assert (it["ndcg@1"], it["ndcg@2"], it["ndcg@4"]) == (1.0, 1.0, 1.0)
     # a hyperedge unit without bids covers every binding of its hyperedge
     whole, _ = one(build, q, build.response("q9", ["h"]), facts=[h])
     assert whole["binding_coverage@1"] == 1.0

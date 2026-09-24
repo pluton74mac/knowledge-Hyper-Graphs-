@@ -160,3 +160,16 @@ def test_a_verdict_entry_is_checked_by_label_and_note():
 def test_a_line_without_kind_or_of_another_kind_is_q003(engine):
     for bad in ({}, {"kind": "queue_item"}, {"kind": "header"}):
         assert [f["code"] for f in line_findings(bad, engine=engine)] == ["KHG-Q003"]
+
+
+def test_every_pattern_ends_the_text():
+    """``$`` also matches before a final newline. The packaged patterns end in ``schema.codegen.END``, as those of the
+    other generated schemas do, so the file itself refuses ``"q:...\\n"`` (the engines anchor at load time too)."""
+    import re
+
+    from khg_contracts.schema.codegen import END, patterns
+
+    found = list(patterns(data.load_json(SCHEMA_FILE)))
+    assert found and all(p.endswith(END) for p in found)
+    qid = data.load_json(SCHEMA_FILE)["definitions"]["qid"]["pattern"]
+    assert re.search(qid, "q:p2-smoke.000001") and not re.search(qid, "q:p2-smoke.000001\n")

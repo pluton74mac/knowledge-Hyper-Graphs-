@@ -64,8 +64,9 @@ beside the hypergraph, or an incidence-attribute store; at least, document that 
 
 ### 2. Repeated incidence records collapse
 
-HIF allows several records for one (edge, node) pair (the repository's own compliant `duplicated_nodes_edges.json`
-has one). `ordered` loses its second `YYZ` stop (4 → 3), and a node with two roles in one edge loses one (3 → 2).
+The HIF schema accepts several records for one (edge, node) pair, and the repository's own compliant
+`duplicated_nodes_edges.json` has one; whether the formal model's incidence set allows it is asked in
+<HIF issue>. `ordered` loses its second `YYZ` stop (4 → 3), and a node with two roles in one edge loses one (3 → 2).
 Members are sets (`xgi/core/hypergraph.py` 1110-1117). A `DiHypergraph` does keep one node in both `"in"` and
 `"out"` (`tail-head` 3 → 3), so only the undirected case, and the same-direction case, collapse.
 

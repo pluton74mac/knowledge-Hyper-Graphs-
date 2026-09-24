@@ -8,8 +8,12 @@ one atomic ``put`` at ``at``, and logs ``before``, ``after`` and ``decision_hash
 from __future__ import annotations
 
 import copy
+import errno
+import importlib
+import multiprocessing
 import os
 import re
+import types
 
 import pytest
 
@@ -70,6 +74,24 @@ def test_create_refuses(smoke, schema):
     assert _codes(exc) == {"KHG-V001"}
     with pytest.raises(TypeError):
         smoke.create(base=["not", "a", "container"])
+
+
+def test_a_time_that_is_no_calendar_date_time_is_refused(smoke, schema):
+    """RFC 3339 times, as the store reads them: ``create``, ``submit`` and the decisions refuse an impossible one
+    (Q008) and write nothing. They were written, and ``validate_queue`` accepted them."""
+    with pytest.raises(ValidationError) as exc:
+        Queue.create(smoke.path("bad.khg-queue.jsonl"), queue_id="p2-smoke", schema=schema,
+                     created_at="2026-02-30T25:61:61Z")
+    assert _codes(exc) == {"KHG-Q008"} and not (smoke.dir / "bad.khg-queue.jsonl").exists()
+    q = smoke.create()
+    size = _size(q)
+    with pytest.raises(ValidationError) as exc:
+        smoke.submit(q, at="2026-02-30T00:00:03Z")
+    assert _codes(exc) == {"KHG-Q008"} and _size(q) == size
+    qid = smoke.submit(q)
+    with pytest.raises(ValidationError) as exc:
+        q.flag(qid, actor="curator:smoke", reason="look again", at="2026-99-99T99:99:99Z")
+    assert exc.value.info["findings"][0]["path"] == "/lines/2/at" and q.state(qid) == "pending"
 
 
 def test_open_reads_the_smoke_queue(schema, smoke_lines):
@@ -348,6 +370,26 @@ def test_a_wrong_verdict_is_refused(smoke, store, verdict, codes):
     assert _codes(exc) == codes and _size(q) == size
 
 
+def test_the_bid_of_a_verdict_binding_is_only_a_hint(smoke, store):
+    """§7: a verdict names a binding by its (role, position, value); the bid is only a hint, since writers assign
+    bids. A bid that names another binding of the payload is accepted and kept as given."""
+    q, qid, _, _ = smoke.full(store)
+    hinted = {"role": "holder", "position": None, "value": {"entity": "ex:LouisXIV"}, "bid": "b5",  # b1's tuple
+              "label": "correct"}
+    e = q.verdict(qid, actor="curator:smoke", verdict={"evidence_id": "e2", "label": "correct", "bindings": [hinted]})
+    assert e["verdict"]["bindings"] == [hinted]
+    assert validate_queue(q, schema=smoke.schema, bases=[smoke.base]) == {"ok": True, "findings": []}
+
+
+def test_a_target_that_is_not_a_qid_is_q007(smoke):
+    """The handle's item lookups take any value (``Fold.items``): a list is not an item (it was ``TypeError``)."""
+    q = smoke.create()
+    smoke.submit(q)
+    with pytest.raises(ValidationError) as exc:
+        q.flag(["q:p2-smoke.000001"], actor="curator:smoke", reason="look again")  # type: ignore[arg-type]
+    assert _codes(exc) == {"KHG-Q007"}
+
+
 def test_a_verdict_on_a_withdrawn_item_is_q005(smoke):
     q = smoke.create()
     qid = smoke.submit(q)
@@ -376,6 +418,119 @@ def test_a_handle_refuses_to_append_after_another_one_did(smoke, schema):
     fresh = Queue.open(q.path, schema=schema)
     assert fresh.state(qid) == "needs_review"
     assert fresh.reject(qid, actor="curator:a", reason="wrong")["parent"] == "l:p2-smoke.000001"
+
+
+def _meddle_after_the_check(monkeypatch, handle, meddle):
+    """Run ``meddle()`` once, inside ``handle``'s next append, just after its check that the file is unchanged
+    passed: another appender's turn in the middle of this one. Returns the outcomes ``meddle`` records."""
+    check, outcomes = Queue._check_unchanged, []
+
+    def checked(self):
+        check(self)
+        if self is handle and not outcomes:
+            try:
+                outcomes.append(("appended", meddle()))
+            except ConcurrencyError as e:
+                outcomes.append(("refused", e.info.get("locked")))
+    monkeypatch.setattr(Queue, "_check_unchanged", checked)
+    return outcomes
+
+
+def _no_flock(*args):
+    raise OSError(errno.ENOLCK, "No locks available")
+
+
+@pytest.mark.parametrize("lock", ["flock", "sidecar", "flock-fails"])
+def test_a_second_appender_during_an_append_is_refused(monkeypatch, smoke, schema, lock):
+    """§14 ruling 5 under concurrency: the check and the write are one step under a lock, so a second handle that
+    appends between them is refused. Both appended before (the same qid twice, and the file no longer opened)."""
+    handle = importlib.import_module("khg_contracts.queue.handle")
+    if lock == "sidecar":  # the lock where the platform has no fcntl (Windows)
+        monkeypatch.setattr(handle, "fcntl", None)
+    elif lock == "flock-fails":  # a file system without flock: the sidecar again
+        if handle.fcntl is None:
+            pytest.skip("no fcntl on this platform")
+        monkeypatch.setattr(handle, "fcntl", types.SimpleNamespace(LOCK_EX=handle.fcntl.LOCK_EX,
+                                                                   LOCK_NB=handle.fcntl.LOCK_NB, flock=_no_flock))
+    a = smoke.create()
+    b = Queue.open(a.path, schema=schema)
+    outcomes = _meddle_after_the_check(monkeypatch, a, lambda: smoke.submit(b))
+    qid = smoke.submit(a)
+    assert outcomes == [("refused", True)]
+    assert Queue.open(a.path, schema=schema).qids == (qid,) and _size(a) == os.path.getsize(b.path)
+    assert os.listdir(smoke.dir) == [os.path.basename(a.path)]  # no lock file is left behind
+    with pytest.raises(ConcurrencyError):  # b is behind now: the file changed since it read it
+        smoke.submit(b)
+
+
+def test_a_second_appender_during_an_accept_is_refused_before_the_store_is_written(smoke, schema, base):
+    """``accept`` holds the lock from its check through the ``put`` and the entry. A second handle appending in
+    between was accepted, and the accept then failed with the store already written and nothing logged."""
+    a = smoke.create()
+    qid = smoke.submit(a)
+    smoke.lint(a, qid)
+    b = Queue.open(a.path, schema=schema)
+    outcomes = []
+
+    class Meddling(MemoryStore):
+        def put(self, records, **kw):
+            try:
+                outcomes.append(("appended", smoke.submit(b, smoke.candidate(b, 2))))
+            except ConcurrencyError as e:
+                outcomes.append(("refused", e.info.get("locked")))
+            return super().put(records, **kw)
+
+    store = Meddling(schema, clock=ScenarioClock())
+    store.load(base)
+    entry = smoke.accept(a, qid, store)
+    assert outcomes == [("refused", True)]
+    assert (entry["action"], a.state(qid), store.get("f:king-14")["version"]) == ("accept", "accepted", 1)
+    assert Queue.open(a.path, schema=schema).state(qid) == "accepted"
+    assert validate_queue(a, schema=schema, bases=[base]) == {"ok": True, "findings": []}
+
+
+def test_a_lock_file_left_behind_is_named(monkeypatch, smoke, schema):
+    """Without fcntl the lock is ``<queue>.lock``, created exclusively; one that a crashed appender left makes
+    every append a ``ConcurrencyError`` that names it, and appends go on once it is removed."""
+    monkeypatch.setattr(importlib.import_module("khg_contracts.queue.handle"), "fcntl", None)
+    q = smoke.create()
+    stale = q.path + ".lock"
+    open(stale, "x").close()
+    size = _size(q)
+    with pytest.raises(ConcurrencyError, match="remove it if no appender is running") as exc:
+        smoke.submit(q)
+    assert exc.value.info == {"path": q.path, "locked": True} and _size(q) == size
+    os.remove(stale)
+    assert smoke.submit(q) == "q:p2-smoke.000001" and not os.path.exists(stale)
+
+
+def _race(path, schema, payload, barrier, results, index):  # pragma: no cover - runs in a child process
+    q = Queue.open(path, schema=schema)
+    barrier.wait()
+    try:
+        results.put((index, q.submit(payload, run={"run_id": "r", "order_id": "o", "position": index},
+                                     doc={"doc_id": "d", "doc_sha256": "sha256:" + "0" * 64}, submitted_by="x/1")))
+    except ConcurrencyError:
+        results.put((index, None))
+
+
+@pytest.mark.skipif("fork" not in multiprocessing.get_all_start_methods(), reason="needs the fork start method")
+def test_two_processes_appending_at_once_leave_one_item(smoke, schema):
+    """Two processes open one file and submit at the same moment, ten times: one of them appends and the other
+    is refused. Unlocked, both appended in most rounds (the review measured 46 of 60)."""
+    ctx = multiprocessing.get_context("fork")
+    for n in range(10):
+        q = smoke.create()
+        payload = smoke.candidate(q)
+        barrier, results = ctx.Barrier(2), ctx.Queue()
+        children = [ctx.Process(target=_race, args=(q.path, schema, payload, barrier, results, i)) for i in (1, 2)]
+        for child in children:
+            child.start()
+        outcomes = sorted((results.get(timeout=60) for _ in children), key=lambda r: r[0])
+        for child in children:
+            child.join(60)
+        assert sorted(qid is None for _, qid in outcomes) == [False, True], (n, outcomes)
+        assert Queue.open(q.path, schema=schema).qids == ("q:p2-smoke.000001",)
 
 
 def test_make_candidate_and_submit_follow_the_p9_sequence(tmp_path, schema, base, king14):

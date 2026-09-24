@@ -27,8 +27,8 @@ from typing import Any, Callable
 
 from .builtins import CONSTRAINT_TYPES, DATATYPES, POLICIES, SEVERITIES, SLOTS, TIME_MODELS
 
-__all__ = ["END", "TAG", "X", "anchor", "end_anchors", "iff", "patterns", "propagate", "absolutise", "render", "build",
-           "build_all", "write_all", "main"]
+__all__ = ["END", "INSTANT_YEAR_DIGITS", "TAG", "X", "YEAR_DIGITS", "anchor", "end_anchors", "iff", "patterns",
+           "propagate", "absolutise", "render", "build", "build_all", "write_all", "main"]
 
 TAG = "tag:khg-contracts,2026:schema/"
 HIF_ID = "https://raw.githubusercontent.com/pszufe/HIF_validators/main/schemas/hif_schema_v0.1.0.json"
@@ -48,6 +48,12 @@ SEMVER = "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
 #: The end of a pattern: the end of the string in ECMA-262 and in Python's ``re`` alike (``$`` alone also matches
 #: before a final newline in Python).
 END = "(?!\\n)$"
+#: The most digits of a written year, as ``record.windows`` reads them: a time literal's (Wikibase's bound; C004)
+#: and an instant's (one more, for the upper bound of the window of the largest literal year; C011).
+YEAR_DIGITS = 16
+INSTANT_YEAR_DIGITS = YEAR_DIGITS + 1
+TIME_PATTERN = "^[+-][0-9]{4,%d}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$" % YEAR_DIGITS
+INSTANT_PATTERN = "^[+-][0-9]{4,%d}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$" % INSTANT_YEAR_DIGITS
 
 
 # ------------------------------------------------------------------------------------------------ helpers
@@ -181,8 +187,7 @@ def _record() -> dict[str, Any]:
         "semver": pat(SEMVER),
         "versioned_id": pat("^[^\\s\\x00-\\x1f\\x7f/]{1,256}/(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"),
         "timestamp": pat("^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"),
-        "instant": X({"type": "KHG-C010", "pattern": "KHG-C011"},
-                     {"type": "string", "pattern": "^[+-][0-9]{4,}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"}),
+        "instant": X({"type": "KHG-C010", "pattern": "KHG-C011"}, {"type": "string", "pattern": INSTANT_PATTERN}),
         "sha256": pat("^sha256:[0-9a-f]{64}$"),
         "decimal": X({"type": "KHG-C011", "pattern": "KHG-C004"},
                      {"type": "string", "pattern": "^(\\+0|[+-](0\\.[0-9]*[1-9]|[1-9][0-9]*(\\.[0-9]*[1-9])?))$"}),
@@ -279,8 +284,7 @@ def _record() -> dict[str, Any]:
             "allOf": [
                 iff({"datatype": {"const": "time"}}, ["datatype"], {
                     "required": ["datatype", "time", "precision"], "additionalProperties": False,
-                    "properties": {"datatype": {}, "time": {"type": "string", "pattern":
-                                                            "^[+-][0-9]{4,}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"},
+                    "properties": {"datatype": {}, "time": {"type": "string", "pattern": TIME_PATTERN},
                                    "precision": {"type": "integer", "minimum": 0, "maximum": 14},
                                    "calendar": {"enum": ["gregorian", "julian"]}}}),
                 iff({"datatype": {"const": "quantity"}}, ["datatype"], {

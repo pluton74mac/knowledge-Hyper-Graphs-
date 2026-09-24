@@ -39,7 +39,8 @@ headline, and ``acc_lenient``, the ``lenient`` preset's headline); the rates of 
 questions, the stale rate split into ``expired`` and ``revised``; abstention precision and recall are over the
 unanswerable ones. Also reported: set P/R/F1 against V_cur, ranked efficacy (CounterFact's ES on ``value_scores``)
 and ``support_success@k`` against the current support. A question's ``tolerance {"amount": d}`` lets a quantity
-answer within ``d`` of a gold quantity of the same unit match it (R05 M-M8).
+answer within ``d`` of a gold quantity of the same unit match it (R05 M-M8), unless the answer equals a gold value of
+V_cur, V_old or V_fut, which it then matches alone.
 """
 from __future__ import annotations
 
@@ -373,6 +374,10 @@ def _quantity(value: Mapping[str, Any]) -> tuple[Decimal, str] | None:
     return None
 
 
+#: The gold sets that decide an outcome; a disputed value is counted in ``hits`` but never changes the outcome.
+_OUTCOME_SETS = ("current", "expired", "revised", "future")
+
+
 def _hits(key: str, value: Mapping[str, Any], gold: Mapping[str, Mapping[str, Any]],
           tolerance: Decimal | None) -> list[str]:
     """The gold values an answered value matches: by identity, or a quantity of the same unit within the tolerance."""
@@ -401,7 +406,11 @@ def classify(answered: Sequence[tuple[str, Mapping[str, Any]]], abstained: bool,
     flag, ``gold`` a ``read_gold`` dict and ``tolerance`` a quantity tolerance. Returns ``{outcome, strict, lenient,
     stale_kind, hits, set}``: ``hits`` counts the gold values met per set (``current``, ``expired``, ``revised``,
     ``future``, ``disputed``) and the answered values that meet none (``other``); ``set`` is P/R/F1 of Â against
-    V_cur (None for an abstention or an unanswerable question). A disputed value never changes the outcome."""
+    V_cur (None for an abstention or an unanswerable question). A disputed value never changes the outcome.
+
+    Identity comes first: an answered value equal to a value of V_cur, V_old or V_fut matches by identity only, and
+    the tolerance reaches only the answered values that equal none of them. So a tolerance never makes an exact
+    current answer hedged, nor gives an exact stale answer lenient credit."""
     sets = {"current": _index(gold["answer"]["values"]),
             "expired": _index(s["value"] for s in gold["stale_values"] if s["kind"] == "expired"),
             "revised": _index(s["value"] for s in gold["stale_values"] if s["kind"] == "revised"),
@@ -410,7 +419,8 @@ def classify(answered: Sequence[tuple[str, Mapping[str, Any]]], abstained: bool,
     hit: dict[str, set[str]] = {name: set() for name in sets}
     matched = other = 0
     for k in sorted(distinct):
-        got = {name: _hits(k, distinct[k], members, tolerance) for name, members in sets.items()}
+        near = None if any(k in sets[name] for name in _OUTCOME_SETS) else tolerance
+        got = {name: _hits(k, distinct[k], members, near) for name, members in sets.items()}
         for name, found in got.items():
             hit[name].update(found)
         matched += bool(got["current"])

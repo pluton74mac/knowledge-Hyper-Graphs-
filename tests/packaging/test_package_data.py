@@ -129,13 +129,16 @@ def test_the_registry_and_the_case_list_as_the_design_counts_them():
     assert len(ids) == 114 and all(f"scenarios/{i}.json" in FILES for i in ids)
 
 
-def test_codes_named_in_the_package_source_are_registered_or_planned():
+def test_codes_named_in_the_package_source_are_active():
+    """Reserved codes are never emitted (§8.1) and planned codes are not registered until they ship (§12.2), so every
+    code the package source names is an active one. The malformed cases check what they reach; this also covers the
+    linter, the store, the loaders, the scorers and migrate (a planned or reserved code passed before)."""
     reg = data.load_json("error-codes.json")
-    known = {c["code"] for c in reg["codes"]} | {p["code"] for p in reg["planned"]}
+    active = {c["code"] for c in reg["codes"] if c["status"] == "active"}
     src = Path(jsonio.__file__).resolve().parent
     used = {}
     for p in sorted(src.rglob("*.py")):
         for code in re.findall(r"KHG-[A-Z][0-9]{3}", p.read_text(encoding="utf-8")):
             used.setdefault(code, p.name)
     assert used, "the scan found no code at all"
-    assert {c: f for c, f in used.items() if c not in known} == {}
+    assert {c: f for c, f in used.items() if c not in active} == {}

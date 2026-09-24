@@ -9,11 +9,13 @@ the outcomes against the reference probe's output when the checkout has it.
 from __future__ import annotations
 
 import copy
+from decimal import Decimal
 from typing import Any
 
 import pytest
 
 from khg_contracts import data
+from khg_contracts.record import identity_key
 from khg_contracts.scorers import Bootstrap, memory
 
 LINES = data.load_jsonl("fixture/c4-items.jsonl")
@@ -180,6 +182,50 @@ def test_m8_temporal_tolerance(fixture_schema):
                    "mq:m8") == ("current", 1, 1)
     far = {"literal": {"datatype": "quantity", "amount": "+20", "unit": "1"}}
     assert outcome(one([tolerant], [response("mq:m8", far)], [tr], fixture_schema), "mq:m8")[0] == "wrong"
+
+
+def quantity(amount: str) -> dict[str, Any]:
+    return {"literal": {"datatype": "quantity", "amount": amount, "unit": "1"}}
+
+
+def test_m8_a_tolerance_never_blurs_an_exact_answer(fixture_schema):
+    """Łódź's population is corrected from 19 to 18 (a supersede for a correction): V_cur {18}, revised {19}. With a
+    tolerance of 1, an answer equal to a gold value matches that value alone, so 18 stays current and 19 stale, as
+    without the tolerance (both were hedged: strict 0, lenient 1). An answer equal to no gold value still gets the
+    tolerance (review f-scorers-06)."""
+    def pop(fid: str, amount: str) -> dict[str, Any]:
+        f = rec("f:pop-łódź-2019", id=fid, evidence=copy.deepcopy(EVIDENCE))
+        f["bindings"][2]["value"] = quantity(amount)
+        return f
+
+    tr = trace("t:pop2", ["ex:Łódź"], ("put", [pop("f:p19", "+19")]),
+               ("apply", {"op": "supersede", "id": "m:sup-p", "superseded": ["f:p19"], "records": [pop("f:p18", "+18")],
+                          "reason": "correction", "evidence": EVIDENCE}))
+    q = question("mq:pop", tr, "population", LODZ, "quantity", schema=fixture_schema)
+    assert q["answer"]["values"] == [quantity("+18")]
+    assert q["stale_values"] == [{"value": quantity("+19"), "kind": "revised"}]
+    tolerant = dict(q, tolerance={"amount": "+1"})
+    for item, amount, want in ((q, "+18", ("current", 1, 1)), (tolerant, "+18", ("current", 1, 1)),
+                               (q, "+19", ("stale", 0, 0)), (tolerant, "+19", ("stale", 0, 0)),
+                               (tolerant, "+17", ("current", 1, 1)), (tolerant, "+20", ("stale", 0, 0))):
+        rep = one([item], [response("mq:pop", quantity(amount))], [tr], fixture_schema)
+        assert outcome(rep, "mq:pop") == want, (amount, "tolerance" in item)
+    rep = one([tolerant], [response("mq:pop", quantity("+19"))], [tr], fixture_schema)
+    assert rep["items"]["mq:pop"]["stale_kind"] == "revised"
+    assert rep["items"]["mq:pop"]["hits"] == {"current": 0, "expired": 0, "revised": 1, "future": 0, "disputed": 0,
+                                              "other": 0}
+
+
+def test_a_disputed_value_still_never_changes_the_outcome_under_a_tolerance():
+    """An answer equal to a disputed value only is no exact gold answer: the tolerance still reaches V_cur, so the
+    outcome is the one without the disputed value (current here)."""
+    gold = {"answer": {"values": [quantity("+18")]}, "stale_values": [], "future_values": [],
+            "disputed_values": [quantity("+19")], "answerable": True}
+    answered = [(identity_key(quantity("+19")), quantity("+19"))]
+    with_dispute = memory.classify(answered, False, gold, tolerance=Decimal(1))
+    without = memory.classify(answered, False, dict(gold, disputed_values=[]), tolerance=Decimal(1))
+    assert with_dispute["outcome"] == without["outcome"] == "current"
+    assert with_dispute["hits"]["disputed"] == 1
 
 
 def test_the_outcomes_agree_with_the_reference_probe(reference, fixture_schema):

@@ -20,7 +20,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from ..schema.codegen import TAG, X, absolutise, iff, propagate, render
+from ..schema.codegen import TAG, X, absolutise, end_anchors, iff, propagate, render
 from . import model as M
 
 __all__ = ["FILE_NAME", "build", "main", "write"]
@@ -75,9 +75,9 @@ def _definitions() -> dict[str, Any]:
         "additionalProperties": False,
         "properties": {
             "kind": {"const": "queue-header"},
-            "format": _pat("^khg-queue/(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"),
+            "format": _pat("^khg-queue/" + _SEMVER[1:]),
             "queue_id": _pat(M.QUEUE_ID_PATTERN),
-            "record_format": _pat("^khg-record/1\\.0\\.(0|[1-9][0-9]*)$"),
+            "record_format": _pat("^khg-record/" + _SEMVER[1:]),  # which versions a reader takes is V001's
             "schema": {"type": "object", "required": ["id", "version", "sha256"], "additionalProperties": False,
                        "properties": {"id": _text(), "version": _pat(_SEMVER), "sha256": _local("sha256")}},
             "base": {"type": "object", "required": ["document_id", "sha256"], "additionalProperties": False,
@@ -164,7 +164,8 @@ def _definitions() -> dict[str, Any]:
 
 
 def build() -> dict[str, Any]:
-    """The queue schema (absolute ``$ref``s, codes propagated), as packaged."""
+    """The queue schema (absolute ``$ref``s, codes propagated, every pattern ending in ``schema.codegen.END``), as
+    packaged."""
     schema = X({"default": "KHG-Q008", "required": "KHG-Q003"}, {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "$id": M.SCHEMA_ID,
@@ -181,6 +182,7 @@ def build() -> dict[str, Any]:
     })
     absolutise(schema, schema["$id"])
     propagate(schema)
+    end_anchors(schema)  # "$" would also match before a final newline
     return schema
 
 

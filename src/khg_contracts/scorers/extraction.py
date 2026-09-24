@@ -8,10 +8,11 @@ A run is ``(run_id, order_id)``; every run is scored against every gold document
   value under the literal rule).
 - **E-M2 core**: the same on the distinct cores, the core-slot bindings (``core_roles="slot"``, which is
   ``core_key`` equality under ``literal_match="exact"``) or the declared key roles (``"key"``).
-- **E-M3 alignment**: one 1:1 alignment per document maximising w = (N+1)·ν + β within a relation, with ν the shared
-  values (role ignored), β the shared bindings and N the largest binding count; the Hungarian solver breaks ties by
-  lexicographic fact ids. **E-M4 Arg-I** = Σν and **E-M5 Arg-C** = Σβ over the alignment, against all predicted and
-  all gold bindings. **E-M6 role accuracy** = ΣArg-C/ΣArg-I.
+- **E-M3 alignment**: one 1:1 alignment per document within a relation, on values, then bindings: the largest Σν,
+  then the largest Σβ, with ν the shared values (role ignored) and β the shared bindings (the pair weight
+  w = M·ν + β, with M above any alignment's Σβ); the Hungarian solver breaks the remaining ties by lexicographic fact
+  ids. **E-M4 Arg-I** = Σν and **E-M5 Arg-C** = Σβ over the alignment, against all predicted and all gold bindings.
+  **E-M6 role accuracy** = ΣArg-C/ΣArg-I.
 - **E-M7 pooled** bindings (relation, role, position, value) per document and the grouping gap F1(pooled) − F1(Arg-C);
   **E-M8 pairwise** role-typed binding pairs; **E-M9 participant sets** (value multisets, relation and roles
   ignored); **E-M10** the arity profile; **E-M11 Ign** (with ``seen`` core keys).
@@ -32,7 +33,7 @@ from ..errors import ValidationError, make_finding
 from ..record import arity_bin
 from . import _inputs, hungarian
 from ._common import as_schema, count_matching, fnum, mean, prf, prf_split, report, sort_key
-from ._facts import Binding, Fact, Matcher, entity_index, prepare
+from ._facts import Binding, Fact, Matcher, entity_index, item_entities, prepare
 from .bootstrap import Bootstrap, interval
 
 __all__ = ["ExtractionConfig", "PRESETS", "score"]
@@ -141,10 +142,15 @@ def _distinct(items: list[tuple[Any, Any]]) -> list[Any]:
 
 
 def _alignment(preds: list[Fact], golds: list[Fact], m: Matcher) -> list[tuple[int, int, int, int]]:
-    """The E-M3 alignment: ``(pred index, gold index, ν, β)`` for each aligned pair."""
+    """The E-M3 alignment: ``(pred index, gold index, ν, β)`` for each aligned pair.
+
+    The weight of a pair is w = M·ν + β. M exceeds the Σβ of any alignment (β ≤ the bindings of either fact, so
+    Σβ ≤ min(Σ|B_p|, Σ|B_g|)), which makes the maximum ΣW lexicographic over the document's totals: the largest Σν,
+    then the largest Σβ, then the solver's id tie-break. R05's M = N + 1 orders one pair by ν, then β, but a sum of
+    β over several pairs can outweigh a unit of ν, and a qid then decided between (Σν, Σβ) = (3, 3) and (4, 0)."""
     if not preds or not golds:
         return []
-    big = 1 + max(len(f.bindings) for f in preds + golds)
+    big = 1 + min(sum(len(f.bindings) for f in preds), sum(len(f.bindings) for f in golds))
     nu: dict[tuple[int, int], int] = {}
     beta: dict[tuple[int, int], int] = {}
     w = []
@@ -433,19 +439,25 @@ def score(gold: Iterable[Mapping[str, Any]], predictions: Iterable[Mapping[str, 
     m = Matcher(config.literal_match, config.calendar)
     docs, headers = _inputs.check_items(gold, kinds=("c4-extraction-doc",))
     preds = _inputs.predictions(predictions)
-    entities = entity_index([e for d in docs for e in d.get("entities", [])]
-                            + [e for p in preds for e in p.entities])
+    entities = entity_index([e for d in docs for e in d.get("entities", [])])  # the gold's records only
     gold_by_doc, raw_gold, n_gold_dup = _read_gold(docs, s, entities, config)
     runs = sorted({(p.run_id, p.order_id) for p in preds}, key=lambda r: (sort_key(r[0]), sort_key(r[1])))
     runs = runs or [(None, None)]
     by_unit: dict[tuple[Any, Any, str], list[Fact]] = {}
     unscored: Counter = Counter()
+    unreadable: list[dict[str, Any]] = []
     for p in preds:
         if p.doc_id not in gold_by_doc:
             unscored[p.doc_id] += 1
             continue
-        by_unit.setdefault((p.run_id, p.order_id, p.doc_id), []).append(
-            prepare(p.record, s, entities, fid=p.pid, core_roles=config.core_roles))
+        try:
+            fact = prepare(p.record, s, item_entities(p, entities), fid=p.pid, core_roles=config.core_roles)
+        except ValidationError as e:  # located at the prediction's line
+            unreadable += _inputs.located(e, p.path)
+            continue
+        by_unit.setdefault((p.run_id, p.order_id, p.doc_id), []).append(fact)
+    if unreadable:
+        raise ValidationError.from_findings(unreadable)
     total, ign_total = _Counts(), _Counts()
     per_doc: dict[str, list[Any]] = {d: [] for d in gold_by_doc}
     per_run: dict[tuple[Any, Any], _Counts] = {r: _Counts() for r in runs}

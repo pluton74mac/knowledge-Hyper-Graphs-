@@ -7,6 +7,7 @@ is ``{ok, findings, decisions, store}``.
 from __future__ import annotations
 
 import copy
+import importlib
 
 import pytest
 
@@ -168,3 +169,73 @@ def test_the_factory_builds_the_store_on_a_clock_before_the_first_accept(smoke, 
     built.clear()
     assert replay(late, schema=schema, factory=factory, base=base)["ok"]
     assert built == ["2026-10-01T00:00:06.999999Z"]
+
+
+# ------------------------------------------------------------------------------------------------ review fixes
+
+Y0 = "0000-01-01T00:00:00Z"  # the first instant a queue timestamp names
+
+
+def test_an_accept_at_the_first_instant_of_year_0_replays(smoke, schema, base):
+    """The base load is never put before year 0, which no timestamp can name (it raised ``ValueError``)."""
+    from khg_contracts.queue import Linter, make_candidate
+    from khg_contracts.validate import validate_queue
+
+    entities = [r for r in base["records"] if r["id"] in ("ex:LouisXIV", "ex:KingOfFrance", "ex:LouisXIII")]
+    q = Queue.create(smoke.path(), queue_id="p2-smoke", schema=schema, created_at=Y0)  # no base
+    qid = q.submit(make_candidate(smoke.king14, queue_id="p2-smoke", seq=1, schema=schema), run=smoke.RUN,
+                   doc=smoke.DOC, submitted_by=smoke.SUBMITTED_BY, entities=entities, at=Y0)
+    assert Linter(schema).lint(q, qid, at=Y0)["outcome"] == "pass"
+    q.accept(qid, store=MemoryStore(schema, clock=ScenarioClock(Y0)), id="f:king-14", actor="curator:smoke",
+             reason=smoke.REASON, at=Y0)
+    assert validate_queue(q, schema=schema) == {"ok": True, "findings": []}
+    result = replay(q, schema=schema, factory=memory_factory)
+    assert result["ok"] and result["store"].get("f:king-14")["recorded_at"] == Y0
+    # with a base, the load and the accept then share that instant: a finding on the accept, not an exception
+    lines = data.load_jsonl(SMOKE)
+    lines[3]["at"] = Y0
+    assert [c for c, _ in _codes(replay(lines, schema=schema, factory=memory_factory, base=base))] == ["KHG-Q006"]
+
+
+@pytest.mark.parametrize("depth", [300, 600])
+def test_lines_in_memory_get_the_nesting_limit_of_a_file(tmp_path, schema, base, depth):
+    """Lines given as objects are J001 beyond layer J's 256 levels, as the same lines in a file are (they were
+    replayed at 300 levels and raised ``RecursionError`` at 600)."""
+    from khg_contracts.validate import ENGINES, validate
+
+    nested: list = []
+    for _ in range(depth - 1):  # built without recursion: an empty list inside depth - 1 lists
+        nested = [nested]
+    lines = data.load_jsonl(SMOKE)
+    lines[1]["payload"]["extensions"] = {"ex:x": nested}
+    raised = []
+    for source in (lines, _write(tmp_path, lines)):
+        with pytest.raises(ValidationError) as exc:
+            replay(source, schema=schema, factory=memory_factory, base=base)
+        raised.append([(f["code"], f["path"]) for f in exc.value.info["findings"]])
+    assert raised[0] == raised[1] and raised[0][0][0] == "KHG-J001"
+    assert raised[0][0][1].startswith("/lines/1/payload/extensions/ex:x/0/0/")
+    for engine in ENGINES:
+        assert [(f["code"], f["path"]) for f in validate(lines, kind="queue", schema=schema, bases=[base],
+                                                          engine=engine)["findings"]] == raised[0]
+
+
+@pytest.mark.parametrize("where", ["record", "put"])
+def test_a_recursion_error_in_a_replayed_accept_is_q006(monkeypatch, schema, base, where):
+    """Python's recursion limit, met while the accepted record is built or written, is a Q006 finding on the
+    accept, as a store error is (it propagated from ``replay`` and from layer Q)."""
+    replay_module = importlib.import_module("khg_contracts.queue.replay")  # the package exports the function
+
+    def deep(*args, **kwargs):
+        raise RecursionError("maximum recursion depth exceeded")
+
+    class Deep(MemoryStore):
+        def put(self, *args, **kwargs):
+            return deep()
+
+    if where == "record":
+        monkeypatch.setattr(replay_module, "accepted_record", deep)
+    factory = memory_factory if where == "record" else (lambda s, clock: Deep(s, clock=clock))
+    result = replay(data.path(SMOKE), schema=schema, factory=factory, base=base)
+    assert _codes(result) == [("KHG-Q006", "/lines/3")] and result["decisions"] == []
+    assert "maximum recursion depth exceeded" in result["findings"][0]["message"]

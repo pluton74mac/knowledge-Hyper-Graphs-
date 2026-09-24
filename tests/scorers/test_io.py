@@ -9,8 +9,14 @@ import pytest
 
 from khg_contracts import data
 from khg_contracts.errors import ValidationError
-from khg_contracts.scorers import _inputs, completion, extraction, retrieval
+from khg_contracts.scorers import _inputs, completion, extraction, retrieval, stability
 from khg_contracts.scorers.bootstrap import Bootstrap
+
+NO_BOOT = extraction.ExtractionConfig(bootstrap=Bootstrap(resamples=0))
+EXTRACTED = {"id": "e1", "type": "extracted", "mode": "automatic",
+             "source": {"doc_id": "d1", "doc_sha256": "sha256:" + "0" * 64},
+             "selectors": [{"type": "position", "start": 0, "end": 3}],
+             "activity": {"agent": "tests", "agent_version": "0", "model": "none", "run_id": "run-1"}}
 
 
 @pytest.fixture(scope="module")
@@ -113,15 +119,127 @@ def test_extraction_outputs(build, r05_schema):
     with pytest.raises(ValidationError) as e:  # a bare hyperedge must name its document through its evidence
         extraction.score([doc], [rec], schema=r05_schema, config=config)
     assert e.value.codes == ("KHG-C010",)
-    named = dict(rec, evidence=[{"id": "e1", "type": "extracted", "mode": "automatic",
-                                 "source": {"doc_id": "d1", "doc_sha256": "sha256:" + "0" * 64}}])
+    extracted = {"id": "e1", "type": "extracted", "mode": "automatic",
+                 "source": {"doc_id": "d1", "doc_sha256": "sha256:" + "0" * 64},
+                 "selectors": [{"type": "position", "start": 0, "end": 3}],
+                 "activity": {"agent": "tests", "agent_version": "0", "model": "none", "run_id": "run-1"}}
+    named = dict(rec, evidence=[extracted])
     agg = extraction.score([doc], [named], schema=r05_schema, config=config)["aggregate"]
     assert agg["strict"]["tp"] == 1 and agg["n_runs"] == 1
+    # a bare hyperedge is a C1 hyperedge, checked by layer C: extracted evidence needs its selectors and activity
+    sketchy = dict(rec, evidence=[{k: v for k, v in extracted.items() if k not in ("selectors", "activity")}])
+    with pytest.raises(ValidationError) as e:
+        extraction.score([doc], [sketchy], schema=r05_schema, config=config)
+    assert e.value.codes == ("KHG-C007",) and e.value.info["findings"][0]["path"] == "/lines/0/evidence/0"
     bad_payload = build.items(rec)
     bad_payload["payload"]["bindings"][0]["value"] = {"entity": "t:a", "literal": {}}
     with pytest.raises(ValidationError) as e:
         extraction.score([doc], [bad_payload], schema=r05_schema, config=config)
-    assert e.value.codes == ("KHG-C001",)
+    # layer C on the payload, as validate_queue reports it: two keys (C001) and an incomplete literal (C004)
+    assert [(f["code"], f["path"]) for f in e.value.info["findings"]] == [
+        ("KHG-C001", "/lines/0/payload/bindings/0/value"), ("KHG-C004", "/lines/0/payload/bindings/0/value/literal")]
+
+
+MALFORMED = [  # (name, patch of the predicted hyperedge, code, path in the hyperedge)
+    ("relation is a list", lambda p: p.update(relation=[]), "KHG-C010", "/relation"),
+    ("no relation", lambda p: p.pop("relation"), "KHG-C010", ""),
+    ("bindings is a number", lambda p: p.update(bindings=5), "KHG-C010", "/bindings"),
+    ("no bindings", lambda p: p.pop("bindings"), "KHG-C010", ""),
+    ("no binding", lambda p: p.update(bindings=[]), "KHG-S007", "/bindings"),
+    ("a binding is a number", lambda p: p["bindings"].__setitem__(0, 7), "KHG-C010", "/bindings/0"),
+    ("a role is a list", lambda p: p["bindings"][0].update(role=[]), "KHG-C010", "/bindings/0/role"),
+    ("a binding without its value", lambda p: p["bindings"][0].pop("value"), "KHG-C010", "/bindings/0"),
+    ("a goal", lambda p: p.update(status="goal"), "KHG-C010", "/status"),
+    ("an undeclared relation", lambda p: p.update(relation="nope"), "KHG-S001", "/relation"),
+]
+
+
+@pytest.mark.parametrize("patch, code, path", [m[1:] for m in MALFORMED], ids=[m[0] for m in MALFORMED])
+def test_a_malformed_prediction_is_a_validation_error(build, r05_schema, patch, code, path):
+    """A malformed predicted hyperedge, in a queue item or bare, raises ``ValidationError`` in both scorers, with
+    the code layer C or S gives it (``validate_queue`` reports the same on a payload) at its line. It used to escape
+    as KeyError, TypeError or a bare ValueError, or to be scored (review f-scorers-08, X-03)."""
+    rec = build.fact("f1", "s", A="a", B="b")
+    gold = [build.doc("d1", [rec])]
+    item = build.items(rec)
+    patch(item["payload"])
+    bare = copy.deepcopy(dict(rec, evidence=[EXTRACTED]))
+    patch(bare)
+    scorers = {"extraction": lambda items: extraction.score(gold, items, schema=r05_schema, config=NO_BOOT),
+               "stability": lambda items: stability.score(items, schema=r05_schema)}
+    for items, where in (([item], "/lines/0/payload"), ([bare], "/lines/0")):
+        for scorer, call in scorers.items():
+            with pytest.raises(ValidationError) as e:
+                call(items)
+            found = [(f["code"], f["path"]) for f in e.value.info["findings"]]
+            assert (code, where + path) in found, (scorer, where, found)
+            assert all(p.startswith(where) for _, p in found), (scorer, where, found)
+
+
+def _route(**changes):
+    """The fixture's ordered route (stops at positions 1, 2 and 3), without its version fields."""
+    fixture = {r["id"]: r for r in data.load_json("fixture/fixture.c1.json")["records"] if "id" in r}
+    out = copy.deepcopy({k: v for k, v in fixture["f:route-1"].items()
+                         if k not in ("version", "recorded_at", "recorded_by")})
+    out.update(changes)
+    return out
+
+
+def test_an_ordered_role_without_a_position_is_s015(build, fixture_schema):
+    """One stop of the ordered route without its position: layer C accepts it, the scorers cannot order it. S015 at
+    the prediction's line, and I003 with S015 nested in gold (it was a TypeError; review f-scorers-08)."""
+    good = _route(id="g1")
+    bad = _route(id="p1")
+    del bad["bindings"][2]["position"]
+    assert "position" not in bad["bindings"][2] and bad["bindings"][2]["role"] == "stop"
+    items = [build.items(bad)]
+    for call in (lambda: extraction.score([build.doc("d1", [good])], items, schema=fixture_schema, config=NO_BOOT),
+                 lambda: stability.score(items, schema=fixture_schema)):
+        with pytest.raises(ValidationError) as e:
+            call()
+        assert e.value.codes == ("KHG-S015",) and e.value.info["findings"][0]["path"] == "/lines/0/payload"
+    for call in (lambda: extraction.score([build.doc("d1", [dict(bad, id="g1")])], [], schema=fixture_schema,
+                                          config=NO_BOOT),
+                 lambda: stability.score([], schema=fixture_schema, gold=[build.doc("d1", [dict(bad, id="g1")])])):
+        with pytest.raises(ValidationError) as e:
+            call()
+        (f,) = e.value.info["findings"]
+        assert (f["code"], f["path"], f["nested"]["code"]) == ("KHG-I003", "/docs/0/gold/0", "KHG-S015")
+
+
+def test_a_goal_in_the_gold_is_i003(build, r05_schema):
+    """The draft lets a goal into an extraction document's gold, but it is no fact to score: I003 with C010 nested
+    (it was a bare ValueError; review f-scorers-08)."""
+    goal = dict(build.fact("g1", "s", A="a", B="b"), status="goal")
+    gold = [build.doc("d1", [goal])]
+    assert _inputs.c4_findings(gold[0]) == []
+    for call in (lambda: extraction.score(gold, [], schema=r05_schema, config=NO_BOOT),
+                 lambda: stability.score([], schema=r05_schema, gold=gold)):
+        with pytest.raises(ValidationError) as e:
+            call()
+        (f,) = e.value.info["findings"]
+        assert (f["code"], f["path"]) == ("KHG-I003", "/docs/0/gold/0")
+        assert (f["nested"]["code"], f["nested"]["path"]) == ("KHG-C010", "/status")
+
+
+def test_a_value_without_an_identity_is_located(build):
+    """A year 0 passes the value patterns but has no identity (S006). In a question's gold it is I003 at the value,
+    with S006 nested (as the memory scorer reports it); in a response, S006 at the response's value. Both used to
+    raise S006 at the path '' (review f-scorers-08)."""
+    year0 = {"literal": {"datatype": "time", "time": "+0000-01-01T00:00:00Z", "precision": 9,
+                         "calendar": "gregorian"}}
+    config = retrieval.RetrievalConfig(bootstrap=Bootstrap(resamples=0))
+    q = build.question("q1", [["h1"]], answer={"values": [year0]})
+    assert _inputs.c4_findings(q) == []
+    with pytest.raises(ValidationError) as e:
+        retrieval.score([q], [build.response("q1", ["h1"])], config=config)
+    (f,) = e.value.info["findings"]
+    assert (f["code"], f["path"], f["nested"]["code"]) == ("KHG-I003", "/questions/0/answer/values/0", "KHG-S006")
+    fine = build.question("q1", [["h1"]], answer={"values": [{"entity": "t:x"}]})
+    wrong = build.response("q1", ["h1"], answer={"values": [{"entity": "t:x"}, year0], "abstained": False})
+    with pytest.raises(ValidationError) as e:
+        retrieval.score([fine], [build.response("q0", ["h1"]), wrong], config=config)
+    assert e.value.codes == ("KHG-S006",) and e.value.info["findings"][0]["path"] == "/lines/1/answer/values/1"
 
 
 def test_rank_stats_writes_valid_records(c4_items, fixture_schema):

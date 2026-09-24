@@ -49,7 +49,8 @@ PR, and we ask one question about repeated incidences.
 ## Why
 
 - **The paper's own example.** "{"edge": 1, "node": 3, "attrs": {"role": "PI"}} might indicate node 3's role as a
-  PI on project 1" (Coll et al. 2025, *Network Science* 13, e21, p. 7; https://doi.org/10.1017/nws.2025.10018).
+  PI on project 1" (Coll et al. 2025, arXiv:2507.11520v2, p. 7; published in *Network Science* 13, e21,
+  https://doi.org/10.1017/nws.2025.10018). Page numbers here are those of the arXiv v2 PDF.
 - **The repository's own compliant test.** `tests/test_files/HIF-compliant/single_incidence_with_attrs.json` holds
   `{"edge": "abcd", "node": 42, "attrs": {"role": "PI", "age": 42}}` (added in 6fe88e9).
 - **The group's rule.** On #21 the group kept structural fields (node, edge, weight, direction) apart from everything
@@ -58,7 +59,7 @@ PR, and we ask one question about repeated incidences.
 - **Our use.** We store n-ary facts (knowledge hypergraphs) as HIF, where each participant has a role:
   `regulates(regulator: TP53, target: TP53, context: HeLa)`, a flight route with ordered stops, a marriage with two
   spouses. Without a shared convention, a reader cannot tell our `role` from any other `role` key, and the libraries
-  do not keep it (see "Evidence").
+  do not keep it reliably: XGI drops it, and HyperNetX keeps it but collapses repeated pairs (see "Evidence").
 
 ## The convention (`role-convention` 1.0.0)
 
@@ -124,10 +125,10 @@ file). Records in and out:
 
 | File | XGI | HyperNetX |
 |---|---|---|
-| `tail-head` above (3 records) | `DiHypergraph`; 3 → 3; 0 of 3 roles kept | 3 → 2: the repeated pair collapsed; `role-convention` metadata lost; `default_attrs` added; its own output cannot be read back and written again (`None`) |
-| `ordered` above (4 records) | 4 → 3: the repeated pair collapsed; 0 of 4 roles kept | 4 → 3 |
+| `tail-head` above (3 records) | `DiHypergraph`; 3 → 3; 0 of 3 roles kept | 3 → 2: the repeated pair collapsed; 2 of 3 roles kept; `role-convention` metadata lost; `default_attrs` added; its own output cannot be read back and written again (`None`) |
+| `ordered` above (4 records) | 4 → 3: the repeated pair collapsed; 0 of 4 roles kept | 4 → 3; 3 of 4 roles kept |
 | our 59-incidence test file, 52 incidences with a direction | `Hypergraph`; 59 → 56; 0 of 59 roles kept | `to_hif` returns `None` |
-| its directed slice (52 records) | `DiHypergraph`; 52 → 51; 0 of 52 roles kept | 52 → 50; all 12 metadata keys lost; `None` on the second round |
+| its directed slice (52 records) | `DiHypergraph`; 52 → 51; 0 of 52 roles kept | 52 → 50; 50 of 52 roles kept; all 12 metadata keys lost; `None` on the second round |
 
 We are raising these with the XGI and HyperNetX maintainers and will link those issues here. Our own loaders build
 the library objects through their public constructors and round-trip all five fixture files exactly through both

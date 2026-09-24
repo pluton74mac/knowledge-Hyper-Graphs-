@@ -212,8 +212,9 @@ def test_the_draft_names_i001_i002_and_i004():
     assert findings(lines(lambda x: x[3].update(kind="c4-trivia"))) == [("KHG-I001", "/lines/3/kind", None)]
     assert findings(lines(lambda x: x[9].pop("kind"))) == [("KHG-I002", "/lines/9", None)]
     assert findings(lines(lambda x: x[MQ].pop("future_values"))) == [("KHG-I004", f"/lines/{MQ}", None)]
-    # the packaged draft maps any missing required field of a memory question to I004 (W11a notes)
-    assert findings(lines(lambda x: x[MQ].pop("text"))) == [("KHG-I004", f"/lines/{MQ}", None)]
+    # director's ruling 7: I004 is only a memory question without stale_values or future_values; any other missing
+    # required field, such as text, is I002 (this supersedes observation 2 of the W11a notes)
+    assert findings(lines(lambda x: x[MQ].pop("text"))) == [("KHG-I002", f"/lines/{MQ}", None)]
 
 
 def test_fastjsonschema_stops_at_the_first_fault_of_a_line():

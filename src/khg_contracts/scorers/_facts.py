@@ -1,7 +1,9 @@
 """Facts prepared for scoring, and value matching (DESIGN §9.1).
 
 - Entities match by id after following ``redirect_to`` (``record.resolve_redirects``) over the entity records the
-  inputs carry.
+  inputs carry: gold values over the gold documents' records, a prediction's values over its own queue item's
+  records first, then the gold's (``item_entities``; the order of DESIGN §7). One item's or run's records never
+  change another's values.
 - Literals match under ``truncate_to_gold`` (value refinement, a prediction at least as precise as the gold and
   inside its window, whatever the calendars) or ``exact`` (value identity). With ``calendar="as_written"`` a
   predicted date is read in the gold's calendar before it is compared.
@@ -11,10 +13,12 @@ A fact's bindings are its content bindings (core, qualifier and time), each with
 """
 from __future__ import annotations
 
+from collections import ChainMap
 from dataclasses import dataclass
 from typing import Any, Iterable, Mapping
 
 from .. import jsonio
+from ..errors import ValidationError, make_finding
 from ..record import (
     binding_sort_key,
     canonical_literal,
@@ -30,7 +34,7 @@ from ..record import (
 from ..schema import Schema
 from ._common import arity_pair
 
-__all__ = ["Binding", "Fact", "Matcher", "entity_index", "prepare"]
+__all__ = ["Binding", "Fact", "Matcher", "entity_index", "item_entities", "prepare"]
 
 LITERAL_MATCHES = ("truncate_to_gold", "exact")
 CALENDARS = ("strict", "as_written")
@@ -80,6 +84,13 @@ def entity_index(records: Iterable[Mapping[str, Any]]) -> dict[str, Mapping[str,
     return out
 
 
+def item_entities(prediction: Any, gold: dict[str, Mapping[str, Any]]) -> Mapping[str, Mapping[str, Any]]:
+    """The entity records a prediction's values resolve through: those of its own queue item first, then the gold
+    documents' (``gold``, an ``entity_index``). A bare hyperedge carries none, so it resolves through the gold's."""
+    own = entity_index(prediction.entities)
+    return ChainMap(own, gold) if own else gold
+
+
 def _redirected(record: Mapping[str, Any], entities: Mapping[str, Mapping[str, Any]]) -> dict[str, Any]:
     out = dict(record)
     bs = []
@@ -94,18 +105,55 @@ def _redirected(record: Mapping[str, Any], entities: Mapping[str, Mapping[str, A
     return out
 
 
+def _integral(x: Any) -> int | None:
+    """An integer, or an integral float (``2.0`` is ``2``, as layer S reads positions); None otherwise."""
+    if isinstance(x, bool):
+        return None
+    if isinstance(x, int):
+        return x
+    return int(x) if isinstance(x, float) and x.is_integer() else None
+
+
+def _shape_findings(record: Mapping[str, Any], schema: Schema) -> list[dict[str, Any]]:
+    """The S findings without which a fact cannot be read, as layer S reports them (paths relative to the record):
+    S007 a hyperedge without a binding; S015 an ordered role whose positions are not 1..n, or an unordered role
+    with positions (a binding without its position cannot be ordered, or compared with one that has it)."""
+    bindings = [b for b in record.get("bindings") or [] if isinstance(b, Mapping)]
+    if not bindings:
+        return [make_finding("KHG-S007", "/bindings", "a hyperedge needs at least one binding")]
+    out = []
+    for u in schema.usages(record["relation"]):
+        bs = [b for b in bindings if b.get("role") == u["role"]]
+        if u.get("ordered"):
+            positions = [_integral(b.get("position")) for b in bs]
+            if None in positions or sorted(positions) != list(range(1, len(bs) + 1)):  # type: ignore[type-var]
+                out.append(make_finding("KHG-S015", "", f"the positions of {u['role']!r} are not 1..{len(bs)}"))
+        elif any("position" in b for b in bs):
+            out.append(make_finding("KHG-S015", "", f"{u['role']!r} is not ordered: no positions"))
+    return out
+
+
 def prepare(record: Mapping[str, Any], schema: Schema, entities: Mapping[str, Mapping[str, Any]], *,
             fid: str | None = None, core_roles: str = "slot") -> Fact:
     """A hyperedge as a ``Fact``: redirected entity values, content bindings in canonical order, the core set
     (``core_roles="slot"``: the core slot; ``"key"``: the relation's key roles, else the core slot), the keys and
-    both arities. Raises ``ValidationError`` (C and S codes) on a malformed record."""
+    both arities. Raises ``ValidationError`` on a record it cannot read, with paths relative to the record: C010
+    for a goal (goals are not scored), S001 and S002 for an undeclared relation or role, S007 and S015 (see
+    ``_shape_findings``), and the C and S codes of a malformed value."""
     if not isinstance(record, Mapping) or record.get("kind") != "hyperedge":
         raise ValueError("a scored fact is a C1 hyperedge record")
     if record.get("status") == "goal":
-        raise ValueError(f"{record.get('id')!r}: goals are not scored")
+        raise ValidationError.from_findings([make_finding("KHG-C010", "/status", f"{record.get('id')!r} is a goal: "
+                                                                                 "goals are not scored")])
     r = _redirected(record, entities)
     rel = r["relation"]
-    bs = sorted(content_bindings(r, schema), key=binding_sort_key)
+    schema.relation(rel)  # S001 first, as layer S checks it
+    shape = _shape_findings(r, schema)
+    if shape and shape[0]["code"] == "KHG-S007":
+        raise ValidationError.from_findings(shape)
+    bs = sorted(content_bindings(r, schema), key=binding_sort_key)  # S002 for an undeclared role
+    if shape:
+        raise ValidationError.from_findings(shape)
     prepared = tuple(Binding(b["role"], b.get("position"), canonical_value(b["value"]), value_kind(b["value"]),
                              identity_key(b["value"])) for b in bs)
     if core_roles == "key" and schema.key(rel):

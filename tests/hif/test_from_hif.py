@@ -136,6 +136,27 @@ def test_weights_merge_with_khg_extensions(full, schema):
     assert b3["extensions"] == {"ex:curation": {"checked": True, "by": ["curator:a", "curator:b"]}, "hif:weight": 1}
 
 
+@pytest.mark.parametrize("engine", ["jsonschema", "fastjsonschema"])
+def test_an_integral_float_role_position_decodes_as_its_integer(full, schema, engine):
+    """F10 (§2.1: 2.0 is 2), as layer R reads a role-position: a file that differs from the fixture only by
+    ``role-position: 2.0`` has the fixture's canonical JSON, and decodes to the fixture's container with the integer
+    position. Decoding copied the float, which layer S then refused (S015) and ``validate_container`` too."""
+    from khg_contracts.validate import validate_container, validate_hif
+    h = copy.deepcopy(full)
+    _incidence(h, "f:route-1", "b3")["attrs"]["role-position"] = 2.0
+    assert _same(h, full)
+    back = hif.from_hif(h, schema)
+    b3 = next(b for b in {r["id"]: r for r in back["records"]}["f:route-1"]["bindings"] if b["bid"] == "b3")
+    assert b3["position"] == 2 and type(b3["position"]) is int
+    assert _same(back, hif.from_hif(full, schema)) and back == hif.from_hif(full, schema)
+    container, findings = hif.decode(h, schema)
+    assert findings == [] and type(next(b for r in container["records"] if r["id"] == "f:route-1"
+                                        for b in r["bindings"] if b["bid"] == "b3")["position"]) is int
+    assert validate_container(back, schema=schema, engine=engine)["ok"]
+    assert validate_hif(h, schema=schema, engine=engine)["findings"] == \
+        validate_hif(full, schema=schema, engine=engine)["findings"]
+
+
 def test_an_empty_extensions_object_round_trips(c1, schema):
     c = copy.deepcopy(c1)
     c["records"][0]["extensions"] = {}

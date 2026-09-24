@@ -13,10 +13,12 @@ support is a list of alternative sets S_i):
   units point at (``bids``; a ``hyperedge`` unit without ``bids`` covers all its bindings).
 
 Answers: in ``single`` mode, EM on value identity (the first answer value), then SQuAD-normalised text EM and token
-F1; in ``set`` mode, set P, R, F1 and EM. Claimed support gets P, R, F1 and EM against its best set; joint scores
-multiply answer and support P and R; ``gated_em`` needs R-precision 1. Abstention precision and recall are over
-the unanswerable questions. Cost: mean, median, p90 and p95 (nearest rank) and total of every cost field, and the
-answer EM reached within cumulative token budgets.
+F1; in ``set`` mode, set P, R, F1 (when the gold has values, or no text) and EM. A missing response, an abstention or
+an answer without text scores 0 against a gold text, as a missing value answer does. Claimed support gets P, R, F1
+and EM against its best set; joint scores multiply answer and support P and R; ``gated_em`` needs R-precision 1.
+Abstention precision and recall are over the unanswerable questions. Cost: mean, median, p90 and p95 (nearest rank)
+and total of every cost field, and the answer EM reached within cumulative token budgets, over every answerable
+question.
 """
 from __future__ import annotations
 
@@ -178,33 +180,48 @@ def _ranking(q: Mapping[str, Any], r: Mapping[str, Any] | None, config: Retrieva
 # ------------------------------------------------------------------------------------------------ answers
 
 
-def _ids(values: Iterable[Mapping[str, Any]], entities: Mapping[str, Mapping[str, Any]]) -> list[str]:
+def _ids(values: Iterable[Mapping[str, Any]], entities: Mapping[str, Mapping[str, Any]], path: str, *,
+         gold: bool) -> list[str]:
+    """The identity keys of values, entities after their redirects. A value whose identity cannot be computed (a
+    year 0 is S006) raises ``ValidationError`` at ``path``/k: I003 with the finding nested for a gold value, which is
+    embedded in a C4 item, and the finding's own code for a response's value."""
     out = []
-    for v in values:
+    for k, v in enumerate(values):
         if set(v) == {"entity"} and entities:
             v = {"entity": resolve_redirects(v["entity"], entities)}
-        out.append(identity_key(v))
+        try:
+            out.append(identity_key(v))
+        except ValidationError as e:
+            where = f"{path}/{k}"
+            raise (_inputs.embedded_error(e, where) if gold
+                   else ValidationError.from_findings(_inputs.located(e, where))) from None
     return out
 
 
 def _answer(q: Mapping[str, Any], r: Mapping[str, Any] | None, mode: str,
-            entities: Mapping[str, Mapping[str, Any]]) -> dict[str, Any]:
-    gold_ids = _ids(q["answer"]["values"], entities)
+            entities: Mapping[str, Mapping[str, Any]], qpath: str, rpath: str) -> dict[str, Any]:
+    gold_ids = _ids(q["answer"]["values"], entities, f"{qpath}/answer/values", gold=True)
     ans = r["answer"] if r is not None else {"values": [], "abstained": False}
-    got = [] if ans["abstained"] else _ids(ans["values"], entities)
+    got = [] if ans["abstained"] else _ids(ans["values"], entities, f"{rpath}/answer/values", gold=False)
     out: dict[str, Any] = {"abstained": bool(ans["abstained"]), "text_em": None, "token_f1": None}
     gold_text, text = q["answer"].get("text"), ans.get("text")
     if gold_text is not None and text is not None and not ans["abstained"]:
         tf = token_f1(text, gold_text)
         out["text_em"] = Fraction(int(normalize_answer(text) == normalize_answer(gold_text)))
         out["token_f1"], out["token_p"], out["token_r"] = tf["f1"], tf["p"], tf["r"]
+    elif gold_text is not None:  # no response, an abstention or no text scores 0, as a missing value answer does
+        zero = Fraction(0)
+        out["text_em"] = out["token_f1"] = out["token_p"] = out["token_r"] = zero
     if mode == "set":
-        tp = len(set(got) & set(gold_ids))
-        s = prf_split(tp, len(set(got)), tp, len(set(gold_ids)))
-        out.update(set_p=s["p"], set_r=s["r"], set_f1=s["f1"], set_flag=s["flag"],
-                   value_em=Fraction(int(set(got) == set(gold_ids))) if gold_ids else None)
+        s = None
+        if gold_ids or gold_text is None:  # text-only gold has no value set to compare with
+            tp = len(set(got) & set(gold_ids))
+            s = prf_split(tp, len(set(got)), tp, len(set(gold_ids)))
+            out.update(set_p=s["p"], set_r=s["r"], set_f1=s["f1"], set_flag=s["flag"])
+        out["value_em"] = Fraction(int(set(got) == set(gold_ids))) if gold_ids else None
         out["em"] = out["value_em"] if gold_ids else out["text_em"]
-        out["answer_p"], out["answer_r"] = (s["p"], s["r"]) if gold_ids else (out.get("token_p"), out.get("token_r"))
+        out["answer_p"], out["answer_r"] = (s["p"], s["r"]) if gold_ids and s is not None else \
+            (out.get("token_p"), out.get("token_r"))
     else:
         out["value_em"] = Fraction(int(bool(got) and got[0] in gold_ids)) if gold_ids else None
         out["em"] = out["value_em"] if gold_ids else out["text_em"]
@@ -246,17 +263,19 @@ def _cost_stats(values: list[float]) -> dict[str, Any]:
 
 def _budget(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Answer EM reached within cumulative token budgets (critique CONS-07): the questions in input order, each
-    spending its prompt and completion tokens; a question counts when the running total, itself included, stays
-    within the budget. The budgets are tenths of the total; the denominator is every answerable question."""
+    response spending its prompt and completion tokens; a question counts when the running total, itself included,
+    stays within the budget. A question without a response spends nothing and is never answered. The budgets are
+    tenths of the total; the denominator is every answerable question, with or without a response."""
     n_answerable = sum(1 for r in rows if r["answerable"])
-    if not rows or not n_answerable:
+    spent = [r for r in rows if not r["missing"]]
+    if not spent or not n_answerable:
         return []
-    total = sum(r["tokens"] for r in rows)
+    total = sum(r["tokens"] for r in spent)
     out = []
     for step in range(1, BUDGET_STEPS + 1):
         limit = math.ceil(Fraction(total * step, BUDGET_STEPS))
         run, correct, answered = 0, Fraction(0), 0
-        for r in rows:
+        for r in spent:
             run += r["tokens"]
             if run > limit:
                 break
@@ -303,11 +322,13 @@ def score(questions: Iterable[Mapping[str, Any]], responses: Iterable[Mapping[st
     qs, headers = _inputs.check_items(questions, kinds=("c4-retrieval-question",))
     recs = _inputs.check_outputs(responses, kind="retrieval-response")
     by_qid: dict[str, dict[str, Any]] = {}
+    line_of: dict[str, int] = {}
     for n, r in enumerate(recs):
         if r["qid"] in by_qid:
             raise ValidationError.from_findings([make_finding("KHG-C010", f"/lines/{n}/qid",
                                                               f"two retrieval responses for {r['qid']!r}")])
         by_qid[r["qid"]] = r
+        line_of[r["qid"]] = n
     edges, entities = _facts(facts)
     rows: list[dict[str, Any]] = []
     qids: set[str] = set()
@@ -324,7 +345,8 @@ def score(questions: Iterable[Mapping[str, Any]], responses: Iterable[Mapping[st
         if ranking is not None:
             row.update(ranking)
         row["has_support"] = ranking is not None
-        ans = _answer(q, r, config.answer_mode, entities)
+        ans = _answer(q, r, config.answer_mode, entities, f"/questions/{n}",
+                      f"/lines/{line_of[q['qid']]}" if r is not None else "")
         row.update(ans)
         sup = _support(q, r) if ranking is not None else None
         if sup is not None:
@@ -374,7 +396,7 @@ def score(questions: Iterable[Mapping[str, Any]], responses: Iterable[Mapping[st
         if vals:
             cost[f] = _cost_stats([float(v) for v in vals])
     cost["price_tables"] = sorted({r["cost"]["price_table"] for r in recs if "price_table" in r.get("cost", {})})
-    cost["budget_curve"] = _budget([r for r in rows if not r["missing"]])
+    cost["budget_curve"] = _budget(rows)
     aggregate["cost"] = cost
     breakdowns = {}
     for key in ("hops", "type", "source_class"):

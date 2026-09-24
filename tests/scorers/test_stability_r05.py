@@ -4,7 +4,10 @@ from __future__ import annotations
 
 from fractions import Fraction as F
 
-from khg_contracts.scorers import stability
+import pytest
+
+from khg_contracts.errors import ValidationError
+from khg_contracts.scorers import extraction, stability
 
 
 def run_items(build, run, order, labels, doc_id="d1"):
@@ -74,6 +77,32 @@ def test_s4_gold_partition(build, r05_schema):
     part = rep["aggregate"]["content_key"]["gold_partition"]
     assert part == {"stable": float(F(1, 3)), "unstable": float(F(1, 3)), "miss": float(F(1, 3)), "n_gold": 3}
     assert rep["config"]["qset"] == ["r05"]
+
+
+def test_without_any_unit_the_gold_partition_is_undefined(build, r05_schema):
+    """No queue item at all (K = 0): "found by every unit" holds vacuously, so S-M5 gives no shares instead of calling
+    every gold fact stable; one unit that extracted another document still misses them (review f-scorers-07)."""
+    gold = [build.doc("d1", [build.fact("g1", "s", A="g1"), build.fact("g2", "s", A="g2")])]
+    rep = stability.score([], schema=r05_schema, gold=gold)
+    assert rep["aggregate"]["n_units"] == 0
+    for key in ("content_key", "core_key"):
+        assert rep["aggregate"][key]["gold_partition"] == {"stable": None, "unstable": None, "miss": None,
+                                                           "n_gold": 2}
+    elsewhere = run_items(build, "r1", "o1", "x", "d9")
+    part = stability.score(elsewhere, schema=r05_schema, gold=gold)["aggregate"]["content_key"]["gold_partition"]
+    assert part == {"stable": 0.0, "unstable": 0.0, "miss": 1.0, "n_gold": 2}
+
+
+def test_a_repeated_doc_id_is_i002_as_in_extraction(build, r05_schema):
+    """Two gold documents d1: stability kept the second's gold for depends_on and counted both in the partition;
+    it now refuses them as extraction does (review f-scorers-13)."""
+    gold =[build.doc("d1", [build.fact("g1", "s", A="g1")]), build.doc("d1", [build.fact("g2", "s", A="g2")])]
+    items = run_items(build, "r1", "o1", ["g1"])
+    for call in (lambda: stability.score(items, schema=r05_schema, gold=gold),
+                 lambda: extraction.score(gold, items, schema=r05_schema)):
+        with pytest.raises(ValidationError) as e:
+            call()
+        assert e.value.codes == ("KHG-I002",) and e.value.info["findings"][0]["path"] == "/docs/1/doc_id"
 
 
 def test_the_expected_values_are_the_probe_values(reference):

@@ -5,6 +5,7 @@ records alone: shuffling a file and ordering it again gives the file back.
 """
 from __future__ import annotations
 
+import copy
 import random
 
 import pytest
@@ -49,6 +50,25 @@ def test_incidences_follow_the_canonical_binding_order():
     assert keys == sorted(keys)
     names = [i for i in station if i["attrs"]["role"] == "name"]  # one role, ordered by the literal's value
     assert [nodes[i["node"]]["attrs"]["label"] for i in names] == ["Tokyo Station@en", "東京駅@ja"]
+
+
+def test_an_incidence_of_an_entity_the_file_does_not_declare_sorts_by_its_entity_value(c1, schema):
+    """A container that is not complete may name an entity it does not hold. ``to_hif`` writes that incidence with
+    the entity id as its node and no node record, in canonical binding order by the entity value; the recomputed
+    order must agree (it read the value as null, which sorts first, so the loaders reordered an edit-free round
+    trip)."""
+    c = copy.deepcopy(c1)
+    del c["header"]["complete"]
+    c["records"] = [r for r in c["records"] if r.get("id") != "ex:metformin"]
+    h = hif.to_hif(c, schema)
+    assert "ex:metformin" not in {n["node"] for n in h["nodes"]}
+    assert [(i["node"], i["attrs"]["khg-bid"]) for i in h["incidences"] if i["edge"] == "f:coadmin-1"] == [
+        ("ex:insulin", "b1"), ("ex:metformin", "b2"), ("ex:hypoglycaemia", "b3")]
+    assert hif.canonical_order(h) == h
+    nodes = {n["node"]: n for n in h["nodes"]}
+    inc = next(i for i in h["incidences"] if i["node"] == "ex:metformin")
+    declared = {**nodes, "ex:metformin": {"node": "ex:metformin", "attrs": {"khg-kind": "entity"}}}
+    assert hif.incidence_sort_key(inc, nodes) == hif.incidence_sort_key(inc, declared)
 
 
 def test_node_value_reads_every_kind():

@@ -11,6 +11,7 @@ import contextlib
 import json
 import os
 import secrets
+import stat
 from typing import Any, Iterable, Mapping
 
 from ... import __version__
@@ -75,8 +76,9 @@ def to_json(report: Mapping[str, Any]) -> str:
 
 
 def write_report(report: Mapping[str, Any], path: Any) -> None:
-    """Write ``to_json(report)`` to ``path`` (UTF-8), replacing the file atomically; the file gets the permissions
-    the umask allows."""
+    """Write ``to_json(report)`` to ``path`` (UTF-8), replacing the file atomically. The file gets the permissions
+    the umask allows, or keeps the mode of an existing regular file at ``path``, as ``khg-conformance --report``
+    does (``cli._staged``)."""
     text = to_json(report)
     target = os.fspath(path)
     # open(..., "x"), not tempfile.mkstemp, whose mode 0600 would survive the rename (as in cli._write_file)
@@ -85,6 +87,13 @@ def write_report(report: Mapping[str, Any], path: Any) -> None:
     try:
         with fh:
             fh.write(text)
+        try:
+            st = os.stat(target)
+        except FileNotFoundError:
+            pass
+        else:
+            if stat.S_ISREG(st.st_mode):  # a private or read-only report stays so, as under shell redirection
+                os.chmod(tmp, stat.S_IMODE(st.st_mode))
         os.replace(tmp, target)
     except BaseException:
         with contextlib.suppress(OSError):

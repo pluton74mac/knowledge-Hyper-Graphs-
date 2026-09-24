@@ -29,11 +29,13 @@ def _sources(paths: Any) -> list[Any]:
     raise TypeError(f"queue_items takes queue paths, not {type(paths).__name__}")
 
 
-def _event_hashes(item: Mapping[str, Any]) -> list[Any]:
+def _event_hashes(item: Mapping[str, Any]) -> list[str]:
+    """The event hashes of the payload's extracted and inferred evidence. The queue schema leaves the payload to
+    layer C, so a hash that is not a string (C010 there) is skipped here: it names no event."""
     payload = item.get("payload")
     evidence = payload.get("evidence") if isinstance(payload, Mapping) else None
-    return [e.get("event_hash") for e in evidence if isinstance(e, Mapping) and e.get("type") in EVENT_TYPES] \
-        if isinstance(evidence, list) else []
+    return [e["event_hash"] for e in evidence if isinstance(e, Mapping) and e.get("type") in EVENT_TYPES
+            and isinstance(e.get("event_hash"), str)] if isinstance(evidence, list) else []
 
 
 def _verdict_key(entry: Mapping[str, Any]) -> tuple[Any, Any]:

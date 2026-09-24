@@ -19,7 +19,9 @@ pins exactly the indexed paths of the patch; every unpatched base validates with
 
 **Coverage and engines.** Every active code of layers J to I is listed by a case, except D019 (S-PUT-006 covers it),
 and each is detected; no case yields a reserved, planned or unregistered code. fastjsonschema rejects every case at
-the same step, with codes contained in jsonschema's: exactly one code, or, on a Python step, the same codes.
+the same step, with codes contained in jsonschema's: exactly one error finding at a schema step (H, P, C, I), the
+same codes at a Python step, and one code or the same codes at M and Q, which add Python checks to a schema. The
+fastjsonschema runs are checked to be fastjsonschema runs: they pass again while jsonschema refuses to run.
 """
 from __future__ import annotations
 
@@ -64,6 +66,9 @@ IDENTITY = {"records": lambda x: x.get("id") if x.get("version") is None else [x
 PER_LAYER = {"J": 8, "V": 2, "H": 15, "R": 6, "P": 24, "D": 30, "C": 20, "S": 34, "M": 19, "Q": 17, "I": 5}
 #: The steps that are Python checks only: both engines report the same findings there.
 PYTHON_STEPS = {"j", "v", "r", "d_decode", "d_container", "s"}
+#: The schema steps, where fastjsonschema, which stops at its first error, reports exactly one error finding on a
+#: single-fault case (§8.1). M and Q run Python checks beside their schema, which may report one fault twice.
+SCHEMA_STEPS = {"h", "p", "c", "i"}
 
 
 # ------------------------------------------------------------------------------------------------ the harness
@@ -278,7 +283,9 @@ def test_the_first_rejecting_step_reports_the_recorded_codes(case_id):
 @pytest.mark.parametrize("case_id", IDS)
 def test_single_fault_engine_containment(case_id):
     """fastjsonschema stops at its first error: at the same first rejecting step and layer, its codes are among
-    jsonschema's, and it names exactly one code, except on a Python step, where both engines report the same codes."""
+    jsonschema's. At a schema step it reports exactly one error finding (§8.1: "exactly one code at the first
+    rejecting step"; jsonschema may report the fault twice), at a Python step both engines report the same codes,
+    and at M and Q one code or the same codes."""
     full, fast = report(case_id), report(case_id, "fastjsonschema")
     assert fast.first_layer == full.first_layer == BY_ID[case_id]["layer"]
     assert fast.first_rejecting_step == full.first_rejecting_step
@@ -287,6 +294,43 @@ def test_single_fault_engine_containment(case_id):
     assert len(fast_codes) == 1 or fast_codes == full_codes
     if full.first_rejecting_step in PYTHON_STEPS:
         assert fast_codes == full_codes
+    if full.first_rejecting_step in SCHEMA_STEPS:
+        assert len([f for f in fast.until_first_rejection() if f["severity"] == "error"]) == 1
+
+
+def test_the_fastjsonschema_runs_do_not_run_jsonschema(monkeypatch):
+    """The containment above holds as well when a layer quietly runs jsonschema for fastjsonschema (a layer that
+    stopped passing ``engine`` on): its codes are then trivially contained. So every case runs again with
+    fastjsonschema while jsonschema refuses to compile a packaged schema or to run the relation-schema meta-schema,
+    and each report must equal the fastjsonschema report above."""
+    from khg_contracts.schema import checks as schema_checks
+    from khg_contracts.validate import engines
+
+    prepared = {}
+    for case_id in IDS:  # outside the guard: a schema argument is loaded, and checked, with jsonschema
+        obj, schema, texts = inputs(BY_ID[case_id])
+        prepared[case_id] = (obj, load_schema(schema) if isinstance(schema, dict) else schema, texts)
+    expected = {case_id: report(case_id, "fastjsonschema") for case_id in IDS}
+    ran: list[str] = []
+
+    def refused(what: str) -> None:
+        ran.append(what)
+        raise RuntimeError(f"jsonschema ran during a fastjsonschema run ({what})")
+
+    meta = schema_checks._meta_runner
+    monkeypatch.setattr(engines, "_jsonschema", lambda root_uri: refused(root_uri))
+    monkeypatch.setattr(schema_checks, "_meta_runner",
+                        lambda engine: refused("the meta-schema") if engine == "jsonschema" else meta(engine))
+    engines.compile_schema.cache_clear()  # the runners compiled so far include jsonschema's
+    try:
+        for case_id in IDS:
+            obj, schema, texts = prepared[case_id]
+            rep = run(obj, kind=KIND[BY_ID[case_id]["kind"]], schema=schema, doc_texts=texts, bases=QUEUE_BASE,
+                      engine="fastjsonschema")
+            assert (rep.findings, rep.skipped) == (expected[case_id].findings, []), case_id
+    finally:
+        engines.compile_schema.cache_clear()
+    assert ran == []
 
 
 # ------------------------------------------------------------------------------------------------ coverage

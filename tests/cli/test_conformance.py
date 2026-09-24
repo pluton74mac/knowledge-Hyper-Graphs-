@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import json
+import os
+import stat
 import sys
 import types
 
@@ -185,3 +187,23 @@ def test_an_unwritable_report_exits_2(tmp_path, capsys):
     assert cli.conformance_main(["--factory", "khg_contracts.store:memory_factory", "--only", "S-PUT-001",
                                  "--report", str(path)]) == 2
     assert capsys.readouterr().err.splitlines()[0] == f"khg-conformance: cannot write {path}: No such file or directory"
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="a closed pipe is EPIPE on POSIX")
+def test_a_closed_standard_output_exits_2(run_cli):
+    """``khg-conformance ... | true``: every scenario passed, but the report could not be written, an I/O error
+    (it was a ``BrokenPipeError`` traceback and 1, which reads as a failing store)."""
+    r = run_cli("khg-conformance", "--factory", "khg_contracts.store:memory_factory", "--only", "S-PUT-*",
+                closed_stdout=True)
+    assert r.returncode == 2 and "Traceback" not in r.stderr
+    assert r.stderr.endswith("khg-conformance: cannot write the standard output: Broken pipe\n")
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX file modes")
+def test_an_existing_report_keeps_its_mode(tmp_path):
+    path = tmp_path / "earl.json"
+    path.write_text("{}\n", encoding="utf-8")
+    path.chmod(0o600)
+    assert cli.conformance_main(["--factory", "khg_contracts.store:memory_factory", "--only", "S-PUT-001",
+                                 "--report", str(path)]) == 0
+    assert stat.S_IMODE(path.stat().st_mode) == 0o600 and json.loads(path.read_text(encoding="utf-8"))["@graph"]

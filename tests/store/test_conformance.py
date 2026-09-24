@@ -196,6 +196,27 @@ def test_the_written_report_gets_the_mode_the_umask_allows(tmp_path, umask, mode
     assert [p.name for p in tmp_path.iterdir()] == ["earl.json"]
 
 
+@pytest.mark.skipif(os.name != "posix", reason="POSIX file modes")
+@pytest.mark.parametrize("mode", [0o600, 0o640, 0o444], ids=["0600", "0640", "0444"])
+def test_an_existing_report_keeps_its_mode(tmp_path, mode):
+    """Review integration (CLI-FILE-MODE, group ex's request): as ``khg-conformance --report`` now does, replacing a
+    report keeps its mode; a new report gets the umask's."""
+    report = conformance.run(memory_factory, only="S-EXP-001")
+    path = tmp_path / "earl.json"
+    path.write_text("{}", encoding="utf-8")
+    path.chmod(mode)
+    old = os.umask(0o022)
+    try:
+        conformance.write_report(report, path)
+        conformance.write_report(report, tmp_path / "new.json")
+    finally:
+        os.umask(old)
+    assert stat.S_IMODE(path.stat().st_mode) == mode
+    assert path.read_text(encoding="utf-8") == conformance.to_json(report)
+    assert stat.S_IMODE((tmp_path / "new.json").stat().st_mode) == 0o644
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["earl.json", "new.json"]
+
+
 def test_a_failed_report_write_keeps_the_old_file_and_leaves_no_temporary_file(tmp_path, monkeypatch):
     report = conformance.run(memory_factory, only="S-EXP-001")
     path = tmp_path / "earl.json"

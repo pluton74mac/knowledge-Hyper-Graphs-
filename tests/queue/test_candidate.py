@@ -90,3 +90,16 @@ def test_what_make_candidate_refuses(king14, schema):
     no_evidence = copy.deepcopy(king14)
     del no_evidence["evidence"]
     assert "evidence" not in make_candidate(no_evidence, queue_id="p2-smoke", seq=1, schema=schema)  # Q001 later
+
+
+@pytest.mark.parametrize("evidence", [5, 2.5, True])
+def test_evidence_that_is_not_a_list_is_left_to_the_checks(smoke, evidence):
+    """A payload is not validated here (the linter does that), so evidence that is not a list comes through as it is
+    and ``submit`` refuses it with the queue schema's Q001. It raised ``TypeError`` (not iterable)."""
+    record = dict(copy.deepcopy(smoke.king14), evidence=evidence)
+    q = smoke.create()
+    cand = make_candidate(record, queue_id=q.queue_id, seq=1, schema=smoke.schema)
+    assert cand["evidence"] == evidence and cand["id"] == "cand:p2-smoke.000001"
+    with pytest.raises(ValidationError) as exc:
+        smoke.submit(q, cand)
+    assert "KHG-Q001" in exc.value.codes and q.qids == ()

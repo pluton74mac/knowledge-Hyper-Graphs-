@@ -8,12 +8,12 @@ features a document uses). V001 otherwise, and a V finding stops the run:
 | container | ``header.format`` | ``khg-record/1.0.x`` |
 | hif | ``metadata["khg-profile"]`` and ``["khg-record"]``, when present | ``khg-hif/1.0.x``, ``khg-record/1.0.x`` |
 | schema | ``format`` | ``khg-relation-schema/1.0.x`` |
-| queue | the ``format`` of a ``queue-header`` line 0 | ``khg-queue/1.0.x`` |
+| queue | ``format`` and ``record_format`` of a ``queue-header`` line 0 | ``khg-queue/1.0.x``, ``khg-record/1.0.x`` |
 | item | the ``format`` of a ``c4-header`` line 0 | ``khg-c4-items/0.0.x`` and ``0.1.x`` |
 
-A HIF file without ``khg-profile`` passes V; layer P reports P001. A single record and a role-convention file have
-no format id. ``detect_kind`` picks the kind of an input for ``kind="auto"``; the runner reports V001 when it
-cannot tell.
+A queue header without ``record_format`` passes V (the queue schema's Q008 reports it), and a HIF file without
+``khg-profile`` passes V (layer P reports P001). A single record and a role-convention file have no format id.
+``detect_kind`` picks the kind of an input for ``kind="auto"``; the runner reports V001 when it cannot tell.
 """
 from __future__ import annotations
 
@@ -70,9 +70,15 @@ def run(ctx: Context) -> list[Finding]:
         return schema_version_findings(doc)
     if kind == "queue":
         h = _line0(doc)
-        if h.get("kind") == "queue-header" and not gate(h.get("format"), "khg-queue", 1, 0):
-            return [_v001("/lines/0/format", h.get("format"), "khg-queue/1.0.0")]
-        return []
+        if h.get("kind") != "queue-header":
+            return []
+        out = []
+        if not gate(h.get("format"), "khg-queue", 1, 0):
+            out.append(_v001("/lines/0/format", h.get("format"), "khg-queue/1.0.0"))
+        # the stamp of the payloads, when the header has one (a missing one is the queue schema's Q008)
+        if "record_format" in h and not gate(h["record_format"], "khg-record", 1, 0):
+            out.append(_v001("/lines/0/record_format", h["record_format"], "khg-record/1.0.0"))
+        return out
     if kind == "item":
         h = _line0(doc)
         if h.get("kind") == "c4-header" and not gate(h.get("format"), "khg-c4-items", 0, 1):

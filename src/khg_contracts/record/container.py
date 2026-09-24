@@ -15,6 +15,7 @@ import contextlib
 import hashlib
 import os
 import secrets
+import stat
 from typing import Any, Iterator, Mapping
 
 from .. import jsonio
@@ -135,8 +136,9 @@ def write_container(container: Mapping[str, Any], path: Any, *, format: str | No
     """Write a container in canonical order after the V and C checks (``ValidationError`` with V001 or C codes, and
     J005 for a lone surrogate, which UTF-8 cannot hold; nothing is written then). The suffix of ``path`` names the
     layout (``.json`` or ``.jsonl``; any other suffix is ``ValueError``); ``format`` (``"jsonl"`` or ``"json"``)
-    may restate it, and a ``format`` the suffix does not name is ``ValueError``. The file is replaced atomically and
-    gets the permissions the umask allows."""
+    may restate it, and a ``format`` the suffix does not name is ``ValueError``. The file is replaced atomically. It
+    gets the permissions the umask allows, or keeps the mode of an existing regular file at ``path``, as the CLI's
+    outputs do (``cli._staged``)."""
     implied = _format_of(path)
     if format is not None and format not in FORMATS:
         raise ValueError(f"format must be one of {FORMATS}, not {format!r}")
@@ -153,11 +155,23 @@ def write_container(container: Mapping[str, Any], path: Any, *, format: str | No
     try:
         with fh:
             fh.write(data)
+        _keep_mode(tmp, target)
         os.replace(tmp, target)
     except BaseException:
         with contextlib.suppress(OSError):
             os.remove(tmp)
         raise
+
+
+def _keep_mode(tmp: str, target: str) -> None:
+    """Give ``tmp`` the mode of an existing regular file at ``target`` (a private or read-only file stays so, as
+    under shell redirection); a new file keeps the umask's mode."""
+    try:
+        st = os.stat(target)
+    except FileNotFoundError:
+        return
+    if stat.S_ISREG(st.st_mode):
+        os.chmod(tmp, stat.S_IMODE(st.st_mode))
 
 
 def container_sha256(container: Mapping[str, Any]) -> str:

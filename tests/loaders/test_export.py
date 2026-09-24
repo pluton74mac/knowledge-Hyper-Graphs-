@@ -294,6 +294,34 @@ def test_a_move_whose_node_map_is_not_injective_raises(full):
     assert report["stale"] == []
 
 
+def _by_edge(moves: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return sorted(moves, key=lambda m: (m["edge"], m["bid"]))
+
+
+@pytest.mark.parametrize("names, conflicts", [
+    ({"ex:Paris": "ex:Kraków"},
+     [{"edge": "f:born-louis14-paris", "bid": "b2", "from": "ex:Paris", "to": "ex:Kraków"}]),
+    ({"ex:HeLa": "ex:X", "ex:insulin": "ex:X"},
+     [{"edge": "f:coadmin-1", "bid": "b1", "from": "ex:insulin", "to": "ex:X"},
+      {"edge": "f:reg-1", "bid": "b1", "from": "ex:HeLa", "to": "ex:X"}]),
+], ids=["onto-an-existing-node", "two-nodes-into-one"])
+def test_a_collapse_across_edges_raises(full, names, conflicts):
+    """§5: a moved record passes only when the old-to-new node map is injective; a collapse raises. Here the merged
+    records sit in different edges, so no edge repeats a bid and only the node map catches the collapse (the test
+    above is also caught by the repeated bid). ``strict=False`` exports the moved records as the library holds them
+    and reports them (W7: only a record repeating a bid another cell carries is not exported)."""
+    b = loaders.load_hnx(full)
+    b.graph.rename(nodes=names)
+    report = _strict_refusal(b)
+    assert _by_edge(report["moved_conflict"]) == conflicts and _by_edge(report["moved"]) == conflicts
+    assert report["stale"] == report["unlabelled"] == []
+    out = loaders.export_hnx(b, strict=False)
+    assert _by_edge(b.report["moved_conflict"]) == conflicts and _by_edge(b.report["moved"]) == conflicts
+    for move in conflicts:
+        assert [i["node"] for i in _incidences(out, move["edge"]) if i["attrs"]["khg-bid"] == move["bid"]] == \
+            [move["to"]]
+
+
 def test_an_injective_rename_is_moved_not_raised(full):
     b = loaders.load_hnx(full)
     b.graph.rename(nodes={"ex:insulin": "ex:insulin-glargine"})
@@ -343,6 +371,18 @@ def test_profile_files_export_in_the_section_4_2_order_whatever_the_input_order(
     out = EXPORT[lib](LOAD[lib](shuffled))
     assert out == full and jsonio.canonical(out) == jsonio.canonical(full)
     assert out == hif.canonical_order(shuffled)
+
+
+@pytest.mark.parametrize("lib", LIBS)
+def test_an_edit_free_round_trip_keeps_the_order_of_an_entity_the_file_does_not_declare(c1, schema, lib):
+    """``to_hif`` of a container that is not complete and names an entity it does not hold (valid C1): the node has
+    no record, and the recomputed §4.2 order must place its incidence as ``to_hif`` did (it came first)."""
+    c = copy.deepcopy(c1)
+    del c["header"]["complete"]
+    c["records"] = [r for r in c["records"] if r.get("id") != "ex:metformin"]
+    h = hif.to_hif(c, schema)
+    b = LOAD[lib](h)
+    assert EXPORT[lib](b) == h and not any(b.report.values())
 
 
 @pytest.mark.parametrize("lib", LIBS)

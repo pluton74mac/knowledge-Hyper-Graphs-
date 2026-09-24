@@ -2,8 +2,12 @@
 
 A queue file is append-only JSONL, one per (run, order): line 1 is the ``queue-header``, then ``queue-item`` and
 ``log-entry`` lines in append order, each one canonical JSON object. Items are never edited; an item's state is a
-fold over its entries. There is one appender at a time, and every actor appends through a handle, which refuses to
-append (``ConcurrencyError``) when the file changed since the handle last read or wrote it.
+fold over its entries. There is one appender at a time (DESIGN §14 ruling 5), and every actor appends through a
+handle. A handle appends under an exclusive lock on the file, and refuses (``ConcurrencyError``) when another handle
+holds the lock or when the file changed since the handle last read or wrote it (checked under the lock). ``accept``
+holds the lock from that check through its write to the store, so a second appender is refused before the store is
+touched. The lock is ``fcntl.flock`` on the queue file where the platform and the file system have it (the system
+releases it when the process ends), else the exclusive creation of ``<queue file>.lock``, removed after the append.
 
 - ``Queue.create(path, *, queue_id, schema, base=None, created_at=None)`` writes the header: the schema pin and, with
   a base container, its ``document_id`` and ``record.container_sha256``. An existing file is refused.
@@ -21,9 +25,15 @@ the others ``automatic``. ``at`` defaults to the system clock (RFC 3339 UTC).
 """
 from __future__ import annotations
 
+import contextlib
 import copy
 import os
-from typing import Any, Iterable, Mapping
+from typing import Any, Iterable, Iterator, Mapping
+
+try:
+    import fcntl
+except ImportError:  # pragma: no cover - Windows: the lock is the sidecar file
+    fcntl = None  # type: ignore[assignment]
 
 from .. import jsonio
 from ..errors import ConcurrencyError, KHGError, ValidationError, make_finding
@@ -32,11 +42,10 @@ from ..schema import Schema, load_schema
 from ..store.clocks import SystemClock
 from ..validate.layers import c as layer_c
 from ..validate.layers.j import is_path
-from ..validate.layers.v import gate
 from . import model as M
 from .checks import base_findings, cand_findings, item_keys, pin_findings, verdict_findings
 from .decision import accepted_record, decision_hash, read_versions, written_versions
-from .fold import Fold, check
+from .fold import Fold, check, time_findings
 from .lines import dump_line, line_findings, raise_errors
 from .model import LogEntry
 from .verdicts import complete
@@ -73,6 +82,43 @@ def _copy(x: Any) -> Any:
     return copy.deepcopy(dict(x)) if isinstance(x, Mapping) else copy.deepcopy(x)
 
 
+def _busy(path: str, how: str) -> ConcurrencyError:
+    return ConcurrencyError(f"{path} is being appended to through another handle ({how}; one appender at a time)",
+                            info={"path": path, "locked": True})
+
+
+@contextlib.contextmanager
+def _exclusive(path: str, fd: int) -> Iterator[None]:
+    """Hold the appenders' lock on the queue file ``path`` (open as ``fd``); ``ConcurrencyError`` when another
+    handle, in this process or another, holds it."""
+    if fcntl is not None:
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise _busy(path, "its lock is held") from None
+        except OSError:
+            pass  # a file system without flock (ENOLCK on some network mounts): the sidecar file below
+        else:
+            yield  # os.close(fd) releases the lock
+            return
+    sidecar = path + ".lock"
+    try:
+        os.close(os.open(sidecar, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644))
+    except FileExistsError:
+        raise _busy(path, f"{sidecar} exists; remove it if no appender is running") from None
+    try:
+        yield
+    finally:
+        with contextlib.suppress(OSError):
+            os.remove(sidecar)
+
+
+def _write_all(fd: int, data: bytes) -> None:
+    view = memoryview(data)
+    while view:
+        view = view[os.write(fd, view):]
+
+
 class Queue:
     """A handle on one queue file; build it with ``Queue.create`` or ``Queue.open``."""
 
@@ -85,6 +131,7 @@ class Queue:
         self._size = size
         self._newline = newline
         self._clock = SystemClock()
+        self._fd: int | None = None  # the file, open and locked for appending, while this handle holds the lock
 
     # ------------------------------------------------------------------------------------------ construction
 
@@ -104,7 +151,7 @@ class Queue:
                               "sha256": container_sha256(container)}
         header["created_at"] = created_at if created_at is not None else SystemClock().now()
         header = jsonio.loads(jsonio.canonical(header))
-        raise_errors(line_findings(header, path="/lines/0"))
+        raise_errors(line_findings(header, path="/lines/0") + time_findings(header, "/lines/0"))
         text = dump_line(header).encode("utf-8")
         target = os.fspath(path)
         with open(target, "xb") as fh:
@@ -115,18 +162,15 @@ class Queue:
 
     @classmethod
     def open(cls, path: str | os.PathLike[str], *, schema: Any, base: Any = None) -> Queue:
-        """A handle on an existing queue file, after its checks (``ValidationError`` with J, V001, the queue
-        schema's codes, Q005, Q007, Q008, D009 or Q012). ``base``, when given, must be the header's base."""
+        """A handle on an existing queue file, after its checks (``ValidationError`` with J, V001 for the header's
+        ``format`` or ``record_format``, the queue schema's codes, Q005, Q007, Q008, D009 or Q012). ``base``, when
+        given, must be the header's base."""
         s = load_schema(schema)
         target = os.fspath(path)
         with open(target, "rb") as fh:
             raw = fh.read()
         lines = jsonio.loads_lines(raw)
-        first = lines[0]
-        if first.get("kind") == "queue-header" and not gate(first.get("format"), "khg-queue", 1, 0):
-            raise ValidationError.from_findings([make_finding(
-                "KHG-V001", "/lines/0/format", f"{first.get('format')!r} is not khg-queue/1.0.x")])
-        fold, findings = check(lines)
+        fold, findings = check(lines)  # V001 alone for a stamp this reader does not accept
         container = as_container(base) if base is not None else None
         if fold.header is not None:
             findings += pin_findings(fold.header, s)
@@ -205,7 +249,9 @@ class Queue:
     def accept(self, qid: str, *, store: Any, id: str, actor: Any, reason: str, at: str | None = None) -> LogEntry:
         """Accept item ``qid``: one ``put`` of its entities and of the payload with ``id`` and status asserted, at
         ``at``; then the entry, with ``before``, ``after`` and ``decision_hash``. The entry is checked first (Q005
-        for a move the fold forbids or an open lint error); a store error propagates and nothing is logged."""
+        for a move the fold forbids or an open lint error); a store error propagates and nothing is logged. The
+        handle holds the appenders' lock from before the ``put`` until the entry is written, so another appender
+        is refused (``ConcurrencyError``) before the store is touched."""
         item = self._item(qid)
         who, mode = _actor(actor)
         if not isinstance(id, str) or not id:
@@ -214,15 +260,15 @@ class Queue:
         draft = self._entry(qid, "accept", who, mode, at=at, state_after="accepted", reason=reason, before=[],
                             after=[], decision_hash=_PLACEHOLDER)
         raise_errors(self._line_problems(jsonio.loads(jsonio.canonical(draft))))
-        self._check_unchanged()
-        record = accepted_record(item, id)
-        entities = [copy.deepcopy(e) for e in item.get("entities") or []]
-        before = read_versions(store, [e.get("id") for e in entities if isinstance(e, Mapping)] + [id])
-        receipt = store.put(entities + [record] if entities else record, actor=who["id"], at=at)
-        after = written_versions(receipt)
-        entry = dict(draft, at=at if at is not None else receipt["at"], before=before, after=after,
-                     decision_hash=decision_hash(store, after))
-        return self._append(entry)
+        with self._appending():
+            record = accepted_record(item, id)
+            entities = [copy.deepcopy(e) for e in item.get("entities") or []]
+            before = read_versions(store, [e.get("id") for e in entities if isinstance(e, Mapping)] + [id])
+            receipt = store.put(entities + [record] if entities else record, actor=who["id"], at=at)
+            after = written_versions(receipt)
+            entry = dict(draft, at=at if at is not None else receipt["at"], before=before, after=after,
+                         decision_hash=decision_hash(store, after))
+            return self._append(entry)
 
     def reject(self, qid: str, *, actor: Any, reason: str, at: str | None = None) -> LogEntry:
         """Reject item ``qid`` (from pending, linted or needs_review)."""
@@ -295,7 +341,7 @@ class Queue:
     def _line_problems(self, line: dict[str, Any]) -> list[Finding]:
         """What appending ``line`` would report: the queue schema, the fold and, for a verdict, Q008 and Q010."""
         n = self._fold.lines
-        found = line_findings(line, path=f"/lines/{n}")
+        found = line_findings(line, path=f"/lines/{n}") + time_findings(line, f"/lines/{n}")
         if line.get("kind") == "log-entry":
             found += self._fold.judge_entry(line, n)[0]
             if line.get("action") == "verdict" and line.get("target") in self._fold.items:
@@ -303,23 +349,42 @@ class Queue:
                                           path=f"/lines/{n}")
         return found
 
+    @contextlib.contextmanager
+    def _appending(self) -> Iterator[int]:
+        """The file, open for appending under the appenders' lock (``ConcurrencyError`` when another handle holds
+        it), after the check that it did not change since this handle last read or wrote it. Nested uses within
+        this handle share the lock."""
+        if self._fd is not None:
+            yield self._fd
+            return
+        fd = os.open(self._path, os.O_WRONLY | os.O_APPEND | getattr(os, "O_BINARY", 0))
+        try:
+            with _exclusive(self._path, fd):
+                self._fd = fd
+                try:
+                    self._check_unchanged()
+                    yield fd
+                finally:
+                    self._fd = None
+        finally:
+            os.close(fd)
+
     def _check_unchanged(self) -> None:
-        size = os.path.getsize(self._path)
+        size = os.fstat(self._fd).st_size if self._fd is not None else os.path.getsize(self._path)
         if size != self._size:
             raise ConcurrencyError(f"{self._path} changed since this handle last read or wrote it (one appender at "
                                    f"a time)", info={"path": self._path, "expected_size": self._size, "size": size})
 
     def _append(self, line: dict[str, Any], extra: list[Finding] | None = None) -> dict[str, Any]:
-        """Check a new line (the queue schema, the fold, ``extra``), append it and fold it; returns a copy of the
-        line as written."""
+        """Check a new line (the queue schema, the fold, ``extra``), append it under the appenders' lock and fold
+        it; returns a copy of the line as written."""
         stored = jsonio.loads(jsonio.canonical(line))
         raise_errors(self._line_problems(stored) + list(extra or []))
-        self._check_unchanged()
-        data = dump_line(stored).encode("utf-8")
-        if self._newline:
-            data = b"\n" + data
-        with open(self._path, "ab") as fh:
-            fh.write(data)
+        with self._appending() as fd:
+            data = dump_line(stored).encode("utf-8")
+            if self._newline:
+                data = b"\n" + data
+            _write_all(fd, data)
         self._size += len(data)
         self._newline = False
         self._fold.feed(stored, self._fold.lines)

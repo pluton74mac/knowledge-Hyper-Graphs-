@@ -24,11 +24,14 @@ def node_sort_key(node: Mapping[str, Any]) -> tuple[bool, str]:
 
 def incidence_sort_key(incidence: Mapping[str, Any], nodes: Mapping[Any, Mapping[str, Any]]) -> tuple[Any, ...]:
     """By edge, then in canonical binding order of (role, role-position, the value of the incidence's node).
-    ``nodes`` maps node ids to node records."""
+    ``nodes`` maps node ids to node records. An incidence whose node has no record carries an entity value, as
+    ``to_hif`` writes it: every derived node is declared, so only an entity outside the container (one that is not
+    complete) is not."""
     attrs = attrs_of(incidence)
-    node = nodes.get(incidence.get("node"))
+    nid = incidence.get("node")
+    node = nodes.get(nid)
     binding = {"role": attrs.get("role"), "position": attrs.get("role-position", 0),
-               "value": node_value(node) if node is not None else None}
+               "value": node_value(node) if node is not None else {"entity": nid}}
     return (str(incidence.get("edge")), *binding_sort_key(binding))
 
 

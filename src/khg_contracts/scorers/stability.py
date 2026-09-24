@@ -9,7 +9,7 @@ facts: ``(doc_id, key)`` for each item, on ``content_key`` and on ``core_key``. 
 - **S-M3** the support histogram (how many facts s units contain) and the unstable fraction (0 < s < K);
 - **S-M4** the mean churn δ = s(K − s)/C(K, 2) over the facts;
 - **S-M5** with ``gold``: the shares of gold facts found by all, some or none of the units (``stable``, ``unstable``,
-  ``miss``), matching by the key;
+  ``miss``), matching by the key; None without gold or without any unit;
 - **S-M7** the order effect on (run_id, order_id) units: J_within over pairs with the same order_id, J_between over
   pairs with different ones, and Δ_order = J_within − J_between.
 """
@@ -20,10 +20,10 @@ import math
 from fractions import Fraction
 from typing import Any, Iterable, Literal, Mapping
 
-from ..errors import ValidationError
+from ..errors import ValidationError, make_finding
 from . import _inputs
 from ._common import as_schema, fnum, mean, report, sort_key
-from ._facts import entity_index, prepare
+from ._facts import entity_index, item_entities, prepare
 
 __all__ = ["KEYS", "UNITS", "score"]
 
@@ -72,6 +72,8 @@ def _order_effect(units: list[tuple[Any, Any]], sets: list[set[Element]]) -> dic
 
 def _partition(gold: dict[Element, str], sets: list[set[Element]]) -> dict[str, Any]:
     counts = {"stable": 0, "unstable": 0, "miss": 0}
+    if not sets:  # no unit at all: "found by every unit" would hold vacuously, so the shares are undefined
+        return {**{k: None for k in counts}, "n_gold": len(gold)}
     for g in gold:
         n = sum(g in s for s in sets)
         counts["stable" if n == len(sets) else "miss" if n == 0 else "unstable"] += 1
@@ -94,13 +96,20 @@ def score(items: Iterable[Mapping[str, Any]], *, schema: Any, unit: Literal["run
     s = as_schema(schema)
     preds = _inputs.predictions(items)
     docs, headers = _inputs.check_items(gold or [], kinds=("c4-extraction-doc",))
-    entities = entity_index([e for p in preds for e in p.entities] + [e for d in docs for e in d.get("entities", [])])
+    entities = entity_index([e for d in docs for e in d.get("entities", [])])  # the gold's records only
     runs = sorted({(p.run_id, p.order_id) for p in preds}, key=lambda r: (sort_key(r[0]), sort_key(r[1])))
     elems: dict[tuple[Any, Any], dict[str, set[Element]]] = {r: {k: set() for k in keys} for r in runs}
+    unreadable: list[dict[str, Any]] = []
     for p in preds:
-        f = prepare(p.record, s, entities, fid=p.pid)
+        try:  # its own item's entity records, then the gold's
+            f = prepare(p.record, s, item_entities(p, entities), fid=p.pid)
+        except ValidationError as e:  # located at the prediction's line
+            unreadable += _inputs.located(e, p.path)
+            continue
         for k in keys:
             elems[p.run_id, p.order_id][k].add((p.doc_id, getattr(f, k)))
+    if unreadable:
+        raise ValidationError.from_findings(unreadable)
     if unit == "run":
         units = [{"run_id": r[0], "order_id": r[1]} for r in runs]
         unit_sets = [elems[r] for r in runs]
@@ -111,6 +120,9 @@ def score(items: Iterable[Mapping[str, Any]], *, schema: Any, unit: Literal["run
     gold_elems: dict[str, dict[Element, str]] = {k: {} for k in keys}
     depends: dict[str, list[str]] = {}
     for n, d in enumerate(docs):
+        if d["doc_id"] in depends:  # as extraction.score: one document, one gold
+            raise ValidationError.from_findings([make_finding("KHG-I002", f"/docs/{n}/doc_id",
+                                                              f"doc_id {d['doc_id']!r} appears twice")])
         depends[d["doc_id"]] = sorted(r.get("id") for r in d["gold"])
         for i, r in enumerate(d["gold"]):
             try:

@@ -111,13 +111,24 @@ def test_doc_texts_feed_the_span_check(packaged, tmp_path, capsys):
     texts = str(packaged("fixture/fixture.doc-texts.json"))
     assert cli.validate_main([fixture, "--schema", schema, "--doc-texts", texts, "--json"]) == 0
     assert _summary(json.loads(capsys.readouterr().out)) == WARNINGS
-    wrong = data.load_json("fixture/fixture.doc-texts.json")
-    wrong["texts"]["doc:coadmin-note"]["text"] = "Something else entirely, of a similar length: sixty-one chars."
-    path = tmp_path / "wrong.doc-texts.json"
-    path.write_text(json.dumps(wrong), encoding="utf-8")
-    assert cli.validate_main([fixture, "--schema", schema, "--doc-texts", str(path), "--json"]) == 1
+    shifted = copy.deepcopy(data.load_json(FIXTURE))
+    coadmin = next(r for r in shifted["records"] if r.get("id") == "f:coadmin-1")
+    coadmin["evidence"][0]["selectors"][1]["start"] = 1  # the position selector no longer spans the quote
+    path = tmp_path / "shifted.khg.json"
+    path.write_text(json.dumps(shifted, ensure_ascii=False), encoding="utf-8")
+    assert cli.validate_main([str(path), "--schema", schema, "--doc-texts", texts, "--json"]) == 1
     result = json.loads(capsys.readouterr().out)
-    assert [f["code"] for f in result["findings"] if f["severity"] == "error"] == ["KHG-S021"]
+    assert [(f["code"], f["path"]) for f in result["findings"] if f["severity"] == "error"] == [
+        ("KHG-S021", "/records/28/evidence/0")]
+    assert cli.validate_main([str(path), "--schema", schema, "--json"]) == 0  # no texts, no span check
+    assert _summary(json.loads(capsys.readouterr().out)) == WARNINGS
+    # a text that does not hash to the evidence's doc_sha256 is another revision's, and is not judged (S021)
+    other = data.load_json("fixture/fixture.doc-texts.json")
+    other["texts"]["doc:coadmin-note"]["text"] = "Something else entirely, of a similar length: sixty-one chars."
+    other_path = tmp_path / "other.doc-texts.json"
+    other_path.write_text(json.dumps(other), encoding="utf-8")
+    assert cli.validate_main([fixture, "--schema", schema, "--doc-texts", str(other_path), "--json"]) == 0
+    capsys.readouterr()
 
 
 def test_output_that_stdout_cannot_encode_is_escaped(packaged, tmp_path, monkeypatch):
@@ -189,6 +200,44 @@ def test_argument_files_that_cannot_be_used_exit_2(packaged, tmp_path, capsys):
     assert capsys.readouterr().err.splitlines() == [
         f"khg-validate: {texts}: error KHG-J003: duplicate key 'texts'",
         f"khg-validate: --doc-texts: {texts} is not a JSON object"]
+
+
+def test_a_base_whose_suffix_is_not_a_container_s_exits_2(packaged, tmp_path, capsys):
+    """§14 ruling 4: a container is read by its suffix, .json or .jsonl, and any other is a usage error (it was a
+    ``ValueError`` traceback)."""
+    queue, schema = str(packaged("fixture/smoke-queue.khg-queue.jsonl")), str(packaged(SCHEMA))
+    base = tmp_path / "smoke-base.txt"
+    base.write_bytes(data.read_bytes("fixture/smoke-base.c1.json"))
+    assert cli.validate_main([queue, "--schema", schema, "--base", str(base)]) == 2
+    captured = capsys.readouterr()
+    assert captured.out == "" and captured.err.count("\n") == 1
+    assert captured.err.startswith("khg-validate: --base: ") and "a container file name ends in .json" in captured.err
+
+
+def test_an_integer_of_5000_digits_is_j006(tmp_path, capsys):
+    path = tmp_path / "big.khg.json"
+    path.write_text('{"header": {}, "records": [], "x": 1' + "0" * 4999 + "}", encoding="utf-8")
+    assert cli.validate_main([str(path), "--json"]) == 1
+    assert [f["code"] for f in json.loads(capsys.readouterr().out)["findings"]] == ["KHG-J006"]
+
+
+def test_a_closed_standard_output_exits_2(packaged, monkeypatch, capsys):
+    """A reader that closes the pipe (``khg-validate ... | head``) is an I/O error: exit 2, not a traceback and 1."""
+    class Closed(io.StringIO):
+        def write(self, text):
+            raise BrokenPipeError(32, "Broken pipe")
+
+    fixture, schema = str(packaged(FIXTURE)), str(packaged(SCHEMA))
+    for extra in ([], ["--json"]):
+        monkeypatch.setattr(sys, "stdout", Closed())
+        assert cli.validate_main([fixture, "--schema", schema, *extra]) == 2
+        assert capsys.readouterr().err == "khg-validate: cannot write the standard output: Broken pipe\n"
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="a closed pipe is EPIPE on POSIX")
+def test_a_closed_standard_output_exits_2_in_a_child(run_cli, packaged):
+    r = run_cli("khg-validate", packaged(FIXTURE), "--schema", packaged(SCHEMA), "--json", closed_stdout=True)
+    assert (r.returncode, r.stderr) == (2, "khg-validate: cannot write the standard output: Broken pipe\n")
 
 
 def test_help_exits_0(capsys):

@@ -19,7 +19,9 @@ cuts every release.
   both answered 404.
 - **The six CI jobs of DESIGN §10.6 pass locally** on the commit that adds this file (details in
   [../impl-notes/W13-W14.md](../impl-notes/W13-W14.md)): core-3.10, gate-3.11, core-3.13, wheel, examples and
-  evidence.
+  evidence. That run predates the director's rulings (commit f99a8af): from there until the review round
+  re-copied the P7 sequence, `tests/consumers/test_verbatim.py::test_the_copy_is_verbatim[P7]` failed in the three
+  test jobs. Run the six jobs again on the release commit; step 5.4 waits for them on the pull request.
 - **Steps 5.1 and 5.3 were rehearsed** on a copy of the tree: with the version at 1.0.0 and the README below, the
   build succeeds, `twine check --strict` passes on the sdist and the wheel, and the 1.0.0 wheel, installed alone with
   the `dev` extra, passes the packaging, consumer and CLI tests (292 passed, 1 skipped: P5 without xgi).

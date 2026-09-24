@@ -17,8 +17,9 @@ Decoding (``decode``) refuses:
   literal (its C or S codes): the decoder needs the usage and the literal's value.
 
 A direction equal to the usage default is dropped, and an incidence weight, node weight or edge weight becomes
-``extensions["hif:weight"]``. The header is rebuilt with ``content: "snapshot"``; metadata keys outside the
-declaration block go to ``extensions["hif:metadata"]``.
+``extensions["hif:weight"]``. A ``role-position`` is read as layer R reads it, so an integral float is its integer
+(``2.0`` is ``2``, F10). The header is rebuilt with ``content: "snapshot"``; metadata keys outside the declaration
+block go to ``extensions["hif:metadata"]``.
 """
 from __future__ import annotations
 
@@ -29,6 +30,7 @@ from ..errors import KHGError, ValidationError, make_finding
 from ..record import canonical_container, literal_binding_node_id, literal_node_id, ref_node_id, special_node_id
 from ..schema import Schema
 from ._doc import attrs_of, mapping, records
+from .convention import role_position
 from .encode import as_schema
 from .profile import DECLARATION_KEYS, EDGE_FIELDS, ENTITY_FIELDS, METADATA, WEIGHT, id_key
 
@@ -185,7 +187,8 @@ class _Decoder:
                 continue
             binding: dict[str, Any] = {"bid": bid, "role": role, "value": value}
             if "role-position" in attrs:
-                binding["position"] = attrs["role-position"]
+                position = role_position(attrs["role-position"])  # 2.0 is 2 (F10), as layer R read it
+                binding["position"] = position if position is not None else attrs["role-position"]
             if direction is not None:
                 binding["direction"] = direction
             self.extensions(binding, attrs, inc, f"/incidences/{i}")

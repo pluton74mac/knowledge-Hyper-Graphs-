@@ -83,11 +83,21 @@ def child_env(tmp_path_factory) -> dict[str, str]:
 
 @pytest.fixture(scope="session")
 def run_cli(child_env) -> Callable[..., subprocess.CompletedProcess]:
-    """``run_cli("khg-validate", *args, cwd=None)``: the finished child, with text stdout and stderr."""
+    """``run_cli("khg-validate", *args, cwd=None, closed_stdout=False)``: the finished child, with text stdout and
+    stderr. With ``closed_stdout`` its standard output is a pipe whose reader has gone (``stdout`` is None then)."""
 
-    def run(name: str, *args: object, cwd: Path | None = None) -> subprocess.CompletedProcess:
-        return subprocess.run(command_line(name) + [str(a) for a in args], env=child_env, cwd=cwd,
-                              capture_output=True, encoding="utf-8", timeout=600)
+    def run(name: str, *args: object, cwd: Path | None = None,
+            closed_stdout: bool = False) -> subprocess.CompletedProcess:
+        argv = command_line(name) + [str(a) for a in args]
+        if not closed_stdout:
+            return subprocess.run(argv, env=child_env, cwd=cwd, capture_output=True, encoding="utf-8", timeout=600)
+        reader, writer = os.pipe()
+        os.close(reader)
+        try:
+            return subprocess.run(argv, env=child_env, cwd=cwd, stdout=writer, stderr=subprocess.PIPE,
+                                  encoding="utf-8", timeout=600)
+        finally:
+            os.close(writer)
 
     return run
 

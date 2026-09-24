@@ -105,6 +105,63 @@ def test_cost_and_the_budget_curve(build):
     assert curve[5]["budget"] == 600 and curve[5]["n_answered"] == 3 and curve[5]["answer_em"] == 0.5
 
 
+def test_text_only_gold_scores_a_missing_answer_as_zero(build):
+    """A gold with text and no values (R3's): a missing response, an abstention and an answer without text score 0
+    on text EM and token F1, so they stay in the answer averages, as a missing value answer does. One right answer
+    of four gives EM 0.25, not 1.0 over the one question that had text (review f-scorers-02)."""
+    gold = {"values": [], "text": "Royal Swedish Academy of Sciences"}
+    qs = [build.question(f"q{n}", [["h1"]], answer=gold) for n in range(1, 5)]
+    rs = [build.response("q1", ["h1"], answer={"values": [], "text": "the Royal Swedish Academy of Sciences",
+                                               "abstained": False}, support_claimed=["h1"]),
+          build.response("q2", ["h1"], answer={"values": [], "abstained": True}, support_claimed=["h1"]),
+          build.response("q4", ["h1"], answer={"values": [{"entity": "t:x"}], "abstained": False},
+                         support_claimed=["h1"])]
+    rep = retrieval.score(qs, rs, config=config())
+    for qid in ("q2", "q3", "q4"):
+        it = rep["items"][qid]
+        assert (it["em"], it["text_em"], it["token_f1"], it["gated_em"]) == (0.0, 0.0, 0.0, 0.0), qid
+    assert (rep["items"]["q2"]["joint_em"], rep["items"]["q4"]["joint_f1"]) == (0.0, 0.0)
+    agg = rep["aggregate"]
+    assert agg["answer"] == {"em": 0.25, "value_em": None, "text_em": 0.25, "token_f1": 0.25}
+    assert agg["gated_em"] == 0.25 and agg["joint"]["joint_em"] == 1 / 3  # the missing response claims no support
+    assert rep["breakdowns"]["by_hops"]["1"]["em"] == 0.25
+    assert agg["cost"]["budget_curve"][-1]["answer_em"] == 0.25
+    boot = retrieval.score(qs, rs, config=retrieval.RetrievalConfig())["bootstrap"]["intervals"]["em"]
+    assert boot[0] < 1.0  # the interval resamples four questions, not the one with text
+
+
+def test_set_scores_need_a_gold_value_set(build):
+    """In set mode a text-only gold has no value set, so set P, R and F1 are not given (an empty wrong answer got
+    set F1 1 by ``both_empty``, a right one 0); EM falls back to the text. A gold that is the empty set, with no text,
+    is still scored as a set (review f-scorers-12)."""
+    gold = {"values": [], "text": "Royal Swedish Academy of Sciences"}
+    qs = [build.question("q1", [["h1"]], answer=gold), build.question("q2", [["h1"]], answer=gold)]
+    rs = [build.response("q1", ["h1"], answer={"values": [], "text": "nonsense", "abstained": False}),
+          build.response("q2", ["h1"], answer={"values": [{"entity": "t:y"}],
+                                               "text": "Royal Swedish Academy of Sciences", "abstained": False})]
+    rep = retrieval.score(qs, rs, config=config(answer_mode="set"))
+    for qid in ("q1", "q2"):
+        assert not {"set_p", "set_r", "set_f1", "set_flag"} & set(rep["items"][qid]), qid
+    assert (rep["items"]["q1"]["em"], rep["items"]["q2"]["em"]) == (0.0, 1.0)
+    assert rep["aggregate"]["answer"]["set_f1"] is None and rep["aggregate"]["answer"]["em"] == 0.5
+    empty = build.question("q3", [["h1"]], answer={"values": []})
+    it = retrieval.score([empty], [build.response("q3", ["h1"])], config=config(answer_mode="set"))["items"]["q3"]
+    assert (it["set_f1"], it["set_flag"]) == (1.0, "both_empty")
+
+
+def test_the_budget_curve_counts_every_answerable_question(build):
+    """A question without a response spends nothing and is never answered, and it stays in the denominator: one right
+    answer of four answerable questions is 0.25 at the full budget, as the answer EM is (review f-scorers-03)."""
+    qs = [build.question(f"q{n}", [["h1"]], answer={"values": [{"entity": "t:x"}]}) for n in range(4)]
+    rs = [build.response("q0", ["h1"], answer={"values": [{"entity": "t:x"}], "abstained": False})]
+    agg = retrieval.score(qs, rs, config=config())["aggregate"]
+    assert agg["answer"]["em"] == 0.25 and agg["n_missing"] == 3
+    curve = agg["cost"]["budget_curve"]
+    assert curve[-1] == {"budget": 110, "fraction": 1.0, "n_answered": 1, "answer_em": 0.25}
+    assert curve[0] == {"budget": 11, "fraction": 0.1, "n_answered": 0, "answer_em": 0.0}
+    assert retrieval.score(qs, [], config=config())["aggregate"]["cost"]["budget_curve"] == []  # nothing spent
+
+
 def test_breakdowns_bootstrap_and_report(build):
     qs = [build.question("q1", [["h1"]], hops=1, qtype="single_hop"),
           build.question("q2", [["h2", "h3"]], hops=2, qtype="multi_hop"),
