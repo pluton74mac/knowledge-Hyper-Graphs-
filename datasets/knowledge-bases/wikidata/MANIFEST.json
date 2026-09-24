@@ -1,0 +1,18 @@
+{
+  "name": "wikidata-20260922-all.json.bz2",
+  "family": "knowledge-bases",
+  "source_url": "https://dumps.wikimedia.org/wikidatawiki/entities/20260921/wikidata-20260922-all.json.bz2",
+  "source_ref": "wikidata-20260922 (dump directory 20260921)",
+  "retrieved": "2026-09-24",
+  "licence": "CC0-1.0",
+  "files": [
+    {
+      "path": "raw/wikidata-20260922-all.json.bz2",
+      "bytes": 103222517992,
+      "md5": "7f70e4a1858ba6182ea9329a1ef588c5",
+      "sha1": "c5bfd59f16c6cdf906ead1190d99729108e961be",
+      "sha256": null
+    }
+  ],
+  "notes": "md5 and sha1 are the published checksums. sha256 is null until the P3a slicer's pass over the file completes; it is then copied from input.sha256 in processed/p3a-slice-20260922/run.json, which also records whether the file matched the published size, md5 and sha1 (input.verified). Fetched with raw/fetch.sh, a resumable loop in which each curl run resumes from the current file size (-C -); curl's own --retry is not used, because a retry truncates the file back to where that curl run started. The download started on 2026-09-24 with a 1.2 MB/s cap and runs uncapped since 13:35 UTC the same day (owner's choice). The P3a slice lives in processed/p3a-slice-20260922/ (see projects/p3a-clean-nary-corpus/slice/README.md)."
+}
