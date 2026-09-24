@@ -39,17 +39,17 @@ source on 2026-09-24; **[derived]** reasoning from the above; **[unverified]** n
    Property-local main roles leave exactly the same residue hyperedges; the generic naming only adds the two hub
    vertices to them [run]. A vertex that lies in every hyperedge, or in only one, cannot change α-acyclicity or any
    hypertree-width measure [derived, §3.4]. The hubs change only descriptive statistics, such as 1 connected
-   component instead of 154.
+   component instead of 158.
 6. **The main-value role and typing are what change the cyclic core.**
    - Naming the main-value role after its property (`P39`) joins a property's main use to its uses as a qualifier.
-     This enlarges the GYO residue by 15 % to 44 % [run].
-   - Typing the main roles by constraint classes enlarges it by 25 % to 83 %, and depends on constraints that 35 %
+     This enlarges the GYO residue by 16 % to 51 % [run].
+   - Typing the main roles by constraint classes enlarges it by 24 % to 99 %, and depends on constraints that 35 %
      of properties lack [run].
 7. **Recommended naming for P3a and P6 (§3.5, §5).** The subject role is `subject`. The main value's role is the
    property id. Each qualifier's role is its property id. Slot classes follow P2: `time` for P580/P582 (a
    relation that allows either gets the interval model), `meta` for the 27 listed properties, `qualifier`
-   otherwise. Under this naming the declared schema has 1,155 relations and 1,884 core-and-qualifier roles. It is
-   α-cyclic, with a GYO residue of 401 hyperedges on 618 vertices. The generated schema file passes
+   otherwise. Under this naming the declared schema has 1,155 relations and 1,883 core-and-qualifier roles. It is
+   α-cyclic, with a GYO residue of 391 hyperedges on 615 vertices. The generated schema file passes
    `khg_contracts.schema.check_schema` with 0 findings [run].
 8. **Biolink Model v4.4.5 is a usable n-ary biomedical schema.**
    - It has 107 association classes (103 concrete) and 44 qualifier slots, of which 33 are used [run].
@@ -134,7 +134,7 @@ for all properties, and checks them against live slices of 20,000 statements.
   - SQID's `properties.json` gives, per property, the qualifiers used on its statements with a count (`qs`) [run].
   - SQID's other count fields are not usable. P31's `s` is 76.6 billion, larger than all of Wikidata's 1.77 billion
     item statements in SQID's own `statistics.json`. Only `qs` was used [run]. Whether `qs` counts statements or
-    snaks is [unverified]; the live slices in §2.4 agree with it in order of magnitude.
+    snaks is [unverified]. The live slices in §2.4 agree with it within a factor of 1.6 on the top qualifiers.
 
 ### 2.2 Counts
 
@@ -249,7 +249,25 @@ Observed use outside the lists is rare. It is not always noise: P166's P393 edit
 threshold without being allowed [run].
 
 **Live check (WDQS, 2026-09-24).** For each property, four slices of 20,000 statements were read at fixed offsets
-of the `p:Pxx` index. This is index order, not a random sample. <!--SLICES-->
+(0, 450,000, 900,000 and 1,350,000) of the `p:Pxx` index. This is index order, not a random sample. The query
+optimiser was turned off so that Blazegraph evaluates the slice first; without that hint the query timed out [run].
+The results below are statement counts in the 80,000 sampled statements per property.
+
+| Property | Statements (live) | Distinct qualifiers in slices | Allowed ones seen | Not-allowed qualifiers (statements) | Top qualifiers: share of sampled statements (dump share) |
+|---|---|---|---|---|---|
+| P39 | 1,994,039 | 102 | 77 of 104 | 25 (97, 0.12 %) | P580 0.68 (0.64), P582 0.57 (0.49), P2937 0.41 (0.35) |
+| P69 | 3,663,722 | 54 | 42 of 57 | 12 (23, 0.03 %) | P582 0.25 (0.33), P512 0.22 (0.29), P580 0.19 (0.29) |
+| P108 | 2,588,812 | 51 | 34 of 55 | 17 (29, 0.04 %) | P580 0.57 (0.57), P582 0.30 (0.30), P2868 0.18 (0.18) |
+| P166 | 1,904,956 | 89 | 54 of 73 | 35 (164, 0.21 %) | P585 0.48 (0.42), P1686 0.03 (0.02), P6208 0.02 (0.01) |
+| P54 | 1,775,444 | 35 | 25 of 31 | 10 (11, 0.01 %) | P580 0.79 (0.71), P582 0.73 (0.63), P1351 0.37 (0.39) |
+
+The dump share is SQID's `qs` count divided by DeltaBot's main-statement count. It matches the slice share within
+a factor of 1.6 for the three most frequent qualifiers of each property, and almost exactly for P108 [run]. The
+slices confirm the dump-based picture:
+- most allowed qualifiers do occur (62 % to 81 % seen in only 80,000 statements);
+- qualifiers outside the list are many but rare (0.01 % to 0.21 % of statements);
+- metadata qualifiers occur on every sampled property. P2241, P1810, P1932, P805 and P1534 appear on at least
+  four of the five [run].
 
 ### 2.5 Declared, observed, or both
 
@@ -328,7 +346,8 @@ textbook cases and on 3,000 random ones [run].
 
 In variant d, a property that is allowed as its own qualifier would use one role twice, which M002 forbids. This
 happens in 9 declared, 14 robust and 441 unthresholded relations (e.g. P131, P17, P276). The probe dropped the
-qualifier use in these cases; §5 gives P3a a separate role for it.
+qualifier use in these cases. §5 gives P3a a separate role for it, `P131:qualifier`. That role lies in one
+hyperedge only, so GYO removes it in its first round, and the result is the same as dropping it [derived].
 
 ### 3.3 Results
 
@@ -342,32 +361,33 @@ The columns below are:
 
 | Table | Variant | Vertices | Max edge | Components | α-acyclic | Residue, core+qualifier | Residue, +time | Residue, naive |
 |---|---|---|---|---|---|---|---|---|
-| declared (1,155 edges) | a generic | 966 | 117 | 1 | no | 350 / 524 | 340 / 524 | 386 / 552 |
-| | b property-local | 3,274 | 117 | 154 | no | 350 / 522 | 340 / 522 | 386 / 550 |
-| | c typed | 3,073 | 117 | 99 | no | 438 / 563 | 422 / 563 | 476 / 591 |
-| | **d property-named** | 1,884 | 117 | 1 | no | **401 / 618** | 393 / 617 | 435 / 645 |
-| | e relation-local | 10,057 | 117 | 1,155 | **yes** | 0 / 0 | 0 / 0 | 0 / 0 |
-| observed-robust (13,608 edges) | a generic | 779 | 34 | 1 | no | 622 / 400 | 596 / 396 | 733 / 427 |
-| | b property-local | 27,993 | 34 | 11,018 | no | 622 / 398 | 596 / 394 | 733 / 425 |
-| | c typed | 22,585 | 34 | 6,168 | no | 908 / 522 | 900 / 526 | 1,142 / 593 |
-| | **d property-named** | 13,655 | 34 | 1 | no | **779 / 543** | 754 / 542 | 893 / 582 |
-| | e relation-local | 34,713 | 34 | 13,608 | **yes** | 0 / 0 | 0 / 0 | 0 / 0 |
-| observed-all (13,608 edges) | a generic | 2,532 | 750 | 1 | no | 1,120 / 1,653 | 942 / 1,649 | 994 / 1,676 |
-| | b property-local | 29,746 | 750 | 7,662 | no | 1,120 / 1,651 | 942 / 1,647 | 994 / 1,674 |
-| | c typed | 24,338 | 750 | 4,029 | no | 2,047 / 1,952 | 1,926 / 1,953 | 2,243 / 2,043 |
-| | **d property-named** | 13,690 | 749 | 1 | no | **1,609 / 2,026** | 1,428 / 1,987 | 1,520 / 2,050 |
-| | e relation-local | 83,625 | 750 | 13,608 | **yes** | 0 / 0 | 0 / 0 | 0 / 0 |
+| declared (1,155 edges) | a generic | 964 | 117 | 1 | no | 338 / 522 | 339 / 524 | 386 / 552 |
+| | b property-local | 3,272 | 117 | 158 | no | 338 / 520 | 339 / 522 | 386 / 550 |
+| | c typed | 3,071 | 117 | 101 | no | 420 / 561 | 421 / 563 | 476 / 591 |
+| | **d property-named** | 1,883 | 117 | 1 | no | **391 / 615** | 392 / 617 | 435 / 645 |
+| | e relation-local | 9,999 | 117 | 1,155 | **yes** | 0 / 0 | 0 / 0 | 0 / 0 |
+| observed-robust (13,608 edges) | a generic | 777 | 34 | 1 | no | 586 / 392 | 591 / 394 | 733 / 427 |
+| | b property-local | 27,991 | 34 | 11,122 | no | 586 / 390 | 591 / 392 | 733 / 425 |
+| | c typed | 22,583 | 34 | 6,231 | no | 848 / 506 | 886 / 522 | 1,142 / 593 |
+| | **d property-named** | 13,655 | 34 | 1 | no | **741 / 537** | 748 / 540 | 893 / 582 |
+| | e relation-local | 34,453 | 34 | 13,608 | **yes** | 0 / 0 | 0 / 0 | 0 / 0 |
+| observed-all (13,608 edges) | a generic | 2,530 | 750 | 1 | no | 942 / 1,647 | 942 / 1,649 | 994 / 1,676 |
+| | b property-local | 29,744 | 750 | 7,779 | no | 942 / 1,645 | 942 / 1,647 | 994 / 1,674 |
+| | c typed | 24,336 | 750 | 4,098 | no | 1,878 / 1,939 | 1,922 / 1,953 | 2,243 / 2,043 |
+| | **d property-named** | 13,690 | 749 | 1 | no | **1,423 / 1,982** | 1,428 / 1,987 | 1,520 / 2,050 |
+| | e relation-local | 83,030 | 750 | 13,608 | **yes** | 0 / 0 | 0 / 0 | 0 / 0 |
 
 **What is left in the cyclic core.** For the declared table under variant d (core+qualifier), the most frequent
 residue vertices after `subject` are:
-- P518 applies to part (201 residue hyperedges);
-- P585 point in time (180);
+- P518 applies to part (198 residue hyperedges);
+- P585 point in time (179);
 - P3831 object has role (176);
-- the date-uncertainty bounds P1319 and P1326 (156 each), P8554 (147) and P8555 (144);
-- P5102 (142) and P1480 (127).
+- the date-uncertainty bounds P1326 (153), P1319 (152), P8554 (144) and P8555 (140);
+- P5102 (141) and P1480 (127).
 
-The largest residue hyperedge has 103 vertices. The robust observed core is led by P585, P518, P3831 and P1545,
-and its largest residue hyperedge has 33 vertices [run].
+The largest residue hyperedge has 103 vertices. The robust observed core is led by P585 (279), P518 (240), P3831
+(181) and P1545 (121), and its largest residue hyperedge has 33 vertices [run]. These are all `qualifier`-slot
+properties; no metadata or time role is needed to make the schema cyclic.
 
 ### 3.4 Reading
 
@@ -382,27 +402,27 @@ and its largest residue hyperedge has 33 vertices [run].
    (table × treatment) cells, and a's residues have exactly two more vertices [run]. This settles D-04's worry
    ([P2 research 01](../../p2-role-aware-hif/research/01-requirements-from-kb.md)) and P2 report 04 §8.2's reading.
    Generic hubs distort only descriptive statistics:
-   - component count (1 against 154);
+   - component count (1 against 158);
    - vertex degree (`subject` and `value` sit in all 1,155 hyperedges);
    - anything computed on the 2-section graph, such as treewidth of the primal graph, which a hub makes a clique
      partner of everything. P6 should not report primal-graph measures under a hub naming [derived].
 2. **The main-value role is where naming changes the measurement.** Naming it after its property (d) joins P39's
    main value to P39 used as a qualifier elsewhere. This is the universal-relation reading: one attribute name, one
-   meaning, as Wikidata intends a property to have. It grows the residue relative to b by 15 % (declared), 25 %
-   (robust) and 44 % (all). Typing (c) grows it by 25 %, 46 % and 83 %.
+   meaning, as Wikidata intends a property to have. It grows the residue relative to b by 16 % (declared), 26 %
+   (robust) and 51 % (all). Typing (c) grows it by 24 %, 45 % and 99 %.
 
    Typing also creates vertices such as `subject:Q5` that stand for a class rather than a role, and it depends on
    constraints that are incomplete: 35 % of properties have no subject-type constraint, and 33 % of item-valued
    properties have no value-type constraint. 3,953 properties list more than one class, and the variant turns each
    class list into one role name. Typing is closer to an ER diagram of classes than to a role schema [derived].
-3. **Metadata and time do not move the class, but they do move the core, in either direction.** α-acyclicity is not
-   monotone under adding vertices, so there is no fixed direction:
-   - Naive import (metadata as roles) *enlarges* the residue in the declared (350 → 386) and robust (622 → 733)
-     tables.
-   - It *shrinks* it in the unthresholded table (1,120 → 994), where metadata vertices sit on so many hyperedges
-     that they nest edges that were not nested before.
-   - Adding the time bounds shrinks the residue everywhere, by 1 % to 16 % (e.g. 350 → 340 declared, 1,120 → 942
-     unthresholded).
+3. **Metadata does not move the class, but it does move the core; time barely does.**
+   - Naive import (metadata as roles, P580/P582 as ordinary qualifiers) *enlarges* the residue in every table and
+     variant: under b by 14 % in the declared table (338 → 386), 25 % in the robust table (586 → 733) and 6 % in
+     the unthresholded table (942 → 994); the largest increase is 35 % (c robust, 848 → 1,142) [run].
+   - Including the time bounds changes the residue by at most 5 % (338 → 339 declared, 586 → 591 robust, 942 →
+     942 unthresholded under b; the largest change is c robust, 848 → 886) [run].
+   - α-acyclicity is not monotone under adding vertices or hyperedges, so these directions are empirical, not
+     guaranteed [derived].
 
    So the survey must fix and publish its slot classes and qualifier list. They are part of the measured object,
    not noise [derived].
@@ -429,10 +449,10 @@ Why d:
 
 **Consequences for the survey:**
 - The headline is "α-cyclic; width = …" for every non-trivial table.
-- Report core+qualifier (P2's default) and core+qualifier+time; they differ slightly.
+- Report core+qualifier (P2's default) and core+qualifier+time; they differ by at most 5 % in residue size.
 - Report the naive treatment only to show the effect of metadata.
 - Keep variant b as the sensitivity row. It shows what naming the value after its property adds, and it has the
-  smallest non-trivial core (350 / 522 declared).
+  smallest non-trivial core (338 / 520 declared).
 - Remove `subject` before reporting degree or component statistics.
 - The width computation should start from the GYO residue. It is smaller, and has the same width as the whole
   schema whenever the schema is cyclic [derived]. Each GYO step can be undone without raising the width: a removed
@@ -587,7 +607,8 @@ but the schema file this probe expected (`indra/resources/statements_schema.json
 >      usages (min 0, max 1). A statement with two P580 values cannot fit max 1; please count such statements in
 >      the datasheet. P585 point in time is always `qualifier`.
 >    - `meta`, or a record field instead of a binding:
->      - P2241 and P7452 go to `rank_reason` (DESIGN §3), not to bindings;
+>      - P2241 and P7452 go to `rank_reason` (DESIGN §3), not to bindings. The schema may still declare them as
+>        `meta` usages; P6 leaves `meta` out of the hypergraph either way;
 >      - P1534 end cause becomes the built-in `khg:end_cause` on interval relations, and `meta` otherwise;
 >      - these are `meta`: P8327, P13589, P1810, P14457, P1932, P4970, P813, P854, P248, P1065, P2960, P143, P4656,
 >        P887, P3452, P1683, P5017, P3680, P1310, P805, P2916, P6607, P9570, P7528.
@@ -602,8 +623,9 @@ but the schema file this probe expected (`indra/resources/statements_schema.json
 >    Also record the list version: this is `wd-roles` 2026-09-24, and the meta list is part of it.
 >
 > Why: a `subject` role shared by all relations cannot change the acyclicity class or any hypertree width.
-> Property-scoped or relation-local roles make every schema trivially acyclic. Naming the main value after its
-> property gives each role one meaning across relations. Measurements:
+> Property-scoped main roles (`P39:subject`) change only descriptive statistics. Relation-scoped qualifier roles
+> (`P39:P580`) would make every schema trivially acyclic and hide the structure P6 measures. Naming the main value
+> after its property gives each role one meaning across relations. Measurements:
 > `projects/p6-schema-width/research/02-data-sources-and-naming.md` §3.
 
 ---
@@ -611,17 +633,19 @@ but the schema file this probe expected (`indra/resources/statements_schema.json
 ## 6. Risks to the P6 gate
 
 1. **Width, not class, is the result, and it may be hard to compute exactly.** The Wikidata cores are large:
-   - declared, d: 401 hyperedges on 618 vertices, with residue edges up to 103 vertices;
-   - robust: 779 on 543.
+   - declared, d: 391 hyperedges on 615 vertices, with residue edges up to 103 vertices;
+   - robust, d: 741 on 537, with residue edges up to 33 vertices.
 
    Checking hypertree width ≤ *k* is polynomial for fixed *k*, but the degree grows with *k*. Checking generalized
-   or fractional hypertree width ≤ 2 is already NP-complete ([Gottlob et al., 2020](https://arxiv.org/abs/2002.05239);
-   [hypergraph theory results](../../../kb/01-foundations/hypergraph-theory-results.md) §6). The gate says "the checker reports class and width". The checker should report an upper bound (a
-   decomposition it found) and a lower bound, and call the width exact only when they meet. Biolink's 5-edge core
-   is the likely place for an exact number [derived].
+   or fractional hypertree width ≤ 2 is already NP-complete
+   ([Gottlob et al., 2020](https://arxiv.org/abs/2002.05239);
+   [hypergraph theory results](../../../kb/01-foundations/hypergraph-theory-results.md) §6). The gate says "the
+   checker reports class and width". The checker should report an upper bound (a decomposition it found) and a
+   lower bound, and call the width exact only when they meet. Biolink's 5-edge core is the likely place for an
+   exact number [derived].
 2. **The measured object depends on choices.** The naming, the slot classes, the metadata list and the robust
-   threshold all shift the residue by up to about 80 % (§3.4). They must be fixed, versioned and shared with P3a
-   before the survey runs.
+   threshold all shift the residue: by up to 99 % for typed naming and up to 35 % for naive metadata handling
+   (§3.4). They must be fixed, versioned and shared with P3a before the survey runs.
 3. **Data drift and third-party counts.**
    - The constraints are live (2026-09-24), the SQID counts come from the 2026-08-10 dump, and DeltaBot's from
      2026-09-23.
@@ -636,7 +660,9 @@ but the schema file this probe expected (`indra/resources/statements_schema.json
 
 ## 7. Reproduction
 
-All commands run from the repository root; the venv paths are the session's.
+All commands run from the repository root. The `wd_*` probes, `biolink_survey.py` and `hg_measure.py` need a venv
+with khg-contracts installed from this repository. `biolink_extract.py` and `gocam_quickcheck.py` need pyyaml and
+linkml-runtime 1.11.1, which this run kept in a separate venv.
 
 ```
 python projects/p6-schema-width/research/probes/wd_fetch.py              # SPARQL, templates, SQID -> raw/ + MANIFEST
@@ -670,12 +696,12 @@ gitignored and regenerated by the survey probe.
 - SQID data files, <https://sqid.toolforge.org/data/properties.json> and <https://sqid.toolforge.org/data/statistics.json> (dump date 2026-08-10).
 
 **Biomedical schemas:**
-- Unni, D. R., Moxon, S. A. T., Bada, M., et al. (2022). *Biolink Model: A universal schema for knowledge graphs in clinical, biomedical, and translational science.* Clinical and Translational Science 15(8). <https://doi.org/10.1111/cts.13302>. Title and DOI from the repository's CITATION.cff; volume from memory [unverified].
+- Unni, D. R., Moxon, S. A. T., Bada, M., et al. (2022). *Biolink Model: A universal schema for knowledge graphs in clinical, biomedical, and translational science.* Clinical and Translational Science. <https://doi.org/10.1111/cts.13302>. Authors, title, DOI and ISSN (1752-8054) from the repository's CITATION.cff; the year is not in that file [unverified].
 - Biolink Model repository, tag v4.4.5, commit a4180f818e9722c493788c5ff1f047fde64f13a7, <https://github.com/biolink/biolink-model>.
 - LinkML runtime 1.11.1 (`SchemaView`), <https://pypi.org/project/linkml-runtime/>.
 - Thomas, P. D., Hill, D. P., Mi, H., et al. (2019). *Gene Ontology Causal Activity Modeling (GO-CAM) moves beyond GO annotations to structured descriptions of biological functions and systems.* Nature Genetics. <https://doi.org/10.1038/s41588-019-0500-1>.
 - gocam-py, tag v0.12.0, commit e6f824a5cc2d50ad1fa12081bec0ca5c945c5199, <https://github.com/geneontology/gocam-py>.
-- Hetionet repository README, commit 8a6cc0c, <https://github.com/hetio/hetionet>. The paper is Himmelstein, D. S., et al. (2017), *Systematic integration of biomedical knowledge prioritizes drugs for repurposing*, eLife 6:e26726, <https://doi.org/10.7554/eLife.26726> [DOI resolves; text not read].
+- Hetionet repository README, commit 8a6cc0c, <https://github.com/hetio/hetionet>. The paper is Himmelstein, D. S., et al. (2017), *Systematic integration of biomedical knowledge prioritizes drugs for repurposing*, eLife 6:e26726, <https://doi.org/10.7554/eLife.26726> [DOI resolves; the page was not read, so authors and title are unverified].
 
 **Theory and project context:**
 - Fagin, R. (1983). *Degrees of acyclicity for hypergraphs and relational database schemes.* JACM 30(3). <https://dl.acm.org/doi/10.1145/2402.322390>.
