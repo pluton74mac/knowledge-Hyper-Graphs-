@@ -1,7 +1,7 @@
 ---
 title: Role-aware HIF and the shared contracts
 type: project
-status: exploring
+status: prototyping
 started: 2026-09-23
 depends_on: [kb/04-storage-and-formats/hif-hypergraph-interchange-format.md, kb/09-ecosystem/software-libraries.md, kb/02-knowledge-representation/knowledge-hypergraph-schema-design.md, kb/07-applications/temporal-hyperedges-and-editable-agent-memory.md, kb/03-construction/incremental-and-streaming-construction.md]
 ---
@@ -71,7 +71,59 @@ structural lint, store and export.
   2026-09-23 was byte-identical and every check passed (G1 chain, hash-seed determinism, 180 malformed cases,
   114 store scenarios, smoke replay). Director's rulings on conformance, publishing and deprecation reasons are
   in DESIGN.md §14.
+- 2026-09-23 to 2026-09-24: implementation. The package `khg-contracts` was built in eight staged steps (W0–W13)
+  with an integration gate after each parallel stage; notes per step in [impl-notes/](impl-notes/).
+- 2026-09-24: code review. Eight reviewers (one mutation-testing the gate), one adversarial verifier per
+  reviewer, fixers with regression tests, integration: 54 findings confirmed by reproduction and fixed, 6 refuted,
+  23 low ones triaged. Director's rulings 4–15 and the clarifications the review made normative are in DESIGN.md
+  §14.
+- 2026-09-24: **gate passed.** G1, G2 and G3 pass locally and in CI on GitHub (six jobs: Python 3.10, 3.11 gate,
+  3.13, wheel, examples, evidence).
 
 ## Results and findings
 
+**Gate (PLAN §4): passed on 2026-09-24.**
+
+| Clause | Test | Result |
+|---|---|---|
+| G1: a record round-trips repo format → HIF → XGI and HyperNetX → back with roles intact | `tests/gate/test_roundtrip.py` | The full fixture (59 incidence records, a node in two roles, a node that is both tail and head, ordered roles, literals, nesting) and its directed slice come back identical through C1 → HIF → XGI → HIF → HyperNetX → HIF → C1; every intermediate HIF equals the first; the same digests under five hash seeds |
+| G2: the validator rejects each malformed case in its test list | `tests/gate/test_malformed.py` | All 180 cases of `data/malformed-cases.json` are rejected at their layer with their code, under both JSON Schema engines |
+| G3: one record through queue, structural lint, store and export | `tests/gate/test_smoke.py` | Queue → lint → accept into `MemoryStore` → export as C1 and as HIF, both valid; replay reproduces the decision hash |
+
+The whole suite: 5,876 tests pass on Python 3.11 with all extras; the core tests pass on 3.10 and 3.13; the
+reference store passes all 114 conformance scenarios; `python -m khg_contracts.examples` rebuilds the 151 files of
+[design-examples/](design-examples/) byte for byte.
+
+**Findings.**
+1. **Roles can travel in HIF today, without a schema change.** One incidence record per role binding, with the role
+   in `attrs.role`, a repeated (edge, node) pair where a node holds two roles, and a declaration in `metadata`.
+   Every file of the convention is valid against the published HIF schema (v0.1.0, blob e2105bb).
+2. **Neither library's own HIF reader or writer keeps them.** XGI 0.10.2 drops every incidence attribute and
+   weight; HyperNetX 2.4.3 drops the second record of a repeated pair, fetches its schema over the network on every
+   call, returns `None` instead of raising, and cannot re-read its own directed output
+   ([research/03](research/03-library-probes.md), `tests/evidence/library-hif-evidence.json`).
+3. **Loaders that build the library objects through their public constructors keep them**, exactly, offline and
+   deterministically, including a node that is both tail and head of one fact.
+4. **The HIF standard has no version marker in data files and conflicting version labels**
+   ([research/02](research/02-hif-standard.md)); P2 vendors v0.1.0 by hash and declares its profile in `metadata`.
+5. **The contracts the programme builds on exist and are tested:** C1 (`khg-record/1.0.0`), the relation-type
+   schema language, C2 (`khg-store/1.0.0`, 114 scenarios, capability flags), C3 (`khg-queue/1.0.0` with replay),
+   C5 (`khg-scorers/1.0.0`) and the C4 draft (`khg-c4-items/0.1.0`) that P3a owns.
+
+**Publication (PLAN §5): prepared, not yet shipped.** The owner releases it:
+- `khg-contracts` 1.0.0 on PyPI: steps in [upstream/RELEASE.md](upstream/RELEASE.md) (the name is free on PyPI and
+  TestPyPI, checked 2026-09-23);
+- the HIF issue and, after the maintainers answer, the fixture PR: [upstream/hif-issue.md](upstream/hif-issue.md),
+  [upstream/hif-fixture-pr.md](upstream/hif-fixture-pr.md);
+- the XGI and HyperNetX issues: [upstream/xgi-issue.md](upstream/xgi-issue.md),
+  [upstream/hypernetx-issue.md](upstream/hypernetx-issue.md);
+- the post.
+
 ## Open questions raised
+
+- Will the HIF maintainers accept repeated (edge, node) incidence records? The formal model calls incidences a set;
+  the convention needs readers to keep repeats (DESIGN §12.3).
+- Entity merges: v1 refuses a redirect while any record names the entity (ruling 10); rewriting is planned for 1.2.
+- P3a must confirm the C4 defaults: the memory tolerance rule, the `missing` outcome, and the deprecation reasons
+  that count as a revised value (rulings 3 and 8).
+- P1 will measure what each backend loses; TypeDB 3.x can apply 70 of the 114 scenarios (DESIGN §14 ruling 1).

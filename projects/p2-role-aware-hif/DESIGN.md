@@ -2542,6 +2542,38 @@ Each row settles a question that the critique found open. The Revision log names
 9. **Conformance exit status.** `khg-conformance` exits 1 when a scenario is `failed` or `cantTell`; `passed` and
    `inapplicable` exit 0.
 
+**Director's rulings after the code review (2026-09-24).** The review confirmed 54 findings by reproduction and
+fixed them (`impl-notes/review-*.md`); these are the questions it left open.
+10. **Redirects (d-store-10).** A store never reaches a state whose own export fails validation. A write that sets
+    `redirect_to` on an entity is refused with D020 while any record the store holds names that entity. Rewriting
+    values to follow a redirect stays in 1.2 (§12.2). A conformance scenario for this refusal is a 1.1 addition,
+    so that the v1 suite stays at 114 scenarios.
+11. **Event field checks (d-store-13).** An event whose own fields are malformed is refused before the capability
+    check and before the §6.2 order, as `put` refuses a malformed `actor` or `at` first.
+12. **Violations kept by a trusted load (d-store-09).** A write that leaves such a violation no worse is accepted,
+    but `keys.collisions` still blames an incoming asserted fact that takes part in it (W5's rule). P7 revisits this
+    in 1.1.
+13. **Evidence ids given twice in one new record (d-store-03).** No v1 code covers it: validation accepts such a
+    record and the store keeps both evidence records (checked 2026-09-24). A code joins the registry in 1.1;
+    until then producers must not repeat an evidence id within a record.
+14. **`hif:weight` in C1.** Binding extensions stay passthrough (§2.2, §2.3). `to_hif` refuses a weight that is not a
+    finite number with C010, so no invalid weight reaches a HIF file.
+15. **Retrieval cut-offs (f-scorers-11).** The top k is the first k units by list position; the declared `rank` is
+    a sort key only (W11b). P10 may ask for declared ranks in a minor release.
+
+**Clarifications the review made normative.** Each is implemented and tested; the notes give the evidence.
+- §2.7 and D014: a history may go from `superseded` to `disputed` in one version (an undone supersession resolved
+  by a dispute). An event still may not.
+- §2.8.1: evidence carried into a later version without `supports` keeps the `supports` it resolved to in the
+  first version that carries it. `normalize`'s default (every bid) applies only to evidence a record carries first.
+- §2.3: a time literal's year has at most 16 digits (C004), an instant's at most 17 (C011); an integer literal in
+  JSON has at most 16 digits (J006); JSON nests at most 256 levels (J001), in `jsonio` and in the schema checks.
+- §2.10: the projection inverses take one version per fact; a `positional` width is a positive integer.
+- §5 and §10.2: `Bundle.label` raises R002 for an exact repeat, and P010 in HyperNetX as in XGI. `strict=False`
+  exports a collapse across edges and reports it under `moved_conflict`; `strict=True` raises P005.
+- §6.2: a `put` that moves `status_ref` is D014.
+- §10.2: `write_container` and `container_sha256` raise J005 for a value JSON cannot hold.
+
 ## Implementation plan
 
 The package is built in dependency order. Each step lists its tests and the gate clause they serve (critique
