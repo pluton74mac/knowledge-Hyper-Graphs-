@@ -1,0 +1,181 @@
+{
+ "head": {
+  "vars": [
+   "p",
+   "type",
+   "label"
+  ]
+ },
+ "results": {
+  "bindings": [
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P31"
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#WikibaseItem"
+    },
+    "label": {
+     "type": "literal",
+     "value": "instance of"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P39"
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#WikibaseItem"
+    },
+    "label": {
+     "type": "literal",
+     "value": "position held"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P131"
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#WikibaseItem"
+    },
+    "label": {
+     "type": "literal",
+     "value": "located in the administrative territorial entity"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P166"
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#WikibaseItem"
+    },
+    "label": {
+     "type": "literal",
+     "value": "award received"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P580"
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#Time"
+    },
+    "label": {
+     "type": "literal",
+     "value": "start time"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P582"
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#Time"
+    },
+    "label": {
+     "type": "literal",
+     "value": "end time"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P585"
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#Time"
+    },
+    "label": {
+     "type": "literal",
+     "value": "point in time"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P1365"
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#WikibaseItem"
+    },
+    "label": {
+     "type": "literal",
+     "value": "replaces"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P1534"
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#WikibaseItem"
+    },
+    "label": {
+     "type": "literal",
+     "value": "end cause"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P1855"
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#WikibaseItem"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Wikidata property example"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P2241"
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#WikibaseItem"
+    },
+    "label": {
+     "type": "literal",
+     "value": "reason for deprecated rank"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P813"
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#Time"
+    },
+    "label": {
+     "type": "literal",
+     "value": "retrieved"
+    }
+   }
+  ]
+ }
+}

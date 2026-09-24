@@ -1,0 +1,372 @@
+{
+ "kind": "relation-schema",
+ "format": "khg-relation-schema/1.0.0",
+ "id": "p6-adler",
+ "version": "0.1.0",
+ "label": "Adler's example (HyperBench id 1): alpha-cyclic with ghw 2 < hw 3",
+ "entity_types": [
+  {
+   "id": "Agent"
+  }
+ ],
+ "roles": [
+  {
+   "id": "V1"
+  },
+  {
+   "id": "V2"
+  },
+  {
+   "id": "V9"
+  },
+  {
+   "id": "V3"
+  },
+  {
+   "id": "V10"
+  },
+  {
+   "id": "V4"
+  },
+  {
+   "id": "V5"
+  },
+  {
+   "id": "V6"
+  },
+  {
+   "id": "V7"
+  },
+  {
+   "id": "V8"
+  }
+ ],
+ "relations": [
+  {
+   "id": "E1",
+   "roles": [
+    {
+     "role": "V1",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "V2",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "V9",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    }
+   ]
+  },
+  {
+   "id": "E2",
+   "roles": [
+    {
+     "role": "V2",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "V3",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "V10",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    }
+   ]
+  },
+  {
+   "id": "E3",
+   "roles": [
+    {
+     "role": "V3",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "V4",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    }
+   ]
+  },
+  {
+   "id": "E4",
+   "roles": [
+    {
+     "role": "V4",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "V5",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "V9",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    }
+   ]
+  },
+  {
+   "id": "E5",
+   "roles": [
+    {
+     "role": "V5",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "V6",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "V10",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    }
+   ]
+  },
+  {
+   "id": "E6",
+   "roles": [
+    {
+     "role": "V6",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "V7",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "V9",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    }
+   ]
+  },
+  {
+   "id": "E7",
+   "roles": [
+    {
+     "role": "V7",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "V8",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "V10",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    }
+   ]
+  },
+  {
+   "id": "E8",
+   "roles": [
+    {
+     "role": "V8",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "V1",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    }
+   ]
+  }
+ ]
+}

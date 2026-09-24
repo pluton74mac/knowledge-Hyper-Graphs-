@@ -52,6 +52,10 @@ C1 from P2 (`khg-relation-schema/1.0.0`; `khg_contracts.schema.schema_hypergraph
 
 - 2026-09-24: started, while P3a runs on the owner's Mac. Pace set lower than P2's: fewer parallel designers
   and one review pass.
+- 2026-09-24: implemented [khg-width](khg-width/) (checker, fixtures, tests, solver build script), the survey
+  scripts in [survey/](survey/), the HyperBench manifest and the CI job; the schema files are generated in
+  [results/schemas/](results/schemas/). The survey has not run; its compute budget is the director's next call.
+  Decisions and deviations: [IMPLEMENTATION-NOTES.md](IMPLEMENTATION-NOTES.md).
 
 ## Results and findings
 

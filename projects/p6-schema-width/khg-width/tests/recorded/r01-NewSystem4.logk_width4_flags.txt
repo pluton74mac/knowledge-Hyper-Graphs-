@@ -1,0 +1,42 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/log-k-decomp/log-k-decomp -graph /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/hyperbench/all/NewSystem4.hg -width 4 -t -h -g -heuristic 1 -bench
+							Bag: {FLOWOUTATP2_LV13___92_, FLOWINATP2_LV13___92_}
+							Cover: {lv13:bt:__p2_r1}
+
+							Bag: {POSITIONATINTERN_LV13___92_, MEASUREDPOSITIONATINTERN_LV13___92_}
+							Cover: {lv13:bt:_92__r4}
+
+							Bag: {POSITIONATINTERN_LV13___92_, LV13__92_, COMMANDATP3_LV13___92_}
+							Cover: {lv13:bt:_92__r1}
+
+							Bag: {POSITIONATINTERN_LV13___92_, RESISTANCEATINTERN_LV13___92_, RESINTCONST_LV13___92_}
+							Cover: {lv13:bt:_92__r3}
+						]
+					]
+				]
+			]
+
+			Bag: {FLOWOUTATP2_PROF3___95_, FLOWINATP2_PROF3___95_}
+			Cover: {prof3:bt:__p2_r1}
+
+			Bag: {FLOWINATP1_N12___94_, FLOWOUTATP1_N12___94_}
+			Cover: {n12:bt:__p1_r1}
+		]
+
+		Bag: {RESISTANCEATINTERN_PROF3___95_, PROF3__95_, RESINTCONST_PROF3___95_}
+		Cover: {prof3:bt:_95__r3}
+
+		Bag: {FLOWINATP1_PROF3___95_, FLOWOUTATP1_PROF3___95_}
+		Cover: {prof3:bt:__p1_r1}
+	]
+]
+
+Time: 113.42007 ms
+Time Composition: 
+Heuristic : 19.69938 ms
+Hingetree : 23.79687 ms
+Decomposition : 69.92382 ms
+
+Width:  4
+SCV found!. Not a valid hypertree decomposition!
+Correct:  true
+[exit 0]

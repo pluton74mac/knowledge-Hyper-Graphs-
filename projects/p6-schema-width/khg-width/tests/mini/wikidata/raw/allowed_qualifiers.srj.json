@@ -1,0 +1,268 @@
+{
+ "head": {
+  "vars": [
+   "p",
+   "st",
+   "rank",
+   "q",
+   "novalue",
+   "status"
+  ]
+ },
+ "results": {
+  "bindings": [
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P39"
+    },
+    "st": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/s1"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "q": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P580"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P39"
+    },
+    "st": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/s1"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "q": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P582"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P39"
+    },
+    "st": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/s1"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "q": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P1365"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P39"
+    },
+    "st": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/s1"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "q": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P2241"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P39"
+    },
+    "st": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/s1"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "q": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P1534"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P39"
+    },
+    "st": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/s1"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "q": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P813"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P131"
+    },
+    "st": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/s2"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "q": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P131"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P131"
+    },
+    "st": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/s2"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "q": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P585"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P580"
+    },
+    "st": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/s3"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "q": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P580"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P580"
+    },
+    "st": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/s3"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "q": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P582"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P582"
+    },
+    "st": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/s4"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "q": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P580"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P1855"
+    },
+    "st": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/s5"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "q": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P585"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P166"
+    },
+    "st": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/s6"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "novalue": {
+     "type": "literal",
+     "value": "true"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P31"
+    },
+    "st": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/s7"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#DeprecatedRank"
+    },
+    "q": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P585"
+    }
+   }
+  ]
+ }
+}

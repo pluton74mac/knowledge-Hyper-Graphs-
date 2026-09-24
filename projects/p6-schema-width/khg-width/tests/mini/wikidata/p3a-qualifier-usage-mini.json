@@ -1,0 +1,76 @@
+{
+ "format": "p3a-qualifier-usage/1",
+ "naming": "wd-roles r1",
+ "dump": {
+  "file": "wikidata-20260922-all.json.bz2",
+  "md5": "7f70e4a1858ba6182ea9329a1ef588c5",
+  "date": "2026-09-22"
+ },
+ "all": {
+  "relations": {
+   "P39": {
+    "statements": 20000,
+    "time_model": "interval",
+    "qualifiers": {
+     "P580": {
+      "statements": 15000,
+      "snaks": 15010,
+      "slot": "time"
+     },
+     "P582": {
+      "statements": 11000,
+      "slot": "time"
+     },
+     "P2937": {
+      "statements": 9000,
+      "slot": "qualifier"
+     },
+     "P1365": {
+      "statements": 5,
+      "slot": "qualifier"
+     },
+     "P813": {
+      "statements": 30,
+      "slot": "qualifier"
+     }
+    }
+   },
+   "P131": {
+    "statements": 5000,
+    "qualifiers": {
+     "P131:qualifier": {
+      "statements": 25,
+      "slot": "qualifier"
+     }
+    }
+   },
+   "P166": {
+    "statements": 0,
+    "qualifiers": {}
+   }
+  }
+ },
+ "kept": {
+  "relations": {
+   "P39": {
+    "statements": 2000,
+    "qualifiers": {
+     "P580": {
+      "statements": 1500
+     },
+     "P582": {
+      "statements": 1
+     }
+    }
+   },
+   "P131": {
+    "statements": 100,
+    "qualifiers": {}
+   }
+  }
+ },
+ "out_of_scope": [
+  "P1855",
+  "P2302"
+ ]
+}

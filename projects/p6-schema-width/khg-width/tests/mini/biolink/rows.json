@@ -1,0 +1,70 @@
+[
+ {
+  "class": "association",
+  "abstract": true,
+  "mixin": false,
+  "is_a": "entity",
+  "mixins": [],
+  "subject_range": "named thing",
+  "object_range": "named thing",
+  "qualifiers_formal": [
+   "species context qualifier"
+  ],
+  "domain_slots": [],
+  "meta_slots": [
+   "publications"
+  ]
+ },
+ {
+  "class": "gene to disease association",
+  "abstract": false,
+  "mixin": false,
+  "is_a": "association",
+  "mixins": [],
+  "subject_range": "gene",
+  "object_range": "disease",
+  "qualifiers_formal": [
+   "species context qualifier",
+   "stage qualifier"
+  ],
+  "domain_slots": [
+   "has count"
+  ],
+  "meta_slots": [
+   "publications"
+  ]
+ },
+ {
+  "class": "gene to expression site association",
+  "abstract": false,
+  "mixin": false,
+  "is_a": "association",
+  "mixins": [],
+  "subject_range": "gene",
+  "object_range": "anatomical entity",
+  "qualifiers_formal": [
+   "species context qualifier",
+   "stage qualifier",
+   "quantifier qualifier"
+  ],
+  "domain_slots": [
+   "expression site"
+  ],
+  "meta_slots": []
+ },
+ {
+  "class": "chemical affects gene association",
+  "abstract": false,
+  "mixin": false,
+  "is_a": "association",
+  "mixins": [],
+  "subject_range": "chemical entity",
+  "object_range": "gene",
+  "qualifiers_formal": [
+   "species context qualifier",
+   "quantifier qualifier"
+  ],
+  "domain_slots": [],
+  "meta_slots": []
+ }
+]

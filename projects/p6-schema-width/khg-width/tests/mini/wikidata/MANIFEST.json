@@ -1,0 +1,39 @@
+{
+ "name": "mini-wikidata-property-schemas",
+ "family": "test",
+ "source_url": "constructed for khg-width tests",
+ "retrieved": "2026-09-24",
+ "licence": "CC0-1.0 (constructed)",
+ "files": [
+  {
+   "path": "raw/allowed_qualifiers.srj.json",
+   "sha256": "0c8fa14a55acbeda28c1b0bbc0e49d9041190f778a1c819d63f8f7762e3d81c2",
+   "bytes": 5475
+  },
+  {
+   "path": "raw/properties.srj.json",
+   "sha256": "59a40ff28e9a5a874106234309b818724dcf40b116988b124ccbe3285e93a2e4",
+   "bytes": 3373
+  },
+  {
+   "path": "raw/property_instance_of.srj.json",
+   "sha256": "12ff8dcb358e1214d06b0c676cd2c247117fc44464657ba44186386553efc612",
+   "bytes": 488
+  },
+  {
+   "path": "raw/required_qualifiers.srj.json",
+   "sha256": "81e6f371969826f2a319d7cb6fdc49d982a67add521b02e0645ee80e59f6b879",
+   "bytes": 884
+  },
+  {
+   "path": "raw/sqid-properties.json",
+   "sha256": "68bb247e9062906f5fb2536d1cb1df81ac75ebdca83da9a816ee9b5ca7e1264d",
+   "bytes": 316
+  },
+  {
+   "path": "raw/usage_main_statements.wikitext",
+   "sha256": "62cceb7745c0d6f47e9984da64934fd25a261c7c5bf48510b946fb70f600e174",
+   "bytes": 88
+  }
+ ]
+}

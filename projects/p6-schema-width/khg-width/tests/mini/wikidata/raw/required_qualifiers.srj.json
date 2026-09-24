@@ -1,0 +1,51 @@
+{
+ "head": {
+  "vars": [
+   "p",
+   "st",
+   "rank",
+   "q",
+   "status"
+  ]
+ },
+ "results": {
+  "bindings": [
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P39"
+    },
+    "st": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/r1"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "q": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P1365"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P39"
+    },
+    "st": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/r2"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "q": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P580"
+    }
+   }
+  ]
+ }
+}

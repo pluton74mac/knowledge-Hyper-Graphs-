@@ -1,0 +1,49 @@
+{
+ "schema_id": "p6-wikidata-observed-robust-relation-local",
+ "version": "1.0.0",
+ "file": "schemas/p6-wikidata-observed-robust-relation-local.json.gz",
+ "file_sha256": "fac7f8e13ca521ee9a09c68ba7c977565944cc13db804995dd54c15fd87d66eb",
+ "schema_sha256": "sha256:2237d834523f36ae0035dfa8763d1186cdaacbb2e222ea9b8f1878c479357a50",
+ "source": "wikidata",
+ "table": "observed-robust",
+ "naming": "relation-local",
+ "naming_version": "wd-roles r1",
+ "scope": "dump",
+ "counts_source": "SQID",
+ "counts_date": "2026-08-10 (SQID qs); 2026-09-23 (DeltaBot main statements)",
+ "constraints_date": "2026-09-24 (WDQS)",
+ "thresholds": {
+  "robust_min_uses": 10,
+  "robust_min_share": 0.001
+ },
+ "inputs": {
+  "datasets/knowledge-bases/wikidata-property-schemas/raw/properties.srj.json": "0026a66276404c3b61a2d0629c9d0d22bfba794cabaae2cce4e0a5596062d962",
+  "datasets/knowledge-bases/wikidata-property-schemas/raw/property_instance_of.srj.json": "3b6c9f167249840e8f74f88c2d79b08d7cc242af40dc070bfc4920170763b4e4",
+  "datasets/knowledge-bases/wikidata-property-schemas/raw/allowed_qualifiers.srj.json": "ace533a7269f89bcfeb22c922d603f63f65ee7e83275173b71bd630e99ab2d0c",
+  "datasets/knowledge-bases/wikidata-property-schemas/raw/required_qualifiers.srj.json": "71c6b827e49cc0406c92eb696667fd322e3bf1e9da499278e58ba182a588ef1e",
+  "datasets/knowledge-bases/wikidata-property-schemas/raw/sqid-properties.json": "7885b842f081afdc658d96c10428176e8f199c88f6556427260748fce905cdd4",
+  "datasets/knowledge-bases/wikidata-property-schemas/raw/usage_main_statements.wikitext": "4b488f1af15f2b8f69d0ad1f48482d2386d1c239619fefe6d4141ce0a1177e4c"
+ },
+ "generator": {
+  "khg_width": "0.1.0",
+  "sources": {
+   "khg_width/sources/wikidata.py": "784c25923a800fb1bd8e8ea36e72aca3845ba09a179d6daaec92f385edc4b6a4",
+   "khg_width/data/wd-roles-r1.json": "f90c133cf3665c2c3f095e325f811e29b173974d7ebb16a3c60d98bd107e608a"
+  }
+ },
+ "commit": "5fd5801a40ec-dirty",
+ "notes": {
+  "declared_unknown_qualifier_ids": 0,
+  "observed_unknown_qualifier_ids": 0,
+  "time_bound_added": 260,
+  "slot_qualifier": 7256,
+  "required_qualifier_usages": 553,
+  "slot_time": 1612,
+  "end_cause_as_builtin": 45,
+  "slot_meta": 3503,
+  "relations": 13608,
+  "roles": 39587,
+  "excluded_relations": 57
+ },
+ "licence": "CC0-1.0 (Wikidata structured data); only numbers are taken from the DeltaBot templates"
+}

@@ -1,0 +1,31 @@
+{
+ "schema_id": "p6-biolink-formal-domain-global",
+ "version": "1.0.0",
+ "file": "schemas/p6-biolink-formal-domain-global.json",
+ "file_sha256": "0dc2a140cf6669b947e343ad52f6134eeaf2616125d65e5cf2cf50cdcecab422",
+ "schema_sha256": "sha256:b4167da9ec56da2cf4d3460b884cb38a88faa549a0c30b4df75997ef070b8fe6",
+ "source": "biolink",
+ "table": "formal-domain",
+ "naming": "global",
+ "naming_version": "Biolink Model v4.4.5 slot names",
+ "scope": null,
+ "counts_source": null,
+ "counts_date": null,
+ "biolink": {
+  "version": "v4.4.5",
+  "commit": "a4180f818e9722c493788c5ff1f047fde64f13a7"
+ },
+ "inputs": {
+  "datasets/knowledge-bases/biolink-model/raw/biolink-model.yaml": "7a0e3b3b9e09505d09f9511fed45cb2ac9ad209815017a28970d6a81d20101ed",
+  "datasets/knowledge-bases/biolink-model/raw/attributes.yaml": "a8be9078ee33492141b1043989dc6ee05d51b9eaeb7e35d3dda1fef7fd42e07d",
+  "datasets/knowledge-bases/biolink-model/raw/LICENSE": "8cf88c8c0e912fee74bea0fb2bac7065beb251be971e896cc974fdb91ca7b6d9"
+ },
+ "generator": {
+  "khg_width": "0.1.0",
+  "sources": {
+   "khg_width/sources/biolink.py": "fc66d48501f2c33fd39aaa2ccb1af9fd0d674551e8de37c77058ef9176774243"
+  }
+ },
+ "commit": "5fd5801a40ec-dirty",
+ "licence": "Biolink Model: CC0-1.0 (the model's license field); repository Apache-2.0; credited by name and version"
+}
