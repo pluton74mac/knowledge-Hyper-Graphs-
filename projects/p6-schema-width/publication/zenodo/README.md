@@ -30,10 +30,10 @@ to the repository root, so the archive can be copied into a checkout.
 | `datasets/knowledge-bases/wikidata-property-schemas/raw/sqid-*.json` | *only with `--with-sqid`*: SQID's `properties.json` and `statistics.json` (per-property qualifier counts `qs` from the Wikidata dump of 2026-08-10) | 2 |
 | `datasets/knowledge-bases/biolink-model/raw/` | Biolink Model v4.4.5 (commit `a4180f818e9722c493788c5ff1f047fde64f13a7`): `biolink-model.yaml`, its local import `attributes.yaml`, and the repository's `LICENSE` | 3 |
 | `datasets/**/MANIFEST.json` | the manifests: source URL, SPARQL query text, retrieval time, bytes and sha256 of every raw file; also the manifests of the Wikidata JSON dump of 2026-09-22 and of the HyperBench run data, whose files are not in this deposit | 4 |
-| `projects/p6-schema-width/results/schemas/` | the 9 generated schema files (`khg-relation-schema/1.0.0`; Wikidata as deterministic `.json.gz`, Biolink as `.json`), each with `<name>.provenance.json` (input sha256s, naming version `wd-roles r1`, count source and dates, thresholds, generator version and source hashes, commit) | 18 |
+| `projects/p6-schema-width/results/schemas/` | the 13 generated schema files (`khg-relation-schema/1.0.0`): 10 Wikidata files as deterministic `.json.gz` (declared; observed-robust and observed-all over the whole dump and over the corpus slice; each under wd-roles r1 and the relation-local control) and 3 Biolink files as `.json`, each with `<name>.provenance.json` (input sha256s, naming version `wd-roles r1`, count source, scope and dates, thresholds, generator version and source hashes, commit) | 26 |
 | `projects/p6-schema-width/results/reports/` | one full `khg-width --json` report per survey row (`.json.gz`: class, witness, widths with methods, certificates, lower-bound witnesses, every solver attempt) and its run log (`.log`) | 2 per row |
-| `projects/p6-schema-width/results/` | `survey.csv`, `survey.md`, `survey.json` (the table), `figure-widths.{svg,png}` and `figure-data.csv`, `hyperbench-baseline.json`, `solver-log.jsonl` (every solver attempt, disagreement and demotion), `machine.json` (platform, tool versions and binary sha256), `README.md` | 10 or more |
-| `projects/p3a-clean-nary-corpus/qualifier-usage-20260922.json` | *when present at the commit*: exact qualifier-usage counts from one pass over the Wikidata JSON dump of 2026-09-22, the count source of the observed rows after their re-run | 0 or 1 |
+| `projects/p6-schema-width/results/` | `survey.csv`, `survey.md`, `survey.json` (the table), `figure-widths.{svg,png}` and `figure-data.csv`, `hyperbench-baseline.json`, `solver-log.jsonl` (every solver attempt, disagreement and demotion), `machine.json` (platform, tool versions and binary sha256, the load each row ran under), `p3a-crosscheck.json` (the count file's own slot and time-model classification against the generator's), `README.md` | 11 |
+| `projects/p3a-clean-nary-corpus/qualifier-usage-20260922.json` | exact qualifier-usage counts per (property, qualifier), in statements and snaks, from one pass over the Wikidata JSON dump of 2026-09-22, in two scopes: every item and property entity (`all`) and the items with an English Wikipedia article (`kept`); the count source of the observed schemas | 1 |
 
 **Not in this deposit, and why:**
 
@@ -43,7 +43,8 @@ to the repository root, so the archive can be copied into a checkout.
 - **The Wikidata JSON dump** of 2026-09-22 (about 103 GB): public at dumps.wikimedia.org; its manifest is included.
 - **The GO-CAM schema** used by one research probe: not part of the survey, and its licence file is a placeholder.
 - **The checker and the survey scripts**: code, MIT, in the repository at the commit above.
-- **Superseded results** (SQID-based observed rows replaced after the re-run, if any): in the repository history.
+- **Superseded results**: the first observed schemas, built from SQID's counts (dump of 2026-08-10), and their rows,
+  replaced on 2026-09-25: in the repository under `projects/p6-schema-width/results/superseded/`.
 
 ## Licences
 
@@ -75,21 +76,28 @@ to the repository root, so the archive can be copied into a checkout.
    https://query.wikidata.org/sparql (main graph) and fetched the DeltaBot templates by revision id and SQID's files;
    it wrote the manifest with query text, retrieval time and sha256. The Biolink files were fetched from GitHub at
    the pinned commit.
-2. **Generate.** `projects/p6-schema-width/survey/run_survey.py generate` builds the schema files with
+2. **Count (2026-09-24 to 2026-09-25).** The slicer of the companion n-ary corpus
+   (`projects/p3a-clean-nary-corpus/slice/wdslice.py`, commit `a3bb518`) read `wikidata-20260922-all.json.bz2`
+   once, after matching it against the published size, md5 and sha1, and wrote the qualifier-usage counts under the
+   same naming, `wd-roles r1`. The file records the dump's checksums and the slicer's commit.
+3. **Generate.** `projects/p6-schema-width/survey/run_survey.py generate --p3a-counts …` builds the schema files with
    `khg_width.sources.wikidata` and `khg_width.sources.biolink` under the role naming `wd-roles r1`
    (`projects/p6-schema-width/wd-roles.md`), after verifying every raw file against its manifest. The output is
    deterministic (canonical JSON; gzip with mtime 0).
-3. **Measure.** `run_survey.py run` runs `khg-width FILE --slots … --time-limit 600 --solver auto --json` per row,
+4. **Measure.** `run_survey.py run` runs `khg-width FILE --slots … --time-limit 600 --solver auto --json` per row,
    with BalancedGo (commit `872c662`) and log-k-decomp (v1.1.0, `5e021dd`) built by
    `projects/p6-schema-width/khg-width/scripts/build-solvers.sh`; external-solver attempts are capped at 120 s each and
    1,200 s per row. Every upper bound in a report carries a decomposition validated on the schema hypergraph, and
    every lower bound a witness.
-4. **Baseline, table, figure.** `survey/hyperbench_baseline.py` recomputes the HyperBench distribution from the
+5. **Baseline, table, figure.** `survey/hyperbench_baseline.py` recomputes the HyperBench distribution from the
    Zenodo run data; `run_survey.py table` and `survey/make_figure.py` write the table and figure.
 
-The observed schemas are built from qualifier-usage counts: SQID's (dump of 2026-08-10) over DeltaBot main-statement
-counts (2026-09-23) until they are replaced by exact counts from the 2026-09-22 dump. The `counts_source` and
-`counts_date` columns of `survey.csv`, and each schema's provenance, say which was used.
+The observed schemas are built from those counts: scope `dump` from `all`, scope `slice` from `kept` (a property is a
+relation when it has a main statement in the scope; a qualifier is a role of it with at least one use, or, for
+observed-robust, at least 10 uses and 0.1 % of the property's main statements). The `counts_source`, `counts_date`
+and `scope` columns of `survey.csv`, and each schema's provenance, say so. `p3a-crosscheck.json` lists where the
+count file's own `slot` labels differ from the generator's: all of them are the two vocabulary differences explained
+in the repository's `projects/p6-schema-width/IMPLEMENTATION-NOTES.md` §8, and none reaches a measured hypergraph.
 
 ## How to reproduce
 
@@ -120,14 +128,16 @@ projects/p6-schema-width/khg-width/scripts/build-solvers.sh          # optional;
 
   Classes, exact values and certificates must match; bounds found under time limits are machine-dependent and may
   differ. About 1.25 to 1.5 hours on 4 cores with both solvers.
-- **Reproduce from the raw snapshot** with `projects/p6-schema-width/survey/reproduce.sh --out /tmp/p6-full --jobs 3`
-  (add `--p3a-counts projects/p3a-clean-nary-corpus/qualifier-usage-20260922.json` when the observed rows use those
-  counts). Its step 2 verifies **every** file listed in the Wikidata manifest (38) against its sha256, and the
-  generator reads `sqid-properties.json` and `usage_main_statements.wikitext`. The SQID and DeltaBot files are in this
-  copy only if it was assembled with `--with-sqid` and `--with-deltabot` (see the line near the top). Otherwise the
-  DeltaBot templates can be fetched again by the revision URLs in the manifest (identical bytes are expected but
-  `[unverified]`), and SQID's files cannot, since SQID overwrites them; the committed schema files, whose sha256 is
-  pinned in `survey.csv`, are then the measured object. The HyperBench zips must be fetched from Zenodo into
+- **Reproduce from the raw snapshot** with `projects/p6-schema-width/survey/reproduce.sh --p3a-counts
+  projects/p3a-clean-nary-corpus/qualifier-usage-20260922.json --out /tmp/p6-full --jobs 3`. The schema files depend
+  only on the WDQS results and the qualifier-usage counts: rebuilt with the SQID and DeltaBot data emptied, all ten
+  Wikidata files came out byte-identical (checked 2026-09-25). The scripts still *read* those files, though: step 2
+  verifies **every** file listed in the Wikidata manifest (38) against its sha256, and the generator loads
+  `sqid-properties.json` and `usage_main_statements.wikitext`. They are in this copy only if it was assembled with
+  `--with-sqid` and `--with-deltabot` (see the line near the top). Otherwise the DeltaBot templates can be fetched
+  again by the revision URLs in the manifest (identical bytes are expected but `[unverified]`), and SQID's files
+  cannot, since SQID overwrites them; without them the scripts stop at step 2, and the committed schema files, whose
+  sha256 is pinned in `survey.csv`, are the measured object. The HyperBench zips must be fetched from Zenodo into
   `datasets/hypergraph-benchmarks/hyperbench/raw/` (the manifest gives the URLs; Zenodo returns identical bytes).
 
 ## Citation
