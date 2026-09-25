@@ -4,7 +4,7 @@ wd-declared-wd-roles-r1-cqt,wikidata,declared,wd-roles-r1,"core,qualifier,time",
 wd-declared-relation-local-cq,wikidata,declared,relation-local,"core,qualifier",True,1,1,True,0,0
 wd-declared-relation-local-cqt,wikidata,declared,relation-local,"core,qualifier,time",True,1,1,True,0,0
 wd-observed-robust-wd-roles-r1-cq,wikidata,observed-robust,wd-roles-r1,"core,qualifier",False,4,68,False,748,542
-wd-observed-robust-wd-roles-r1-cqt,wikidata,observed-robust,wd-roles-r1,"core,qualifier,time",False,4,71,False,755,545
+wd-observed-robust-wd-roles-r1-cqt,wikidata,observed-robust,wd-roles-r1,"core,qualifier,time",False,4,68,False,765,552
 wd-observed-robust-relation-local-cq,wikidata,observed-robust,relation-local,"core,qualifier",True,1,1,True,0,0
 wd-observed-robust-relation-local-cqt,wikidata,observed-robust,relation-local,"core,qualifier,time",True,1,1,True,0,0
 wd-observed-all-wd-roles-r1-cq,wikidata,observed-all,wd-roles-r1,"core,qualifier",False,3,61,False,1441,2012

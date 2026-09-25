@@ -7,9 +7,9 @@
 | wd-declared-relation-local-cq | wikidata | relation-local | core,qualifier | 1155 / 9999 | berge (join tree) | 0 / 0 | 1 | 1 | 1 | 116 |
 | wd-declared-relation-local-cqt | wikidata | relation-local | core,qualifier,time | 1155 / 10815 | berge (join tree) | 0 / 0 | 1 | 1 | 1 | 118 |
 | wd-observed-robust-wd-roles-r1-cq | wikidata dump | wd-roles-r1 | core,qualifier | 13608 / 13677 | cyclic (gyo_residue 748) | 748 / 527 | [4, 68] | [4, 29] | [63/19, 79/3] | [55, 131] |
-| wd-observed-robust-wd-roles-r1-cqt | wikidata dump | wd-roles-r1 | core,qualifier,time | 13608 / 13677 | cyclic (gyo_residue 755) | 755 / 530 | [4, 71] | [4, 32] | [63/19, 1015/36] | [56, 134] |
+| wd-observed-robust-wd-roles-r1-cqt | wikidata dump | wd-roles-r1 | core,qualifier,time | 13608 / 13677 | cyclic (gyo_residue 765) | 765 / 537 | [4, 68] | [4, 31] | [63/19, 103/4] | [57, 133] |
 | wd-observed-robust-relation-local-cq | wikidata dump | relation-local | core,qualifier | 13608 / 34472 | berge (join tree) | 0 / 0 | 1 | 1 | 1 | 33 |
-| wd-observed-robust-relation-local-cqt | wikidata dump | relation-local | core,qualifier,time | 13608 / 36084 | berge (join tree) | 0 / 0 | 1 | 1 | 1 | 35 |
+| wd-observed-robust-relation-local-cqt | wikidata dump | relation-local | core,qualifier,time | 13608 / 38818 | berge (join tree) | 0 / 0 | 1 | 1 | 1 | 35 |
 | wd-observed-all-wd-roles-r1-cq | wikidata dump | wd-roles-r1 | core,qualifier | 13608 / 14158 | cyclic (gyo_residue 1441) | 1441 / 1984 | [3, 61] | [3, 39] | [2, 75/2] | [760, 1248] |
 | wd-observed-all-wd-roles-r1-cqt | wikidata dump | wd-roles-r1 | core,qualifier,time | 13608 / 14158 | cyclic (gyo_residue 1446) | 1446 / 1987 | [3, 61] | [3, 39] | [11/5, 75/2] | [762, 1195] |
 | wd-observed-all-relation-local-cq | wikidata dump | relation-local | core,qualifier | 13608 / 83426 | berge (join tree) | 0 / 0 | 1 | 1 | 1 | 760 |

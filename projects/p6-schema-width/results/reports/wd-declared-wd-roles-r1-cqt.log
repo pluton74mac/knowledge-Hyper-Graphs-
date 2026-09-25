@@ -1,1 +1,1 @@
-$ -m khg_width /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/results/schemas/p6-wikidata-declared-wd-roles-r1.json.gz --slots core,qualifier,time --time-limit 600.0 --solver auto --json
+$ -m khg_width projects/p6-schema-width/results/schemas/p6-wikidata-declared-wd-roles-r1.json.gz --slots core,qualifier,time --time-limit 600.0 --solver auto --json
