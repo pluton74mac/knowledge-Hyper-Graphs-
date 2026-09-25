@@ -1,0 +1,319 @@
+{
+ "review": "P1 review 01 (first half)",
+ "date": "2026-09-25",
+ "scope": {
+  "commits": [
+   "12159f8",
+   "bb7b4d4",
+   "39e339b",
+   "123e9ad",
+   "checkpoints 03df3bc..67ac4ba"
+  ],
+  "diff_bases": {
+   "p1": "2d9380c",
+   "khg_contracts": "eb672d0"
+  }
+ },
+ "verdict": "The first half's conformance and fidelity claims reproduce byte for byte, and the ruling-17 refactor is behaviour-preserving (P2 suite green; differential of about 55,000 operations identical). The adapters are not yet fit for the second half's timings: R-01, R-02 and R-03 must be fixed, and R-06 decided, first.",
+ "counts": {
+  "high": 3,
+  "medium": 5,
+  "low": 7
+ },
+ "findings": [
+  {
+   "id": "R-01",
+   "severity": "high",
+   "lens": [
+    2
+   ],
+   "verdict": "CONFIRMED",
+   "title": "Oxigraph load never calls bulk_extend; the whole load is one SPARQL INSERT DATA update",
+   "where": [
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/oxigraph.py:317-324",
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/oxigraph.py:297",
+    "projects/p1-store-bakeoff/DESIGN.md:63",
+    "projects/p1-store-bakeoff/IMPLEMENTATION-NOTES.md:95"
+   ],
+   "defect": "load() sets self._bulk = True inside `with self.writing():` and resets it in a finally that runs when `return` leaves the try, before the with block exits; transaction() tests self._bulk only after its yield (at commit) and always sees False. Every load, into an empty store too, commits one Store.update with every quad as INSERT DATA text; the bulk_extend and clear-on-failure branch is dead and untested.",
+   "evidence": "A proxy on `store` recorded the calls during OxigraphStore(...).load(P2 fixture): [('update', 116499)], one update of 116,499 characters, no bulk_extend; 871 quads held afterwards.",
+   "fix": "Hold the flag across the whole with block (self._bulk = True; try: with self.writing(): return TableStore.load(...) finally: self._bulk = False) and add a test that bulk_extend is called for a load into an empty store and that a failed load leaves the store empty."
+  },
+  {
+   "id": "R-02",
+   "severity": "high",
+   "lens": [
+    2
+   ],
+   "verdict": "CONFIRMED",
+   "title": "load issues 1-4 point queries per record before the bulk write (TableStore's per-id checks through the version table)",
+   "where": [
+    "src/khg_contracts/store/memory.py:220",
+    "src/khg_contracts/store/memory.py:265",
+    "src/khg_contracts/store/memory.py:341",
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/sql.py:258-270",
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/neo4j.py:324-339",
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/typedb.py:531",
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/typedb.py:579-586"
+   ],
+   "defect": "The trusted bulk path first runs _carry_loaded (table.current per hyperedge id) and _versions (table.latest_version and table.entries per id), plus TypeDB's _cannot_hold (table.current per entity); each is a backend round trip, even when the store is empty (a fact the SQL and Neo4j adapters already compute as bulk_empty). Only then do COPY / executemany / UNWIND / the TypeDB inserts run.",
+   "evidence": "Round trips during load of P2's 40-record fixture into an empty store: SQLite 158 SELECTs + 3 executemany; PostgreSQL 159 queries + 3 other statements + 3 COPY; Neo4j 103 Cypher; TypeDB 120 TypeQL (36 records held); Oxigraph 41 SPARQL; HIF 0. SQLite breakdown: 120 from _versions, 36 from _carry_loaded.",
+   "fix": "When a bulk load starts on an empty store, answer current/entries/latest_version without querying (nothing held plus the table's own buffer), or prefetch the container's ids in one query per chunk, or add an optional batched member (e.g. prefetch(ids)) to the version-table interface; add a test bounding the round trips of a load.",
+   "impact": "L1 would time N client-server round trips per record rather than the native bulk paths of DESIGN §2 (inferred; no timings in the first half)."
+  },
+  {
+   "id": "R-03",
+   "severity": "high",
+   "lens": [
+    3,
+    4
+   ],
+   "verdict": "CONFIRMED",
+   "title": "TypeDB load(on_missing='skip') of a container that is not complete fails whole (player_not_held), contrary to build ruling 4 (Q4) and P2 ruling 18",
+   "where": [
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/typedb.py:486-490",
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/typedb.py:523-557",
+    "projects/p1-store-bakeoff/README.md:80-81",
+    "projects/p2-role-aware-hif/DESIGN.md (§14 ruling 18)"
+   ],
+   "defect": "A fact whose player is neither held nor loaded is refused only at flush, by a ValidationError raised inside the write transaction; _missing never sees it, so load(on_missing='skip') fails as a whole instead of skipping and counting the fact.",
+   "evidence": "P2 fixture minus ex:Paris, header complete=false. MemoryStore and SQLite: {'records': 39, 'versions': 39, 'skipped': []}. TypeDB: ValidationError () {'id': 'f:born-louis14-paris', 'cannot_hold': {'reason': 'player_not_held', 'player': 'ex:Paris'}}, and 0 records held afterwards.",
+   "fix": "Collect the container's ids and kinds before TableStore.load; make _cannot_hold refuse a fact whose entity or fact players are neither held nor in that set, so _missing skips it and its referrers; keep the flush-time check as a guard; test with an incomplete container."
+  },
+  {
+   "id": "R-04",
+   "severity": "medium",
+   "lens": [
+    4
+   ],
+   "verdict": "CONFIRMED",
+   "title": "PostgreSQL key guard refuses a legal batch that moves preferred between two facts (raw psycopg ExclusionViolation)",
+   "where": [
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/postgres.py:196-208",
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/postgres.py:123-124",
+    "projects/p1-store-bakeoff/IMPLEMENTATION-NOTES.md:80",
+    "projects/p1-store-bakeoff/DESIGN.md (§3.1)"
+   ],
+   "defect": "Guard rows are deleted and inserted per statement, in batch order, under a non-deferred PRIMARY KEY ... WITHOUT OVERLAPS; a legal batch that moves preferred from fact A to fact B fails whenever B comes first. The claim 'It never refuses what the write path accepts' is false.",
+   "evidence": "put(entities); put([king-14 rank preferred, king-14b copy rank normal]); put([king-14b -> preferred, king-14 -> normal]). MemoryStore and SQLite accept (king-14 normal, king-14b preferred); PostgreSQL: ExclusionViolation 'conflicting key value violates exclusion constraint \"key_period_pkey\"'. Conformance does not reach this case.",
+   "fix": "Buffer the guard changes of a write and apply them at flush (delete the rows of every touched fact, then insert), or make the constraint DEFERRABLE INITIALLY DEFERRED if PostgreSQL 18 allows it for WITHOUT OVERLAPS; add the swap as a test."
+  },
+  {
+   "id": "R-05",
+   "severity": "medium",
+   "lens": [
+    4
+   ],
+   "verdict": "CONFIRMED",
+   "title": "PostgreSQL collation check ignores the locale provider: an ICU database with datcollate 'C' is accepted and sorts ids out of code-point order",
+   "where": [
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/postgres.py:57-69",
+    "projects/p1-store-bakeoff/khg-bakeoff/tests/test_adapters.py:180",
+    "projects/p1-store-bakeoff/DESIGN.md (§3.1)"
+   ],
+   "defect": "The adapter creates its database with LOCALE 'C' from template0 and accepts it when datcollate and datctype are 'C', without reading datlocprovider or datlocale. On an ICU-provider cluster, LOCALE 'C' gives an ICU database with locale en-US-u-va-posix and datcollate = datctype = 'C'; ORDER BY id and id > after then follow ICU order.",
+   "evidence": "Scratch cluster initdb --locale-provider=icu --icu-locale=en-US --locale=C (port 5419): the adapter created khg_bakeoff as ('i', 'C', 'C', 'en-US-u-va-posix'), accepted it, and 4 of 24 edge queries differed from MemoryStore (the astral node's id order, the pages after f:ł and after f:東京, the find on the astral catalyst). A pre-existing ICU database with LC 'C' on the local server: 5 of 24 differed. A libc cluster with a C.utf8 default (port 5420, the CI-like case): the adapter's database is libc 'C' and 24/24 match; a pre-existing C.utf8 database is refused. test_postgres_collation_and_key_guard asserts only datcollate == 'C' and would pass; test_fidelity[postgres] would fail.",
+   "fix": "Create the database with LOCALE_PROVIDER libc LOCALE 'C' (or builtin with BUILTIN_LOCALE 'C'), check datlocprovider ('c' with datcollate 'C', or 'b' with datlocale 'C'), or put COLLATE \"C\" on the id and ref columns; add the provider and an ordering probe to the test."
+  },
+  {
+   "id": "R-06",
+   "severity": "medium",
+   "lens": [
+    2
+   ],
+   "verdict": "CONFIRMED",
+   "title": "Reads are not 'one native query each'; round trips and Python work differ by adapter (N+1 reassembly, TypeDB find in Python, degree via incident, HIF in-process)",
+   "where": [
+    "projects/p1-store-bakeoff/DESIGN.md:40",
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/oxigraph.py:432-438",
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/typedb.py:436-452",
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/typedb.py:624-702",
+    "src/khg_contracts/store/base.py (degree, get_many, supersession_walk, export)",
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/hif.py"
+   ],
+   "defect": "The id selection is one native query everywhere except HIF. Record reassembly is batched in SQL (two queries per result set) and Neo4j (one) but one query per record in Oxigraph and TypeDB (two for a TypeDB entity). TypeDB find fetches all candidate ids (no limit push-down), reads each candidate from khg-bindings to run the injective match in Python, then fetches the answers again. degree is len(incident()), so it rebuilds every incident record; get_many is one get per id, supersession_walk one find per level, export per record. HIF answers every read with MemoryStore logic over an in-memory index (by design).",
+   "evidence": "Round trips (SQL / Neo4j / Oxigraph / TypeDB): export('khg-json') of the fixture 4 / 2 / 41 / 59 (36 records); incident(ex:KingOfFrance), 2 answers: 4 / 3 / 4 / 4; find(position_held, []), 2 answers: 3 / 2 / 3 / 5; get(f:king-14): 2 / 1 / 1 / 1. Every per-write cache (SQLTable, OxigraphTable, Neo4jTable, TypeDBTable) is reset at the end of the write, so no read is served from a Python mirror.",
+   "fix": "Batch reassembly in Oxigraph (VALUES) and TypeDB (one fetch per id set); push limit down where TypeQL decides the match; give degree a native count or report Q12 as incident + len; label HIF reads as in-process; record the round trips per query in DESIGN §6 before timing.",
+   "impact": "Q1-Q14 would partly measure adapter strategy and Python loops rather than the engines (Q4 and Q10 on TypeDB and Oxigraph, Q12 everywhere, HIF throughout); inferred, since nothing is timed yet."
+  },
+  {
+   "id": "R-07",
+   "severity": "medium",
+   "lens": [
+    1
+   ],
+   "verdict": "CONFIRMED",
+   "title": "The public version-table interface is incomplete: the header and documents are private TableStore state that every adapter persists and restores",
+   "where": [
+    "src/khg_contracts/store/table.py",
+    "src/khg_contracts/store/memory.py:258-260",
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/sql.py:273-279",
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/oxigraph.py:282-330",
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/neo4j.py:310-345",
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/typedb.py:566-592",
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/hif.py:130-182",
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/native.py:175"
+   ],
+   "defect": "load writes TableStore._header and _documents; the interface has no hook to persist them and no way to restore them, and its rollback contract covers only the table, so every adapter reads, writes and restores these private attributes. NativeReads copies TableStore's argument and flag check order by hand. Entry, VersionTable and bound_nodes are re-exported with __module__ khg_contracts.store._table. Imports are public (ruling 2), but the adapters still depend on private state ([R01] §9 risk 1).",
+   "evidence": "A TableStore subclass written to the documented contract rolls its table back when the commit fails. After a failed load the table holds 0 ids, but info()['header'] still reports the failed load's header and the clock moved from 2026-10-01T00:00:00Z to 2026-10-01T00:00:01Z.",
+   "fix": "Add documented hooks (for example save_state(header, documents) inside the write's transaction and restore_state() on rollback), state in store.table what TableStore does not roll back (header, documents, clock), and expose the read-argument checks as public helpers."
+  },
+  {
+   "id": "R-08",
+   "severity": "medium",
+   "lens": [
+    4
+   ],
+   "verdict": "CONFIRMED",
+   "title": "README gate table and finding 2 hide HIF's silent loss of an entity's recorded_by",
+   "where": [
+    "projects/p1-store-bakeoff/README.md:110-117",
+    "projects/p1-store-bakeoff/README.md:123-124",
+    "commit 39e339b message"
+   ],
+   "defect": "HIF answers get(entity) without recorded_by and does not refuse. fidelity.json records it as store_field_differences (22 fixture, 20 edge) and fidelity.md shows '1. Store fields: 22 / – / 20', but the README's column 1 shows HIF as '0, 0 / not loaded / 0, 0'. Finding 2 ('No backend loses anything silently. Every difference in a round trip is a record the store skipped') contradicts finding 5.",
+   "evidence": "results/fidelity.json backends.hif.datasets.{fixture,edge}.round_trip.store_field_differences: 22 and 20 records, each ['recorded_by'].",
+   "fix": "Add the store-field count to column 1 as fidelity.md has it, and qualify finding 2: no record is lost silently, but the HIF format silently drops an entity's recorded_by (finding 5, ruling 18)."
+  },
+  {
+   "id": "R-09",
+   "severity": "low",
+   "lens": [
+    4
+   ],
+   "verdict": "CONFIRMED",
+   "title": "Number 2's 'literals as written' is read from a canonical-JSON copy per binding",
+   "where": [
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/rows.py:168-182",
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/sql.py:459-465",
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/oxigraph.py:470-488",
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/neo4j.py:466-481",
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/fidelity.py:241-246"
+   ],
+   "defect": "In the three layouts that score 20/20 the literal as written comes from a JSON text copy per binding (binding.value_json, khg:valueJSON from P2's projection, BINDS.value_json), and their multiset check recomputes identity from that JSON rather than the stored ident. [R01] D5 defined number 2 as 'without payload or JSON copies'; DESIGN §5.1 narrowed it to 'without the record-level copies' without saying so.",
+   "evidence": "Code as cited; native_binding() builds value from value_json for every non-node kind.",
+   "fix": "Label the column 'literal JSON per binding kept' and note the narrowing of D5 in DESIGN §5.1, or measure from typed native values."
+  },
+  {
+   "id": "R-10",
+   "severity": "low",
+   "lens": [
+    4
+   ],
+   "verdict": "CONFIRMED",
+   "title": "Number 3 compares empty with empty on skipped hazards",
+   "where": [
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/fidelity.py:362-373",
+    "projects/p1-store-bakeoff/README.md:112-117"
+   ],
+   "defect": "The reference drops what the backend skipped, so a query aimed at a skipped hazard compares an empty answer, or a refusal, with the same. This follows DESIGN §5.1, but the headline 13/13, 24/24 reads as full agreement.",
+   "evidence": "Against a full-capability reference the answer changes for 10 of TypeDB's 24 edge queries and 1 of its 13 fixture queries, and for the 3 far-future queries on SQLite, Oxigraph and Neo4j. TypeDB's 24/24 includes 2 answers both sides refused, and its 13/13 includes 1.",
+   "fix": "Report 'same / compared (n touch skipped records, m both refused)'."
+  },
+  {
+   "id": "R-11",
+   "severity": "low",
+   "lens": [
+    6
+   ],
+   "verdict": "CONFIRMED",
+   "title": "P2 §6.5 incidence row (A1) still describes a key constraint over every fact",
+   "where": [
+    "projects/p2-role-aware-hif/DESIGN.md:1604",
+    "projects/p2-role-aware-hif/DESIGN.md:1612-1622"
+   ],
+   "defect": "The amended row keeps EXCLUDE ... WITH && or WITHOUT OVERLAPS over all facts, with 'rank exceptions are handled in code'. Code cannot relax a database constraint, and the build found that such a constraint refuses legal D016 states (IMPLEMENTATION-NOTES §3). A4 omits the build's stronger TypeDB finding, SVL41 (no relation type without roles).",
+   "evidence": "D016 (P2 DESIGN line 453) allows exactly one preferred fact among several holding facts; IMPLEMENTATION-NOTES §3 restricts the guard to current asserted preferred facts.",
+   "fix": "Say that the constraint covers current asserted preferred facts only, with the rest of D016 in code, citing IMPLEMENTATION-NOTES §3; add SVL41 to A4."
+  },
+  {
+   "id": "R-12",
+   "severity": "low",
+   "lens": [
+    7
+   ],
+   "verdict": "CONFIRMED",
+   "title": "Engine and client licences are not stated in P1's deliverables",
+   "where": [
+    "projects/p1-store-bakeoff/khg-bakeoff/README.md",
+    "projects/p1-store-bakeoff/start-servers.sh",
+    "projects/p1-store-bakeoff/README.md",
+    "projects/p1-store-bakeoff/results/"
+   ],
+   "defect": "None of P1's deliverables names a licence: Neo4j Community GPL v3, TypeDB CE MPL 2.0, PostgreSQL Licence, psycopg LGPL-3.0, pyoxigraph MIT or Apache-2.0, the neo4j and typedb drivers Apache-2.0, SQLite public domain. Only [R01] §2.1 and §9 do, and §9 asks that a report state them.",
+   "evidence": "grep for GPL, MPL and licence in these files finds nothing.",
+   "fix": "Add a licence line per engine and client to khg-bakeoff/README.md and the header of start-servers.sh."
+  },
+  {
+   "id": "R-13",
+   "severity": "low",
+   "lens": [
+    7
+   ],
+   "verdict": "CONFIRMED",
+   "title": "The TypeDB config from start-servers.sh exposes monitoring on 0.0.0.0:4104",
+   "where": [
+    "projects/p1-store-bakeoff/start-servers.sh:117",
+    "projects/p1-store-bakeoff/start-servers.sh:153-155"
+   ],
+   "defect": "diagnostics.monitoring.enabled: true on port 4104, although the script's comment says the server listens on 127.0.0.1.",
+   "evidence": "/proc/net/tcp shows 0.0.0.0:4104 listening on an inode owned by typedb_server_bin (PID 1935); ports 1729 and 8000 are on 127.0.0.1.",
+   "fix": "monitoring: enabled: false, or bind it to the loopback address."
+  },
+  {
+   "id": "R-14",
+   "severity": "low",
+   "lens": [
+    5
+   ],
+   "verdict": "CONFIRMED",
+   "title": "The CI image postgres:18 floats, and the Neo4j and TypeDB modules are never imported in CI",
+   "where": [
+    ".github/workflows/ci.yml:146"
+   ],
+   "defect": "postgres:18 floats across 18.x (the run got 18.6-1.pgdg13+2, per the director) while ruling 10 pins engine versions. With the extras oxigraph,postgres, neo4j.py and typedb.py are never imported in CI; their pure-Python parts (TypeQLSchema, label, version_row) could be tested without a server. The pyproject lists Python 3.10-3.13 for every extra.",
+   "evidence": "Workflow YAML; tests/helpers.backend_params skips on a missing client before importing the adapter module.",
+   "fix": "Pin postgres:18.6 or a digest; add server-free unit tests for those modules, or install their clients in the job."
+  },
+  {
+   "id": "R-15",
+   "severity": "low",
+   "lens": [
+    2
+   ],
+   "verdict": "CONFIRMED",
+   "title": "Neo4j bulk flush partitions rows in O(n^2) on a load into a non-empty store",
+   "where": [
+    "projects/p1-store-bakeoff/khg-bakeoff/src/khg_bakeoff/neo4j.py:210-217"
+   ],
+   "defect": "fresh = [r for r in rows if r not in closing] tests list membership by dict equality, O(n*c); rows that close a previous version appear only on a load into a non-empty store.",
+   "evidence": "The same expression over synthetic rows took 0.08 s, 0.30 s and 1.36 s for 2,000, 4,000 and 8,000 rows.",
+   "fix": "Partition in one pass: append each row to closing or fresh by its flag."
+  }
+ ],
+ "checked_and_fine": [
+  "P2 suite: gate-3.11 command 5,905 passed, 1 skipped, 5 deselected; evidence tests 5 passed (5,910 in total, as the notes say)",
+  "Differential MemoryStore eb672d0 against 12159f8: 900 random sequences (two seeds), about 55,000 operations drawn from every scenario step plus random reads, random capability subsets, load raise and skip; outputs identical, errors, info, messages, final state and clock included",
+  "store.__all__ unchanged; every table member the write path and the reads use is in MEMBERS; _check_held after every check; all four events go through _commit; writing() is re-entrant",
+  "Conformance re-run on all six adapters: EARL reports and summaries byte-identical; inapplicable counts equal those derived from the scenarios' requires (TypeDB 70/44 with 33/29/33/7/1; HIF 107/7); declared flags honest; no absent flag emulated",
+  "khg-bakeoff suite with all three servers: 107 passed, 3 skipped",
+  "fidelity.json and fidelity.md byte-identical; number 1 counts one difference per record; edge container regenerates byte-identically and is valid (0 errors, 0 warnings); D5 items covered, the dropped item justified by S014",
+  "Instant guard: rows.instant and query_instant in SQLite, Oxigraph (SPARQL filters included), Neo4j and TypeDB; numeric with Infinity in PostgreSQL; int8range key ranges with a monotone clamp; boundaries unit-tested; positions bounded by S015 and J006",
+  "CI YAML: the service block and the job-level endpoint variable are correct; fixtures resolve through conftest; khg-bakeoff sources parse under Python 3.10; the director reports 97 passed, 13 skipped",
+  "Corrections: A1-A4 match [R01]; the four KB notes are accurate and cited; the Neo4j index seek re-checked with EXPLAIN; validate_kb 123 files, 0 errors, 0 warnings",
+  "start-servers.sh: pinned versions; the sha256 of the three local downloads matches the pins; idempotent guards; no secrets; no e-mail addresses in P1 files; no binaries or data committed"
+ ],
+ "could_not_check": [
+  "the GitHub run itself (no Docker, no network APIs; the director's report is taken as given)",
+  "a libc en_US.utf8 cluster (the locale is absent; simulated with libc C.utf8 and ICU clusters)",
+  "P2 tests on Python 3.10 and 3.13; the Neo4j and TypeDB drivers on Python 3.10",
+  "fresh downloads of the engines (the local copies were hashed instead)",
+  "Oxigraph atomicity under a crash",
+  "any timing (ruling 7); the timing impact of R-01, R-02, R-06 and R-15 is inferred from round-trip counts and code"
+ ],
+ "second_half_notes": [
+  "Fix R-01, R-02 and R-03 and decide R-06 before any timing",
+  "Report put separately: one put costs 31 (SQLite), 35 (PostgreSQL), 24 (Neo4j), 17 (TypeDB) and 10 (Oxigraph) round trips",
+  "Clean the TypeDB server first: khg-25695-3-32f362 and khg-31374-2-b1fc5f remain from earlier runs, and probe and lists from the research"
+ ]
+}
