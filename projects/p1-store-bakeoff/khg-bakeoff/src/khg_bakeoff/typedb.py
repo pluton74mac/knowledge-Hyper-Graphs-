@@ -40,10 +40,12 @@ written before the next read or at commit, entities first and every fact after t
 """
 from __future__ import annotations
 
+import atexit
 import contextlib
 import itertools
 import json
 import os
+import time
 from typing import Any, Iterable, Iterator, Mapping
 
 from khg_contracts import jsonio
@@ -80,6 +82,32 @@ FACT_ATTRS = {"khg-status": "status", "khg-rank": "rank", "khg-visibility": "vis
               "khg-n-bindings": "n_bindings", "khg-payload": "payload", "khg-version": "version",
               "khg-tx": "tx_from", "khg-recorded-at": "recorded_at", "khg-recorded-by": "recorded_by"}
 MANIFEST = ("bid", "role", "position", "direction", "value_kind", "ref", "value_json", "extensions")
+
+
+#: Seconds between a store's close and the deletion of its database.
+GRACE = 5.0
+_graveyard: list[tuple[float, Any, str]] = []
+
+
+def _bury(everything: bool = False) -> None:
+    """Delete the databases of closed stores that were closed ``GRACE`` seconds ago (all of them at exit)."""
+    now = time.monotonic()
+    keep = []
+    for closed, drv, name in _graveyard:
+        if everything or now - closed >= GRACE:
+            with contextlib.suppress(Exception):
+                if drv.databases.contains(name):
+                    drv.databases.get(name).delete()
+        else:
+            keep.append((closed, drv, name))
+    _graveyard[:] = keep
+
+
+@atexit.register
+def _bury_at_exit() -> None:
+    if _graveyard:
+        time.sleep(max(0.0, GRACE - (time.monotonic() - max(c for c, _, _ in _graveyard))))
+        _bury(everything=True)
 
 
 def label(prefix: str, name: str) -> str:
@@ -701,9 +729,12 @@ class TypeDBStore(AdapterMixin, NativeReads, TableStore):
         return out
 
     def close(self) -> None:
+        """A fresh database is deleted later, not now: TypeDB CE 3.13.6 panicked (and stopped) once when a database
+        was deleted right after a transaction on it closed ("Cannot get exclusive ownership of inner of
+        Arc<QueryCache>", database.rs:527). ``_bury`` deletes it after ``GRACE`` seconds, or at exit."""
         if self._owned:
-            with contextlib.suppress(Exception):
-                self.driver.databases.get(self.database).delete()
+            _graveyard.append((time.monotonic(), self.driver, self.database))
+            _bury()
 
 
 def factory(address: str, username: str = "admin", password: str = "password") -> Any:

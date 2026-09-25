@@ -82,8 +82,11 @@ def test_typedb_refuses_what_its_natural_mapping_cannot_hold(name, edge_schema, 
         by_id = {r["id"]: r for r in edge_doc["records"]}
         assert s.cannot_hold(by_id["ex:Dual"])["reason"] == "instance_type"
         assert s.cannot_hold(by_id["f:constant-c"])["reason"] == "no_role_player"
-        with pytest.raises(CapabilityMissing):
+        with pytest.raises(ValidationError) as e:  # records are checked in order: ex:Dual comes first
             s.load(copy.deepcopy(edge_doc))
+        assert e.value.info["id"] == "ex:Dual" and e.value.codes == ()
+        with pytest.raises(CapabilityMissing):
+            s.load({"header": edge_doc["header"], "records": [by_id["g:who-what"]]})
     finally:
         s.close()
 
