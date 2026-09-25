@@ -115,8 +115,8 @@ that join is governed by the width parameters of
 Whether real schemas are cyclic was measured on 2026-09-25 by project
 [P6](../../projects/p6-schema-width/) ([survey table](../../projects/p6-schema-width/results/survey.md)).
 Once role names are shared across relations, every Wikidata qualifier schema measured is
-α-cyclic: 1,155 relations from the declared allowed-qualifier constraints, and 13,608 from the
-qualifiers observed in use. So is the Biolink Model v4.4.5 association schema (103 relations).
+α-cyclic: 1,155 relations from the declared allowed-qualifier constraints, and 13,315 from the
+qualifiers observed in use in the 2026-09-22 dump (P3a's exact counts; 12,706 in P3a's slice). So is the Biolink Model v4.4.5 association schema (103 relations).
 The Wikidata cores have hypertree width at least 3 or 4, known only as bounds (for example
 [4, 38] for the declared schema); Biolink's is exactly 2. Relation-local role names make every
 schema acyclic, trivially. Not every KHG schema is cyclic: GO-CAM's, with one central relation
