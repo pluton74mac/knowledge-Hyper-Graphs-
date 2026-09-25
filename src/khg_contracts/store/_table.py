@@ -1,4 +1,5 @@
-"""The version table of ``MemoryStore`` (DESIGN §6.3): every version of every id, and four indexes.
+"""The version table of ``MemoryStore`` (DESIGN §6.3): every version of every id, and four indexes. ``store.table``
+publishes it with its interface (ruling 17).
 
 The indexes cover every version ever written, so a read at an earlier ``as_at`` finds its candidates too; a read
 then checks the version it picks. They map a node (an entity or fact id bound as a value) to the hyperedges that

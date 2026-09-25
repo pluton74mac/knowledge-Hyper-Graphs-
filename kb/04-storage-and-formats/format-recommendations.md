@@ -4,7 +4,7 @@ type: howto
 status: draft
 tags: [recommendation, decision-guide, hif, incidence-table, parquet, rdf, storage-architecture]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-25
 ---
 
 # Format and storage recommendations
@@ -20,11 +20,19 @@ Checked 2026-09-20.
 | **Interchange** — hand a hypergraph to another tool or person | **HIF JSON** | The only cross-library standard with a published schema and multiple independent implementations ([hif-hypergraph-interchange-format.md](hif-hypergraph-interchange-format.md)) |
 | **System of record** — the thing that is backed up | **Incidence tables in PostgreSQL** (`fact`, `incidence`, `entity`) | Unbounded arity, roles as a first-class column, no migrations for new relation types, one engine ([relational-and-eav-storage.md](relational-and-eav-storage.md)) |
 | **Analysis** — degree distributions, spectra, community detection | **Parquet copy of the incidence table -> SciPy CSR/CSC** | Dictionary encoding, predicate pushdown, direct conversion to **H** ([tensor-and-sparse-representations.md](tensor-and-sparse-representations.md)) |
-| **Querying** — pattern matching and traversal | **SQL over the incidence table**, with SQL/PGQ or a materialised reified-node projection when graph patterns are needed | Avoids the Cypher-layer overhead; the reified-node projection is rebuildable ([property-graph-emulation-patterns.md](property-graph-emulation-patterns.md)) |
+| **Querying** — pattern matching and traversal | **SQL over the incidence table**, with SQL/PGQ for fixed-length patterns or a materialised reified-node projection when graph patterns are needed | Avoids the Cypher-layer overhead; the reified-node projection is rebuildable ([property-graph-emulation-patterns.md](property-graph-emulation-patterns.md)); SQL/PGQ as implemented today stops at fixed-length patterns (below) |
 | **ML** | **`hyperedge_index` derived from the incidence table** | It *is* two columns of the incidence table; no separate ML format is needed |
 | **Standards interop / publication** | **RDF 1.2 relation-instance pattern**, exported not stored | Works in every RDF store, no dialect risk, round-trips to HIF ([rdf-star-and-semantic-web-serialisations.md](rdf-star-and-semantic-web-serialisations.md)) |
 | **Prototype, single machine, < ~10^6 hyperedges** | **Hypergraph-DB** with `save_as_hif` for checkpoints | Native arity, HIF export, no server ([hypergraph-databases.md](hypergraph-databases.md)) |
 | **Typed roles with schema enforcement** | **TypeDB** | The only mainstream engine whose schema language has n-ary relations with typed roles |
+
+**SQL/PGQ over the incidence table, as available today** (corrected 2026-09-25). DuckPGQ, the community extension
+for DuckDB 1.5.4, accepted `CREATE PROPERTY GRAPH` over the incidence tables. Its `GRAPH_TABLE` answered the
+fixed-length patterns: `incident`, a two-pattern `find` and one level of a supersession walk. It refused a
+variable-length path over the bipartite layout (`ANY SHORTEST … {1,8}`: "Non-existent/non-unique vertices
+detected"), because path-finding needs edges within one vertex table and the layout's edges run from version to
+node. It had no build for DuckDB 1.5.5 (HTTP 404) ([P1 research 01](../../projects/p1-store-bakeoff/research/01-backends.md) §4.3, probe
+`duckpgq_probe.py`). A recursive CTE or a native graph engine still does the traversal.
 
 ## 2. The one architectural decision that matters
 
@@ -141,3 +149,4 @@ cited there. The sources specific to the validation claims in section 4:
 - pyoxigraph 0.5.11 (released 2026-09-02), used to parse [`schemas/sample-n-ary-fact.ttl`](../../schemas/sample-n-ary-fact.ttl) on 2026-09-20: 32 quads, no errors. https://pypi.org/project/pyoxigraph/
 - W3C. *PROV-O: The PROV Ontology*, Recommendation 30 April 2013. https://www.w3.org/TR/prov-o/
 - W3C. *RDF 1.2 Turtle*, Working Draft 14 September 2026. https://www.w3.org/TR/rdf12-turtle/
+- P1 research 01, §4.3 and the probe `duckpgq_probe.py` (run 2026-09-25): DuckPGQ (community extension, DuckDB 1.5.4) over the incidence tables. [P1 research 01](../../projects/p1-store-bakeoff/research/01-backends.md)

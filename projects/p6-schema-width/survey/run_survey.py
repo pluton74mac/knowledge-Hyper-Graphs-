@@ -22,7 +22,8 @@ replaced by P3a-based ones move to ``superseded/`` with their reports; any other
 groups ``wikidata``, ``biolink``, ``declared``, ``observed``, ``slice``, ``controls``, ``headline``, ``all``.
 
 ``table`` writes ``survey.csv``, ``survey.md``, ``survey.json``, ``figure-data.csv``, ``solver-log.jsonl`` and
-``machine.json`` from the reports and ``hyperbench-baseline.json``.
+``machine.json`` from the reports and ``hyperbench-baseline.json``. Each report's ``survey`` block records the rows run
+at a time and the load averages at the row's start and end; ``machine.json`` collects them under ``load``.
 
 Rows (DESIGN §6.3): 12 Wikidata rows (declared, observed-robust, observed-all; wd-roles r1 and relation-local;
 core,qualifier and core,qualifier,time), 8 slice rows when P3a's counts were used, 3 Biolink rows (global formal,
@@ -324,11 +325,21 @@ def read_report(path: Path) -> dict:
     return json.loads(gzip.decompress(path.read_bytes()).decode("utf-8"))
 
 
-def run_row(row: dict, out: Path, *, time_limit: float, solver: str) -> dict:
+def _loadavg() -> list[float] | None:
+    """The machine's 1-, 5- and 15-minute load averages (None where the platform has none). Time limits make results
+    machine-dependent (DESIGN §3.7), and a shared machine more so, so each row records the load it ran under."""
+    try:
+        return [round(x, 2) for x in os.getloadavg()]
+    except (AttributeError, OSError):
+        return None
+
+
+def run_row(row: dict, out: Path, *, time_limit: float, solver: str, jobs: int = 1) -> dict:
     rep_dir = out / "reports"
     rep_dir.mkdir(parents=True, exist_ok=True)
     cmd = [sys.executable, "-m", "khg_width", str(out / row["file"]), "--slots", row["slots"], "--time-limit",
            str(time_limit), "--solver", solver, "--json"]
+    load0 = _loadavg()
     t0 = time.monotonic()
     r = subprocess.run(cmd, capture_output=True, text=True)
     wall = time.monotonic() - t0
@@ -336,7 +347,8 @@ def run_row(row: dict, out: Path, *, time_limit: float, solver: str) -> dict:
     if r.returncode != 0:
         return {"row_id": row["row_id"], "status": r.returncode, "wall_seconds": wall, "error": r.stderr[-2000:]}
     rep = json.loads(r.stdout)
-    rep["survey"] = {"row_id": row["row_id"], "command": ["khg-width"] + cmd[3:], "wall_seconds": round(wall, 3)}
+    rep["survey"] = {"row_id": row["row_id"], "command": ["khg-width"] + cmd[3:], "wall_seconds": round(wall, 3),
+                     "jobs": jobs, "loadavg": {"start": load0, "end": _loadavg()}}
     write_report(rep_dir / f"{row['row_id']}.json.gz", rep)
     return {"row_id": row["row_id"], "status": 0, "wall_seconds": wall}
 
@@ -348,7 +360,7 @@ def run(out: Path, spec: str, *, jobs: int, time_limit: float, solver: str) -> l
         raise SystemExit(f"schema files missing for {missing}: run `run_survey.py generate` first")
     results = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=max(1, jobs)) as ex:
-        futs = {ex.submit(run_row, r, out, time_limit=time_limit, solver=solver): r for r in chosen}
+        futs = {ex.submit(run_row, r, out, time_limit=time_limit, solver=solver, jobs=jobs): r for r in chosen}
         for f in concurrent.futures.as_completed(futs):
             res = f.result()
             results.append(res)
@@ -481,6 +493,13 @@ def table(out: Path) -> list[dict]:
     machine = {"platform": platform.platform(), "python": platform.python_version(), "cpus": os.cpu_count(),
                "processor": platform.processor() or platform.machine(),
                "tools": next((rep["tools"] for rep in reports.values()), {})}
+    load = {rid: {"jobs": rep["survey"]["jobs"], "loadavg_1_5_15": rep["survey"]["loadavg"],
+                  "wall_seconds": rep["survey"]["wall_seconds"]}
+            for rid, rep in sorted(reports.items()) if "loadavg" in rep.get("survey", {})}
+    if load:  # rows run before this was recorded have none
+        machine["load"] = {"note": "the machine's load averages when each row started and ended, and the rows run "
+                                   "at a time (--jobs); the load includes the survey's own processes",
+                           "rows": load}
     (out / "machine.json").write_text(json.dumps(machine, indent=1) + "\n")
     return trs
 

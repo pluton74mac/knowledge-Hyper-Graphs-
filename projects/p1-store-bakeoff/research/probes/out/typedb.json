@@ -1,0 +1,330 @@
+{
+ "server": "TypeDB CE 3.13.6",
+ "driver": "typedb-driver 3.13.6",
+ "schema_typeql": "define\n  attribute lit-active, value string;\n  attribute lit-code, value string;\n  attribute lit-elevation, value string;\n  attribute lit-end_time, value string;\n  attribute lit-homepage, value string;\n  attribute lit-location, value string;\n  attribute lit-name, value string;\n  attribute lit-opened, value string;\n  attribute lit-point_in_time, value string;\n  attribute lit-quantity, value string;\n  attribute lit-start_time, value string;\n  attribute special-active, value string;\n  attribute special-agent, value string;\n  attribute special-birthplace, value string;\n  attribute special-carrier, value string;\n  attribute special-catalyst, value string;\n  attribute special-claim, value string;\n  attribute special-claimant, value string;\n  attribute special-code, value string;\n  attribute special-context, value string;\n  attribute special-destination, value string;\n  attribute special-effect, value string;\n  attribute special-elevation, value string;\n  attribute special-end_time, value string;\n  attribute special-holder, value string;\n  attribute special-homepage, value string;\n  attribute special-location, value string;\n  attribute special-name, value string;\n  attribute special-opened, value string;\n  attribute special-origin, value string;\n  attribute special-person, value string;\n  attribute special-place, value string;\n  attribute special-point_in_time, value string;\n  attribute special-position, value string;\n  attribute special-quantity, value string;\n  attribute special-reaction, value string;\n  attribute special-regulator, value string;\n  attribute special-replaces, value string;\n  attribute special-spouse, value string;\n  attribute special-start_time, value string;\n  attribute special-station, value string;\n  attribute special-stop, value string;\n  attribute special-target, value string;\n  attribute unbound-active, value string;\n  attribute unbound-agent, value string;\n  attribute unbound-birthplace, value string;\n  attribute unbound-carrier, value string;\n  attribute unbound-catalyst, value string;\n  attribute unbound-claim, value string;\n  attribute unbound-claimant, value string;\n  attribute unbound-code, value string;\n  attribute unbound-context, value string;\n  attribute unbound-destination, value string;\n  attribute unbound-effect, value string;\n  attribute unbound-elevation, value string;\n  attribute unbound-end_time, value string;\n  attribute unbound-holder, value string;\n  attribute unbound-homepage, value string;\n  attribute unbound-location, value string;\n  attribute unbound-name, value string;\n  attribute unbound-opened, value string;\n  attribute unbound-origin, value string;\n  attribute unbound-person, value string;\n  attribute unbound-place, value string;\n  attribute unbound-point_in_time, value string;\n  attribute unbound-position, value string;\n  attribute unbound-quantity, value string;\n  attribute unbound-reaction, value string;\n  attribute unbound-regulator, value string;\n  attribute unbound-replaces, value string;\n  attribute unbound-spouse, value string;\n  attribute unbound-start_time, value string;\n  attribute unbound-station, value string;\n  attribute unbound-stop, value string;\n  attribute unbound-target, value string;\n  attribute khg-id, value string;\n  attribute khg-status, value string;\n  attribute khg-rank, value string;\n  attribute khg-visibility, value string;\n  attribute khg-rel-kind, value string;\n  attribute khg-status-ref, value string;\n  attribute khg-key-digest, value string;\n  attribute khg-s-lo, value integer;\n  attribute khg-s-hi, value integer;\n  attribute khg-e-lo, value integer;\n  attribute khg-e-hi, value integer;\n  attribute khg-n-bindings, value integer;\n  attribute khg-payload, value string;\n  attribute khg-bindings, value string;\n  attribute khg-version, value integer;\n  attribute khg-recorded-at, value string;\n  attribute khg-recorded-by, value string;\n  attribute khg-record, value string;\n  entity khg-entity @abstract, owns khg-id @key, owns khg-record;\n  relation khg-fact @abstract, owns khg-id @key, owns khg-status, owns khg-rank, owns khg-visibility, owns khg-rel-kind, owns khg-status-ref, owns khg-key-digest, owns khg-s-lo, owns khg-s-hi, owns khg-e-lo, owns khg-e-hi, owns khg-n-bindings, owns khg-payload, owns khg-bindings, owns khg-version, owns khg-recorded-at, owns khg-recorded-by;\n  entity Agent, sub khg-entity;\n  entity Airline, sub khg-entity;\n  entity Airport, sub khg-entity;\n  entity CellLine, sub khg-entity;\n  entity Chemical, sub khg-entity;\n  entity Drug, sub khg-entity;\n  entity Gene, sub khg-entity;\n  entity Outcome, sub khg-entity;\n  entity Place, sub khg-entity;\n  entity Position, sub khg-entity;\n  entity Reaction, sub khg-entity;\n  entity Station, sub khg-entity;\n  entity Person, sub Agent;\n  entity Organisation, sub Agent;\n  relation regulates, sub khg-fact, relates regulator @card(0..), owns special-regulator @card(0..), owns unbound-regulator @card(0..), relates target @card(0..), owns special-target @card(0..), owns unbound-target @card(0..), relates context @card(0..), owns special-context @card(0..), owns unbound-context @card(0..);\n  relation co_administration_causes, sub khg-fact, relates agent @card(0..), owns special-agent @card(0..), owns unbound-agent @card(0..), relates effect @card(0..), owns special-effect @card(0..), owns unbound-effect @card(0..);\n  relation flight_route, sub khg-fact, relates carrier @card(0..), owns special-carrier @card(0..), owns unbound-carrier @card(0..), relates stop @card(0..), owns special-stop @card(0..), owns unbound-stop @card(0..);\n  relation flies_between, sub khg-fact, relates carrier @card(0..), owns special-carrier @card(0..), owns unbound-carrier @card(0..), relates origin @card(0..), owns special-origin @card(0..), owns unbound-origin @card(0..), relates destination @card(0..), owns special-destination @card(0..), owns unbound-destination @card(0..);\n  relation position_held, sub khg-fact, relates holder @card(0..), owns special-holder @card(0..), owns unbound-holder @card(0..), relates position @card(0..), owns special-position @card(0..), owns unbound-position @card(0..), owns lit-start_time @card(0..), owns special-start_time @card(0..), owns unbound-start_time @card(0..), owns lit-end_time @card(0..), owns special-end_time @card(0..), owns unbound-end_time @card(0..), relates replaces @card(0..), owns special-replaces @card(0..), owns unbound-replaces @card(0..);\n  relation married, sub khg-fact, relates spouse @card(0..), owns special-spouse @card(0..), owns unbound-spouse @card(0..), owns lit-start_time @card(0..), owns special-start_time @card(0..), owns unbound-start_time @card(0..), owns lit-end_time @card(0..), owns special-end_time @card(0..), owns unbound-end_time @card(0..);\n  relation population, sub khg-fact, relates place @card(0..), owns special-place @card(0..), owns unbound-place @card(0..), owns lit-quantity @card(0..), owns special-quantity @card(0..), owns unbound-quantity @card(0..), owns lit-point_in_time @card(0..), owns special-point_in_time @card(0..), owns unbound-point_in_time @card(0..);\n  relation station_profile, sub khg-fact, relates station @card(0..), owns special-station @card(0..), owns unbound-station @card(0..), owns lit-name @card(0..), owns special-name @card(0..), owns unbound-name @card(0..), owns lit-code @card(0..), owns special-code @card(0..), owns unbound-code @card(0..), owns lit-elevation @card(0..), owns special-elevation @card(0..), owns unbound-elevation @card(0..), owns lit-opened @card(0..), owns special-opened @card(0..), owns unbound-opened @card(0..), owns lit-active @card(0..), owns special-active @card(0..), owns unbound-active @card(0..), owns lit-homepage @card(0..), owns special-homepage @card(0..), owns unbound-homepage @card(0..), owns lit-location @card(0..), owns special-location @card(0..), owns unbound-location @card(0..);\n  relation born_in, sub khg-fact, relates person @card(0..), owns special-person @card(0..), owns unbound-person @card(0..), relates birthplace @card(0..), owns special-birthplace @card(0..), owns unbound-birthplace @card(0..);\n  relation claims, sub khg-fact, relates claimant @card(0..), owns special-claimant @card(0..), owns unbound-claimant @card(0..), relates claim @card(0..), owns special-claim @card(0..), owns unbound-claim @card(0..), owns lit-point_in_time @card(0..), owns special-point_in_time @card(0..), owns unbound-point_in_time @card(0..);\n  relation catalysed_by, sub khg-fact, relates reaction @card(0..), owns special-reaction @card(0..), owns unbound-reaction @card(0..), relates catalyst @card(0..), owns special-catalyst @card(0..), owns unbound-catalyst @card(0..);\n  relation khg-supersedes, sub khg-fact, relates khg-superseding @card(0..), relates khg-superseded @card(0..);\n  relation khg-retracts, sub khg-fact, relates khg-retracted @card(0..);\n  relation khg-disputes, sub khg-fact, relates khg-disputed @card(0..);\n  Agent plays claims:claimant;\n  Airline plays flies_between:carrier;\n  Airline plays flight_route:carrier;\n  Airport plays flies_between:destination;\n  Airport plays flies_between:origin;\n  Airport plays flight_route:stop;\n  CellLine plays regulates:context;\n  Chemical plays catalysed_by:catalyst;\n  Drug plays co_administration_causes:agent;\n  Gene plays regulates:regulator;\n  Gene plays regulates:target;\n  Outcome plays co_administration_causes:effect;\n  Person plays born_in:person;\n  Person plays married:spouse;\n  Person plays position_held:holder;\n  Person plays position_held:replaces;\n  Place plays born_in:birthplace;\n  Place plays population:place;\n  Position plays position_held:position;\n  Reaction plays catalysed_by:reaction;\n  Station plays station_profile:station;\n  born_in plays claims:claim;\n  khg-fact plays khg-disputes:khg-disputed;\n  khg-fact plays khg-retracts:khg-retracted;\n  khg-fact plays khg-supersedes:khg-superseded;\n  khg-fact plays khg-supersedes:khg-superseding;",
+ "load_seconds_incl_schema": 0.35,
+ "insert_example": "match $p1 isa Person, has khg-id \"ex:LouisXIV\"; $p2 isa Position, has khg-id \"ex:KingOfFrance\"; $p3 isa Person, has khg-id \"ex:LouisXIII\"; insert $f isa position_held (holder: $p1, position: $p2, replaces: $p3), has lit-end_time \"{\\\"literal\\\":{\\\"datatype\\\":\\\"time\\\",\\\"precision\\\":11,\\\"window\\\":[\\\"+1715-09-01T00:00:00Z\\\",\\\"+1715-09-02T00:00:00Z\\\"]}}\", has lit-start_time \"{\\\"literal\\\":{\\\"datatype\\\":\\\"time\\\",\\\"precision\\\":11,\\\"window\\\":[\\\"+1643-05-14T00:00:00Z\\\",\\\"+1643-05-15T00:00:00Z\\\"]}}\", has khg-id \"f:king-14\", has khg-status \"asserted\", has khg-rank \"normal\", has khg-visibility \"visible\", has khg-rel-kind \"fact\", has khg-s-lo 200559196800, has khg-s-hi 200559283200, has khg-e-lo 202840761600, has khg-e-hi 202840848000, has khg-n-bindings 5, has khg-payload \"{\\\"evidence\\\":[{\\\"id\\\":\\\"e1\\\",\\\"mode\\\":\\\"manual\\\",\\\"source\\\":{\\\"doc_id\\\":\\\"doc:regnal-list\\\"},\\\"supports\\\":[\\\"b1\\\",\\\"b2\\\",\\\"b3\\\",\\\"b4\\\"],\\\"type\\\":\\\"curated\\\"},{\\\"activity\\\":{\\\"agent\\\":\\\"p2-fixture-extractor\\\",\\\"agent_version\\\":\\\"0.0.1\\\",\\\"model\\\":\\\"none\\\",\\\"run_id\\\":\\\"fixture-run-1\\\"},\\\"event_hash\\\":\\\"sha256:87eaf6a24f9088334f463104155187b658be6cb501f09fd6acfe8641a987b18d\\\",\\\"id\\\":\\\"e2\\\",\\\"mode\\\":\\\"automatic\\\",\\\"selectors\\\":[{\\\"exact\\\":\\\"Louis XIV succeeded his father Louis XIII\\\",\\\"prefix\\\":\\\"\\\",\\\"suffix\\\":\\\" as King of \\\",\\\"type\\\":\\\"quote\\\"},{\\\"end\\\":41,\\\"start\\\":0,\\\"type\\\":\\\"position\\\"}],\\\"source\\\":{\\\"doc_id\\\":\\\"doc:louis-bio\\\",\\\"doc_sha256\\\":\\\"sha256:56940b729460cb9a75d5d63ab1f907a502fef80530b4aabff2cd8e9c28a44b2f\\\"},\\\"supports\\\":[\\\"b1\\\",\\\"b5\\\"],\\\"type\\\":\\\"extracted\\\"}]}\", has khg-bindings \"[{\\\"bid\\\": \\\"b4\\\", \\\"role\\\": \\\"end_time\\\", \\\"value_kind\\\": \\\"literal\\\", \\\"value_json\\\": \\\"{\\\\\\\"literal\\\\\\\":{\\\\\\\"calendar\\\\\\\":\\\\\\\"gregorian\\\\\\\",\\\\\\\"datatype\\\\\\\":\\\\\\\"time\\\\\\\",\\\\\\\"precision\\\\\\\":11,\\\\\\\"time\\\\\\\":\\\\\\\"+1715-09-01T00:00:00Z\\\\\\\"}}\\\"}, {\\\"bid\\\": \\\"b1\\\", \\\"role\\\": \\\"holder\\\", \\\"value_kind\\\": \\\"entity\\\", \\\"ref\\\": \\\"ex:LouisXIV\\\", \\\"value_json\\\": \\\"{\\\\\\\"entity\\\\\\\":\\\\\\\"ex:LouisXIV\\\\\\\"}\\\"}, {\\\"bid\\\": \\\"b2\\\", \\\"role\\\": \\\"position\\\", \\\"value_kind\\\": \\\"entity\\\", \\\"ref\\\": \\\"ex:KingOfFrance\\\", \\\"value_json\\\": \\\"{\\\\\\\"entity\\\\\\\":\\\\\\\"ex:KingOfFrance\\\\\\\"}\\\"}, {\\\"bid\\\": \\\"b5\\\", \\\"role\\\": \\\"replaces\\\", \\\"value_kind\\\": \\\"entity\\\", \\\"ref\\\": \\\"ex:LouisXIII\\\", \\\"value_json\\\": \\\"{\\\\\\\"entity\\\\\\\":\\\\\\\"ex:LouisXIII\\\\\\\"}\\\"}, {\\\"bid\\\": \\\"b3\\\", \\\"role\\\": \\\"start_time\\\", \\\"value_kind\\\": \\\"literal\\\", \\\"value_json\\\": \\\"{\\\\\\\"literal\\\\\\\":{\\\\\\\"calendar\\\\\\\":\\\\\\\"gregorian\\\\\\\",\\\\\\\"datatype\\\\\\\":\\\\\\\"time\\\\\\\",\\\\\\\"precision\\\\\\\":11,\\\\\\\"time\\\\\\\":\\\\\\\"+1643-05-14T00:00:00Z\\\\\\\"}}\\\"}]\", has khg-version 1, has khg-recorded-at \"2026-09-25T02:27:31.065015Z\", has khg-recorded-by \"load\", has khg-key-digest \"sha256:19b896a4c419199eeb0922934472e2ff229771ce0d87bcdf97bc79033ba64a96\";",
+ "hand": {
+  "get f:king-14": {
+   "same_as_reference": true,
+   "got": "record"
+  },
+  "incident ex:KingOfFrance": {
+   "same_as_reference": true,
+   "got": [
+    "f:king-13",
+    "f:king-14"
+   ]
+  },
+  "incident ex:KingOfFrance as_of 1700": {
+   "same_as_reference": true,
+   "got": [
+    "f:king-14"
+   ]
+  },
+  "incident ex:TP53 (two roles, once)": {
+   "same_as_reference": true,
+   "got": [
+    "f:reg-1"
+   ]
+  },
+  "incident f:born-louis14-paris (nesting)": {
+   "same_as_reference": true,
+   "got": [
+    "f:claim-1"
+   ]
+  },
+  "find at_least agent insulin + metformin": {
+   "same_as_reference": true,
+   "got": [
+    "f:coadmin-1"
+   ]
+  },
+  "find at_least agent insulin twice (injective: none)": {
+   "same_as_reference": true,
+   "got": []
+  },
+  "find at_least claims point_in_time 1700 (Julian, year)": {
+   "same_as_reference": true,
+   "got": [
+    "f:claim-1"
+   ]
+  },
+  "find at_least flight_route stop YYZ at position 3": {
+   "same_as_reference": true,
+   "got": [
+    "f:route-1"
+   ]
+  },
+  "find_by_key position_held position KingOfFrance": {
+   "same_as_reference": true,
+   "got": [
+    "f:king-13",
+    "f:king-14"
+   ]
+  },
+  "find_by_key born_in person Maria Skłodowska (all statuses)": {
+   "same_as_reference": true,
+   "got": [
+    "f:born-skłodowska-kraków",
+    "f:born-skłodowska-warszawa"
+   ]
+  },
+  "supersession_walk f:born-skłodowska-kraków": {
+   "same_as_reference": true,
+   "got": {
+    "steps": [
+     [
+      1,
+      "m:sup-1",
+      "f:born-skłodowska-kraków",
+      "f:born-skłodowska-warszawa"
+     ]
+    ],
+    "terminal": [
+     {
+      "id": "f:born-skłodowska-warszawa",
+      "status": "asserted"
+     }
+    ]
+   }
+  },
+  "supersession_walk f:born-skłodowska-warszawa backward": {
+   "same_as_reference": true,
+   "got": {
+    "steps": [
+     [
+      1,
+      "m:sup-1",
+      "f:born-skłodowska-warszawa",
+      "f:born-skłodowska-kraków"
+     ]
+    ],
+    "terminal": [
+     {
+      "id": "f:born-skłodowska-kraków",
+      "status": "superseded"
+     }
+    ]
+   }
+  },
+  "export khg-json round trip": {
+   "differences": 0,
+   "first": []
+  },
+  "native recursive walk": {
+   "steps": [
+    [
+     1,
+     "m:sup-1",
+     "f:born-skłodowska-kraków",
+     "f:born-skłodowska-warszawa"
+    ]
+   ],
+   "same_as_reference": true
+  }
+ },
+ "incident_typeql_example": "match $n has khg-id \"ex:KingOfFrance\"; $f isa khg-fact, links ($n); $f has khg-id $id, has khg-status $st, has khg-rank $rk, has khg-visibility $vis, has khg-rel-kind $kind; { $st == \"asserted\"; }; { $rk == \"normal\"; } or { $rk == \"preferred\"; }; { $vis == \"visible\"; }; { $kind == \"fact\"; }; $f has khg-s-hi $vlo, has khg-e-lo $vhi; $vlo <= 202346467200; $vhi > 202346467200; select $id; sort $id;",
+ "walk_typeql": "with fun reach($x: khg-fact) -> { khg-supersedes, khg-fact, khg-fact }:\n  match\n    { $s isa khg-supersedes, links (khg-superseded: $a, khg-superseding: $y), has khg-status \"asserted\"; $a is $x; } or\n    { $s0 isa khg-supersedes, links (khg-superseded: $x, khg-superseding: $m), has khg-status \"asserted\";\n      let $s, $a, $y in reach($m); };\n  return { $s, $a, $y };\nmatch $start isa khg-fact, has khg-id \"f:born-skłodowska-kraków\";\n  let $s, $a, $y in reach($start);\n  $s has khg-id $via; $a has khg-id $from; $y has khg-id $to;\nselect $via, $from, $to;",
+ "native_structure_only_round_trip": {
+  "compare_containers_differences": 17,
+  "hyperedges": 18,
+  "same_role_value_multiset": 17,
+  "differ_in_role_value_multiset": [
+   "f:route-1"
+  ],
+  "bindings": 59,
+  "lost_per_binding": {
+   "bid (regenerated)": 59,
+   "position": 3,
+   "direction": 0,
+   "extensions": 2,
+   "literal as written (identity kept)": 20,
+   "unbound expect": 1
+  },
+  "examples": [
+   {
+    "path": "/records/f:born-louis14-paris",
+    "id": "f:born-louis14-paris",
+    "fields": [
+     "bindings"
+    ],
+    "a": {
+     "kind": "hyperedge",
+     "id": "f:born-louis14-paris",
+     "relation": "born_in",
+     "status": "quoted",
+     "bindings": [
+      {
+       "bid": "b2",
+       "role": "birthplace",
+       "value": {
+        "entity": "ex:Paris"
+       }
+      },
+      {
+       "bid": "b1",
+       "role": "person",
+       "value": {
+        "entity": "ex:LouisXIV"
+       }
+      }
+     ],
+     "rank": "normal",
+     "visibility": "visible"
+    },
+    "b": {
+     "kind": "hyperedge",
+     "id": "f:born-louis14-paris",
+     "relation": "born_in",
+     "status": "quoted",
+     "bindings": [
+      {
+       "role": "birthplace",
+       "value": {
+        "entity": "ex:Paris"
+       },
+       "bid": "b1"
+      },
+      {
+       "role": "person",
+       "value": {
+        "entity": "ex:LouisXIV"
+       },
+       "bid": "b2"
+      }
+     ],
+     "rank": "normal",
+     "visibility": "visible"
+    }
+   },
+   {
+    "path": "/records/f:born-scribe",
+    "id": "f:born-scribe",
+    "fields": [
+     "bindings"
+    ],
+    "a": {
+     "kind": "hyperedge",
+     "id": "f:born-scribe",
+     "relation": "born_in",
+     "status": "asserted",
+     "bindings": [
+      {
+       "bid": "b2",
+       "role": "birthplace",
+       "value": {
+        "special": "somevalue"
+       }
+      },
+      {
+       "bid": "b1",
+       "role": "person",
+       "value": {
+        "entity": "ex:anonymous_scribe"
+       }
+      }
+     ],
+     "evidence": [
+      {
+       "id": "e1",
+       "type": "curated",
+       "mode": "manual",
+       "source": {
+        "doc_id": "doc:scriptorium-notes"
+       },
+       "supports": [
+        "b1",
+        "b2"
+       ]
+      }
+     ],
+     "rank": "normal",
+     "visibility": "visible"
+    },
+    "b": {
+     "kind": "hyperedge",
+     "id": "f:born-scribe",
+     "relation": "born_in",
+     "status": "asserted",
+     "bindings": [
+      {
+       "role": "birthplace",
+       "value": {
+        "special": "somevalue"
+       },
+       "bid": "b1"
+      },
+      {
+       "role": "person",
+       "value": {
+        "entity": "ex:anonymous_scribe"
+       },
+       "bid": "b2"
+      }
+     ],
+     "evidence": [
+      {
+       "id": "e1",
+       "type": "curated",
+       "mode": "manual",
+       "source": {
+        "doc_id": "doc:scriptorium-notes"
+       },
+       "supports": [
+        "b1",
+        "b2"
+       ]
+      }
+     ],
+     "rank": "normal",
+     "visibility": "visible"
+    }
+   }
+  ]
+ },
+ "read_only_scenarios": {
+  "selected": 46,
+  "counts": {
+   "inapplicable": 27,
+   "passed": 19
+  },
+  "tested_flags": [
+   "atomic_writes",
+   "key_constraint",
+   "literal_values",
+   "nesting",
+   "valid_time"
+  ],
+  "not_passed": {
+   "S-EXP-001": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-EXP-003": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-EXP-006": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-EXP-007": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-EXP-011": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-KEY-002": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-KEY-003": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-READ-001": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-READ-002": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-READ-003": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-READ-004": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-READ-005": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-READ-006": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-READ-007": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-READ-008": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-READ-009": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-READ-010": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-READ-011": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-READ-012": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-READ-013": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-READ-014": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-READ-015": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-READ-016": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-READ-017": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-READ-018": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-READ-019": "inapplicable: needs goals, ordered_roles, special_values",
+   "S-TIME-001": "inapplicable: needs goals, ordered_roles, special_values"
+  }
+ },
+ "scenario_seconds": 5.63
+}

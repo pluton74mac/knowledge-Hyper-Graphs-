@@ -3,7 +3,7 @@ title: "wd-roles: role naming for Wikidata statements (P3a and P6)"
 type: project
 status: reviewed
 created: 2026-09-24
-updated: 2026-09-24
+updated: 2026-09-25
 ---
 
 # wd-roles: role naming for Wikidata statements
@@ -60,9 +60,14 @@ the schema hypergraphs it measures. Both record the version they used. The measu
 
 ## What P6 takes from P3a
 
-P6's observed schemas use P3a's exact qualifier counts from the 2026-09-22 dump when they are committed,
-replacing the SQID estimates (report 02 §2). Until then the observed rows of the survey are labelled with the
-SQID source and date. The declared schemas do not depend on P3a.
+Taken on 2026-09-25. P6's observed schemas use P3a's exact qualifier counts from the 2026-09-22 dump,
+`projects/p3a-clean-nary-corpus/qualifier-usage-20260922.json` (commit `13e5bdb`), in place of the SQID estimates
+(report 02 §2): scope `dump` from its `all` part (every item and property entity) and scope `slice` from `kept`
+(items with an English Wikipedia article). The SQID-based rows are kept in `results/superseded/`. P3a's own labels
+agree with P6's classification: no relation's time model differs, the rule-8 lists are the same 57 properties, and
+the slot labels differ only where P3a names two slots that a schema does not declare as roles, `rank_reason`
+(P2241, P7452) and `end_cause` (P1534 on interval relations)
+([IMPLEMENTATION-NOTES §8](IMPLEMENTATION-NOTES.md)). The declared schemas do not depend on P3a.
 
 ## Not part of the naming
 

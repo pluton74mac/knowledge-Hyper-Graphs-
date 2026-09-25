@@ -1,0 +1,169 @@
+{
+ "backend": "pg18",
+ "load": {
+  "records": 40,
+  "versions": 40
+ },
+ "native_write_seconds": 0.0071,
+ "version": "PostgreSQL 18.6 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0, 64-bit",
+ "hand": {
+  "get f:king-14": {
+   "same_as_reference": true,
+   "got": "record"
+  },
+  "incident ex:KingOfFrance": {
+   "same_as_reference": true,
+   "got": [
+    "f:king-13",
+    "f:king-14"
+   ]
+  },
+  "incident ex:KingOfFrance as_of 1700": {
+   "same_as_reference": true,
+   "got": [
+    "f:king-14"
+   ]
+  },
+  "incident ex:TP53 (two roles, once)": {
+   "same_as_reference": true,
+   "got": [
+    "f:reg-1"
+   ]
+  },
+  "incident f:born-louis14-paris (nesting)": {
+   "same_as_reference": true,
+   "got": [
+    "f:claim-1"
+   ]
+  },
+  "find at_least agent insulin + metformin": {
+   "same_as_reference": true,
+   "got": [
+    "f:coadmin-1"
+   ]
+  },
+  "find at_least agent insulin twice (injective: none)": {
+   "same_as_reference": true,
+   "got": []
+  },
+  "find at_least claims point_in_time 1700 (Julian, year)": {
+   "same_as_reference": true,
+   "got": [
+    "f:claim-1"
+   ]
+  },
+  "find at_least flight_route stop YYZ at position 3": {
+   "same_as_reference": true,
+   "got": [
+    "f:route-1"
+   ]
+  },
+  "find_by_key position_held position KingOfFrance": {
+   "same_as_reference": true,
+   "got": [
+    "f:king-13",
+    "f:king-14"
+   ]
+  },
+  "find_by_key born_in person Maria Skłodowska (all statuses)": {
+   "same_as_reference": true,
+   "got": [
+    "f:born-skłodowska-kraków",
+    "f:born-skłodowska-warszawa"
+   ]
+  },
+  "supersession_walk f:born-skłodowska-kraków": {
+   "same_as_reference": true,
+   "got": {
+    "steps": [
+     [
+      1,
+      "m:sup-1",
+      "f:born-skłodowska-kraków",
+      "f:born-skłodowska-warszawa"
+     ]
+    ],
+    "terminal": [
+     {
+      "id": "f:born-skłodowska-warszawa",
+      "status": "asserted"
+     }
+    ]
+   }
+  },
+  "supersession_walk f:born-skłodowska-warszawa backward": {
+   "same_as_reference": true,
+   "got": {
+    "steps": [
+     [
+      1,
+      "m:sup-1",
+      "f:born-skłodowska-warszawa",
+      "f:born-skłodowska-kraków"
+     ]
+    ],
+    "terminal": [
+     {
+      "id": "f:born-skłodowska-kraków",
+      "status": "superseded"
+     }
+    ]
+   }
+  },
+  "export khg-json round trip": {
+   "differences": 0,
+   "first": []
+  },
+  "native recursive walk": {
+   "steps": [
+    [
+     1,
+     "m:sup-1",
+     "f:born-skłodowska-kraków",
+     "f:born-skłodowska-warszawa"
+    ]
+   ],
+   "same_as_reference": true
+  }
+ },
+ "find_sql_example": "SELECT DISTINCT fv.id FROM fact_version fv JOIN binding b1 ON b1.fact_id = fv.id AND b1.version = fv.version AND b1.role = ? AND b1.ident = ? JOIN binding b2 ON b2.fact_id = fv.id AND b2.version = fv.version AND b2.role = ? AND b2.ident = ? AND b2.bid <> b1.bid WHERE fv.relation = ? AND fv.tx_to IS NULL AND fv.status IN (?) AND fv.rank IN (?, ?) AND fv.visibility IN (?) AND fv.rel_kind IN (?) ORDER BY fv.id",
+ "transaction_time": {
+  "checks": 85,
+  "mismatches": []
+ },
+ "read_only_scenarios": {
+  "selected": 46,
+  "counts": {
+   "passed": 46
+  },
+  "tested_flags": [
+   "atomic_writes",
+   "goals",
+   "history_export",
+   "key_constraint",
+   "literal_values",
+   "nesting",
+   "ordered_roles",
+   "special_values",
+   "transaction_time",
+   "valid_time"
+  ],
+  "not_passed": {}
+ },
+ "temporal_key_constraint": {
+  "without_overlaps": {
+   "inserted": [
+    "f:king-13",
+    "f:king-14"
+   ],
+   "king-14b (starts 1640)": "conflicting key value violates exclusion constraint \"key_period_pkey\""
+  },
+  "exclude_gist": {
+   "inserted": [
+    "f:king-13",
+    "f:king-14"
+   ],
+   "king-14b (starts 1640)": "conflicting key value violates exclusion constraint \"key_period_relation_key_digest_valid_excl\""
+  }
+ }
+}

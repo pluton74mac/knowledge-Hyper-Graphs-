@@ -13,7 +13,8 @@ overlaid with them). The operation checks its own preconditions first (capabilit
    touches; a write that breaks the invariant without an incoming asserted fact taking part (retracting the only
    preferred fact of a key while two normal ones hold) raises too, with ``info["violations"]``;
 6. supersession constraints (D011) and cycles (D012);
-7. transaction time (D018); then every record is written at one ``recorded_at``.
+7. transaction time (D018); then every record is written at one ``recorded_at``;
+8. outside C2: a record the backend cannot hold is refused (``TableStore.cannot_hold``; nothing by default).
 
 Temporal keys and L008 need ``valid_time`` beside ``key_constraint``: without it only non-temporal keys are
 checked (§6.3). Layer C runs fastjsonschema first and jsonschema only to list every finding of a refused record.
@@ -381,10 +382,13 @@ class WriteMixin:
         subset = {i: self._table.current(i) for g in sorted(groups) for i in sorted(self._table.by_key(*g))}
         return keys.l008_warnings(subset, self.schema, ids=set(ids))
 
+    def _check_held(self, pending: Pending) -> None:
+        """Step 8: refuse a record the backend cannot hold (``TableStore`` overrides this)."""
+
     def _commit(self, pending: Pending, *, actor: str, at: int | None, noops: Iterable[tuple[str, int, str]] = (),
                 disputed_rule: bool = False, pointers: bool = False,
                 d011: Iterable[lifecycle.Problem] = ()) -> Receipt:
-        """Steps 3 (pointers) to 7 of the write path, then the write and the receipt."""
+        """Steps 3 (pointers) to 8 of the write path, then the write and the receipt."""
         if pointers:
             self._check_pointers(pending)
         self._check_nesting(pending)
@@ -394,6 +398,7 @@ class WriteMixin:
             raise lifecycle.error_for(early)
         self._check_supersessions(pending)
         t = self._write_time(at)
+        self._check_held(pending)
         stamp = format_timestamp(t)
         rows = list(noops)
         for r in pending.records():

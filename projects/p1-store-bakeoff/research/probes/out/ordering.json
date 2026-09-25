@@ -1,0 +1,250 @@
+{
+ "ids": [
+  "f:a",
+  "f:Z",
+  "f:é",
+  "f:ł",
+  "f:東京",
+  "f:ｚ",
+  "f:�",
+  "f:𠮷"
+ ],
+ "code_point_order": [
+  "f:Z",
+  "f:a",
+  "f:é",
+  "f:ł",
+  "f:東京",
+  "f:ｚ",
+  "f:�",
+  "f:𠮷"
+ ],
+ "big_integers": [
+  "4611686018427387904",
+  "9223372036854775807",
+  "315569520000148699584000"
+ ],
+ "sqlite": {
+  "code_point_order": true,
+  "order": [
+   "f:Z",
+   "f:a",
+   "f:é",
+   "f:ł",
+   "f:東京",
+   "f:ｚ",
+   "f:�",
+   "f:𠮷"
+  ],
+  "integers": {
+   "4611686018427387904": "stored",
+   "9223372036854775807": "stored",
+   "315569520000148699584000": "OverflowError: Python int too large to convert to SQLite INTEGER"
+  }
+ },
+ "duckdb": {
+  "code_point_order": true,
+  "order": [
+   "f:Z",
+   "f:a",
+   "f:é",
+   "f:ł",
+   "f:東京",
+   "f:ｚ",
+   "f:�",
+   "f:𠮷"
+  ],
+  "integers": {
+   "4611686018427387904 as BIGINT": "stored",
+   "4611686018427387904 as HUGEINT": "stored",
+   "9223372036854775807 as BIGINT": "stored",
+   "9223372036854775807 as HUGEINT": "stored",
+   "315569520000148699584000 as BIGINT": "ConversionException: Conversion Error: Type INT128 with value 315569520000148699584000 can't be cast because the value i",
+   "315569520000148699584000 as HUGEINT": "stored"
+  }
+ },
+ "pg18 (database locale C)": {
+  "code_point_order": true,
+  "order": [
+   "f:Z",
+   "f:a",
+   "f:é",
+   "f:ł",
+   "f:東京",
+   "f:ｚ",
+   "f:�",
+   "f:𠮷"
+  ],
+  "integers": {
+   "4611686018427387904 as bigint": "stored",
+   "4611686018427387904 as numeric": "stored",
+   "9223372036854775807 as bigint": "stored",
+   "9223372036854775807 as numeric": "stored",
+   "315569520000148699584000 as bigint": "NumericValueOutOfRange: bigint out of range",
+   "315569520000148699584000 as numeric": "stored"
+  }
+ },
+ "pg18 COLLATE en-x-icu": {
+  "code_point_order": false,
+  "order": [
+   "f:a",
+   "f:é",
+   "f:ł",
+   "f:ｚ",
+   "f:Z",
+   "f:𠮷",
+   "f:東京",
+   "f:�"
+  ],
+  "integers": {
+   "4611686018427387904 as bigint": "stored",
+   "4611686018427387904 as numeric": "stored",
+   "9223372036854775807 as bigint": "stored",
+   "9223372036854775807 as numeric": "stored",
+   "315569520000148699584000 as bigint": "NumericValueOutOfRange: bigint out of range",
+   "315569520000148699584000 as numeric": "stored"
+  }
+ },
+ "oxigraph": {
+  "code_point_order": true,
+  "order": [
+   "f:Z",
+   "f:a",
+   "f:é",
+   "f:ł",
+   "f:東京",
+   "f:ｚ",
+   "f:�",
+   "f:𠮷"
+  ],
+  "integers": {
+   "4611686018427387904": "stored; equality finds it: True; comparison finds it: True",
+   "9223372036854775807": "stored; equality finds it: True; comparison finds it: True",
+   "315569520000148699584000": "stored; equality finds it: True; comparison finds it: False"
+  }
+ },
+ "rdflib": {
+  "code_point_order": true,
+  "order": [
+   "f:Z",
+   "f:a",
+   "f:é",
+   "f:ł",
+   "f:東京",
+   "f:ｚ",
+   "f:�",
+   "f:𠮷"
+  ],
+  "integers": {
+   "note": "xsd:integer is a Python int: unbounded"
+  }
+ },
+ "neo4j": {
+  "code_point_order": true,
+  "order": [
+   "f:Z",
+   "f:a",
+   "f:é",
+   "f:ł",
+   "f:東京",
+   "f:ｚ",
+   "f:�",
+   "f:𠮷"
+  ],
+  "integers": {
+   "4611686018427387904": "stored",
+   "9223372036854775807": "stored",
+   "315569520000148699584000": "OverflowError: Integer 315569520000148699584000 out of range"
+  }
+ },
+ "memgraph": {
+  "code_point_order": true,
+  "order": [
+   "f:Z",
+   "f:a",
+   "f:é",
+   "f:ł",
+   "f:東京",
+   "f:ｚ",
+   "f:�",
+   "f:𠮷"
+  ],
+  "integers": {
+   "4611686018427387904": "stored",
+   "9223372036854775807": "stored",
+   "315569520000148699584000": "OverflowError: Integer 315569520000148699584000 out of range"
+  }
+ },
+ "falkordb": {
+  "code_point_order": true,
+  "order": [
+   "f:Z",
+   "f:a",
+   "f:é",
+   "f:ł",
+   "f:東京",
+   "f:ｚ",
+   "f:�",
+   "f:𠮷"
+  ],
+  "integers": {
+   "4611686018427387904": "stored; read back 4611686018427387904",
+   "9223372036854775807": "stored; read back 9223372036854775807",
+   "315569520000148699584000": "stored; read back 9223372036854775807"
+  }
+ },
+ "kuzu": {
+  "code_point_order": true,
+  "order": [
+   "f:Z",
+   "f:a",
+   "f:é",
+   "f:ł",
+   "f:東京",
+   "f:ｚ",
+   "f:�",
+   "f:𠮷"
+  ],
+  "integers": {
+   "4611686018427387904": "stored",
+   "9223372036854775807": "stored",
+   "315569520000148699584000": "RuntimeError: Unable to cast Python instance of type <class 'int'> to C++ type '?' (#define PYBIND11_DETAILED_ERROR_MESS"
+  }
+ },
+ "ladybug": {
+  "code_point_order": true,
+  "order": [
+   "f:Z",
+   "f:a",
+   "f:é",
+   "f:ł",
+   "f:東京",
+   "f:ｚ",
+   "f:�",
+   "f:𠮷"
+  ],
+  "integers": {
+   "4611686018427387904": "stored",
+   "9223372036854775807": "stored",
+   "315569520000148699584000": "RuntimeError: Unable to cast Python instance of type <class 'int'> to C++ type '?' (#define PYBIND11_DETAILED_ERROR_MESS"
+  }
+ },
+ "typedb": {
+  "code_point_order": true,
+  "order": [
+   "f:Z",
+   "f:a",
+   "f:é",
+   "f:ł",
+   "f:東京",
+   "f:ｚ",
+   "f:�",
+   "f:𠮷"
+  ],
+  "integers": {
+   "4611686018427387904": "stored",
+   "9223372036854775807": "stored",
+   "315569520000148699584000": "TypeDBDriverException: [LIT11] integer literal '315569520000148699584000' is out of range. Caused: [REP12] Error parsing literal '315569520000148699584000'. Cau"
+  }
+ }
+}

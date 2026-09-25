@@ -1,0 +1,950 @@
+{
+ "provenance": {
+  "contracts": {
+   "C1": "khg-record/1.0.0",
+   "C2": "khg-store/1.0.0",
+   "scenarios": "khg-scenario/1.0.0",
+   "HIF profile": "khg-hif/1.0.0"
+  },
+  "khg_contracts": {
+   "version": "1.0.0.dev0",
+   "commit": "914b810e8436202cfacbd9153c024dc4a1e11ad2",
+   "src_modified": false
+  },
+  "khg_bakeoff": "0.1.0",
+  "python": "3.11.15",
+  "sqlite_library": "3.45.1",
+  "clients": {
+   "pyoxigraph": "0.5.11",
+   "psycopg": "3.3.6",
+   "neo4j": "6.3.1",
+   "typedb-driver": "3.13.6"
+  }
+ },
+ "backends": {
+  "sqlite": {
+   "operations": {
+    "load: the fixture into an empty store (40 records)": {
+     "calls": 10,
+     "read": 2,
+     "tx": 2,
+     "write": 6
+    },
+    "get: a fact (f:king-14)": {
+     "calls": 2,
+     "read": 2
+    },
+    "get: an entity (ex:Paris)": {
+     "calls": 2,
+     "read": 2
+    },
+    "get_many: 10 ids": {
+     "calls": 3,
+     "read": 3
+    },
+    "history: f:king-14": {
+     "calls": 2,
+     "read": 2
+    },
+    "incident: ex:KingOfFrance (2 answers)": {
+     "calls": 4,
+     "read": 4
+    },
+    "incident: ex:KingOfFrance, limit 1": {
+     "calls": 4,
+     "read": 4
+    },
+    "degree: ex:KingOfFrance": {
+     "calls": 2,
+     "read": 2
+    },
+    "find: position_held, position KingOfFrance": {
+     "calls": 3,
+     "read": 3
+    },
+    "find: position_held, [] (relation scan)": {
+     "calls": 3,
+     "read": 3
+    },
+    "find_by_key: position_held, KingOfFrance": {
+     "calls": 3,
+     "read": 3
+    },
+    "supersession_walk: f:born-skłodowska-kraków": {
+     "calls": 6,
+     "read": 6
+    },
+    "export: khg-json of the store": {
+     "calls": 3,
+     "read": 3
+    },
+    "put: one new version (f:king-14)": {
+     "calls": 34,
+     "read": 28,
+     "tx": 2,
+     "write": 4
+    },
+    "put: two new records (an entity and a fact)": {
+     "calls": 43,
+     "read": 35,
+     "tx": 2,
+     "write": 6
+    },
+    "load: the fixture again (40 held ids, new versions)": {
+     "calls": 15,
+     "read": 5,
+     "tx": 2,
+     "write": 8
+    }
+   },
+   "scaling": {
+    "load, empty store": [
+     {
+      "records": 40,
+      "calls": 10,
+      "read": 2,
+      "tx": 2,
+      "write": 6
+     },
+     {
+      "records": 440,
+      "calls": 10,
+      "read": 2,
+      "tx": 2,
+      "write": 6
+     }
+    ],
+    "export": [
+     {
+      "records": 40,
+      "calls": 3,
+      "read": 3
+     },
+     {
+      "records": 440,
+      "calls": 3,
+      "read": 3
+     }
+    ],
+    "incident ex:Paris": [
+     {
+      "records": 40,
+      "calls": 2,
+      "read": 2
+     },
+     {
+      "records": 440,
+      "calls": 4,
+      "read": 4
+     }
+    ],
+    "degree ex:Paris": [
+     {
+      "records": 40,
+      "calls": 2,
+      "read": 2
+     },
+     {
+      "records": 440,
+      "calls": 2,
+      "read": 2
+     }
+    ],
+    "get_many, every id": [
+     {
+      "records": 40,
+      "calls": 3,
+      "read": 3
+     },
+     {
+      "records": 440,
+      "calls": 3,
+      "read": 3
+     }
+    ],
+    "load, every id held": [
+     {
+      "records": 40,
+      "calls": 15,
+      "read": 5,
+      "tx": 2,
+      "write": 8
+     },
+     {
+      "records": 440,
+      "calls": 15,
+      "read": 5,
+      "tx": 2,
+      "write": 8
+     }
+    ]
+   }
+  },
+  "postgres": {
+   "operations": {
+    "load: the fixture into an empty store (40 records)": {
+     "calls": 11,
+     "read": 3,
+     "tx": 2,
+     "write": 6
+    },
+    "get: a fact (f:king-14)": {
+     "calls": 2,
+     "read": 2
+    },
+    "get: an entity (ex:Paris)": {
+     "calls": 2,
+     "read": 2
+    },
+    "get_many: 10 ids": {
+     "calls": 3,
+     "read": 3
+    },
+    "history: f:king-14": {
+     "calls": 2,
+     "read": 2
+    },
+    "incident: ex:KingOfFrance (2 answers)": {
+     "calls": 4,
+     "read": 4
+    },
+    "incident: ex:KingOfFrance, limit 1": {
+     "calls": 4,
+     "read": 4
+    },
+    "degree: ex:KingOfFrance": {
+     "calls": 2,
+     "read": 2
+    },
+    "find: position_held, position KingOfFrance": {
+     "calls": 3,
+     "read": 3
+    },
+    "find: position_held, [] (relation scan)": {
+     "calls": 3,
+     "read": 3
+    },
+    "find_by_key: position_held, KingOfFrance": {
+     "calls": 3,
+     "read": 3
+    },
+    "supersession_walk: f:born-skłodowska-kraków": {
+     "calls": 6,
+     "read": 6
+    },
+    "export: khg-json of the store": {
+     "calls": 3,
+     "read": 3
+    },
+    "put: one new version (f:king-14)": {
+     "calls": 39,
+     "read": 29,
+     "tx": 4,
+     "write": 6
+    },
+    "put: two new records (an entity and a fact)": {
+     "calls": 45,
+     "read": 36,
+     "tx": 2,
+     "write": 7
+    },
+    "load: the fixture again (40 held ids, new versions)": {
+     "calls": 17,
+     "read": 6,
+     "tx": 2,
+     "write": 9
+    }
+   },
+   "scaling": {
+    "load, empty store": [
+     {
+      "records": 40,
+      "calls": 11,
+      "read": 3,
+      "tx": 2,
+      "write": 6
+     },
+     {
+      "records": 440,
+      "calls": 11,
+      "read": 3,
+      "tx": 2,
+      "write": 6
+     }
+    ],
+    "export": [
+     {
+      "records": 40,
+      "calls": 3,
+      "read": 3
+     },
+     {
+      "records": 440,
+      "calls": 3,
+      "read": 3
+     }
+    ],
+    "incident ex:Paris": [
+     {
+      "records": 40,
+      "calls": 2,
+      "read": 2
+     },
+     {
+      "records": 440,
+      "calls": 4,
+      "read": 4
+     }
+    ],
+    "degree ex:Paris": [
+     {
+      "records": 40,
+      "calls": 2,
+      "read": 2
+     },
+     {
+      "records": 440,
+      "calls": 2,
+      "read": 2
+     }
+    ],
+    "get_many, every id": [
+     {
+      "records": 40,
+      "calls": 3,
+      "read": 3
+     },
+     {
+      "records": 440,
+      "calls": 3,
+      "read": 3
+     }
+    ],
+    "load, every id held": [
+     {
+      "records": 40,
+      "calls": 17,
+      "read": 6,
+      "tx": 2,
+      "write": 9
+     },
+     {
+      "records": 440,
+      "calls": 17,
+      "read": 6,
+      "tx": 2,
+      "write": 9
+     }
+    ]
+   }
+  },
+  "oxigraph": {
+   "operations": {
+    "load: the fixture into an empty store (40 records)": {
+     "calls": 4,
+     "read": 2,
+     "write": 2
+    },
+    "get: a fact (f:king-14)": {
+     "calls": 1,
+     "read": 1
+    },
+    "get: an entity (ex:Paris)": {
+     "calls": 1,
+     "read": 1
+    },
+    "get_many: 10 ids": {
+     "calls": 1,
+     "read": 1
+    },
+    "history: f:king-14": {
+     "calls": 1,
+     "read": 1
+    },
+    "incident: ex:KingOfFrance (2 answers)": {
+     "calls": 3,
+     "read": 3
+    },
+    "incident: ex:KingOfFrance, limit 1": {
+     "calls": 3,
+     "read": 3
+    },
+    "degree: ex:KingOfFrance": {
+     "calls": 2,
+     "read": 2
+    },
+    "find: position_held, position KingOfFrance": {
+     "calls": 2,
+     "read": 2
+    },
+    "find: position_held, [] (relation scan)": {
+     "calls": 2,
+     "read": 2
+    },
+    "find_by_key: position_held, KingOfFrance": {
+     "calls": 2,
+     "read": 2
+    },
+    "supersession_walk: f:born-skłodowska-kraków": {
+     "calls": 4,
+     "read": 4
+    },
+    "export: khg-json of the store": {
+     "calls": 1,
+     "read": 1
+    },
+    "put: one new version (f:king-14)": {
+     "calls": 11,
+     "read": 10,
+     "write": 1
+    },
+    "put: two new records (an entity and a fact)": {
+     "calls": 8,
+     "read": 7,
+     "write": 1
+    },
+    "load: the fixture again (40 held ids, new versions)": {
+     "calls": 4,
+     "read": 3,
+     "write": 1
+    }
+   },
+   "scaling": {
+    "load, empty store": [
+     {
+      "records": 40,
+      "calls": 4,
+      "read": 2,
+      "write": 2
+     },
+     {
+      "records": 440,
+      "calls": 4,
+      "read": 2,
+      "write": 2
+     }
+    ],
+    "export": [
+     {
+      "records": 40,
+      "calls": 1,
+      "read": 1
+     },
+     {
+      "records": 440,
+      "calls": 1,
+      "read": 1
+     }
+    ],
+    "incident ex:Paris": [
+     {
+      "records": 40,
+      "calls": 2,
+      "read": 2
+     },
+     {
+      "records": 440,
+      "calls": 3,
+      "read": 3
+     }
+    ],
+    "degree ex:Paris": [
+     {
+      "records": 40,
+      "calls": 2,
+      "read": 2
+     },
+     {
+      "records": 440,
+      "calls": 2,
+      "read": 2
+     }
+    ],
+    "get_many, every id": [
+     {
+      "records": 40,
+      "calls": 1,
+      "read": 1
+     },
+     {
+      "records": 440,
+      "calls": 1,
+      "read": 1
+     }
+    ],
+    "load, every id held": [
+     {
+      "records": 40,
+      "calls": 4,
+      "read": 3,
+      "write": 1
+     },
+     {
+      "records": 440,
+      "calls": 4,
+      "read": 3,
+      "write": 1
+     }
+    ]
+   }
+  },
+  "neo4j": {
+   "operations": {
+    "load: the fixture into an empty store (40 records)": {
+     "calls": 7,
+     "read": 2,
+     "tx": 2,
+     "write": 3
+    },
+    "get: a fact (f:king-14)": {
+     "calls": 1,
+     "read": 1
+    },
+    "get: an entity (ex:Paris)": {
+     "calls": 1,
+     "read": 1
+    },
+    "get_many: 10 ids": {
+     "calls": 1,
+     "read": 1
+    },
+    "history: f:king-14": {
+     "calls": 1,
+     "read": 1
+    },
+    "incident: ex:KingOfFrance (2 answers)": {
+     "calls": 3,
+     "read": 3
+    },
+    "incident: ex:KingOfFrance, limit 1": {
+     "calls": 3,
+     "read": 3
+    },
+    "degree: ex:KingOfFrance": {
+     "calls": 2,
+     "read": 2
+    },
+    "find: position_held, position KingOfFrance": {
+     "calls": 2,
+     "read": 2
+    },
+    "find: position_held, [] (relation scan)": {
+     "calls": 2,
+     "read": 2
+    },
+    "find_by_key: position_held, KingOfFrance": {
+     "calls": 2,
+     "read": 2
+    },
+    "supersession_walk: f:born-skłodowska-kraków": {
+     "calls": 4,
+     "read": 4
+    },
+    "export: khg-json of the store": {
+     "calls": 1,
+     "read": 1
+    },
+    "put: one new version (f:king-14)": {
+     "calls": 26,
+     "read": 22,
+     "tx": 2,
+     "write": 2
+    },
+    "put: two new records (an entity and a fact)": {
+     "calls": 25,
+     "read": 21,
+     "tx": 2,
+     "write": 2
+    },
+    "load: the fixture again (40 held ids, new versions)": {
+     "calls": 8,
+     "read": 3,
+     "tx": 2,
+     "write": 3
+    }
+   },
+   "scaling": {
+    "load, empty store": [
+     {
+      "records": 40,
+      "calls": 7,
+      "read": 2,
+      "tx": 2,
+      "write": 3
+     },
+     {
+      "records": 440,
+      "calls": 7,
+      "read": 2,
+      "tx": 2,
+      "write": 3
+     }
+    ],
+    "export": [
+     {
+      "records": 40,
+      "calls": 1,
+      "read": 1
+     },
+     {
+      "records": 440,
+      "calls": 1,
+      "read": 1
+     }
+    ],
+    "incident ex:Paris": [
+     {
+      "records": 40,
+      "calls": 2,
+      "read": 2
+     },
+     {
+      "records": 440,
+      "calls": 3,
+      "read": 3
+     }
+    ],
+    "degree ex:Paris": [
+     {
+      "records": 40,
+      "calls": 2,
+      "read": 2
+     },
+     {
+      "records": 440,
+      "calls": 2,
+      "read": 2
+     }
+    ],
+    "get_many, every id": [
+     {
+      "records": 40,
+      "calls": 1,
+      "read": 1
+     },
+     {
+      "records": 440,
+      "calls": 1,
+      "read": 1
+     }
+    ],
+    "load, every id held": [
+     {
+      "records": 40,
+      "calls": 8,
+      "read": 3,
+      "tx": 2,
+      "write": 3
+     },
+     {
+      "records": 440,
+      "calls": 8,
+      "read": 3,
+      "tx": 2,
+      "write": 3
+     }
+    ]
+   }
+  },
+  "typedb": {
+   "operations": {
+    "load: the fixture into an empty store (40 records)": {
+     "calls": 9,
+     "read": 2,
+     "tx": 2,
+     "write": 5
+    },
+    "get: a fact (f:king-14)": {
+     "calls": 2,
+     "read": 1,
+     "tx": 1
+    },
+    "get: an entity (ex:Paris)": {
+     "calls": 3,
+     "read": 2,
+     "tx": 1
+    },
+    "get_many: 10 ids": {
+     "calls": 3,
+     "read": 2,
+     "tx": 1
+    },
+    "history: f:king-14": {
+     "calls": 2,
+     "read": 1,
+     "tx": 1
+    },
+    "incident: ex:KingOfFrance (2 answers)": {
+     "calls": 4,
+     "read": 3,
+     "tx": 1
+    },
+    "incident: ex:KingOfFrance, limit 1": {
+     "calls": 4,
+     "read": 3,
+     "tx": 1
+    },
+    "degree: ex:KingOfFrance": {
+     "calls": 3,
+     "read": 2,
+     "tx": 1
+    },
+    "find: position_held, position KingOfFrance": {
+     "calls": 3,
+     "read": 2,
+     "tx": 1
+    },
+    "find: position_held, [] (relation scan)": {
+     "calls": 3,
+     "read": 2,
+     "tx": 1
+    },
+    "find_by_key: position_held, KingOfFrance": {
+     "calls": 3,
+     "read": 2,
+     "tx": 1
+    },
+    "supersession_walk: f:born-skłodowska-kraków": {
+     "calls": 5,
+     "read": 4,
+     "tx": 1
+    },
+    "export: khg-json of the store": {
+     "calls": 3,
+     "read": 2,
+     "tx": 1
+    },
+    "put: one new version (f:king-14)": {
+     "calls": 16,
+     "read": 12,
+     "tx": 2,
+     "write": 2
+    },
+    "put: two new records (an entity and a fact)": {
+     "calls": 15,
+     "read": 10,
+     "tx": 2,
+     "write": 3
+    },
+    "load: the fixture again (40 held ids, new versions)": {
+     "calls": 11,
+     "read": 4,
+     "tx": 2,
+     "write": 5
+    }
+   },
+   "scaling": {
+    "load, empty store": [
+     {
+      "records": 40,
+      "calls": 9,
+      "read": 2,
+      "tx": 2,
+      "write": 5
+     },
+     {
+      "records": 440,
+      "calls": 11,
+      "read": 2,
+      "tx": 2,
+      "write": 7
+     }
+    ],
+    "export": [
+     {
+      "records": 40,
+      "calls": 3,
+      "read": 2,
+      "tx": 1
+     },
+     {
+      "records": 440,
+      "calls": 3,
+      "read": 2,
+      "tx": 1
+     }
+    ],
+    "incident ex:Paris": [
+     {
+      "records": 40,
+      "calls": 3,
+      "read": 2,
+      "tx": 1
+     },
+     {
+      "records": 440,
+      "calls": 5,
+      "read": 4,
+      "tx": 1
+     }
+    ],
+    "degree ex:Paris": [
+     {
+      "records": 40,
+      "calls": 3,
+      "read": 2,
+      "tx": 1
+     },
+     {
+      "records": 440,
+      "calls": 3,
+      "read": 2,
+      "tx": 1
+     }
+    ],
+    "get_many, every id": [
+     {
+      "records": 40,
+      "calls": 3,
+      "read": 2,
+      "tx": 1
+     },
+     {
+      "records": 440,
+      "calls": 10,
+      "read": 9,
+      "tx": 1
+     }
+    ],
+    "load, every id held": [
+     {
+      "records": 40,
+      "calls": 11,
+      "read": 4,
+      "tx": 2,
+      "write": 5
+     },
+     {
+      "records": 440,
+      "calls": 20,
+      "read": 11,
+      "tx": 2,
+      "write": 7
+     }
+    ]
+   }
+  },
+  "hif": {
+   "operations": {
+    "load: the fixture into an empty store (40 records)": {
+     "calls": 1,
+     "file": 1
+    },
+    "get: a fact (f:king-14)": {
+     "calls": 0
+    },
+    "get: an entity (ex:Paris)": {
+     "calls": 0
+    },
+    "get_many: 10 ids": {
+     "calls": 0
+    },
+    "history: f:king-14": {
+     "calls": 0
+    },
+    "incident: ex:KingOfFrance (2 answers)": {
+     "calls": 0
+    },
+    "incident: ex:KingOfFrance, limit 1": {
+     "calls": 0
+    },
+    "degree: ex:KingOfFrance": {
+     "calls": 0
+    },
+    "find: position_held, position KingOfFrance": {
+     "calls": 0
+    },
+    "find: position_held, [] (relation scan)": {
+     "calls": 0
+    },
+    "find_by_key: position_held, KingOfFrance": {
+     "calls": 0
+    },
+    "supersession_walk: f:born-skłodowska-kraków": {
+     "calls": 0
+    },
+    "export: khg-json of the store": {
+     "calls": 0
+    },
+    "put: one new version (f:king-14)": {
+     "calls": 1,
+     "file": 1
+    },
+    "put: two new records (an entity and a fact)": {
+     "calls": 1,
+     "file": 1
+    },
+    "load: the fixture again (40 held ids, new versions)": {
+     "calls": 1,
+     "file": 1
+    }
+   },
+   "scaling": {
+    "load, empty store": [
+     {
+      "records": 40,
+      "calls": 1,
+      "file": 1
+     },
+     {
+      "records": 440,
+      "calls": 1,
+      "file": 1
+     }
+    ],
+    "export": [
+     {
+      "records": 40,
+      "calls": 0
+     },
+     {
+      "records": 440,
+      "calls": 0
+     }
+    ],
+    "incident ex:Paris": [
+     {
+      "records": 40,
+      "calls": 0
+     },
+     {
+      "records": 440,
+      "calls": 0
+     }
+    ],
+    "degree ex:Paris": [
+     {
+      "records": 40,
+      "calls": 0
+     },
+     {
+      "records": 440,
+      "calls": 0
+     }
+    ],
+    "get_many, every id": [
+     {
+      "records": 40,
+      "calls": 0
+     },
+     {
+      "records": 440,
+      "calls": 0
+     }
+    ],
+    "load, every id held": [
+     {
+      "records": 40,
+      "calls": 1,
+      "file": 1
+     },
+     {
+      "records": 440,
+      "calls": 1,
+      "file": 1
+     }
+    ]
+   }
+  }
+ }
+}

@@ -1,0 +1,47 @@
+{
+ "duckdb": "1.5.4",
+ "duckpgq": "f386a6c",
+ "create property graph": {
+  "ok": true,
+  "rows": [],
+  "sql": "CREATE PROPERTY GRAPH khg VERTEX TABLES (node LABEL nd, fact LABEL ver) EDGE TABLES (binds SOURCE KEY (vk) REFERENCES fact (vk) DESTINATION KEY (ref) REFERENCES node (id) LABEL binds)"
+ },
+ "incident ex:KingOfFrance": {
+  "ok": true,
+  "rows": [
+   [
+    "f:king-13",
+    "position"
+   ],
+   [
+    "f:king-14",
+    "position"
+   ]
+  ],
+  "sql": "FROM GRAPH_TABLE (khg MATCH (v:ver)-[b:binds]->(n:nd WHERE n.id = 'ex:KingOfFrance') WHERE v.status = 'asserted' AND v.tx_to IS NULL COLUMNS (v.id AS id, b.role AS role)) ORDER BY id"
+ },
+ "find agent insulin + metformin (two edges)": {
+  "ok": true,
+  "rows": [
+   [
+    "f:coadmin-1"
+   ]
+  ],
+  "sql": "FROM GRAPH_TABLE (khg MATCH (a:nd WHERE a.id = 'ex:insulin')<-[b1:binds WHERE b1.role = 'agent']-(v:ver) -[b2:binds WHERE b2.role = 'agent']->(c:nd WHERE c.id = 'ex:metformin') WHERE v.relation = 'co_administration_causes' AND b1.bid <> b2.bid COLUMNS (v.id AS id))"
+ },
+ "walk one level (superseded <- khg:supersedes -> superseding)": {
+  "ok": true,
+  "rows": [
+   [
+    "m:sup-1",
+    "f:born-skłodowska-warszawa"
+   ]
+  ],
+  "sql": "FROM GRAPH_TABLE (khg MATCH (a:nd WHERE a.id = 'f:born-skłodowska-kraków')<-[x:binds WHERE x.role = 'khg:superseded']- (s:ver WHERE s.relation = 'khg:supersedes' AND s.status = 'asserted')-[y:binds WHERE y.role = 'khg:superseding']->(b:nd) COLUMNS (s.id AS via, b.id AS dst))"
+ },
+ "walk as a variable-length path (any shortest, 1..8 BINDS edges, direction ignored)": {
+  "ok": false,
+  "error": "Constraint Error: Non-existent/non-unique vertices detected. Make sure all vertices referred by edge tables exist and are unique for path-finding queries.",
+  "sql": "FROM GRAPH_TABLE (khg MATCH p = ANY SHORTEST (a:nd WHERE a.id = 'f:born-skłodowska-kraków')-[e:binds]-{1,8} (b:nd WHERE b.id = 'f:born-skłodowska-warszawa') COLUMNS (path_length(p) AS hops))"
+ }
+}

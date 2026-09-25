@@ -6,8 +6,8 @@ folder, created from `_template/`, and links back to the `kb/` notes it depends 
 | Project | Status | One-line goal |
 |---|---|---|
 | [P2 Role-aware HIF and shared contracts](p2-role-aware-hif/) | gate passed 2026-09-24; release pending | A `roles` convention for HIF, validator and loaders, plus contracts C1, C2, C3, C5 for the programme |
-| [P6 Schema width survey](p6-schema-width/) | gate met 2026-09-25; P3a-count rerun and publication pending | Acyclicity class and hypertree width of Wikidata qualifier schemas and one biomedical schema; a checker for schema files |
-| [P1 Format and store bake-off](p1-store-bakeoff/) | exploring | The same KHG in five stores behind the C2 interface; conformance, round-trip fidelity, load time and query latency |
+| [P6 Schema width survey](p6-schema-width/) | gate met 2026-09-25; P3a-count re-run done 2026-09-25; publication pending (the owner) | Acyclicity class and hypertree width of Wikidata qualifier schemas and one biomedical schema; a checker for schema files |
+| [P1 Format and store bake-off](p1-store-bakeoff/) | prototyping | The same KHG in five stores behind the C2 interface; conformance, round-trip fidelity, load time and query latency |
 
 ## Candidate vectors (to be confirmed with the repository owner)
 

@@ -4,7 +4,7 @@ type: survey
 status: draft
 tags: [relational, sql, incidence-table, eav, datalog, souffle, logicblox, relationalai, sql-pgq, parquet]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-25
 ---
 
 # Relational, EAV and Datalog storage for n-ary facts
@@ -56,16 +56,29 @@ CREATE TABLE fact (
   valid_from date, valid_to date
 );
 CREATE TABLE incidence (
-  fact_id   text NOT NULL REFERENCES fact(fact_id),
-  entity_id text NOT NULL REFERENCES entity(id),
-  role      text,
-  direction text CHECK (direction IN ('head','tail')),
-  position  int,
-  PRIMARY KEY (fact_id, entity_id, role)
+  fact_id    text NOT NULL REFERENCES fact(fact_id),
+  bid        text NOT NULL,          -- the binding's id, unique within its fact
+  role       text NOT NULL,
+  value_kind text NOT NULL,          -- entity, fact, literal, special or unbound
+  entity_id  text,                   -- the filler when it is an entity (or a fact, for nesting)
+  value      text,                   -- a literal or special value, as canonical JSON
+  direction  text CHECK (direction IN ('head','tail')),
+  position   int,
+  PRIMARY KEY (fact_id, bid)
 );
 CREATE INDEX ON incidence (entity_id, role);
 CREATE INDEX ON incidence (fact_id);
 ```
+
+**Key the row on the binding, not on (fact, entity, role)** (corrected 2026-09-25). An earlier version of this
+note keyed `incidence` on `(fact_id, entity_id, role)`. That key cannot hold one filler twice in one role: P2's
+gate fixture has the ordered route Toronto → Montréal → Toronto, whose `stop` role binds YYZ at positions 1 and 3.
+It cannot hold a literal or a special value either, because those have no `entity_id`. Key on the binding,
+`(fact_id, bid)`, plus `version` in a store that keeps versions, with a `value_kind` column and a value column.
+P1 probed this layout on SQLite, DuckDB and PostgreSQL 16 and 18. Its SQLite and PostgreSQL 18.6 adapters pass
+all 114 scenarios of the C2 conformance suite
+([P1 research 01](../../projects/p1-store-bakeoff/research/01-backends.md) §2.2, probe `sql_incidence.py`;
+[P1 conformance results](../../projects/p1-store-bakeoff/results/conformance/summary.md)).
 
 This is HIF in SQL: `fact` is `edges`, `incidence` is `incidences`, and `entity` is `nodes`. It is
 the shape that:
@@ -218,3 +231,4 @@ incidence table
 - Apache Parquet documentation. https://parquet.apache.org/docs/
 - Apache Arrow columnar format specification. https://arrow.apache.org/docs/format/Columnar.html
 - PostgreSQL documentation, `CREATE TABLE` (for the DDL used in the examples). https://www.postgresql.org/docs/current/sql-createtable.html
+- P1 research 01, *The five backends as they run here, and how each implements C2*, §2.2 and the probe `sql_incidence.py` (run 2026-09-25): the incidence layout keyed on `(fact_id, version, bid)`. [P1 research 01](../../projects/p1-store-bakeoff/research/01-backends.md)

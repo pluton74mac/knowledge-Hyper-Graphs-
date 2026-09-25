@@ -22,10 +22,13 @@ BLUE, ORANGE, AQUA = "#2a78d6", "#eb6834", "#1baf7a"
 
 
 def _label(r: dict) -> str:
+    """Three short lines (source table, scope, slots), so that twelve columns fit: ``robust / slice / cq``."""
     slots = "cq" if r["slots"] == "core,qualifier" else "cq+time"
     if r["group"] == "wikidata":
-        return f"{r['table'].replace('observed-', 'obs-')}\n{slots}"
-    return f"BL {r['table'].replace('formal-domain', 'formal+dom.')}\n{slots}"
+        table = r["table"].removesuffix("-slice")
+        scope = "" if table == "declared" else ("slice" if r["table"].endswith("-slice") else "dump")
+        return f"{table.replace('observed-', '')}\n{scope}\n{slots}"
+    return f"Biolink\n{'formal' if r['table'] == 'formal' else '+domain'}\n{slots}"
 
 
 def _num(x: str) -> float:
