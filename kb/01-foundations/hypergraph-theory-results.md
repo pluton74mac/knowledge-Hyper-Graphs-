@@ -276,7 +276,7 @@ decomposition validated on the schema hypergraph, and each lower bound with a st
   does. Not every KHG schema is cyclic: GO-CAM's schema (one central relation class) is α-acyclic
   by GYO in one pass ([P6 research report 02](../../projects/p6-schema-width/research/02-data-sources-and-naming.md),
   finding 9).
-- **Wikidata's universal-join width is at least 3 or 4 and is not settled.** Across the twelve
+- **Wikidata's universal-join width is at least 3 or 4 and is not settled.** Across the ten
   wd-roles r1 rows (declared; observed over the dump and over the slice; with and without time
   roles), the cyclic cores have 391 to 1,458 relations. HyperBench has exact hw for only 6 of its
   23 graphs with 300 to 999 edges (research report 01 §3.5), and the external solvers (BalancedGo

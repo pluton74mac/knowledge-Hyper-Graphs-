@@ -127,7 +127,7 @@ projects/p6-schema-width/khg-width/scripts/build-solvers.sh          # optional;
   ```
 
   Classes, exact values and certificates must match; bounds found under time limits are machine-dependent and may
-  differ. About 1.25 to 1.5 hours on 4 cores with both solvers.
+  differ. About 2 to 2.5 hours on 4 cores with both solvers.
 - **Reproduce from the raw snapshot** with `projects/p6-schema-width/survey/reproduce.sh --p3a-counts
   projects/p3a-clean-nary-corpus/qualifier-usage-20260922.json --out /tmp/p6-full --jobs 3`. The schema files depend
   only on the WDQS results and the qualifier-usage counts: rebuilt with the SQID and DeltaBot data emptied, all ten

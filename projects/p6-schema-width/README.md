@@ -104,7 +104,8 @@ The observed rows use P3a's exact counts from the 2026-09-22 dump (re-run 2026-0
 and property entity, scope `slice` the 7,584,990 items with an English Wikipedia article that P3a's corpus keeps.
 The first observed rows, on SQID's usage counts (dump of 2026-08-10), are in `results/superseded/`; against them
 the relations went from 13,608 to 13,315 (294 lexicographic properties, whose main statements are all on lexemes,
-forms or senses, which the dump's `all` scope does not hold, are no longer relations), the residues grew slightly
+forms or senses, which the dump's `all` scope does not hold, are no longer relations; P3865, with 2 statements, is
+new), the residues grew slightly
 (748 → 751, 1,441 → 1,453) and the hw upper bounds fell (68 → 65, 61 → 53); no class and no hw lower bound
 changed, while some ghw, fhw and tw bounds moved either way (a different schema, IMPLEMENTATION-NOTES §8). P3a's
 own classification agrees with P6's: the cross-check file lists only two vocabulary differences in slot names,

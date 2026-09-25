@@ -180,8 +180,8 @@ and run times. The core is the GYO residue with twin roles merged and universal 
 | WD declared | cq+t | 1,155 / 1,893 | cyclic (392) | 392 / 580 | [4, 43] | [4, 25] | [35/11, 24] | [118, 237] |
 | WD robust | cq | 13,315 / 13,391 | cyclic (751) | 751 / 530 | [4, 65] | [4, 30] | [75/23, 53/2] | [55, 139] |
 | WD robust | cq+t | 13,315 / 13,391 | cyclic (767) | 767 / 539 | [4, 60] | [4, 30] | [75/23, 185/7] | [57, 140] |
-| WD all | cq | 13,315 / 13,886 | cyclic (1,453) | 1,453 / 1,998 | [3, 53] | [3, 35] | [2, 269/8] | [771, 1226] |
-| WD all | cq+t | 13,315 / 13,886 | cyclic (1,458) | 1,458 / 2,001 | [3, 52] | [3, 35] | [11/5, 269/8] | [773, 1228] |
+| WD all | cq | 13,315 / 13,886 | cyclic (1,453) | 1,453 / 1,998 | [3, 53] | [3, 35] | [2, 269/8] | [771, 1,226] |
+| WD all | cq+t | 13,315 / 13,886 | cyclic (1,458) | 1,458 / 2,001 | [3, 52] | [3, 35] | [11/5, 269/8] | [773, 1,228] |
 | WD robust, slice | cq | 12,706 / 12,810 | cyclic (603) | 603 / 460 | [4, 48] | [4, 26] | [7/2, 250/11] | [51, 114] |
 | WD robust, slice | cq+t | 12,706 / 12,810 | cyclic (613) | 613 / 466 | [4, 59] | [4, 26] | [7/2, 114/5] | [53, 116] |
 | WD all, slice | cq | 12,706 / 13,189 | cyclic (1,292) | 1,292 / 1,558 | [4, 51] | [4, 36] | [8/3, 143/4] | [452, 838] |
@@ -209,7 +209,7 @@ reported. On the slice, observed-all's bound (4) is above the dump's (3), althou
 of the dump's schema with a subset of its roles: widths are not monotone under shrinking relations (Section 2.2). The
 53 roles that need four slice relations to cover are covered by two in the dump, instance of (P31) and has part(s)
 (P527), whose observed qualifier lists are longer there. The solvers spent their full 1,200 s on each wd-roles r1
-row, and every attempt timed out at 120 s but one: a width-41 BalancedGo decomposition (declared, with time roles)
+row, and every attempt timed out, at 120 s or at what was left of the row's budget, but one: a width-41 BalancedGo decomposition (declared, with time roles)
 that violated the special condition; repaired to a validated width-46 hypertree decomposition, it improved neither
 bound. The Wikidata upper bounds are therefore khg-width's own. A wd-roles r1 row took 1,483 to 2,534 s of wall time; a Biolink row under a
 second.

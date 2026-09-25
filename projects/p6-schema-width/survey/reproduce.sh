@@ -15,8 +15,8 @@
 # 4. Run the rows, then the HyperBench baseline, then the table and the figure.
 #
 # Run time on 4 cores at the default 600 s per step: generation ~2.5 min; Biolink and control rows under a minute
-# each; each wd-roles row ~30-36 min (Python steps plus the 20-minute solver budget of ruling Q8); all dump-scope
-# rows with --jobs 3: ~1.25-1.5 h.
+# each; each wd-roles row ~25-42 min (Python steps plus the 20-minute solver budget of ruling Q8); all 23 rows with
+# --jobs 3: ~2-2.5 h.
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 P6="$(dirname "$HERE")"

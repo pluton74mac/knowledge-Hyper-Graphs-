@@ -77,7 +77,8 @@ Order of release: **(1)** re-run the observed rows with P3a's counts and update 
 
 The observed rows rested on SQID's counts (dump of 2026-08-10) over DeltaBot's (2026-09-23), and the draft marked
 every number they produced with **†**. They were re-run on P3a's exact counts on 2026-09-25; the results are commit
-`c065478`, the updated note, post and base the commit after it. No † mark, PROVISIONAL box or provisional bullet is
+`c065478`, the figure and deposit README `f4cb303`, the note, post and base `cb55a94`, and the rest of the base
+`ace2ee6`. No † mark, PROVISIONAL box or provisional bullet is
 left. The steps, kept for a repeat (IMPLEMENTATION-NOTES §8 has the details):
 
 1. **P3a's file**: `projects/p3a-clean-nary-corpus/qualifier-usage-20260922.json` (format `p3a-qualifier-usage/1`,
@@ -180,7 +181,7 @@ xelatex note.tex && xelatex note.tex          # or: pandoc note.md -o note.pdf -
   fix the path.
 - The `<!-- OWNER -->` comments disappear in LaTeX output.
 - **Length.** In this single-column layout, after the re-run (with the eight slice rows in Table 1): 9 pages, the
-  body on 6 of them and the references from page 7 (pandoc 3.9 and tectonic, 2026-09-25). Before the re-run it was 8.
+  body on 6 of them and the top of page 7 (the end of §7 and §8, about 300 words), and the references from page 7 (pandoc 3.9 and tectonic, 2026-09-25). Before the re-run it was 8.
   A two-column build of that earlier draft (0.75 in margins, without the table, which pandoc's `longtable` cannot
   place in two columns) came to 6 pages with references. A venue template will change this; to cut, shorten §3.4, the Controls paragraph and the
   "Benchmarks and solvers" paragraph first.
