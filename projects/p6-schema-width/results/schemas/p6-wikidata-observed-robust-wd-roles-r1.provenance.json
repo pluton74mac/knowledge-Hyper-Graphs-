@@ -2,15 +2,15 @@
  "schema_id": "p6-wikidata-observed-robust-wd-roles-r1",
  "version": "1.0.0",
  "file": "schemas/p6-wikidata-observed-robust-wd-roles-r1.json.gz",
- "file_sha256": "444ecbca1b122cca65c6823fc8e88bdc82c07abd6b3337c8f2f1a7f4d97ea29d",
- "schema_sha256": "sha256:017ec6b3f09a7ba2c1a4ca6259f8afcb082d1621d4236311268d953c5d200a71",
+ "file_sha256": "b6152d01d6a6fedc8d276b14c91815948a8c82f3ce49843f769b2a652e95e1e7",
+ "schema_sha256": "sha256:3e86afe6e957a9dbe489c93656517eda3f7aa04ab20c98018d1e8df63f25166e",
  "source": "wikidata",
  "table": "observed-robust",
  "naming": "wd-roles-r1",
  "naming_version": "wd-roles r1",
  "scope": "dump",
- "counts_source": "SQID",
- "counts_date": "2026-08-10 (SQID qs); 2026-09-23 (DeltaBot main statements)",
+ "counts_source": "P3a",
+ "counts_date": "2026-09-22",
  "constraints_date": "2026-09-24 (WDQS)",
  "thresholds": {
   "robust_min_uses": 10,
@@ -22,7 +22,8 @@
   "datasets/knowledge-bases/wikidata-property-schemas/raw/allowed_qualifiers.srj.json": "ace533a7269f89bcfeb22c922d603f63f65ee7e83275173b71bd630e99ab2d0c",
   "datasets/knowledge-bases/wikidata-property-schemas/raw/required_qualifiers.srj.json": "71c6b827e49cc0406c92eb696667fd322e3bf1e9da499278e58ba182a588ef1e",
   "datasets/knowledge-bases/wikidata-property-schemas/raw/sqid-properties.json": "7885b842f081afdc658d96c10428176e8f199c88f6556427260748fce905cdd4",
-  "datasets/knowledge-bases/wikidata-property-schemas/raw/usage_main_statements.wikitext": "4b488f1af15f2b8f69d0ad1f48482d2386d1c239619fefe6d4141ce0a1177e4c"
+  "datasets/knowledge-bases/wikidata-property-schemas/raw/usage_main_statements.wikitext": "4b488f1af15f2b8f69d0ad1f48482d2386d1c239619fefe6d4141ce0a1177e4c",
+  "projects/p3a-clean-nary-corpus/qualifier-usage-20260922.json": "c76f8b388b2322bc1c8427695810f54adb84e7ff1d0828d2a211a7e5e10b634b"
  },
  "generator": {
   "khg_width": "0.1.0",
@@ -31,20 +32,20 @@
    "khg_width/data/wd-roles-r1.json": "f90c133cf3665c2c3f095e325f811e29b173974d7ebb16a3c60d98bd107e608a"
   }
  },
- "commit": "5f8683d6a4b4-dirty",
+ "commit": "786e78c11be0-dirty",
  "notes": {
   "declared_unknown_qualifier_ids": 0,
-  "observed_unknown_qualifier_ids": 0,
-  "time_bound_added": 2994,
-  "slot_qualifier": 7256,
-  "required_qualifier_usages": 554,
-  "slot_time": 4346,
+  "observed_unknown_qualifier_ids": 6,
+  "time_bound_added": 3021,
+  "slot_qualifier": 7420,
+  "required_qualifier_usages": 567,
+  "slot_time": 4386,
   "end_cause_as_builtin": 50,
-  "slot_meta": 3498,
-  "time_model_from_unthresholded_use": 1367,
+  "slot_meta": 3570,
+  "time_model_from_unthresholded_use": 1380,
   "self_qualifier_roles": 14,
-  "relations": 13608,
-  "roles": 13681,
+  "relations": 13315,
+  "roles": 13395,
   "excluded_relations": 57
  },
  "licence": "CC0-1.0 (Wikidata structured data); only numbers are taken from the DeltaBot templates"
