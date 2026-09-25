@@ -223,8 +223,8 @@ class Neo4jTable:
         return {r["id"] for r in self.run(query, params)}
 
     def by_node(self, node: str) -> set[str]:
-        return self._ids(f"MATCH (v:Version:{self.ns})-[:BINDS]->(:Node:{self.ns} {{id: $n}}) RETURN DISTINCT v.id AS id",
-                         {"n": node})
+        return self._ids(f"MATCH (v:Version:{self.ns})-[:BINDS]->(:Node:{self.ns} {{id: $n}}) "
+                         "RETURN DISTINCT v.id AS id", {"n": node})
 
     def by_relation(self, relation: str) -> set[str]:
         return self._ids(f"MATCH (v:Version:{self.ns} {{relation: $r}}) RETURN DISTINCT v.id AS id", {"r": relation})

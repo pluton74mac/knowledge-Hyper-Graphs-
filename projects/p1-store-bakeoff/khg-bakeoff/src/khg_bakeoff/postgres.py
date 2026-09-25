@@ -263,4 +263,3 @@ def factory(conninfo: str, database: str = DATABASE) -> Any:
         return PostgresStore(schema, conninfo=conninfo, database=database, clock=clock)
 
     return make
-

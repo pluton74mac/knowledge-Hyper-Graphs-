@@ -463,4 +463,3 @@ class SQLStore(AdapterMixin, NativeReads, TableStore):
             return None
         return [native_binding(dict(zip(BIND_COLS, r))) for r in self.db.q(
             f"SELECT {', '.join(BIND_COLS)} FROM binding WHERE fact_id = ? AND version = ?", (rid, rows[0][0]))]
-

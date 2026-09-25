@@ -59,8 +59,8 @@ def schema_doc() -> dict[str, Any]:
              "ordered": True},
         ]})
     for role in ("constant_name", "constant_value", "aliased", "alias"):
-        if isinstance(doc.get("roles"), list) and role not in [r["id"] if isinstance(r, dict) else r
-                                                                 for r in doc["roles"]]:
+        known = [r["id"] if isinstance(r, dict) else r for r in doc.get("roles") or []]
+        if isinstance(doc.get("roles"), list) and role not in known:
             example = doc["roles"][0]
             doc["roles"].append({"id": role} if isinstance(example, dict) else role)
     return doc

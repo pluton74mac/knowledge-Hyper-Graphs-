@@ -1601,11 +1601,28 @@ The suite absorbs [DA]'s scenarios C2-01…27, [DC]'s 18 and [DB]'s 4 (graft [J-
 
 | Backend | Layout | Flags lacking natively | Scenarios that apply |
 |---|---|---|---|
-| Incidence table (PostgreSQL 18, SQLite, DuckDB) | `fact_version`, `binding` (typed literal columns plus window columns from `derived.valid_time`), `entity`, a lifecycle index and a one-row `document` table. Temporal keys use `EXCLUDE USING gist (relation WITH =, key_digest WITH =, tstzrange(valid_from, valid_to) WITH &&)`, with rank exceptions handled in code | none | 114 |
-| Reified RDF 1.2 (`project.rdf_relation_instance`) | one fact node plus one node per binding, named graphs per version, and the header in the default graph | `transaction_time` and `history_export` without named graphs | 107 |
-| Bipartite property graph | `(:Fact)-[:BINDS {bid, role, position, direction}]->(...)`, an indexed `key_digest`, and a `(:Document)` node | `transaction_time` without version nodes | 107 |
-| TypeDB 3.x | relations with scoped role names, literals as owned attributes; P1 owns the mapping rules | `ordered_roles`, `special_values`, `goals`, `transaction_time`, `history_export` | 70 (find 5 of 13, incident 13 of 24, export 3 of 11) |
+| Incidence table (PostgreSQL 18, SQLite, DuckDB) | `fact_version`, `binding` (typed literal columns plus window columns from `derived.valid_time`), `entity`, a lifecycle index and a one-row `document` table. Temporal keys use `EXCLUDE USING gist (relation WITH =, key_digest WITH =, int8range(valid_from, valid_to) WITH &&)` over the instants in seconds, or in PostgreSQL 18 `PRIMARY KEY (relation, key_digest, valid WITHOUT OVERLAPS)`; both need `btree_gist` for the text columns. Rank exceptions are handled in code. The database uses collation `C` (A1) | none | 114 |
+| Reified RDF 1.2 (`project.rdf_relation_instance`) | one fact node plus one node per binding, named graphs per version, and the header in the default graph | none with named graphs per version; `transaction_time` and `history_export` without them (A2) | 114 with named graphs per version; 107 without (A2) |
+| Bipartite property graph | `(:Fact)-[:BINDS {bid, role, position, direction}]->(...)`, an indexed `key_digest`, and a `(:Document)` node. This layout has no version nodes; `(:Version)-[:VERSION_OF]->(:Node)`, with bindings pointing at identity nodes, keeps transaction time (A3) | none with version nodes; `transaction_time` and `history_export` without them (A3) | 114 with version nodes; 107 without (A3) |
+| TypeDB 3.x | relations with scoped role names, literals as owned attributes; P1 owns the mapping rules. A relation left without role players is deleted at commit, a repeated player in one role collapses, bids and positions have no home, and an instance has one type (A4) | `ordered_roles`, `special_values`, `goals`, `transaction_time`, `history_export` | 70 (find 5 of 13, incident 13 of 24, export 3 of 11) |
 | HIF | `from_hif` into a `MemoryStore` | `transaction_time`, `history_export` | 107 |
+
+**Amendments from P1 research 01 (2026-09-25).** §6.5 is informative; these four rows were corrected from
+[P1 research 01](../p1-store-bakeoff/research/01-backends.md) §11, where every backend was probed in P1's container.
+- **A1.** `tstzrange` cannot hold dates before 4713 BC, so the key ranges are `int8range` (or `numrange`) over the
+  instants in seconds. PostgreSQL 16 and 18 both refused an overlapping copy of `f:king-14` with the `EXCLUDE` form,
+  and 18 with `WITHOUT OVERLAPS`. A PostgreSQL column under an ICU collation sorts ids out of code-point order, so
+  the database uses `C` (§2.3, §7; probes `sql_incidence.py`, `ordering_probe.py`).
+- **A2.** With a named graph per version, the RDF layout answered 85 of 85 transaction-time checks and all 46
+  read-only scenarios. The row's own layout therefore keeps `transaction_time` and `history_export`, and 107 is the
+  count for a layout without named graphs (§3; probe `rdf_relation_instance.py`).
+- **A3.** With version nodes pointing at identity nodes, the property-graph layout answered the same 85 checks, so
+  114 apply (§4; probe `pg_cypher.py`).
+- **A4.** The reasons behind TypeDB's gaps were probed in TypeDB CE 3.13.6 (§5.2, §5.5; probes `typedb_features.py`,
+  `typedb_lists.py`, `typedb_probe.py`). The figure 70 stands.
+
+P1's adapters since measured 114 of 114 on SQLite, PostgreSQL 18.6, Oxigraph and Neo4j, 70 on TypeDB and 107 on HIF
+([P1 results](../p1-store-bakeoff/results/conformance/summary.md)).
 
 ## 7. C3 candidate queue and action log (`khg-queue/1.0.0`)
 

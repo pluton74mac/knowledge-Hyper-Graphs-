@@ -70,7 +70,66 @@ The corrections of §11 (P2 DESIGN §6.5 and four KB notes) are applied with the
 
 - 2026-09-25: started (first half: backends and conformance). Pace as P6: one agent per stage, one review round.
 - 2026-09-25: research 01 done: every backend probed in the container; rulings above.
+- 2026-09-25: first half built. khg-contracts publishes the version-table interface (P2 DESIGN §14 ruling 17).
+  [khg-bakeoff](khg-bakeoff/) has six adapters on it: the shared write path, native reads and a native bulk load.
+  All six pass khg-contracts' own conformance suite, and the four fidelity numbers are measured on P2's two
+  fixtures and on P1's edge-case container ([fixtures/](fixtures/)). [DESIGN](DESIGN.md) records the design and
+  [IMPLEMENTATION-NOTES](IMPLEMENTATION-NOTES.md) the decisions and deviations. [start-servers.sh](start-servers.sh)
+  starts the pinned servers. The corrections of research 01 §11 are applied: P2 DESIGN §6.5 amendments A1–A4 and
+  four notes in `kb/04-storage-and-formats/`. Next: one review round, then the second half on P3a's slice.
 
 ## Results and findings
 
+**First half (2026-09-25): conformance and fidelity; no timings.**
+- **Sources.** [results/conformance/](results/conformance/) (one EARL report per backend, `summary.md`) and
+  [results/fidelity.md](results/fidelity.md) (`fidelity.json`).
+- **Versions.** khg-contracts 1.0.0.dev0 at commit `12159f8`, with C1 `khg-record/1.0.0`, C2 `khg-store/1.0.0` and
+  the 114-scenario suite `khg-scenario/1.0.0`.
+- **Pass rule.** A backend passes when no applicable scenario fails (PLAN §7). Every inapplicable scenario is a
+  fidelity loss, listed by flag in `summary.md`.
+- **The fidelity columns** (DESIGN §5):
+  1. records lost in the round trip, as skipped or silent, on fixture / history / edge;
+  2. of the native layer without the record-level copies: bids, then literals as written, kept (fixture);
+  3. answers equal to `MemoryStore`'s: 13 hand queries on the fixture, 85 transaction-time checks, 24 edge queries;
+  4. inapplicable scenarios.
+
+| Backend | Engine | Kind | Applicable / passed / inapplicable (losses by flag) | 1. Round trip: skipped, silent | 2. Native: bids; literals as written | 3. Answers | Load time | Query latency |
+|---|---|---|---|---|---|---|---|---|
+| Incidence table | PostgreSQL 18.6 (psycopg 3.3.6) | client–server | 114 / 114 / 0 | 0, 0 / 0, 0 / 0, 0 | 59/59; 20/20 | 13/13, 85/85, 24/24 | second half, after P3a's slice | second half, after P3a's slice |
+| Incidence table (control) | SQLite 3.45.1 | embedded | 114 / 114 / 0 | 0, 0 / 0, 0 / 1, 0 | 59/59; 20/20 | 13/13, 85/85, 24/24 | second half | second half |
+| Reified RDF, named graph per version | Oxigraph (pyoxigraph 0.5.11) | embedded | 114 / 114 / 0 | 0, 0 / 0, 0 / 1, 0 | 59/59; 20/20 | 13/13, 85/85, 24/24 | second half | second half |
+| Bipartite property graph, version nodes | Neo4j Community 2026.09.0 (neo4j 6.3.1) | client–server | 114 / 114 / 0 | 0, 0 / 0, 0 / 1, 0 | 59/59; 20/20 | 13/13, 85/85, 24/24 | second half | second half |
+| TypeDB, natural mapping | TypeDB CE 3.13.6 (typedb-driver 3.13.6) | client–server | 70 / 70 / 44 (goals 33, ordered_roles 29, special_values 33, transaction_time 7, history_export 1) | 4, 0 / not loaded / 6, 0 | 0/48; 0/19 | 13/13, –, 24/24 | second half | second half |
+| HIF file | khg-contracts `to_hif`/`from_hif` (khg-hif/1.0.0) | embedded | 107 / 107 / 7 (transaction_time 7, history_export 1) | 0, 0 / not loaded / 0, 0 | 59/59; 20/20 | 13/13, –, 23/24 | second half | second half |
+
+**Findings.**
+1. **Every backend passes C2's conformance test** under ruling 1. SQLite, PostgreSQL 18.6, Oxigraph and Neo4j apply
+   all 114 scenarios and pass them. TypeDB passes the 70 that apply to its natural mapping, and HIF the 107 that
+   apply to a snapshot file. Both figures are the ones P2 §6.5 predicted.
+2. **No backend loses anything silently.** Every difference in a round trip is a record the store skipped, with its
+   reason.
+3. **The int64 backends refuse a 16-digit year instead of storing a wrong value.** A C1 time literal with such a
+   year puts an instant near 3.2 × 10^23 s. SQLite, Oxigraph, Neo4j and TypeDB each refuse the one record with an
+   instant beyond ±(2^62 − 2) s (ruling 4). PostgreSQL's `numeric` holds it and answers `as_of` reads in year
+   10^16 correctly.
+4. **TypeDB's native layer keeps role–value multisets but no bids, positions, directions, binding extensions or
+   literals as written.** The records come back exactly only through the JSON copy of the bindings. On the edge
+   container TypeDB also refuses:
+   - a multi-typed entity and the fact that binds it (one type per instance);
+   - a literal-only fact (a relation type must relate a role, SVL41);
+   - the goal, and the ordered and far-future facts, by flag or by instant.
+5. **The HIF store loses an entity's `recorded_by`.** The HIF profile's entity node has no `khg-recorded-by`
+   (P2 DESIGN §4.2). This affects 22 of 22 fixture entities. `compare_containers` ignores store fields, and no
+   scenario reads one after a reload, so only the store-field comparison and one edge query (`get ex:Dual`) show it.
+6. **PostgreSQL can state part of the key invariant itself.** A `WITHOUT OVERLAPS` guard over preferred facts is
+   sound under D016; the rest of D016 stays in the shared write path.
+
 ## Open questions raised
+
+For the director (IMPLEMENTATION-NOTES §7):
+- **Q1.** A registered code for "the backend cannot hold this valid record". Today it is a `ValidationError`
+  without a code.
+- **Q2.** Does `load(on_missing="skip")` cover the records a backend refuses (`cannot_hold`), as P1 reads it?
+- **Q3.** Should P2 add `khg-recorded-by` to the HIF profile's entity node (a minor profile version)?
+- **Q4.** For P3a slices that are not `complete`: stub player instances in TypeDB, or count those facts as TypeDB
+  losses?

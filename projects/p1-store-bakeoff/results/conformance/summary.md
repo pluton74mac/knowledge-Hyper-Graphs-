@@ -6,10 +6,10 @@ khg-contracts 1.0.0.dev0 at commit `12159f8a1bf5434be085d42b79ae9ff67e6446bd`; k
 |---|---|---|---|---|---|---|---|---|
 | sqlite | SQLite 3.45.1 | embedded | 114 | 114 | 0 | 0 | 0 | yes |
 | postgres | PostgreSQL 18.6 | client-server | 114 | 114 | 0 | 0 | 0 | yes |
-| oxigraph | Oxigraph (pyoxigraph) pyoxigraph 0.5.11 | embedded | 114 | 114 | 0 | 0 | 0 | yes |
-| neo4j | Neo4j Community 2026.09.0 community | client-server | 114 | 114 | 0 | 0 | 0 | yes |
-| typedb | TypeDB CE TypeDB CE 3.13.6 | client-server | 70 | 70 | 0 | 0 | 44 | yes |
-| hif | HIF file (khg-contracts to_hif/from_hif) khg-contracts 1.0.0.dev0 (khg-hif/1.0.0) | embedded | 107 | 107 | 0 | 0 | 7 | yes |
+| oxigraph | Oxigraph 0.5.11 (pyoxigraph) | embedded | 114 | 114 | 0 | 0 | 0 | yes |
+| neo4j | Neo4j 2026.09.0 community | client-server | 114 | 114 | 0 | 0 | 0 | yes |
+| typedb | TypeDB CE 3.13.6 | client-server | 70 | 70 | 0 | 0 | 44 | yes |
+| hif | HIF file khg-hif/1.0.0 (khg-contracts 1.0.0.dev0 to_hif/from_hif) | embedded | 107 | 107 | 0 | 0 | 7 | yes |
 
 ## Losses by flag
 

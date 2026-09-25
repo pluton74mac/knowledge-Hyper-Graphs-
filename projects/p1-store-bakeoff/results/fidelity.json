@@ -270,8 +270,8 @@
   "oxigraph": {
    "backend": "oxigraph",
    "layout": "reified RDF (named graph per version)",
-   "engine": "Oxigraph (pyoxigraph)",
-   "version": "pyoxigraph 0.5.11",
+   "engine": "Oxigraph",
+   "version": "0.5.11 (pyoxigraph)",
    "kind": "embedded",
    "datasets": {
     "fixture": {
@@ -398,7 +398,7 @@
   "neo4j": {
    "backend": "neo4j",
    "layout": "bipartite property graph (version nodes)",
-   "engine": "Neo4j Community",
+   "engine": "Neo4j",
    "version": "2026.09.0 community",
    "kind": "client-server",
    "datasets": {
@@ -526,8 +526,8 @@
   "typedb": {
    "backend": "typedb",
    "layout": "TypeDB natural mapping",
-   "engine": "TypeDB CE",
-   "version": "TypeDB CE 3.13.6",
+   "engine": "TypeDB",
+   "version": "CE 3.13.6",
    "kind": "client-server",
    "datasets": {
     "fixture": {
@@ -817,8 +817,8 @@
   "hif": {
    "backend": "hif",
    "layout": "HIF file",
-   "engine": "HIF file (khg-contracts to_hif/from_hif)",
-   "version": "khg-contracts 1.0.0.dev0 (khg-hif/1.0.0)",
+   "engine": "HIF file",
+   "version": "khg-hif/1.0.0 (khg-contracts 1.0.0.dev0 to_hif/from_hif)",
    "kind": "embedded",
    "datasets": {
     "fixture": {

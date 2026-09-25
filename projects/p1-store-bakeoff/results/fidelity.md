@@ -4,14 +4,14 @@ khg-contracts 1.0.0.dev0 at commit `12159f8a1bf5434be085d42b79ae9ff67e6446bd`; k
 
 **1. Container round trip**: records that differ after `load(on_missing="skip")` → `export`, as skipped/silent, per data set (fixture, history, edge); store fields that differ from `MemoryStore` holding the same records. **2. Native layer** (fixture; edge): bids, literals as written, positions, extensions and role–value multisets kept without the record-level copies. **3. Answers**: same as `MemoryStore` / compared (fixture hand queries; history transaction-time checks; edge queries). **4. Inapplicable scenarios** (losses by flag, from the conformance run).
 
-| Backend | Engine | Kind | 1. Round trip: fixture / history / edge | 1. Store fields | 2. Native: bids, literals, positions, extensions, multisets (fixture; edge) | 3. Answers: fixture / history / edge | 4. Inapplicable |
+| Backend | Engine | Kind | 1. Round trip: fixture / history / edge | 1. Store fields: fixture / history / edge | 2. Native: bids, literals, positions, extensions, multisets (fixture; edge) | 3. Answers: fixture / history / edge | 4. Inapplicable |
 |---|---|---|---|---|---|---|---|
-| sqlite | SQLite 3.45.1 | embedded | 0 skipped, 0 silent / 0 skipped, 0 silent / 1 skipped, 0 silent | 0 | 59/59, 20/20, 3/3, 2/2, 18/18; 42/42, 5/5, 2/2, –, 20/20 | 13/13 / 85/85 / 24/24 | 0 |
-| postgres | PostgreSQL 18.6 | client-server | 0 skipped, 0 silent / 0 skipped, 0 silent / 0 skipped, 0 silent | 0 | 59/59, 20/20, 3/3, 2/2, 18/18; 45/45, 6/6, 2/2, –, 21/21 | 13/13 / 85/85 / 24/24 | 0 |
-| oxigraph | Oxigraph (pyoxigraph) pyoxigraph 0.5.11 | embedded | 0 skipped, 0 silent / 0 skipped, 0 silent / 1 skipped, 0 silent | 0 | 59/59, 20/20, 3/3, 2/2, 18/18; 42/42, 5/5, 2/2, –, 20/20 | 13/13 / 85/85 / 24/24 | 0 |
-| neo4j | Neo4j Community 2026.09.0 community | client-server | 0 skipped, 0 silent / 0 skipped, 0 silent / 1 skipped, 0 silent | 0 | 59/59, 20/20, 3/3, 2/2, 18/18; 42/42, 5/5, 2/2, –, 20/20 | 13/13 / 85/85 / 24/24 | 0 |
-| typedb | TypeDB CE TypeDB CE 3.13.6 | client-server | 4 skipped, 0 silent / not loaded (no history_export) / 6 skipped, 0 silent | 0 | 0/48, 0/19, –, 0/2, 14/14; 0/33, –, –, –, 16/16 | 13/13 / – / 24/24 | 44 (goals 33, history_export 1, ordered_roles 29, special_values 33, transaction_time 7) |
-| hif | HIF file (khg-contracts to_hif/from_hif) khg-contracts 1.0.0.dev0 (khg-hif/1.0.0) | embedded | 0 skipped, 0 silent / not loaded (no history_export) / 0 skipped, 0 silent | 42 | 59/59, 20/20, 3/3, 2/2, 18/18; 45/45, 6/6, 2/2, –, 21/21 | 13/13 / – / 23/24 | 7 (history_export 1, transaction_time 7) |
+| sqlite | SQLite 3.45.1 | embedded | 0 skipped, 0 silent / 0 skipped, 0 silent / 1 skipped, 0 silent | 0 / 0 / 0 | 59/59, 20/20, 3/3, 2/2, 18/18; 42/42, 5/5, 2/2, –, 20/20 | 13/13 / 85/85 / 24/24 | 0 |
+| postgres | PostgreSQL 18.6 | client-server | 0 skipped, 0 silent / 0 skipped, 0 silent / 0 skipped, 0 silent | 0 / 0 / 0 | 59/59, 20/20, 3/3, 2/2, 18/18; 45/45, 6/6, 2/2, –, 21/21 | 13/13 / 85/85 / 24/24 | 0 |
+| oxigraph | Oxigraph 0.5.11 (pyoxigraph) | embedded | 0 skipped, 0 silent / 0 skipped, 0 silent / 1 skipped, 0 silent | 0 / 0 / 0 | 59/59, 20/20, 3/3, 2/2, 18/18; 42/42, 5/5, 2/2, –, 20/20 | 13/13 / 85/85 / 24/24 | 0 |
+| neo4j | Neo4j 2026.09.0 community | client-server | 0 skipped, 0 silent / 0 skipped, 0 silent / 1 skipped, 0 silent | 0 / 0 / 0 | 59/59, 20/20, 3/3, 2/2, 18/18; 42/42, 5/5, 2/2, –, 20/20 | 13/13 / 85/85 / 24/24 | 0 |
+| typedb | TypeDB CE 3.13.6 | client-server | 4 skipped, 0 silent / not loaded (no history_export) / 6 skipped, 0 silent | 0 / – / 0 | 0/48, 0/19, –, 0/2, 14/14; 0/33, –, –, –, 16/16 | 13/13 / – / 24/24 | 44 (goals 33, history_export 1, ordered_roles 29, special_values 33, transaction_time 7) |
+| hif | HIF file khg-hif/1.0.0 (khg-contracts 1.0.0.dev0 to_hif/from_hif) | embedded | 0 skipped, 0 silent / not loaded (no history_export) / 0 skipped, 0 silent | 22 / – / 20 | 59/59, 20/20, 3/3, 2/2, 18/18; 45/45, 6/6, 2/2, –, 21/21 | 13/13 / – / 23/24 | 7 (history_export 1, transaction_time 7) |
 
 ## What each backend lost
 

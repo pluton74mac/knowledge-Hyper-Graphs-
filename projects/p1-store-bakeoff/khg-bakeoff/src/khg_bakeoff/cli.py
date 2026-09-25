@@ -69,7 +69,8 @@ def fidelity_md(result: dict[str, Any]) -> str:
              "positions, extensions and role–value multisets kept without the record-level copies. **3. Answers**: "
              "same as `MemoryStore` / compared (fixture hand queries; history transaction-time checks; edge "
              "queries). **4. Inapplicable scenarios** (losses by flag, from the conformance run).", "",
-             "| Backend | Engine | Kind | 1. Round trip: fixture / history / edge | 1. Store fields: fixture / history / edge | "
+             "| Backend | Engine | Kind | 1. Round trip: fixture / history / edge | "
+             "1. Store fields: fixture / history / edge | "
              "2. Native: bids, literals, positions, extensions, multisets (fixture; edge) | "
              "3. Answers: fixture / history / edge | 4. Inapplicable |",
              "|---|---|---|---|---|---|---|---|"]

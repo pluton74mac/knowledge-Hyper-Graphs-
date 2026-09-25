@@ -2,9 +2,9 @@
 title: Hypergraph and n-ary databases
 type: survey
 status: draft
-tags: [database, hypergraphdb, typedb, atomspace, hyperon, terminusdb, datomic, kuzu, apache-age, storage-engine]
+tags: [database, hypergraphdb, typedb, atomspace, hyperon, terminusdb, datomic, kuzu, ladybugdb, apache-age, storage-engine]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-25
 ---
 
 # Hypergraph and n-ary databases
@@ -145,7 +145,7 @@ It is the graph store behind Hyper-RAG — see
 | **ArangoDB** | JSON documents + edge collections (`_from`, `_to`) | reified document + edge collection | edges are binary documents; multi-model, AQL ([ArangoDB graphs docs](https://docs.arangodb.com/stable/graphs/)) |
 | **TigerGraph** | typed vertices and edges, MPP | reified vertex | GSQL; edge types are `FROM`/`TO` pairs ([GSQL schema docs](https://docs.tigergraph.com/gsql-ref/current/ddl-and-loading/defining-a-graph-schema)) |
 | **Apache AGE** | property graph *inside PostgreSQL* | reified node | "an extension for PostgreSQL that enables users to leverage a graph database on top of the existing relational databases", openCypher + SQL, PostgreSQL 11–18 ([Apache AGE README](https://github.com/apache/age)) |
-| **Kùzu** | embedded property graph, columnar on disk | reified node | "Columnar disk-based storage", "Columnar sparse row-based (CSR) adjacency list/join indices", Cypher; v0.11.3 released 2025-10-10 ([Kùzu README](https://github.com/kuzudb/kuzu)) |
+| **Kùzu** | embedded property graph, columnar on disk | reified node | "Columnar disk-based storage", "Columnar sparse row-based (CSR) adjacency list/join indices", Cypher; v0.11.3 released 2025-10-10 ([Kùzu README](https://github.com/kuzudb/kuzu)). **Archived** (corrected 2026-09-25): 0.11.3 is the final release. Its successor is LadybugDB 0.20.4 (2026-09-10, MIT): "The database was formerly known as Kuzu" ([PyPI](https://pypi.org/project/ladybug/)). The two cannot share one Python process: after `import kuzu`, `ladybug.Database()` fails with "Could not find lbug C API shared library" ([P1 research 01](../../projects/p1-store-bakeoff/research/01-backends.md) §4.1, §4.3, probe `pg_kuzu.py`) |
 | **SurrealDB** | multi-model records with graph relations | `RELATE` record, which is itself a record with fields | the `RELATE` edge record is a first-class row, so adding a third participant is adding a field — closer to a relation instance than to a graph edge ([SurrealDB graph docs](https://surrealdb.com/docs/surrealdb/models/graph)) |
 | **TerminusDB** | JSON/JSON-LD documents in a succinct, immutable, git-like store | JSON-LD relation-instance documents | "a distributed database with a collaboration model — git for data"; commits, diff/patch, push/pull/clone, time-travel queries, WOQL datalog. Version 12 as of the May 2026 README ([TerminusDB README](https://github.com/terminusdb/terminusdb)) |
 | **Datomic** | immutable EAV(T) datoms | one entity per fact, attributes as roles | the datom model makes a "fact entity" idiomatic rather than a workaround; see [relational-and-eav-storage.md](relational-and-eav-storage.md) |
@@ -169,7 +169,7 @@ what each member is. "Nesting" = a record may be a member of a record.
 | RelationalAI | yes (n-ary relations) | by position/column | via relations over relations | typed | Rel (Datalog family) | cloud service | active |
 | Datomic | per-entity, not per-record | attribute names | via entity refs | attribute schema | Datalog | immutable log + indexes | active |
 | TerminusDB | via JSON-LD documents | property names | nested documents | schema documents | WOQL, GraphQL | succinct immutable layers | v12, 2026 |
-| Neo4j / Kùzu / AGE / ArangoDB / TigerGraph / SurrealDB | no | via edge types | no | varies | Cypher / GSQL / AQL / SurrealQL | varies | active |
+| Neo4j / Kùzu / AGE / ArangoDB / TigerGraph / SurrealDB | no | via edge types | no | varies | Cypher / GSQL / AQL / SurrealQL | varies | active (Kùzu archived; successor LadybugDB) |
 | RDF stores | no | via role properties | RDF 1.2 triple terms only | RDFS/OWL/SHACL | SPARQL | varies | see the RDF note |
 
 ## 7. Research prototypes, 2023–2026
@@ -207,6 +207,8 @@ Short version, expanded in [format-recommendations.md](format-recommendations.md
 - Hypergraph-DB README and PyPI metadata (0.3.0, uploaded 2025-10-14). https://github.com/iMoonLab/Hypergraph-DB , https://pypi.org/project/hypergraph-db/
 - Apache AGE README (checked 2026-09-20). https://github.com/apache/age
 - Kùzu README (v0.11.3, released 2025-10-10). https://github.com/kuzudb/kuzu
+- LadybugDB 0.20.4 on PyPI (released 2026-09-10, MIT; "The database was formerly known as Kuzu"), checked 2026-09-25. https://pypi.org/project/ladybug/
+- P1 research 01, §4.1 and §4.3 and the probe `pg_kuzu.py` (run 2026-09-25): Kùzu 0.11.3 and LadybugDB 0.20.4 side by side. [P1 research 01](../../projects/p1-store-bakeoff/research/01-backends.md)
 - TerminusDB README, "Project Overview (Updated May 2026)" and version 12 notes. https://github.com/terminusdb/terminusdb
 - ArangoDB graphs documentation (checked 2026-09-20). https://docs.arangodb.com/stable/graphs/
 - TigerGraph. *Defining a graph schema* (GSQL reference, checked 2026-09-20). https://docs.tigergraph.com/gsql-ref/current/ddl-and-loading/defining-a-graph-schema

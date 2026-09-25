@@ -50,7 +50,8 @@ HAND: list[tuple[str, str, dict[str, Any]]] = [
     ("incident f:born-louis14-paris (nesting)", "incident", {"node": "f:born-louis14-paris"}),
     ("find at_least agent insulin + metformin", "find",
      {"relation": "co_administration_causes", "pattern": [
-         {"role": "agent", "value": {"entity": "ex:insulin"}}, {"role": "agent", "value": {"entity": "ex:metformin"}}]}),
+         {"role": "agent", "value": {"entity": "ex:insulin"}},
+         {"role": "agent", "value": {"entity": "ex:metformin"}}]}),
     ("find at_least agent insulin twice (injective: none)", "find",
      {"relation": "co_administration_causes", "pattern": [
          {"role": "agent", "value": {"entity": "ex:insulin"}}, {"role": "agent", "value": {"entity": "ex:insulin"}}]}),
@@ -213,8 +214,8 @@ def native(store: Any, container: Mapping[str, Any], skipped: Iterable[str]) -> 
             continue
         tally["facts"] += 1
         sb = src.get("bindings") or []
-        if sorted((b["role"], _ident(b["value"])) for b in sb) == sorted((b["role"], _ident(b.get("value")))
-                                                                       for b in got):
+        want = sorted((b["role"], _ident(b["value"])) for b in sb)
+        if want == sorted((b["role"], _ident(b.get("value"))) for b in got):
             tally["multiset_kept"] += 1
         else:
             lost.setdefault("role-value multiset", []).append(rid)

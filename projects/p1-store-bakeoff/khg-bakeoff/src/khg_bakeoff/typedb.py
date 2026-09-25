@@ -745,4 +745,3 @@ def factory(address: str, username: str = "admin", password: str = "password") -
         return TypeDBStore(schema, address=address, username=username, password=password, clock=clock)
 
     return make
-

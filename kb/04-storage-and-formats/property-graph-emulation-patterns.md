@@ -4,7 +4,7 @@ type: survey
 status: draft
 tags: [property-graph, neo4j, cypher, gremlin, reification, hyperedge-as-node, graphrag, lightrag, hypergraphrag]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-25
 ---
 
 # Emulating hyperedges in property graphs
@@ -44,9 +44,14 @@ CREATE (f)-[:POPULATION]->(:Population {name:'adults'})
 CREATE (f)-[:MEMBER {role:'treatment', direction:'tail'}]->(:Drug {name:'metformin'})
 ```
 
-Same topology, one relationship type. Easier to write generically, harder to index: most engines
-index relationship *types* cheaply and relationship *properties* less cheaply, so a query for "all
-facts where X is the condition" becomes a scan-and-filter rather than a typed traversal.
+Same topology, one relationship type. Easier to write generically. Whether it is harder to index depends on the
+engine (corrected 2026-09-25). Many engines index relationship *types* more cheaply than relationship
+*properties*, and there a query for "all facts where X is the condition" becomes a scan-and-filter rather than a
+typed traversal. Neo4j 5 and later build range indexes on relationship properties. On Neo4j Community 2026.09.0
+an index on `BINDS(role, ident)` came up `ONLINE`
+([P1 research 01](../../projects/p1-store-bakeoff/research/01-backends.md) §4.2, probe `pg_cypher.py`). In P1's
+build an index on `BINDS(role)` did too, and the planner answered `MATCH (v)-[e:BINDS]->() WHERE e.role = $r`
+with a `DirectedRelationshipIndexSeek`, not a scan (`EXPLAIN`, 2026-09-25).
 
 ### 1c. Clique / star expansion (lossy)
 
@@ -184,7 +189,8 @@ model. Check `upsert_*`.
 
 1. **Always keep the fact node.** Clique expansion is a one-way door.
 2. **Put the role on the relationship type, not a property**, if the role vocabulary is small and
-   stable; put it on a property if roles are open-ended, and accept the scan.
+   stable. Put it on a property if roles are open-ended, and index the property where the engine can (Neo4j 5
+   and later can, §1b); elsewhere, accept the scan.
 3. **Give the fact node a stable ID that is not the text.** HyperGraphRAG's
    `"<hyperedge>" + sentence` keys are unstable under paraphrase and make deduplication a string
    problem; see
@@ -206,3 +212,4 @@ model. Check `upsert_*`.
 - Noy, N. and Rector, A. (eds). *Defining N-ary Relations on the Semantic Web*, W3C Working Group Note, 12 April 2006. https://www.w3.org/TR/swbp-n-aryRelations/
 - Neo4j. *Cypher Manual* (checked 2026-09-20). https://neo4j.com/docs/cypher-manual/current/
 - Apache TinkerPop. *Gremlin reference* (checked 2026-09-20). https://tinkerpop.apache.org/docs/current/reference/
+- P1 research 01, §4.2 and the probe `pg_cypher.py` (run 2026-09-25): a relationship-property range index on Neo4j Community 2026.09.0; the index seek was checked with `EXPLAIN` in P1's build (khg-bakeoff `neo4j.py`). [P1 research 01](../../projects/p1-store-bakeoff/research/01-backends.md)

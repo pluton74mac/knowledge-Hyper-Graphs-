@@ -31,7 +31,8 @@ from khg_contracts.record import NEG_INF, POS_INF, binding_sort_key, bounds, ide
 from khg_contracts.schema import LIFECYCLE_RELATIONS
 
 __all__ = ["BIND_COLS", "ENTITY_COLS", "FACT_COLS", "HEADER_FIELDS", "INT64_HELD", "NEG", "POS", "Pat",
-           "assemble", "binding_rows", "entity_row", "fact_row", "instant", "native_binding", "numeric_instant", "prepare",
+           "assemble", "binding_rows", "entity_row", "fact_row", "instant", "native_binding", "numeric_instant",
+           "prepare",
            "query_instant", "split", "unheld_instants"]
 
 #: The sentinels of -inf and +inf in an int64 backend.

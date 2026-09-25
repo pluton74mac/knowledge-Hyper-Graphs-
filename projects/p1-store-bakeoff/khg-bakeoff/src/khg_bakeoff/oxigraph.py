@@ -470,8 +470,9 @@ class OxigraphStore(AdapterMixin, NativeReads, TableStore):
     def native_bindings(self, rid: str) -> list[dict[str, Any]] | None:
         """The bindings of the current version of fact ``rid`` from the binding nodes' triples (not ``payload``)."""
         f = iri_encode(rid)
-        rows = self.select(PREFIX + f"SELECT ?b ?p ?o WHERE {{ ?g khg:versionOf <{f}> . FILTER NOT EXISTS {{ ?g khg:txTo "
-                                    f"?x }} GRAPH ?g {{ <{f}> a khg:Hyperedge ; khg:binding ?b . ?b ?p ?o }} }}")
+        rows = self.select(PREFIX + f"SELECT ?b ?p ?o WHERE {{ ?g khg:versionOf <{f}> . "
+                                    f"FILTER NOT EXISTS {{ ?g khg:txTo ?x }} "
+                                    f"GRAPH ?g {{ <{f}> a khg:Hyperedge ; khg:binding ?b . ?b ?p ?o }} }}")
         if not rows and not self._n_is_fact(rid):
             return None
         nodes: dict[str, dict[str, Any]] = {}
