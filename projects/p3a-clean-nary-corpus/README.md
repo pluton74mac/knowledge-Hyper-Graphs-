@@ -44,6 +44,11 @@ same tool writes the per-relation qualifier usage that P6 reads, `qualifier-usag
 - 2026-09-24: dump download started (1.2 MB/s cap, owner's choice); slicer built.
 - 2026-09-24: curl's `--retry` truncated the partial download to zero, so the download restarted; `raw/fetch.sh` now
   retries in its own loop, each curl run resuming with `-C -`, and runs uncapped (owner's choice).
+- 2026-09-25: the dump download and the slicer's follow-mode pass (commit `a3bb518`) both completed at 03:18 UTC. The
+  input matched the published size, md5 and sha1. The dump holds 121,780,373 entities (13,929 of them properties) and
+  1,779,722,803 item statements; 7,584,990 items are seeds, with 138,973,704 statements. The slice is 14.9 GB of
+  gzip. [`qualifier-usage-20260922.json`](qualifier-usage-20260922.json) (`wd-roles r1`, for P6) was written from
+  it: 13,317 relations in `all`, 12,707 in `kept`, and 57 properties out of scope under rule 8.
 
 ## Results and findings
 
