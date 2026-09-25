@@ -1,0 +1,146 @@
+{
+ "backend": "ladybug",
+ "version": "0.20.4",
+ "native_write_seconds": 0.2775,
+ "hand": {
+  "get f:king-14": {
+   "same_as_reference": true,
+   "got": "record"
+  },
+  "incident ex:KingOfFrance": {
+   "same_as_reference": true,
+   "got": [
+    "f:king-13",
+    "f:king-14"
+   ]
+  },
+  "incident ex:KingOfFrance as_of 1700": {
+   "same_as_reference": true,
+   "got": [
+    "f:king-14"
+   ]
+  },
+  "incident ex:TP53 (two roles, once)": {
+   "same_as_reference": true,
+   "got": [
+    "f:reg-1"
+   ]
+  },
+  "incident f:born-louis14-paris (nesting)": {
+   "same_as_reference": true,
+   "got": [
+    "f:claim-1"
+   ]
+  },
+  "find at_least agent insulin + metformin": {
+   "same_as_reference": true,
+   "got": [
+    "f:coadmin-1"
+   ]
+  },
+  "find at_least agent insulin twice (injective: none)": {
+   "same_as_reference": true,
+   "got": []
+  },
+  "find at_least claims point_in_time 1700 (Julian, year)": {
+   "same_as_reference": true,
+   "got": [
+    "f:claim-1"
+   ]
+  },
+  "find at_least flight_route stop YYZ at position 3": {
+   "same_as_reference": true,
+   "got": [
+    "f:route-1"
+   ]
+  },
+  "find_by_key position_held position KingOfFrance": {
+   "same_as_reference": true,
+   "got": [
+    "f:king-13",
+    "f:king-14"
+   ]
+  },
+  "find_by_key born_in person Maria Skłodowska (all statuses)": {
+   "same_as_reference": true,
+   "got": [
+    "f:born-skłodowska-kraków",
+    "f:born-skłodowska-warszawa"
+   ]
+  },
+  "supersession_walk f:born-skłodowska-kraków": {
+   "same_as_reference": true,
+   "got": {
+    "steps": [
+     [
+      1,
+      "m:sup-1",
+      "f:born-skłodowska-kraków",
+      "f:born-skłodowska-warszawa"
+     ]
+    ],
+    "terminal": [
+     {
+      "id": "f:born-skłodowska-warszawa",
+      "status": "asserted"
+     }
+    ]
+   }
+  },
+  "supersession_walk f:born-skłodowska-warszawa backward": {
+   "same_as_reference": true,
+   "got": {
+    "steps": [
+     [
+      1,
+      "m:sup-1",
+      "f:born-skłodowska-warszawa",
+      "f:born-skłodowska-kraków"
+     ]
+    ],
+    "terminal": [
+     {
+      "id": "f:born-skłodowska-kraków",
+      "status": "superseded"
+     }
+    ]
+   }
+  },
+  "export khg-json round trip": {
+   "differences": 0,
+   "first": []
+  },
+  "native recursive walk": {
+   "steps": [
+    [
+     1,
+     "m:sup-1",
+     "f:born-skłodowska-kraków",
+     "f:born-skłodowska-warszawa"
+    ]
+   ],
+   "same_as_reference": true
+  }
+ },
+ "find_cypher_example": "MATCH (v:Version: {relation: $rel}), (v)-[b1:BINDS]->(), (v)-[b2:BINDS]->() WHERE b1.role = $r1 AND b1.ident = $i1 AND b2.role = $r2 AND b2.ident = $i2 AND b2.bid <> b1.bid AND v.tx_to IS NULL AND v.status IN $st AND v.rank IN $rk AND v.visibility IN $vis AND v.rel_kind IN $kinds RETURN DISTINCT v.id AS id ORDER BY id",
+ "read_only_scenarios": {
+  "selected": 46,
+  "counts": {
+   "passed": 46
+  },
+  "tested_flags": [
+   "atomic_writes",
+   "goals",
+   "history_export",
+   "key_constraint",
+   "literal_values",
+   "nesting",
+   "ordered_roles",
+   "special_values",
+   "transaction_time",
+   "valid_time"
+  ],
+  "not_passed": {}
+ },
+ "scenario_seconds": 13.8
+}

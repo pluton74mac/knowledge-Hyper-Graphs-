@@ -1,0 +1,35 @@
+{
+ "backend": "hif",
+ "flags": [
+  "atomic_writes",
+  "goals",
+  "key_constraint",
+  "literal_values",
+  "nesting",
+  "ordered_roles",
+  "special_values",
+  "valid_time"
+ ],
+ "file_bytes": 24022,
+ "reopen_export_differences": 0,
+ "hif_valid": true,
+ "as_at after reopen": "CapabilityMissing: the store 'hif' lacks the capability transaction_time",
+ "conformance_seconds": 3.9,
+ "conformance_summary": {
+  "passed": 107,
+  "failed": 0,
+  "inapplicable": 7,
+  "cantTell": 0,
+  "total": 114
+ },
+ "not_passed": {},
+ "inapplicable": [
+  "S-EXP-004",
+  "S-EXP-005",
+  "S-EXP-008",
+  "S-EXP-010",
+  "S-TIME-002",
+  "S-TIME-004",
+  "S-VER-001"
+ ]
+}
