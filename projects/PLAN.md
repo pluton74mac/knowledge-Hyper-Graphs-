@@ -144,7 +144,7 @@ consumer. Each project records the contract versions it consumed.
 |---|---|---|---|---|---|---|---|
 | P2 | Role-aware HIF and shared contracts | 0 | capability | passed | 2026-09-24 | | none (produces C1 khg-record/1.0.0, C2 khg-store/1.0.0, C3 khg-queue/1.0.0, C5 khg-scorers/1.0.0) |
 | P3a | Clean n-ary corpus | 0 | capability (data) | not started | | | |
-| P1 | Format and store bake-off | 1 | finding | not started | | | |
+| P1 | Format and store bake-off | 1 | finding | in progress | | | C1 khg-record/1.0.0, C2 khg-store/1.0.0 |
 | P3b | Completion replication | 1 | finding | not started | | | |
 | P5 | Reader study | 1 | finding | not started | | | |
 | P6 | Schema width survey | 1 | finding + tool | passed | 2026-09-25 | | C1 khg-relation-schema/1.0.0 |
