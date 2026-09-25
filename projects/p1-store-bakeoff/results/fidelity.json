@@ -1,0 +1,1059 @@
+{
+ "provenance": {
+  "contracts": {
+   "C1": "khg-record/1.0.0",
+   "C2": "khg-store/1.0.0",
+   "scenarios": "khg-scenario/1.0.0",
+   "HIF profile": "khg-hif/1.0.0"
+  },
+  "khg_contracts": {
+   "version": "1.0.0.dev0",
+   "commit": "12159f8a1bf5434be085d42b79ae9ff67e6446bd",
+   "src_modified": false
+  },
+  "khg_bakeoff": "0.1.0",
+  "python": "3.11.15",
+  "sqlite_library": "3.45.1",
+  "clients": {
+   "pyoxigraph": "0.5.11",
+   "psycopg": "3.3.6",
+   "neo4j": "6.3.1",
+   "typedb-driver": "3.13.6"
+  }
+ },
+ "backends": {
+  "sqlite": {
+   "backend": "sqlite",
+   "layout": "incidence table",
+   "engine": "SQLite",
+   "version": "3.45.1",
+   "kind": "embedded",
+   "datasets": {
+    "fixture": {
+     "loaded": true,
+     "round_trip": {
+      "records_in": 40,
+      "records_out": 40,
+      "differing": 0,
+      "skipped": 0,
+      "skip_reasons": {},
+      "other_differences": [],
+      "header_differences": [],
+      "store_field_differences": {}
+     },
+     "native": {
+      "facts": 18,
+      "multiset_kept": 18,
+      "bindings": 59,
+      "bid_kept": 59,
+      "positions": 3,
+      "position_kept": 3,
+      "directions": 0,
+      "direction_kept": 0,
+      "extensions_kept": 2,
+      "literals": 20,
+      "literal_as_written_kept": 20,
+      "extensions": 2,
+      "lost": {}
+     },
+     "answers": {
+      "compared": 13,
+      "same": 13,
+      "both_refused": 0,
+      "differ": {}
+     }
+    },
+    "history": {
+     "loaded": true,
+     "round_trip": {
+      "records_in": 10,
+      "records_out": 10,
+      "differing": 0,
+      "skipped": 0,
+      "skip_reasons": {},
+      "other_differences": [],
+      "header_differences": [],
+      "store_field_differences": {}
+     },
+     "native": {
+      "facts": 3,
+      "multiset_kept": 3,
+      "bindings": 8,
+      "bid_kept": 8,
+      "positions": 0,
+      "position_kept": 0,
+      "directions": 0,
+      "direction_kept": 0,
+      "extensions_kept": 0,
+      "literals": 2,
+      "literal_as_written_kept": 2,
+      "extensions": 0,
+      "lost": {}
+     },
+     "answers": {
+      "compared": 85,
+      "same": 85,
+      "differ": []
+     }
+    },
+    "edge": {
+     "loaded": true,
+     "round_trip": {
+      "records_in": 41,
+      "records_out": 40,
+      "differing": 1,
+      "skipped": 1,
+      "skip_reasons": {
+       "f:far-future": {
+        "cannot_hold": {
+         "reason": "instant_range",
+         "instants": [
+          "315569520000148668048000",
+          "315569520000148699584000"
+         ],
+         "held": "|instant| <= 4611686018427387902 s (2^62 - 2)"
+        }
+       }
+      },
+      "other_differences": [],
+      "header_differences": [],
+      "store_field_differences": {}
+     },
+     "native": {
+      "facts": 20,
+      "multiset_kept": 20,
+      "bindings": 42,
+      "bid_kept": 42,
+      "positions": 2,
+      "position_kept": 2,
+      "directions": 0,
+      "direction_kept": 0,
+      "extensions_kept": 0,
+      "literals": 5,
+      "literal_as_written_kept": 5,
+      "extensions": 0,
+      "lost": {}
+     },
+     "answers": {
+      "compared": 24,
+      "same": 24,
+      "both_refused": 0,
+      "differ": {}
+     }
+    }
+   },
+   "conformance": {
+    "applicable": 114,
+    "passed": 114,
+    "failed": 0,
+    "inapplicable": 0,
+    "losses_by_flag": {}
+   }
+  },
+  "postgres": {
+   "backend": "postgres",
+   "layout": "incidence table",
+   "engine": "PostgreSQL",
+   "version": "18.6",
+   "kind": "client-server",
+   "datasets": {
+    "fixture": {
+     "loaded": true,
+     "round_trip": {
+      "records_in": 40,
+      "records_out": 40,
+      "differing": 0,
+      "skipped": 0,
+      "skip_reasons": {},
+      "other_differences": [],
+      "header_differences": [],
+      "store_field_differences": {}
+     },
+     "native": {
+      "facts": 18,
+      "multiset_kept": 18,
+      "bindings": 59,
+      "bid_kept": 59,
+      "positions": 3,
+      "position_kept": 3,
+      "directions": 0,
+      "direction_kept": 0,
+      "extensions_kept": 2,
+      "literals": 20,
+      "literal_as_written_kept": 20,
+      "extensions": 2,
+      "lost": {}
+     },
+     "answers": {
+      "compared": 13,
+      "same": 13,
+      "both_refused": 0,
+      "differ": {}
+     }
+    },
+    "history": {
+     "loaded": true,
+     "round_trip": {
+      "records_in": 10,
+      "records_out": 10,
+      "differing": 0,
+      "skipped": 0,
+      "skip_reasons": {},
+      "other_differences": [],
+      "header_differences": [],
+      "store_field_differences": {}
+     },
+     "native": {
+      "facts": 3,
+      "multiset_kept": 3,
+      "bindings": 8,
+      "bid_kept": 8,
+      "positions": 0,
+      "position_kept": 0,
+      "directions": 0,
+      "direction_kept": 0,
+      "extensions_kept": 0,
+      "literals": 2,
+      "literal_as_written_kept": 2,
+      "extensions": 0,
+      "lost": {}
+     },
+     "answers": {
+      "compared": 85,
+      "same": 85,
+      "differ": []
+     }
+    },
+    "edge": {
+     "loaded": true,
+     "round_trip": {
+      "records_in": 41,
+      "records_out": 41,
+      "differing": 0,
+      "skipped": 0,
+      "skip_reasons": {},
+      "other_differences": [],
+      "header_differences": [],
+      "store_field_differences": {}
+     },
+     "native": {
+      "facts": 21,
+      "multiset_kept": 21,
+      "bindings": 45,
+      "bid_kept": 45,
+      "positions": 2,
+      "position_kept": 2,
+      "directions": 0,
+      "direction_kept": 0,
+      "extensions_kept": 0,
+      "literals": 6,
+      "literal_as_written_kept": 6,
+      "extensions": 0,
+      "lost": {}
+     },
+     "answers": {
+      "compared": 24,
+      "same": 24,
+      "both_refused": 0,
+      "differ": {}
+     }
+    }
+   },
+   "conformance": {
+    "applicable": 114,
+    "passed": 114,
+    "failed": 0,
+    "inapplicable": 0,
+    "losses_by_flag": {}
+   }
+  },
+  "oxigraph": {
+   "backend": "oxigraph",
+   "layout": "reified RDF (named graph per version)",
+   "engine": "Oxigraph (pyoxigraph)",
+   "version": "pyoxigraph 0.5.11",
+   "kind": "embedded",
+   "datasets": {
+    "fixture": {
+     "loaded": true,
+     "round_trip": {
+      "records_in": 40,
+      "records_out": 40,
+      "differing": 0,
+      "skipped": 0,
+      "skip_reasons": {},
+      "other_differences": [],
+      "header_differences": [],
+      "store_field_differences": {}
+     },
+     "native": {
+      "facts": 18,
+      "multiset_kept": 18,
+      "bindings": 59,
+      "bid_kept": 59,
+      "positions": 3,
+      "position_kept": 3,
+      "directions": 0,
+      "direction_kept": 0,
+      "extensions_kept": 2,
+      "literals": 20,
+      "literal_as_written_kept": 20,
+      "extensions": 2,
+      "lost": {}
+     },
+     "answers": {
+      "compared": 13,
+      "same": 13,
+      "both_refused": 0,
+      "differ": {}
+     }
+    },
+    "history": {
+     "loaded": true,
+     "round_trip": {
+      "records_in": 10,
+      "records_out": 10,
+      "differing": 0,
+      "skipped": 0,
+      "skip_reasons": {},
+      "other_differences": [],
+      "header_differences": [],
+      "store_field_differences": {}
+     },
+     "native": {
+      "facts": 3,
+      "multiset_kept": 3,
+      "bindings": 8,
+      "bid_kept": 8,
+      "positions": 0,
+      "position_kept": 0,
+      "directions": 0,
+      "direction_kept": 0,
+      "extensions_kept": 0,
+      "literals": 2,
+      "literal_as_written_kept": 2,
+      "extensions": 0,
+      "lost": {}
+     },
+     "answers": {
+      "compared": 85,
+      "same": 85,
+      "differ": []
+     }
+    },
+    "edge": {
+     "loaded": true,
+     "round_trip": {
+      "records_in": 41,
+      "records_out": 40,
+      "differing": 1,
+      "skipped": 1,
+      "skip_reasons": {
+       "f:far-future": {
+        "cannot_hold": {
+         "reason": "instant_range",
+         "instants": [
+          "315569520000148668048000",
+          "315569520000148699584000"
+         ],
+         "held": "|instant| <= 4611686018427387902 s (2^62 - 2)"
+        }
+       }
+      },
+      "other_differences": [],
+      "header_differences": [],
+      "store_field_differences": {}
+     },
+     "native": {
+      "facts": 20,
+      "multiset_kept": 20,
+      "bindings": 42,
+      "bid_kept": 42,
+      "positions": 2,
+      "position_kept": 2,
+      "directions": 0,
+      "direction_kept": 0,
+      "extensions_kept": 0,
+      "literals": 5,
+      "literal_as_written_kept": 5,
+      "extensions": 0,
+      "lost": {}
+     },
+     "answers": {
+      "compared": 24,
+      "same": 24,
+      "both_refused": 0,
+      "differ": {}
+     }
+    }
+   },
+   "conformance": {
+    "applicable": 114,
+    "passed": 114,
+    "failed": 0,
+    "inapplicable": 0,
+    "losses_by_flag": {}
+   }
+  },
+  "neo4j": {
+   "backend": "neo4j",
+   "layout": "bipartite property graph (version nodes)",
+   "engine": "Neo4j Community",
+   "version": "2026.09.0 community",
+   "kind": "client-server",
+   "datasets": {
+    "fixture": {
+     "loaded": true,
+     "round_trip": {
+      "records_in": 40,
+      "records_out": 40,
+      "differing": 0,
+      "skipped": 0,
+      "skip_reasons": {},
+      "other_differences": [],
+      "header_differences": [],
+      "store_field_differences": {}
+     },
+     "native": {
+      "facts": 18,
+      "multiset_kept": 18,
+      "bindings": 59,
+      "bid_kept": 59,
+      "positions": 3,
+      "position_kept": 3,
+      "directions": 0,
+      "direction_kept": 0,
+      "extensions_kept": 2,
+      "literals": 20,
+      "literal_as_written_kept": 20,
+      "extensions": 2,
+      "lost": {}
+     },
+     "answers": {
+      "compared": 13,
+      "same": 13,
+      "both_refused": 0,
+      "differ": {}
+     }
+    },
+    "history": {
+     "loaded": true,
+     "round_trip": {
+      "records_in": 10,
+      "records_out": 10,
+      "differing": 0,
+      "skipped": 0,
+      "skip_reasons": {},
+      "other_differences": [],
+      "header_differences": [],
+      "store_field_differences": {}
+     },
+     "native": {
+      "facts": 3,
+      "multiset_kept": 3,
+      "bindings": 8,
+      "bid_kept": 8,
+      "positions": 0,
+      "position_kept": 0,
+      "directions": 0,
+      "direction_kept": 0,
+      "extensions_kept": 0,
+      "literals": 2,
+      "literal_as_written_kept": 2,
+      "extensions": 0,
+      "lost": {}
+     },
+     "answers": {
+      "compared": 85,
+      "same": 85,
+      "differ": []
+     }
+    },
+    "edge": {
+     "loaded": true,
+     "round_trip": {
+      "records_in": 41,
+      "records_out": 40,
+      "differing": 1,
+      "skipped": 1,
+      "skip_reasons": {
+       "f:far-future": {
+        "cannot_hold": {
+         "reason": "instant_range",
+         "instants": [
+          "315569520000148668048000",
+          "315569520000148699584000"
+         ],
+         "held": "|instant| <= 4611686018427387902 s (2^62 - 2)"
+        }
+       }
+      },
+      "other_differences": [],
+      "header_differences": [],
+      "store_field_differences": {}
+     },
+     "native": {
+      "facts": 20,
+      "multiset_kept": 20,
+      "bindings": 42,
+      "bid_kept": 42,
+      "positions": 2,
+      "position_kept": 2,
+      "directions": 0,
+      "direction_kept": 0,
+      "extensions_kept": 0,
+      "literals": 5,
+      "literal_as_written_kept": 5,
+      "extensions": 0,
+      "lost": {}
+     },
+     "answers": {
+      "compared": 24,
+      "same": 24,
+      "both_refused": 0,
+      "differ": {}
+     }
+    }
+   },
+   "conformance": {
+    "applicable": 114,
+    "passed": 114,
+    "failed": 0,
+    "inapplicable": 0,
+    "losses_by_flag": {}
+   }
+  },
+  "typedb": {
+   "backend": "typedb",
+   "layout": "TypeDB natural mapping",
+   "engine": "TypeDB CE",
+   "version": "TypeDB CE 3.13.6",
+   "kind": "client-server",
+   "datasets": {
+    "fixture": {
+     "loaded": true,
+     "round_trip": {
+      "records_in": 40,
+      "records_out": 36,
+      "differing": 4,
+      "skipped": 4,
+      "skip_reasons": {
+       "f:born-scribe": {
+        "missing_flags": [
+         "special_values"
+        ]
+       },
+       "f:cat-7": {
+        "missing_flags": [
+         "special_values"
+        ]
+       },
+       "f:route-1": {
+        "missing_flags": [
+         "ordered_roles"
+        ]
+       },
+       "g:who-1774": {
+        "missing_flags": [
+         "goals"
+        ]
+       }
+      },
+      "other_differences": [],
+      "header_differences": [],
+      "store_field_differences": {}
+     },
+     "native": {
+      "facts": 14,
+      "multiset_kept": 14,
+      "bindings": 48,
+      "bid_kept": 0,
+      "positions": 0,
+      "position_kept": 0,
+      "directions": 0,
+      "direction_kept": 0,
+      "extensions_kept": 0,
+      "literals": 19,
+      "literal_as_written_kept": 0,
+      "extensions": 2,
+      "lost": {
+       "extensions": [
+        "f:coadmin-1 b1",
+        "f:reg-1 b3"
+       ],
+       "literal as written": [
+        "f:claim-1 b3",
+        "f:king-13 b3",
+        "f:king-13 b4",
+        "f:king-14 b3",
+        "f:king-14 b4",
+        "f:married-curie b3",
+        "f:married-curie b4",
+        "f:pop-łódź-2019 b2",
+        "f:pop-łódź-2019 b3",
+        "f:pop-łódź-2019-dep b2",
+        "f:pop-łódź-2019-dep b3",
+        "f:station-東京 b2",
+        "f:station-東京 b3",
+        "f:station-東京 b4",
+        "f:station-東京 b5",
+        "f:station-東京 b6",
+        "f:station-東京 b7",
+        "f:station-東京 b8",
+        "f:station-東京 b9"
+       ]
+      }
+     },
+     "answers": {
+      "compared": 13,
+      "same": 13,
+      "both_refused": 1,
+      "differ": {}
+     }
+    },
+    "history": {
+     "loaded": false,
+     "reason": "CapabilityMissing: history_export",
+     "records_in": 10
+    },
+    "edge": {
+     "loaded": true,
+     "round_trip": {
+      "records_in": 41,
+      "records_out": 35,
+      "differing": 6,
+      "skipped": 6,
+      "skip_reasons": {
+       "ex:Dual": {
+        "cannot_hold": {
+         "reason": "instance_type",
+         "detail": "a TypeDB instance has exactly one type",
+         "types": [
+          "Place",
+          "Station"
+         ]
+        }
+       },
+       "f:aliases-twice": {
+        "missing_flags": [
+         "ordered_roles"
+        ]
+       },
+       "f:constant-c": {
+        "cannot_hold": {
+         "reason": "no_role_player",
+         "relation": "measured_constant",
+         "detail": "the relation has no entity or fact role (SVL41)"
+        }
+       },
+       "f:dual-profile": {
+        "references": "a skipped record"
+       },
+       "f:far-future": {
+        "cannot_hold": {
+         "reason": "instant_range",
+         "instants": [
+          "315569520000148668048000",
+          "315569520000148699584000"
+         ],
+         "held": "|instant| <= 4611686018427387902 s (2^62 - 2)"
+        }
+       },
+       "g:who-what": {
+        "missing_flags": [
+         "goals"
+        ]
+       }
+      },
+      "other_differences": [],
+      "header_differences": [],
+      "store_field_differences": {}
+     },
+     "native": {
+      "facts": 16,
+      "multiset_kept": 16,
+      "bindings": 33,
+      "bid_kept": 0,
+      "positions": 0,
+      "position_kept": 0,
+      "directions": 0,
+      "direction_kept": 0,
+      "extensions_kept": 0,
+      "literals": 0,
+      "literal_as_written_kept": 0,
+      "extensions": 0,
+      "lost": {}
+     },
+     "answers": {
+      "compared": 24,
+      "same": 24,
+      "both_refused": 2,
+      "differ": {}
+     }
+    }
+   },
+   "conformance": {
+    "applicable": 70,
+    "passed": 70,
+    "failed": 0,
+    "inapplicable": 44,
+    "losses_by_flag": {
+     "goals": [
+      "S-EXP-001",
+      "S-EXP-002",
+      "S-EXP-003",
+      "S-EXP-006",
+      "S-EXP-007",
+      "S-EXP-011",
+      "S-KEY-002",
+      "S-KEY-003",
+      "S-LIFE-008",
+      "S-LIFE-009",
+      "S-LIFE-010",
+      "S-PUT-007",
+      "S-READ-001",
+      "S-READ-002",
+      "S-READ-003",
+      "S-READ-004",
+      "S-READ-005",
+      "S-READ-006",
+      "S-READ-007",
+      "S-READ-008",
+      "S-READ-009",
+      "S-READ-010",
+      "S-READ-011",
+      "S-READ-012",
+      "S-READ-013",
+      "S-READ-014",
+      "S-READ-015",
+      "S-READ-016",
+      "S-READ-017",
+      "S-READ-018",
+      "S-READ-019",
+      "S-TIME-001",
+      "S-VER-006"
+     ],
+     "history_export": [
+      "S-EXP-005"
+     ],
+     "ordered_roles": [
+      "S-EXP-001",
+      "S-EXP-002",
+      "S-EXP-003",
+      "S-EXP-006",
+      "S-EXP-007",
+      "S-EXP-011",
+      "S-KEY-002",
+      "S-KEY-003",
+      "S-READ-001",
+      "S-READ-002",
+      "S-READ-003",
+      "S-READ-004",
+      "S-READ-005",
+      "S-READ-006",
+      "S-READ-007",
+      "S-READ-008",
+      "S-READ-009",
+      "S-READ-010",
+      "S-READ-011",
+      "S-READ-012",
+      "S-READ-013",
+      "S-READ-014",
+      "S-READ-015",
+      "S-READ-016",
+      "S-READ-017",
+      "S-READ-018",
+      "S-READ-019",
+      "S-TIME-001",
+      "S-VER-006"
+     ],
+     "special_values": [
+      "S-EXP-001",
+      "S-EXP-002",
+      "S-EXP-003",
+      "S-EXP-006",
+      "S-EXP-007",
+      "S-EXP-011",
+      "S-KEY-002",
+      "S-KEY-003",
+      "S-KEY-011",
+      "S-READ-001",
+      "S-READ-002",
+      "S-READ-003",
+      "S-READ-004",
+      "S-READ-005",
+      "S-READ-006",
+      "S-READ-007",
+      "S-READ-008",
+      "S-READ-009",
+      "S-READ-010",
+      "S-READ-011",
+      "S-READ-012",
+      "S-READ-013",
+      "S-READ-014",
+      "S-READ-015",
+      "S-READ-016",
+      "S-READ-017",
+      "S-READ-018",
+      "S-READ-019",
+      "S-TIME-001",
+      "S-TIME-009",
+      "S-VER-006",
+      "S-VER-007",
+      "S-VER-009"
+     ],
+     "transaction_time": [
+      "S-EXP-004",
+      "S-EXP-005",
+      "S-EXP-008",
+      "S-EXP-010",
+      "S-TIME-002",
+      "S-TIME-004",
+      "S-VER-001"
+     ]
+    }
+   }
+  },
+  "hif": {
+   "backend": "hif",
+   "layout": "HIF file",
+   "engine": "HIF file (khg-contracts to_hif/from_hif)",
+   "version": "khg-contracts 1.0.0.dev0 (khg-hif/1.0.0)",
+   "kind": "embedded",
+   "datasets": {
+    "fixture": {
+     "loaded": true,
+     "round_trip": {
+      "records_in": 40,
+      "records_out": 40,
+      "differing": 0,
+      "skipped": 0,
+      "skip_reasons": {},
+      "other_differences": [],
+      "header_differences": [],
+      "store_field_differences": {
+       "/records/ex:AirCanada": [
+        "recorded_by"
+       ],
+       "/records/ex:Chronicler_Ødegård": [
+        "recorded_by"
+       ],
+       "/records/ex:HeLa": [
+        "recorded_by"
+       ],
+       "/records/ex:KingOfFrance": [
+        "recorded_by"
+       ],
+       "/records/ex:Kraków": [
+        "recorded_by"
+       ],
+       "/records/ex:LouisXIII": [
+        "recorded_by"
+       ],
+       "/records/ex:LouisXIV": [
+        "recorded_by"
+       ],
+       "/records/ex:Maria_Skłodowska": [
+        "recorded_by"
+       ],
+       "/records/ex:Mazarin": [
+        "recorded_by"
+       ],
+       "/records/ex:Paris": [
+        "recorded_by"
+       ],
+       "/records/ex:Pierre_Curie": [
+        "recorded_by"
+       ],
+       "/records/ex:R-hydrolysis-7": [
+        "recorded_by"
+       ],
+       "/records/ex:TP53": [
+        "recorded_by"
+       ],
+       "/records/ex:Warszawa": [
+        "recorded_by"
+       ],
+       "/records/ex:YUL": [
+        "recorded_by"
+       ],
+       "/records/ex:YYZ": [
+        "recorded_by"
+       ],
+       "/records/ex:anonymous_scribe": [
+        "recorded_by"
+       ],
+       "/records/ex:hypoglycaemia": [
+        "recorded_by"
+       ],
+       "/records/ex:insulin": [
+        "recorded_by"
+       ],
+       "/records/ex:metformin": [
+        "recorded_by"
+       ],
+       "/records/ex:Łódź": [
+        "recorded_by"
+       ],
+       "/records/ex:東京駅": [
+        "recorded_by"
+       ]
+      }
+     },
+     "native": {
+      "facts": 18,
+      "multiset_kept": 18,
+      "bindings": 59,
+      "bid_kept": 59,
+      "positions": 3,
+      "position_kept": 3,
+      "directions": 0,
+      "direction_kept": 0,
+      "extensions_kept": 2,
+      "literals": 20,
+      "literal_as_written_kept": 20,
+      "extensions": 2,
+      "lost": {}
+     },
+     "answers": {
+      "compared": 13,
+      "same": 13,
+      "both_refused": 0,
+      "differ": {}
+     }
+    },
+    "history": {
+     "loaded": false,
+     "reason": "CapabilityMissing: history_export",
+     "records_in": 10
+    },
+    "edge": {
+     "loaded": true,
+     "round_trip": {
+      "records_in": 41,
+      "records_out": 41,
+      "differing": 0,
+      "skipped": 0,
+      "skip_reasons": {},
+      "other_differences": [],
+      "header_differences": [],
+      "store_field_differences": {
+       "/records/ex:Diamond": [
+        "recorded_by"
+       ],
+       "/records/ex:Dual": [
+        "recorded_by"
+       ],
+       "/records/ex:FarFuturePost": [
+        "recorded_by"
+       ],
+       "/records/ex:Futurist": [
+        "recorded_by"
+       ],
+       "/records/ex:KingOfFrance": [
+        "recorded_by"
+       ],
+       "/records/ex:Kraków": [
+        "recorded_by"
+       ],
+       "/records/ex:Paris": [
+        "recorded_by"
+       ],
+       "/records/ex:R-1": [
+        "recorded_by"
+       ],
+       "/records/ex:R-2": [
+        "recorded_by"
+       ],
+       "/records/ex:R-3": [
+        "recorded_by"
+       ],
+       "/records/ex:R-4": [
+        "recorded_by"
+       ],
+       "/records/ex:R-5": [
+        "recorded_by"
+       ],
+       "/records/ex:R-6": [
+        "recorded_by"
+       ],
+       "/records/ex:R-7": [
+        "recorded_by"
+       ],
+       "/records/ex:R-8": [
+        "recorded_by"
+       ],
+       "/records/ex:Warszawa": [
+        "recorded_by"
+       ],
+       "/records/ex:Łódź": [
+        "recorded_by"
+       ],
+       "/records/ex:東京駅": [
+        "recorded_by"
+       ],
+       "/records/ex:ｚ": [
+        "recorded_by"
+       ],
+       "/records/ex:𠮷": [
+        "recorded_by"
+       ]
+      }
+     },
+     "native": {
+      "facts": 21,
+      "multiset_kept": 21,
+      "bindings": 45,
+      "bid_kept": 45,
+      "positions": 2,
+      "position_kept": 2,
+      "directions": 0,
+      "direction_kept": 0,
+      "extensions_kept": 0,
+      "literals": 6,
+      "literal_as_written_kept": 6,
+      "extensions": 0,
+      "lost": {}
+     },
+     "answers": {
+      "compared": 24,
+      "same": 23,
+      "both_refused": 0,
+      "differ": {
+       "get ex:Dual (two types)": {
+        "store": [
+         "answer",
+         "{\"id\":\"ex:Dual\",\"kind\":\"entity\",\"label\":\"a place that is also a station\",\"recorded_at\":\"2026-10-01T00:00:00Z\",\"types\":[\"Place\",\"Station\"],\"version\":1}"
+        ],
+        "reference": [
+         "answer",
+         "{\"id\":\"ex:Dual\",\"kind\":\"entity\",\"label\":\"a place that is also a station\",\"recorded_at\":\"2026-10-01T00:00:00Z\",\"recorded_by\":\"load\",\"types\":[\"Place\",\"Station\"],\"version\":1}"
+        ]
+       }
+      }
+     }
+    }
+   },
+   "conformance": {
+    "applicable": 107,
+    "passed": 107,
+    "failed": 0,
+    "inapplicable": 7,
+    "losses_by_flag": {
+     "history_export": [
+      "S-EXP-005"
+     ],
+     "transaction_time": [
+      "S-EXP-004",
+      "S-EXP-005",
+      "S-EXP-008",
+      "S-EXP-010",
+      "S-TIME-002",
+      "S-TIME-004",
+      "S-VER-001"
+     ]
+    }
+   }
+  }
+ }
+}

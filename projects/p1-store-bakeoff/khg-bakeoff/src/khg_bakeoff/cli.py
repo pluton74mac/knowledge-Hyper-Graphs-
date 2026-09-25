@@ -69,22 +69,23 @@ def fidelity_md(result: dict[str, Any]) -> str:
              "positions, extensions and role–value multisets kept without the record-level copies. **3. Answers**: "
              "same as `MemoryStore` / compared (fixture hand queries; history transaction-time checks; edge "
              "queries). **4. Inapplicable scenarios** (losses by flag, from the conformance run).", "",
-             "| Backend | Engine | Kind | 1. Round trip: fixture / history / edge | 1. Store fields | "
+             "| Backend | Engine | Kind | 1. Round trip: fixture / history / edge | 1. Store fields: fixture / history / edge | "
              "2. Native: bids, literals, positions, extensions, multisets (fixture; edge) | "
              "3. Answers: fixture / history / edge | 4. Inapplicable |",
              "|---|---|---|---|---|---|---|---|"]
     for name, b in result["backends"].items():
         ds = b["datasets"]
-        rt, store_fields, nat, ans = [], 0, [], []
+        rt, store_fields, nat, ans = [], [], [], []
         for d in ("fixture", "history", "edge"):
             e = ds.get(d, {})
             if not e.get("loaded"):
                 rt.append("not loaded (no history_export)")
+                store_fields.append("–")
                 ans.append("–")
                 continue
             r = e["round_trip"]
             rt.append(f"{r['skipped']} skipped, {len(r['other_differences'])} silent")
-            store_fields += len(r["store_field_differences"])
+            store_fields.append(str(len(r["store_field_differences"])))
             ans.append(f"{e['answers']['same']}/{e['answers']['compared']}")
             if d != "history":
                 n = e["native"]
@@ -97,7 +98,8 @@ def fidelity_md(result: dict[str, Any]) -> str:
         losses = inap.get("losses_by_flag") or {}
         four = f"{inap.get('inapplicable', '?')}" + (f" ({', '.join(f'{k} {len(v)}' for k, v in losses.items())})"
                                                      if losses else "")
-        lines.append(f"| {name} | {b['engine']} {b['version']} | {b['kind']} | {' / '.join(rt)} | {store_fields} | "
+        lines.append(f"| {name} | {b['engine']} {b['version']} | {b['kind']} | {' / '.join(rt)} | "
+                     f"{' / '.join(store_fields)} | "
                      f"{'; '.join(nat)} | {' / '.join(ans)} | {four} |")
     lines += ["", "## What each backend lost", ""]
     for name, b in result["backends"].items():

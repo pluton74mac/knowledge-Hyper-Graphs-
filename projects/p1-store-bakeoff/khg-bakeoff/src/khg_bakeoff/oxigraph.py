@@ -163,7 +163,7 @@ class OxigraphTable:
 class OxigraphStore(AdapterMixin, NativeReads, TableStore):
     """A C2 store in Oxigraph (see the module docstring)."""
 
-    ENGINE = "Oxigraph (pyoxigraph)"
+    ENGINE = "Oxigraph"
     KIND = "embedded"
     INT64 = True
 
@@ -182,7 +182,7 @@ class OxigraphStore(AdapterMixin, NativeReads, TableStore):
         self._read_documents()
 
     def engine_version(self) -> str:
-        return f"pyoxigraph {self.ox.__version__}"
+        return f"{self.ox.__version__} (pyoxigraph)"
 
     # -- terms and queries
     def _term(self, x: Any) -> Any:

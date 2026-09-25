@@ -363,7 +363,7 @@ class TypeDBStore(AdapterMixin, NativeReads, TableStore):
     """A C2 store in TypeDB (see the module docstring)."""
 
     FLAGS = FLAGS
-    ENGINE = "TypeDB CE"
+    ENGINE = "TypeDB"
     KIND = "client-server"
     INT64 = True
 
@@ -391,7 +391,8 @@ class TypeDBStore(AdapterMixin, NativeReads, TableStore):
 
     def engine_version(self) -> str:
         with contextlib.suppress(Exception):
-            return str(self.driver.server_version())
+            v = str(self.driver.server_version())
+            return v[len("TypeDB "):] if v.startswith("TypeDB ") else v
         return "?"
 
     # -- queries

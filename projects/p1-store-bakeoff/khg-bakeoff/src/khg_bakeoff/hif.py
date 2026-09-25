@@ -101,7 +101,7 @@ class HifStore(AdapterMixin, TableStore):
     """A C2 store whose durable state is one HIF file (see the module docstring)."""
 
     FLAGS = FLAGS
-    ENGINE = "HIF file (khg-contracts to_hif/from_hif)"
+    ENGINE = "HIF file"
     KIND = "embedded"
     INT64 = False  # the index is Python's; the file holds literals as written
 
@@ -123,7 +123,7 @@ class HifStore(AdapterMixin, TableStore):
     def engine_version(self) -> str:
         from khg_contracts import CONTRACTS, __version__
 
-        return f"khg-contracts {__version__} (khg-hif/{CONTRACTS['khg-hif']})"
+        return f"khg-hif/{CONTRACTS['khg-hif']} (khg-contracts {__version__} to_hif/from_hif)"
 
     # -- the file
     def _file_header(self) -> dict[str, Any]:

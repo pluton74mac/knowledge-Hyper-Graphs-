@@ -244,7 +244,7 @@ class Neo4jTable:
 class Neo4jStore(AdapterMixin, NativeReads, TableStore):
     """A C2 store in Neo4j (see the module docstring)."""
 
-    ENGINE = "Neo4j Community"
+    ENGINE = "Neo4j"
     KIND = "client-server"
     INT64 = True
 
