@@ -99,6 +99,29 @@ medium, 7 low). All 15 are fixed in this half, each with a regression test. Two 
 Also before timing: `put` is timed separately from `load` (research D2), and the TypeDB server is cleaned of
 leftover databases.
 
+## Director's rulings on the fixes (2026-09-25)
+
+On the six points of the fix report (IMPLEMENTATION-NOTES §8):
+
+1. **`prefetch(records)`** is confirmed as an optional member of the published table interface, under the addition
+   to ruling 17: it only lets `load` read the ids it will check in advance, and a table without it behaves as before.
+2. **HIF and slices that are not `complete` (Q5).** A valid C1 container must round-trip through `to_hif`/`from_hif`;
+   that is P2's gate G1, so the fix belongs to P2, not to a P1 skip rule. Before the second half, P2 makes a
+   container that references entities it does not hold round-trip, with the smallest change that needs no `khg-hif`
+   major version, and adds the case to G1's tests (P2 ruling 19). Until then the HIF row is not run on such a slice.
+3. **`ident` is native.** The stored value identity is what each engine holds in its own columns, properties or
+   attributes; `value_json` is a copy. Time literals therefore count as lost "as written" in every database layout,
+   which is a finding of the bake-off, not a defect.
+4. **TypeDB's `repeated_value` refusal** is accepted as a guard: valid C1 never has two bindings of one role and one
+   value identity (S014).
+5. **Deferred to the second half:** public read-check helpers, `Entry.__module__`, and rolling the clock back on a
+   failed write (documented; no scenario depends on it).
+6. **`put` reads per record** because of the P2 §6.2 checks; it is timed apart from `load`, as ruled.
+
+The first half is done: all six backends pass conformance, fidelity is measured on three containers, and review 01's
+15 findings are fixed with regression tests. The second half (load time and query latency) waits for P3a's slice in
+this container and for ruling 2's P2 fix.
+
 ## Log
 
 - 2026-09-25: started (first half: backends and conformance). Pace as P6: one agent per stage, one review round.
