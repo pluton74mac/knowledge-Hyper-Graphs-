@@ -1,0 +1,123 @@
+{
+ "berge_path": {
+  "vertices": 3,
+  "edges": 2,
+  "expected": {
+   "class": "berge",
+   "hw": 1,
+   "ghw": 1,
+   "fhw": "1"
+  },
+  "note": "a path: Berge-acyclic, so acyclic in every degree"
+ },
+ "berge_triangle": {
+  "vertices": 3,
+  "edges": 2,
+  "expected": {
+   "class": "gamma",
+   "hw": 1,
+   "ghw": 1,
+   "fhw": "1"
+  },
+  "note": "Brault-Baron's 'Berge triangle' {{x,y},{x,y,z}}: gamma-acyclic, not Berge-acyclic"
+ },
+ "gamma_triangle": {
+  "vertices": 3,
+  "edges": 3,
+  "expected": {
+   "class": "beta",
+   "hw": 1,
+   "ghw": 1,
+   "fhw": "1"
+  },
+  "note": "Brault-Baron's 'gamma triangle': beta-acyclic, not gamma-acyclic"
+ },
+ "a_triangle_cover": {
+  "vertices": 3,
+  "edges": 4,
+  "expected": {
+   "class": "alpha",
+   "hw": 1,
+   "ghw": 1,
+   "fhw": "1"
+  },
+  "note": "gate case (a); Brault-Baron's 'beta triangle': alpha-acyclic, not beta-acyclic; hw 1"
+ },
+ "b_triangle": {
+  "vertices": 3,
+  "edges": 3,
+  "expected": {
+   "class": "cyclic",
+   "hw": 2,
+   "ghw": 2,
+   "fhw": "3/2"
+  },
+  "note": "gate case (b): the triangle, alpha-cyclic; hw 2, fhw 3/2"
+ },
+ "c_grid4": {
+  "vertices": 16,
+  "edges": 24,
+  "expected": {
+   "class": "cyclic",
+   "hw": null,
+   "ghw": null,
+   "fhw": null
+  },
+  "note": "gate case (c): 4x4 grid graph"
+ },
+ "c_grid5": {
+  "vertices": 25,
+  "edges": 40,
+  "expected": {
+   "class": "cyclic",
+   "hw": null,
+   "ghw": null,
+   "fhw": null
+  },
+  "note": "gate case (c): 5x5 grid graph"
+ },
+ "k5": {
+  "vertices": 5,
+  "edges": 10,
+  "expected": {
+   "class": "cyclic",
+   "hw": 3,
+   "ghw": 3,
+   "fhw": "5/2"
+  },
+  "note": "K5 as binary edges: rho*(K5) = 5/2 bounds fhw from above; ghw = hw = 3 is asserted by the probes, not by a source"
+ },
+ "adler": {
+  "vertices": 10,
+  "edges": 8,
+  "expected": {
+   "class": "cyclic",
+   "hw": 3,
+   "ghw": 2,
+   "fhw": null
+  },
+  "note": "Adler's example (hg_adlerexample.txt in NewDetKDecomp; HyperBench id 1 lists hw = 3, ghw <= 2)"
+ },
+ "grohe_marx_3": {
+  "vertices": 20,
+  "edges": 6,
+  "expected": {
+   "class": "cyclic",
+   "hw": 3,
+   "ghw": null,
+   "fhw": "2"
+  },
+  "note": "Grohe-Marx Example 4.2 with n = 3: rho* = 2 (so fhw <= 2), hw = 3 claimed by the source"
+ },
+ "c_grid2d_10": {
+  "vertices": 50,
+  "edges": 50,
+  "expected": {
+   "class": "cyclic",
+   "hw": null,
+   "ghw": null,
+   "fhw": null
+  },
+  "note": "gate case (c), harder: Samer's Grid2D grid2d_10 (det-k-decomp benchmarks, also in HyperBench)"
+ }
+}

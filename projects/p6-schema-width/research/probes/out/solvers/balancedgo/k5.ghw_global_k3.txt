@@ -1,0 +1,29 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/BalancedGo/BalancedGo -graph /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/instances/k5.hg -width 3 -global
+Graph with subedges 
+ {(), (x1), (x2), (x3), (x4), (x5), (x1, x2), (x1, x3), (x1, x4), (x1, x5), (x2, x3), (x2, x4), (x2, x5), (x3, x4), (x3, x5), (x4, x5)}
+Used algorithm: BalSep Global @
+Result ( ran with K = 3 )
+ 
+Bag: {x1, x2, x3, x5}
+Cover: {e1_2, e1_3, e2_5}
+Children: 1
+[
+	Bag: {x1, x2, x3, x4, x5}
+	Cover: {e1_2, e2_4, e3_5}
+	Children: 2
+	[
+		Bag: {x1, x4, x5}
+		Cover: {e1_2, e1_2, e4_5}
+
+		Bag: {x2, x3, x4}
+		Cover: {e1_2, e1_2, e3_4}
+	]
+]
+
+Time: 0.96479 ms
+Time Composition: 
+Decomposition : 0.96479 ms
+
+Width:  3
+Correct:  true
+[exit 0]

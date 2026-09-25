@@ -1,0 +1,34 @@
+{
+ "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+ "python": "3.11.15",
+ "cpus": 4,
+ "processor": "x86_64",
+ "tools": {
+  "khg_width": "0.1.0",
+  "khg_contracts": "1.0.0.dev0",
+  "python": "3.11.15",
+  "machine": {
+   "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+   "processor": "x86_64",
+   "cpus": 4
+  },
+  "balancedgo": {
+   "name": "balancedgo",
+   "path": "/tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/khg-width-solvers/bin/BalancedGo",
+   "commit": "872c662c9f409aeb7386f963d2f16b88523ff4bf",
+   "sha256": "112c0b6eed529d3b897df6ecf1a894d4f7e69694dfa446418d2c99ea061b3e18",
+   "how": "KHG_WIDTH_SOLVERS",
+   "describe": "v1.7.2-2-g872c662",
+   "go_version": "go1.24.7"
+  },
+  "logk": {
+   "name": "logk",
+   "path": "/tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/khg-width-solvers/bin/log-k-decomp",
+   "commit": "5e021dd442b028099c30deecc316a906a49a8cb3",
+   "sha256": "97f2fe8a77e6beb37b6ce3c9f07d70aba4e409f61a5915a81abd433c1c23f44c",
+   "how": "KHG_WIDTH_SOLVERS",
+   "describe": "v1.1.0",
+   "go_version": "go1.24.7"
+  }
+ }
+}

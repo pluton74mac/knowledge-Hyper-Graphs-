@@ -1,0 +1,29 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/log-k-decomp/log-k-decomp -graph /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/instances/adler.hg -exact
+Used algorithm: LogKHybrid
+Result ( ran with K = 3 )
+ 
+Bag: {V1, V2, V9, V3, V10, V7, V8}
+Cover: {E1, E2, E7}
+Children: 1
+[
+	Bag: {V9, V3, V10, V6, V7}
+	Cover: {E2, E6}
+	Children: 1
+	[
+		Bag: {V9, V3, V10, V5, V6, V7}
+		Cover: {E2, E5, E6}
+		Children: 1
+		[
+			Bag: {V9, V3, V10, V4, V5}
+			Cover: {E4, E1, E2}
+		]
+	]
+]
+
+Time: 0.95836 ms
+Time Composition: 
+Decomposition : 0.95836 ms
+
+Width:  3
+Correct:  true
+[exit 0]

@@ -1,0 +1,61 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/BalancedGo/BalancedGo -graph /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/instances/adler.hg -width 2 -global
+Graph with subedges 
+ {(), (V1), (V2), (V9), (V3), (V10), (V4), (V5), (V6), (V7), (V8), (V1, V2), (V1, V9), (V2, V9), (V2, V3), (V2, V10), (V3, V10), E3, (V4, V9), (V4, V5), (V5, V9), (V5, V10), (V5, V6), (V6, V9), (V6, V10), (V6, V7), (V7, V9), (V7, V10), (V7, V8), (V8, V1), (V8, V10), E1, E2, E4, E5, E6, E7}
+Used algorithm: BalSep Global @
+Result ( ran with K = 2 )
+ 
+Bag: {V2, V9, V10, V6}
+Cover: {E1, E5}
+Children: 2
+[
+	Bag: {V2, V9, V10, V5, V6}
+	Cover: {E1, E5}
+	Children: 1
+	[
+		Bag: {V2, V9, V3, V10, V5}
+		Cover: {E4, E2}
+		Children: 2
+		[
+			Bag: {V2, V3, V10, V5}
+			Cover: {E2, E5}
+
+			Bag: {V9, V3, V4, V5}
+			Cover: {E2, E4}
+		]
+	]
+
+	Bag: {V2, V9, V10, V6, V7}
+	Cover: {E2, E6}
+	Children: 1
+	[
+		Bag: {V1, V2, V9, V10, V7}
+		Cover: {E7, E1}
+		Children: 2
+		[
+			Bag: {V1, V2, V9, V7}
+			Cover: {E6, E1}
+
+			Bag: {V1, V10, V7}
+			Cover: {E1, E7}
+			Children: 1
+			[
+				Bag: {V1, V10, V7, V8}
+				Cover: {E1, E7}
+				Children: 1
+				[
+					Bag: {V10, V7, V8}
+					Cover: {E1, E7}
+				]
+			]
+		]
+	]
+]
+
+Time: 5908.71624 ms
+Time Composition: 
+Decomposition : 5908.71624 ms
+
+Width:  2
+SCV found!. Not a valid hypertree decomposition!
+Correct:  true
+[exit 0]

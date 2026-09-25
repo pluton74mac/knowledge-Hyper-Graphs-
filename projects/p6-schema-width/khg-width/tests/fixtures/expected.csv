@@ -1,0 +1,13 @@
+fixture,source,slots,class,first_failed,witness_kind,witness,hw,ghw,fhw,tw
+p6-berge-path,p6-berge-path.relation-schema.json,cq,berge,,,,1,1,1,1
+p6-duplicate-role-set,p6-duplicate-role-set.relation-schema.json,cq,gamma,berge,berge_cycle,employer;employment;employee;contract,1,1,1,1
+p6-gamma-not-berge,p6-gamma-not-berge.relation-schema.json,cq,gamma,berge,berge_cycle,seller;sale;buyer;brokered_sale,1,1,1,2
+p6-beta-not-gamma,p6-beta-not-gamma.relation-schema.json,cq,beta,gamma,gamma_triangle,broker;seller;buyer,1,1,1,2
+p6-alpha-not-beta,p6-alpha-not-beta.relation-schema.json,cq,alpha,beta,beta_cycle,broker;brokerage;seller;sale;buyer;referral,1,1,1,2
+p2-fixture,p2:fixture/fixture.relation-schema.json,cq,berge,,,,1,1,1,7
+p2-fixture,p2:fixture/fixture.relation-schema.json,cqt,gamma,berge,berge_cycle,start_time;position_held;end_time;married,1,1,1,7
+p2-cyclic,p2:fixture/cyclic.relation-schema.json,cq,cyclic,alpha,gyo_residue,"buyer,seller|broker,seller|broker,buyer",2,2,3/2,2
+p2-wikidata-shaped,p2:fixture/wikidata-shaped.relation-schema.json,cq,cyclic,alpha,gyo_residue,"replaces,series_ordinal|point_in_time,series_ordinal|point_in_time,replaces",2,2,3/2,4
+p2-wikidata-shaped,p2:fixture/wikidata-shaped.relation-schema.json,cqt,cyclic,alpha,gyo_residue,"end_time,replaces,series_ordinal,start_time|point_in_time,series_ordinal|end_time,point_in_time,replaces,start_time",2,2,3/2,5
+p6-qualifier-k5,p6-qualifier-k5.relation-schema.json,cq,cyclic,alpha,gyo_residue,"end_time,start_time|point_in_time,start_time|series_ordinal,start_time|replaces,start_time|end_time,point_in_time|end_time,series_ordinal|end_time,replaces|point_in_time,series_ordinal|point_in_time,replaces|replaces,series_ordinal",3,3,5/2,4
+p6-adler,p6-adler.relation-schema.json,cq,cyclic,alpha,gyo_residue,"V1,V2,V9|V10,V2,V3|V3,V4|V4,V5,V9|V10,V5,V6|V6,V7,V9|V10,V7,V8|V1,V8",3,2,2,4

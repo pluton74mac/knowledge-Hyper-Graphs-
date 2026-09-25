@@ -23,7 +23,7 @@ datasets/
 ```
 
 - `<family>` is one of `n-ary-kg`, `hypergraph-learning`, `higher-order-networks`,
-  `rag-corpora`, `knowledge-bases`.
+  `rag-corpora`, `knowledge-bases`, `hypergraph-benchmarks`.
 - Add `datasets/**/raw/`, `datasets/**/processed/` and `datasets/**/*.zip` to `.gitignore`
   before the first download.
 - `MANIFEST.json` is the only file under a dataset directory that is ever committed.
@@ -102,6 +102,15 @@ the licensing is unresolved. See section 8 of
 | **ConceptNet** | <https://conceptnet.io/> | CC-BY-SA 4.0 | `knowledge-bases/conceptnet/` | assertions dump from the project's GitHub releases |
 | **ATOMIC 2020** | <https://allenai.org/data/atomic-2020> | CC-BY `[unverified]` | `knowledge-bases/atomic/` | AI2 download page |
 | **Freebase** (final dump, 2015) | <https://developers.google.com/freebase> | CC-BY | `knowledge-bases/freebase/` | archived dump; JF17K, FB-AUTO and M-FB15K all derive from it |
+
+### 2.6 Hypergraph benchmarks
+
+Benchmark hypergraphs and published decomposition runs, used as baselines for width measurements (added
+2026-09-24 for P6, whose director's ruling Q1 created this family).
+
+| Dataset | Source | Licence | Local path | How to fetch |
+|---|---|---|---|---|
+| **HyperBench** instances and the log-k-decomp study's runs (`hyperbench.zip`: 3,649 `.hg` hypergraphs; `parseddata_csv.zip`: `Run.csv` with 200,402 decomposition runs, `Type_of.csv`) | [Zenodo 10.5281/zenodo.7180787](https://doi.org/10.5281/zenodo.7180787), v4 (2023-10-09); HyperBench papers: [PODS 2019](https://doi.org/10.1145/3294052.3319683), [ACM JEA 26](https://doi.org/10.1145/3440015) | CC BY 4.0 (the record); cite the HyperBench and log-k-decomp papers | `hypergraph-benchmarks/hyperbench/` | `curl -L -o raw/<file> 'https://zenodo.org/records/7180787/files/<file>?download=1'` for the two files in `MANIFEST.json` (Zenodo md5 and sha256 recorded, checked 2026-09-24) |
 
 ---
 

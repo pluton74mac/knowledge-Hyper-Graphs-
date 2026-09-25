@@ -1,0 +1,12 @@
+{
+ "relations": {
+  "sale": "R0",
+  "brokerage": "R1",
+  "referral": "R2"
+ },
+ "roles": {
+  "broker": "V0",
+  "buyer": "V1",
+  "seller": "V2"
+ }
+}

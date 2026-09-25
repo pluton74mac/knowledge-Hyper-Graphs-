@@ -1,0 +1,22 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/newdetkdecomp/bin/detkdecomp 1 a_triangle_cover.hg
+*** det-k-decomp (version 2.0) ***
+
+Parsing input file "a_triangle_cover.hg" ... 
+Parsing input file done in 0 sec (4 atoms, 3 variables).
+
+Building hypergraph ... 
+Building hypergraph done in 0 sec.
+
+Building hypertree (det-1-decomp) ... 
+Building hypertree done in 0 sec (hypertree-width: 1).
+
+Checking hypertree conditions ... 
+Condition 1: satisfied.
+Condition 2: satisfied.
+Condition 3: satisfied.
+Condition 4: satisfied.
+Checking hypertree conditions done in 0 sec.
+
+GML output written to: a_triangle_cover.gml
+
+[exit 0]

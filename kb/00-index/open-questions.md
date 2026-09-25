@@ -4,7 +4,7 @@ type: question
 status: reviewed
 tags: [index, open-questions, research-agenda]
 created: 2026-09-20
-updated: 2026-09-24
+updated: 2026-09-25
 ---
 
 # Open questions
@@ -87,6 +87,7 @@ The gap-filling pass added a governance angle: **[10.6]** erasure semantics for 
 ### Theme 5 — Bridges between theories that have not been built
 
 - **[01.3]** Nobody has measured where real KHG schemas (Wikidata-style, biomedical) fall in Fagin's acyclicity hierarchy or what their hypertree width is; that number predicts query cost directly. See [hypergraph theory results](../01-foundations/hypergraph-theory-results.md), [n-ary relations and relational algebra](../01-foundations/n-ary-relations-and-relational-algebra.md).
+  **Narrowed 2026-09-25 by [P6](../../projects/p6-schema-width/); answered in part.** P6 measured it with its checker `khg-width` on the schema hypergraph (one vertex per role, one hyperedge per relation). The premise was too broad: that hypergraph's width is the width of the query that joins *all* relations on same-named roles (the universal join of Fagin's scheme setting). So it bounds the cost of role-aligned joins, not of arbitrary queries, which join facts on entities and have their own hypergraphs. **Class:** under every naming with global roles, every Wikidata schema is α-cyclic. That holds for the declared one (allowed-qualifier constraints, 1,155 relations) and the observed ones (usage counts, 13,608 relations), and for Biolink Model v4.4.5 (103 relations). Relation-local roles give Berge-acyclic schemas with hw 1, a trivially acyclic control; GO-CAM's schema, with one central relation class, is α-acyclic ([research report 02](../../projects/p6-schema-width/research/02-data-sources-and-naming.md), findings 4 and 9). **Width:** Biolink's is exact, hw = ghw = fhw = 2, on a 5-relation core. Wikidata's is bounded, not exact. With core and qualifier roles, the declared schema has a GYO core of 391 relations and hw in [4, 38]. The observed schemas have hw in [4, 68] (qualifiers with ≥ 10 uses and ≥ 0.1 %; core 748) and [3, 61] (every observed qualifier; core 1,441). The baseline, HyperBench's 1,113 non-random conjunctive queries, has hw 1/2/3 = 673/432/8, so the declared and robust-observed Wikidata schemas are wider than all of them. The observed rows use SQID usage counts (dump of 2026-08-10) until P3a's exact counts from the 2026-09-22 dump replace them. Still open: the exact width of the Wikidata cores ([01.6]); whether the universal-join width predicts the cost of real Wikidata queries ([05.20]); how much of the measured structure is the role naming ([02.6]). See the [survey table](../../projects/p6-schema-width/results/survey.md), [hypergraph theory results §6](../01-foundations/hypergraph-theory-results.md) ("Measured"), [n-ary relations and relational algebra §2–§3](../01-foundations/n-ary-relations-and-relational-algebra.md).
 - **[05.1]** Does the 2026 Width Wall expressivity hierarchy for hypergraph neural networks transfer to relational (labelled, positional) hypergraphs? Relational Weisfeiler–Leman and hypertree width have not been reconciled in one statement. See [hypergraph neural networks](../05-query-embeddings-reasoning/hypergraph-neural-networks.md).
 - **[05.5]** Can hypertree-decomposition query planning be made practical over an incidence index rather than a relational one? No engine exposes it. See [query languages for hypergraphs](../05-query-embeddings-reasoning/query-languages-for-hypergraphs.md).
 - **[05.2]** Is there an "AMIE for hyperedges", rule mining at n-ary arity? Existing methods only weight predefined rules. See [logical reasoning and rules](../05-query-embeddings-reasoning/logical-reasoning-and-rules-over-n-ary-facts.md).
@@ -130,9 +131,10 @@ corpus, scored on all four abilities. Candidate project P8.
 ### 01 Foundations
 1. [01.1] Typed motif census over role-labelled facts.
 2. [01.2] Roles as edge-dependent vertex weights.
-3. [01.3] Acyclicity class and hypertree width of real KHG schemas.
+3. [01.3] Acyclicity class and hypertree width of real KHG schemas. **Narrowed 2026-09-25** by [P6](../../projects/p6-schema-width/): Wikidata's qualifier schemas (1,155 declared, 13,608 observed relations) and Biolink v4.4.5 are α-cyclic under shared role names; Biolink has hw = 2 exactly, Wikidata hw in [4, 38] (declared) and [4, 68] or [3, 61] (observed), as bounds; the number is the width of the universal join on role names, not of arbitrary queries (Theme 5).
 4. [01.4] Combinatorial complexes vs recursive hypergraphs for qualified facts.
 5. [01.5] Role-weighted partitioning objective for sharding.
+6. [01.6] What is the exact hypertree width of the Wikidata qualifier schemas' cyclic cores? P6 obtained bounds only: hw in [4, 38] for the declared schema (GYO core of 391 relations) and in [4, 68] and [3, 61] for the observed ones (cores of 748 and 1,441 relations), with core and qualifier roles. On each of these schemas the external solvers (BalancedGo, then log-k-decomp) used up their 20-minute budget without deciding a width. Cores of this size fall where HyperBench itself has exact hw for only 6 of its 23 graphs with 300 to 999 edges. The SAT-based exact solvers probed in P6's research (HtdLEO, htdsmt) were not run on these schemas. Raised 2026-09-25 by [P6](../../projects/p6-schema-width/) ([survey table](../../projects/p6-schema-width/results/survey.md); [research report 01 §3.5 and §4](../../projects/p6-schema-width/research/01-theory-and-solvers.md)); see [hypergraph theory results §6](../01-foundations/hypergraph-theory-results.md).
 
 ### 02 Knowledge representation
 1. [02.1] Partial-completeness assumption for n-ary facts.
@@ -140,6 +142,7 @@ corpus, scored on all four abilities. Candidate project P8.
 3. [02.3] A directed, role-labelled, nested formalism.
 4. [02.4] Does decomposition to binary cost accuracy?
 5. [02.5] Semantics of a weight on a reifier.
+6. [02.6] How much of a KHG schema's measured structure is the role naming? P6 measured Wikidata under wd-roles r1, the naming it shares with P3a, which is one defensible choice among several. The class does not depend on it: every naming with global roles that was tested gives an α-cyclic schema, and relation-local roles an acyclic one. The cyclic core does. Naming a property's main-value role after the property joins its main use to its uses as a qualifier elsewhere, and grows the GYO residue over a property-local naming by 16 %, 26 % and 51 % on the declared, robust-observed and all-observed tables. Typing the main roles by constraint classes grows it by 24 %, 45 % and 99 %, while generic `subject`/`value` hubs change nothing. The widths were surveyed only under wd-roles r1 and the relation-local control. Raised 2026-09-25 by [P6](../../projects/p6-schema-width/) ([research report 02 §3.3–§3.4](../../projects/p6-schema-width/research/02-data-sources-and-naming.md); [wd-roles r1](../../projects/p6-schema-width/wd-roles.md)); see [Wikidata and Freebase data models](../02-knowledge-representation/wikidata-and-freebase-data-models.md).
 
 ### 03 Construction
 1. [03.1] Arity-conditional merging of extracted facts.
@@ -182,6 +185,7 @@ corpus, scored on all four abilities. Candidate project P8.
 17. [05.17] Is there any n-ary link-prediction model that uses a linguistic role inventory (PropBank, FrameNet, VerbNet) so roles transfer across relations and datasets, rather than dataset-specific role strings? Raised 2026-09-21 by the same note.
 18. [05.18] Does H²GNN's result survive a re-run against ReAlE and against HypE at its published numbers on the same splits? Raised 2026-09-21 by the same note.
 19. [05.19] Is "an absent end bound means the fact still holds" the right default reading for n-ary facts drawn from mixed sources? P2's bound table presumes it (an absent start reads as unknown) and separates definite from possible readings; a source that means something else by an absent bound gets other answers. P2 did not measure what absent bounds mean in real qualifier data. Raised 2026-09-24 by [P2](../../projects/p2-role-aware-hif/) ([DESIGN §14 risk 1](../../projects/p2-role-aware-hif/DESIGN.md)); see [temporal and dynamic KHGs](../05-query-embeddings-reasoning/temporal-and-dynamic-khgs.md).
+20. [05.20] Does a schema's universal-join width predict the cost of real queries over it? P6's number is the width of joining all relations on same-named roles, while real queries join facts on entity variables and have their own hypergraphs. On Wikidata the two diverge: the schema's hw is at least 3 or 4, whereas HyperBench reports that of 1,915,550 CQOF+ queries in Wikidata's query logs, 590,005 have hw 2 and the rest hw 1 (Bonifati, Martens and Timm, as quoted by [Fischl et al., 2021](https://doi.org/10.1145/3440015); not checked against the original `[unverified]`). A query-log study that relates each query's width and evaluation cost to the schema's cyclic core would settle it. Raised 2026-09-25 by [P6](../../projects/p6-schema-width/) ([research report 01 §2.5 and §3.4](../../projects/p6-schema-width/research/01-theory-and-solvers.md)); companion to [05.5]; see [query languages for hypergraphs §10](../05-query-embeddings-reasoning/query-languages-for-hypergraphs.md).
 
 ### 06 Visualization
 1. [06.1] Incidence vs region encodings on the same hypergraph, measured.
@@ -239,8 +243,9 @@ corpus, scored on all four abilities. Candidate project P8.
 
 Each is small enough to start from this repository and would move at least one theme. They are
 listed in `projects/README.md` as candidate vectors and organised as one programme in
-`projects/PLAN.md`. P2 passed its gate on 2026-09-24; its publication (package release and upstream
-proposal) is pending with the repository owner. The others are not started.
+`projects/PLAN.md`. P2 passed its gate on 2026-09-24 and P6 on 2026-09-25. P2's publication (package release and
+upstream proposal) is pending with the repository owner; P6's (a short note and a data deposit) is
+still to be prepared, and the owner releases it. No other project has passed its gate.
 
 | Id | Project | Themes moved | Questions |
 |---|---|---|---|
@@ -249,7 +254,7 @@ proposal) is pending with the repository owner. The others are not started.
 | P3 | **Clean n-ary benchmark and replication**: rebuild a leak-free, arity-stratified split from a recent Wikidata dump; replicate two models; report calibration by arity | 3 | 08.4, 09.3, 05.4, 02.4 |
 | P4 | **Arity ablation of hypergraph RAG**: run one hypergraph-RAG system with hyperedges intact, split pairwise, and as whole-sentence chunks, on one public domain and on GraphRAG-Bench | 1, 3 | 10.2, 07.1, 07.2 |
 | P5 | **Reader study**: incidence vs Euler drawing of the same KHG, with and without role labels | 2, 6 | 06.1, 06.2 |
-| P6 | **Schema width survey**: compute acyclicity class and hypertree width for Wikidata qualifier schemas and one biomedical schema | 5 | 01.3, 05.5 |
+| P6 | **Schema width survey**: compute acyclicity class and hypertree width for Wikidata qualifier schemas and one biomedical schema. **Gate passed 2026-09-25**; base updated 2026-09-25. The observed Wikidata rows are to be rerun on P3a's counts. The note and a Zenodo deposit are still to be prepared and then released by the owner. See [P6](../../projects/p6-schema-width/) | 5 | 01.3 (narrowed); raised 01.6, 02.6, 05.20; 05.5 not addressed |
 | P7 | **Agent memory prototype**: a hypergraph memory for a small agent vs a flat vector store, with fact identity, arity-conditional merging rules and **valid-time on the hyperedge with supersession** made explicit (reframed 2026-09-21) | 4, 8 | 03.1, 04.3, 08.6 |
 | P8 | **Four-ability evaluation suite**: one corpus scored on gold n-ary extraction, inductive completion of the extracted graph, high-arity-edge-ablated multi-hop retrieval, and a superseding memory trace; see [the composed stack](../08-history-and-frontier/composed-stack-and-research-bets.md) §3 (added 2026-09-21) | 3, 8 | 08.6, 08.7, 08.8, 08.9 |
 | P9 | **Extraction gate**: an n-ary extraction pass with role constraints, scored against gold facts, that emits a candidate queue rather than writing to the graph; instability measured across runs and insertion orders (added 2026-09-21) | 2, 3, 8 | 03.9, 05.17, 08.9, 07.10, 03.8, 03.5 |

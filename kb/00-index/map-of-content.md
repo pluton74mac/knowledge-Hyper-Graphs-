@@ -4,7 +4,7 @@ type: index
 status: reviewed
 tags: [index, navigation]
 created: 2026-09-19
-updated: 2026-09-24
+updated: 2026-09-25
 ---
 
 # Map of content
@@ -200,7 +200,7 @@ Section overview: [10-comparative-and-critique/README.md](../10-comparative-and-
 | [The vendor debate on n-ary relations — property graphs, TypeDB, RDF-star](../10-comparative-and-critique/property-graph-vs-typedb-vs-rdf-star.md) | comparison | draft | Three camps sell three answers to "how do I record a fact about more than two things?". The technical content of the disagreement is much smaller than the rhetoric suggests, and most of the real differences are about **s |
 | [When to use a knowledge hypergraph, and when not to](../10-comparative-and-critique/when-to-use-and-when-not.md) | howto | draft | A decision procedure, six worked examples, and twelve anti-patterns. The costs referenced here are catalogued in limitations-and-failure-modes.md; the formalism options are in [formali |
 
-_112 notes indexed on 2026-09-24._
+_112 notes indexed on 2026-09-25._
 
 ## Sources
 

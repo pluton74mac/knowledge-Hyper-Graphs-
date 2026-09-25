@@ -1,0 +1,19 @@
+$ BalancedGo -graph b_triangle.hg -width 2 -det -json b_triangle.balancedgo.json
+Used algorithm: DetK @
+Result ( ran with K = 2 )
+ 
+Bag: {a, b}
+Cover: {E1}
+Children: 1
+[
+	Bag: {a, b, c}
+	Cover: {E1, E2}
+]
+
+Time: 0.02391 ms
+Time Composition: 
+Decomposition : 0.02391 ms
+
+Width:  2
+Correct:  true
+[exit 0]

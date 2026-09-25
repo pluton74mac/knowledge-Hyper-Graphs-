@@ -1,0 +1,57 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/htd/build/bin/htd_main-1.2.0 --input hgr --type hypertree --output human -s 1 --instance /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/instances/c_grid4.htd.hgr
+NODE 1: [ 6, 9, 11, 12, 15 ]
+  COVERING EDGES: 
+    HYPEREDGE 4: [ 2, 6 ]
+    HYPEREDGE 9: [ 5, 9 ]
+    HYPEREDGE 19: [ 11, 12 ]
+    HYPEREDGE 20: [ 11, 15 ]
+  NODE 2: [ 12, 15, 16 ]
+    COVERING EDGES: 
+      HYPEREDGE 20: [ 11, 15 ]
+      HYPEREDGE 21: [ 12, 16 ]
+  NODE 3: [ 6, 9, 10, 11, 15 ]
+    COVERING EDGES: 
+      HYPEREDGE 9: [ 5, 9 ]
+      HYPEREDGE 11: [ 6, 10 ]
+      HYPEREDGE 20: [ 11, 15 ]
+    NODE 5: [ 9, 10, 14, 15 ]
+      COVERING EDGES: 
+        HYPEREDGE 15: [ 9, 10 ]
+        HYPEREDGE 23: [ 14, 15 ]
+      NODE 7: [ 9, 13, 14 ]
+        COVERING EDGES: 
+          HYPEREDGE 16: [ 9, 13 ]
+          HYPEREDGE 18: [ 10, 14 ]
+  NODE 4: [ 6, 7, 9, 11, 12 ]
+    COVERING EDGES: 
+      HYPEREDGE 9: [ 5, 9 ]
+      HYPEREDGE 10: [ 6, 7 ]
+      HYPEREDGE 19: [ 11, 12 ]
+    NODE 6: [ 3, 6, 7, 9, 12 ]
+      COVERING EDGES: 
+        HYPEREDGE 4: [ 2, 6 ]
+        HYPEREDGE 6: [ 3, 7 ]
+        HYPEREDGE 9: [ 5, 9 ]
+        HYPEREDGE 14: [ 8, 12 ]
+      NODE 8: [ 3, 7, 8, 12 ]
+        COVERING EDGES: 
+          HYPEREDGE 6: [ 3, 7 ]
+          HYPEREDGE 14: [ 8, 12 ]
+        NODE 10: [ 3, 4, 8 ]
+          COVERING EDGES: 
+            HYPEREDGE 5: [ 3, 4 ]
+            HYPEREDGE 7: [ 4, 8 ]
+      NODE 9: [ 2, 3, 6, 9 ]
+        COVERING EDGES: 
+          HYPEREDGE 3: [ 2, 3 ]
+          HYPEREDGE 4: [ 2, 6 ]
+          HYPEREDGE 9: [ 5, 9 ]
+        NODE 11: [ 2, 5, 6, 9 ]
+          COVERING EDGES: 
+            HYPEREDGE 4: [ 2, 6 ]
+            HYPEREDGE 9: [ 5, 9 ]
+          NODE 12: [ 1, 2, 5 ]
+            COVERING EDGES: 
+              HYPEREDGE 1: [ 1, 2 ]
+              HYPEREDGE 2: [ 1, 5 ]
+[exit 0]

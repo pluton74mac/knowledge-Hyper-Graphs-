@@ -1,0 +1,19 @@
+{
+ "naming": "wd-roles r1",
+ "version": "r1",
+ "date": "2026-09-24",
+ "authority": "projects/p6-schema-width/wd-roles.md",
+ "subject_role": "subject",
+ "self_qualifier_suffix": ":qualifier",
+ "time_bounds": {"start": "P580", "end": "P582"},
+ "no_time_model_relations": ["P580", "P582"],
+ "point_in_time_is_qualifier": "P585",
+ "end_cause": {"property": "P1534", "builtin": "khg:end_cause"},
+ "rank_reasons": {"P2241": "deprecated", "P7452": "preferred"},
+ "meta": ["P8327", "P13589", "P1810", "P14457", "P1932", "P4970", "P813", "P854", "P248", "P1065", "P2960", "P143",
+          "P4656", "P887", "P3452", "P1683", "P5017", "P3680", "P1310", "P805", "P2916", "P6607", "P9570", "P7528"],
+ "meta_rank_reasons": ["P2241", "P7452"],
+ "exclude_relation_classes": ["Q19820110", "Q21504947", "Q64846109"],
+ "relation_local": {"subject": "{p}:subject", "value": "{p}:value", "qualifier": "{p}:{q}"},
+ "notes": "Rules 1-8 of wd-roles r1 as P6 generates schema files from them (DESIGN §2.4). meta = the 24 listed properties plus P2241 and P7452, which a schema declares as meta usages (rule 6c: they go to rank_reason only on a record whose rank matches). P1534 is the built-in khg:end_cause on interval relations and meta otherwise. Rule 6a: relations P580 and P582 get no time model, and their P580/P582 qualifiers are qualifier usages (the self one as P580:qualifier / P582:qualifier)."
+}

@@ -1,0 +1,14 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/venv/bin/python /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/run_htdleo.py /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/htdleo/htdleo /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/instances/c_grid5.hg -g
+ERROR:root:Inverse edge function property does not hold for node "3"
+ERROR:root:Bag of the subtree induced at "3" contained "{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25}"
+ERROR:root:Vertices returned from the edge function are "{11, 16, 3, 17}"
+ERROR:root:Bag content is: {16, 3}
+ERROR:root:Hence, not (vertices_in_bags_below_u & self._B(u) <= self.bags[u]) does not hold for node 3.
+ERROR:root:ERROR in Tree Decomposition.
+ERROR:root:Inverse edge function property does not hold for node "3"
+ERROR:root:Bag of the subtree induced at "3" contained "{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25}"
+ERROR:root:Vertices returned from the edge function are "{11, 16, 3, 17}"
+ERROR:root:Bag content is: {16, 3}
+ERROR:root:Hence, not (vertices_in_bags_below_u & self._B(u) <= self.bags[u]) does not hold for node 3.
+Result: 3	Valid:  False	SP: False	GHTD: True	in 0.3848888874053955
+[exit 0]

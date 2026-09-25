@@ -2,9 +2,9 @@
 title: Query languages for knowledge hypergraphs
 type: survey
 status: draft
-tags: [query-language, sparql, sparql-1.2, rdf-1.2, typeql, typedb, cypher, gql, gremlin, datalog, metta, hyperon, hypergraphdb, conjunctive-queries, hypertree-decomposition, complexity]
+tags: [query-language, sparql, sparql-1.2, rdf-1.2, typeql, typedb, cypher, gql, gremlin, datalog, metta, hyperon, hypergraphdb, conjunctive-queries, hypertree-decomposition, complexity, reification]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-25
 ---
 
 # Query languages for knowledge hypergraphs
@@ -311,11 +311,19 @@ bridge between query evaluation and hypergraph theory, and it is where the sharp
   For fixed k, evaluating a Boolean CQ given a k-width hypertree decomposition is LOGCFL-complete,
   and for non-Boolean queries the answer is computable in time polynomial in the combined size of the
   input and the output relation.
-- **Generalized hypertree width** is the variant used most in machine learning today (it reappears in
-  §10.3 and in the expressivity hierarchy of
-  [hypergraph-neural-networks.md](hypergraph-neural-networks.md)); its recognition is NP-hard
-  ([Gottlob, Miklós and Schwentick, *Generalized hypertree decompositions: NP-hardness and tractable
-  variants*, *Journal of the ACM* 56(6), 2009](https://doi.org/10.1145/1568318.1568320)).
+- **Generalized hypertree width** (ghw ≤ hw ≤ 3·ghw + 1; [Grohe and Marx,
+  2014](https://arxiv.org/abs/1711.04506), §4, citing Adler, Gottlob and Grohe 2007) is the width
+  that indexes the 2026 expressivity hierarchy for hypergraph neural networks in
+  [hypergraph-neural-networks.md](hypergraph-neural-networks.md) §3.2. Deciding ghw ≤ k is
+  NP-complete for every fixed k ≥ 3 ([Gottlob, Miklós and Schwentick, *Generalized hypertree
+  decompositions: NP-hardness and tractable variants*, *Journal of the ACM* 56(6),
+  2009](https://doi.org/10.1145/1568318.1568320)) and for k = 2 as well, and so is deciding
+  fractional hypertree width ≤ 2; ghw ≤ k becomes tractable under the bounded (multi-)intersection
+  property ([Gottlob, Lanzinger, Pichler and Razgon, *Journal of the ACM* 68(5),
+  2021](https://arxiv.org/abs/2002.05239), Main Results 1–3). Recognising hw ≤ k, by contrast, is
+  polynomial for fixed k (above). (Corrected 2026-09-25: this item had called ghw "the variant used
+  most in machine learning today", which no source supports, and its recognition merely "NP-hard";
+  [P6](../../projects/p6-schema-width/) research report 01 §1.5.)
 - **Output size is governed by fractional edge cover.** The AGM bound gives a tight bound on the
   number of answers of a join in terms of the fractional edge cover number of its hypergraph
   ([Atserias, Grohe and Marx, *Size Bounds and Query Plans for Relational Joins*, FOCS 2008 /
@@ -330,9 +338,18 @@ Three practical corollaries:
 1. Keep the *query* hypergraph close to acyclic. A star-shaped hyperedge pattern (one fact node, n
    role edges) is acyclic and therefore cheap; patterns that chain several hyperedges through shared
    entities are where hypertree width starts to bite.
-2. Reification multiplies the number of atoms, which raises the width of the query hypergraph even
-   when the underlying n-ary pattern was simple — an argument for native n-ary storage that is
-   independent of expressivity.
+2. Reification can raise the width of the query hypergraph even when the underlying n-ary pattern
+   was simple — an argument for native n-ary storage that is independent of expressivity. The
+   mechanism is not the number of atoms, since width is not a function of atom count. Reifying
+   every n-ary atom (one fact node, one binary atom per role) turns the query hypergraph into its
+   incidence graph. A graph is acyclic in every sense exactly when it is a forest
+   ([Brault-Baron, 2016](https://arxiv.org/abs/1403.7076), Remark 7), so the reified query is
+   acyclic exactly when the n-ary one is **Berge-acyclic**. Width rises when an n-ary atom covered a
+   cycle: in P6's probes, a triangle whose three binary atoms are covered by a ternary atom goes
+   from hw 1 to hw 2 once reified, and K5 from 3 to 4, while a bare triangle stays at 2
+   ([P6 research report 01](../../projects/p6-schema-width/research/01-theory-and-solvers.md) §1.3;
+   `probes/out/reification.json`). (Corrected 2026-09-25: the item had put the rise down to
+   reification multiplying the atoms.)
 3. There is currently no engine that exposes hypertree-decomposition-based planning for
    knowledge-hypergraph workloads. This is an open engineering gap, noted again in the section
    [README](README.md).
@@ -380,4 +397,8 @@ Three practical corollaries:
 - Gottlob, G., Leone, N., Scarcello, F. "Hypertree Decompositions: A Survey". *MFCS 2001*, LNCS 2136. <https://doi.org/10.1007/3-540-44683-4_5>
 - Gottlob, G., Miklós, Z., Schwentick, T. "Generalized hypertree decompositions: NP-hardness and tractable variants". *Journal of the ACM* 56(6), 2009 (earlier version PODS 2007). <https://doi.org/10.1145/1568318.1568320>
 - Atserias, A., Grohe, M., Marx, D. "Size Bounds and Query Plans for Relational Joins". *FOCS 2008*; *SIAM Journal on Computing* 42(4), 2013. <https://doi.org/10.1137/110859440>
+- Gottlob, G., Lanzinger, M., Pichler, R., Razgon, I. "Complexity Analysis of Generalized and Fractional Hypertree Decompositions". *Journal of the ACM* 68(5), 2021; arXiv:2002.05239 (read 2026-09-25). <https://arxiv.org/abs/2002.05239> · <https://doi.org/10.1145/3457374>
+- Brault-Baron, J. "Hypergraph Acyclicity Revisited". *ACM Computing Surveys* 49(3), 2016; arXiv:1403.7076. <https://arxiv.org/abs/1403.7076>
+- Grohe, M., Marx, D. "Constraint Solving via Fractional Edge Covers". *ACM Transactions on Algorithms* 11(1), article 4, 2014; arXiv:1711.04506 (read 2026-09-25). <https://arxiv.org/abs/1711.04506> · <https://doi.org/10.1145/2636918>
+- Project P6, "Schema width survey": research report 01, *Acyclicity degrees, width measures and hypertree-decomposition solvers*, 2026-09-24, §1.3 (reification probe) and §1.5 (corrections applied here). [projects/p6-schema-width/research/01-theory-and-solvers.md](../../projects/p6-schema-width/research/01-theory-and-solvers.md)
 - Wikipedia. *Subgraph isomorphism problem*. Checked 20 September 2026. <https://en.wikipedia.org/wiki/Subgraph_isomorphism_problem>

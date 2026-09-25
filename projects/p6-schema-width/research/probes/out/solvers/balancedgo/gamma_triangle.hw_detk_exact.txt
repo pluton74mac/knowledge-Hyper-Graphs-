@@ -1,0 +1,19 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/BalancedGo/BalancedGo -graph /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/instances/gamma_triangle.hg -exact -det
+Used algorithm: DetK @
+Result ( ran with K = 1 )
+ 
+Bag: {x, y}
+Cover: {E1}
+Children: 1
+[
+	Bag: {x, y, z}
+	Cover: {E3}
+]
+
+Time: 0.08361 ms
+Time Composition: 
+Decomposition : 0.08361 ms
+
+Width:  1
+Correct:  true
+[exit 0]

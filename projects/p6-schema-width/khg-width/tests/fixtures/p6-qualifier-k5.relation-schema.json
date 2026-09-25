@@ -1,0 +1,621 @@
+{
+ "kind": "relation-schema",
+ "format": "khg-relation-schema/1.0.0",
+ "id": "p6-qualifier-k5",
+ "version": "0.1.0",
+ "label": "alpha-cyclic, hw 3: ten relations whose qualifier pairs cover K5",
+ "entity_types": [
+  {
+   "id": "Agent"
+  }
+ ],
+ "roles": [
+  {
+   "id": "start_time"
+  },
+  {
+   "id": "end_time"
+  },
+  {
+   "id": "point_in_time"
+  },
+  {
+   "id": "series_ordinal"
+  },
+  {
+   "id": "replaces"
+  },
+  {
+   "id": "subject_0"
+  },
+  {
+   "id": "object_0"
+  },
+  {
+   "id": "subject_1"
+  },
+  {
+   "id": "object_1"
+  },
+  {
+   "id": "subject_2"
+  },
+  {
+   "id": "object_2"
+  },
+  {
+   "id": "subject_3"
+  },
+  {
+   "id": "object_3"
+  },
+  {
+   "id": "subject_4"
+  },
+  {
+   "id": "object_4"
+  },
+  {
+   "id": "subject_5"
+  },
+  {
+   "id": "object_5"
+  },
+  {
+   "id": "subject_6"
+  },
+  {
+   "id": "object_6"
+  },
+  {
+   "id": "subject_7"
+  },
+  {
+   "id": "object_7"
+  },
+  {
+   "id": "subject_8"
+  },
+  {
+   "id": "object_8"
+  },
+  {
+   "id": "subject_9"
+  },
+  {
+   "id": "object_9"
+  }
+ ],
+ "relations": [
+  {
+   "id": "relation_0",
+   "roles": [
+    {
+     "role": "subject_0",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "object_0",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "start_time",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "string"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    },
+    {
+     "role": "end_time",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "string"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  },
+  {
+   "id": "relation_1",
+   "roles": [
+    {
+     "role": "subject_1",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "object_1",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "start_time",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "string"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    },
+    {
+     "role": "point_in_time",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "string"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  },
+  {
+   "id": "relation_2",
+   "roles": [
+    {
+     "role": "subject_2",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "object_2",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "start_time",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "string"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    },
+    {
+     "role": "series_ordinal",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "string"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  },
+  {
+   "id": "relation_3",
+   "roles": [
+    {
+     "role": "subject_3",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "object_3",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "start_time",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "string"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    },
+    {
+     "role": "replaces",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "string"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  },
+  {
+   "id": "relation_4",
+   "roles": [
+    {
+     "role": "subject_4",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "object_4",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "end_time",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "string"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    },
+    {
+     "role": "point_in_time",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "string"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  },
+  {
+   "id": "relation_5",
+   "roles": [
+    {
+     "role": "subject_5",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "object_5",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "end_time",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "string"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    },
+    {
+     "role": "series_ordinal",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "string"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  },
+  {
+   "id": "relation_6",
+   "roles": [
+    {
+     "role": "subject_6",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "object_6",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "end_time",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "string"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    },
+    {
+     "role": "replaces",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "string"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  },
+  {
+   "id": "relation_7",
+   "roles": [
+    {
+     "role": "subject_7",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "object_7",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "point_in_time",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "string"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    },
+    {
+     "role": "series_ordinal",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "string"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  },
+  {
+   "id": "relation_8",
+   "roles": [
+    {
+     "role": "subject_8",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "object_8",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "point_in_time",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "string"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    },
+    {
+     "role": "replaces",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "string"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  },
+  {
+   "id": "relation_9",
+   "roles": [
+    {
+     "role": "subject_9",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "object_9",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "series_ordinal",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "string"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    },
+    {
+     "role": "replaces",
+     "slot": "qualifier",
+     "fillers": [
+      {
+       "literal": "string"
+      }
+     ],
+     "min": 0,
+     "max": 1
+    }
+   ]
+  }
+ ]
+}

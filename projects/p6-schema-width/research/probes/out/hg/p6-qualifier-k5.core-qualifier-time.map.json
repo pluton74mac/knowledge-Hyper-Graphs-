@@ -1,0 +1,41 @@
+{
+ "relations": {
+  "relation_0": "R0",
+  "relation_1": "R1",
+  "relation_2": "R2",
+  "relation_3": "R3",
+  "relation_4": "R4",
+  "relation_5": "R5",
+  "relation_6": "R6",
+  "relation_7": "R7",
+  "relation_8": "R8",
+  "relation_9": "R9"
+ },
+ "roles": {
+  "end_time": "V0",
+  "object_0": "V1",
+  "object_1": "V2",
+  "object_2": "V3",
+  "object_3": "V4",
+  "object_4": "V5",
+  "object_5": "V6",
+  "object_6": "V7",
+  "object_7": "V8",
+  "object_8": "V9",
+  "object_9": "V10",
+  "point_in_time": "V11",
+  "replaces": "V12",
+  "series_ordinal": "V13",
+  "start_time": "V14",
+  "subject_0": "V15",
+  "subject_1": "V16",
+  "subject_2": "V17",
+  "subject_3": "V18",
+  "subject_4": "V19",
+  "subject_5": "V20",
+  "subject_6": "V21",
+  "subject_7": "V22",
+  "subject_8": "V23",
+  "subject_9": "V24"
+ }
+}

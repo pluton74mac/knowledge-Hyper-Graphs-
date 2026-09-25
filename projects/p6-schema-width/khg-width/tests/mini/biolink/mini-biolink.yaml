@@ -1,0 +1,35 @@
+id: https://example.org/mini-biolink
+name: mini_biolink
+description: A three-class stand-in for the Biolink Model, for the khg-width extraction test.
+license: https://creativecommons.org/publicdomain/zero/1.0/
+prefixes:
+  linkml: https://w3id.org/linkml/
+  ex: https://example.org/
+default_prefix: ex
+default_range: string
+imports:
+  - linkml:types
+slots:
+  subject: {range: named thing}
+  predicate: {range: string}
+  object: {range: named thing}
+  qualifier: {abstract: true}
+  species context qualifier: {is_a: qualifier}
+  stage qualifier: {is_a: qualifier}
+  publications: {range: string}
+  has count: {range: integer}
+classes:
+  entity:
+    abstract: true
+  named thing:
+    is_a: entity
+  association:
+    is_a: entity
+    abstract: true
+    slots: [subject, predicate, object, species context qualifier, publications]
+  gene to disease association:
+    is_a: association
+    slots: [stage qualifier, has count]
+  gene to phenotype association:
+    is_a: association
+    slots: [stage qualifier]

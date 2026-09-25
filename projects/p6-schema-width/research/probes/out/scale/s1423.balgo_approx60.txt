@@ -1,0 +1,42 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/BalancedGo/BalancedGo -graph /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/hyperbench/all/s1423.hg -approx 60 -balDet 1 -bench
+			Cover: {AND187, OR128, OR125, NOT124, NOT123, OR127}
+
+			Bag: {G712, G223, G219, G220, G221, G41}
+			Cover: {NOR19, AND46, NOR20, OR65}
+			Children: 1
+			[
+				Bag: {G712, G219, G217, G218, G220, G221, G41}
+				Cover: {NOT46, OR137, NOT14, NOT15, NOT17, NOT18, OR56, NOT5, AND45, NOR19, DFF20}
+			]
+
+			Bag: {G678, G712, G87, G672, G88, G673, G671, G668, G670}
+			Cover: {OR125, AND186, OR126, NOT121}
+			Children: 1
+			[
+				Bag: {G678, G672, G88, G668, G670, G669}
+				Cover: {AND185, OR125}
+			]
+		]
+
+		Bag: {G183, G391, G56, G377, G54, G381, G382, G378}
+		Cover: {AND103, NOR43, AND98, AND96, OR41, NOT58}
+		Children: 1
+		[
+			Bag: {G183, G391, G56, G377, G54, G381, G382, G380, G378}
+			Cover: {NOR42, AND98, NOR43, AND96, NOT58}
+			Children: 1
+			[
+				Bag: {G183, G56, G377, G54, G380, G378, G379}
+				Cover: {AND97, AND96}
+			]
+		]
+	]
+]
+
+Time: 60006.72499 ms
+Time Composition: 
+Decomposition : 60006.72499 ms
+
+Width:  83
+Correct:  true
+[exit 0]

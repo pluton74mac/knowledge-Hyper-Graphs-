@@ -1,0 +1,3 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/venv/bin/python /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/run_htdleo.py /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/htdleo/htdleo /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/instances/k5.hg
+Result: 3	Valid:  True	SP: True	GHTD: True	in 0.008323431015014648
+[exit 0]

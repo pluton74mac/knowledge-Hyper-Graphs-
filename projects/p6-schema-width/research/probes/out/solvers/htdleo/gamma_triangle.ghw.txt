@@ -1,0 +1,14 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/venv/bin/python /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/run_htdleo.py /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/htdleo/htdleo /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/instances/gamma_triangle.hg -g
+ERROR:root:Inverse edge function property does not hold for node "2"
+ERROR:root:Bag of the subtree induced at "2" contained "{1, 2, 3}"
+ERROR:root:Vertices returned from the edge function are "{1, 2, 3}"
+ERROR:root:Bag content is: {2, 3}
+ERROR:root:Hence, not (vertices_in_bags_below_u & self._B(u) <= self.bags[u]) does not hold for node 2.
+ERROR:root:ERROR in Tree Decomposition.
+ERROR:root:Inverse edge function property does not hold for node "2"
+ERROR:root:Bag of the subtree induced at "2" contained "{1, 2, 3}"
+ERROR:root:Vertices returned from the edge function are "{1, 2, 3}"
+ERROR:root:Bag content is: {2, 3}
+ERROR:root:Hence, not (vertices_in_bags_below_u & self._B(u) <= self.bags[u]) does not hold for node 2.
+Result: 1	Valid:  False	SP: False	GHTD: True	in 0.005881786346435547
+[exit 0]

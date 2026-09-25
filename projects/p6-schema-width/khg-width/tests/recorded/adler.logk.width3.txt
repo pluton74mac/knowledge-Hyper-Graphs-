@@ -1,0 +1,29 @@
+$ log-k-decomp -graph adler.hg -width 3 -gml adler.logk.gml
+Used algorithm: LogKHybrid
+Result ( ran with K = 3 )
+ 
+Bag: {V1, V2, V9, V3, V10, V7, V8}
+Cover: {E1, E2, E7}
+Children: 1
+[
+	Bag: {V9, V3, V10, V6, V7}
+	Cover: {E2, E6}
+	Children: 1
+	[
+		Bag: {V9, V3, V10, V5, V6, V7}
+		Cover: {E2, E5, E6}
+		Children: 1
+		[
+			Bag: {V9, V3, V10, V4, V5}
+			Cover: {E4, E1, E2}
+		]
+	]
+]
+
+Time: 0.33125 ms
+Time Composition: 
+Decomposition : 0.33125 ms
+
+Width:  3
+Correct:  true
+[exit 0]

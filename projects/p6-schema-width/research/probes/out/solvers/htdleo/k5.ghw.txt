@@ -1,0 +1,14 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/venv/bin/python /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/run_htdleo.py /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/htdleo/htdleo /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/research/probes/instances/k5.hg -g
+ERROR:root:Inverse edge function property does not hold for node "4"
+ERROR:root:Bag of the subtree induced at "4" contained "{1, 2, 3, 4, 5}"
+ERROR:root:Vertices returned from the edge function are "{3, 4}"
+ERROR:root:Bag content is: {4}
+ERROR:root:Hence, not (vertices_in_bags_below_u & self._B(u) <= self.bags[u]) does not hold for node 4.
+ERROR:root:ERROR in Tree Decomposition.
+ERROR:root:Inverse edge function property does not hold for node "4"
+ERROR:root:Bag of the subtree induced at "4" contained "{1, 2, 3, 4, 5}"
+ERROR:root:Vertices returned from the edge function are "{3, 4}"
+ERROR:root:Bag content is: {4}
+ERROR:root:Hence, not (vertices_in_bags_below_u & self._B(u) <= self.bags[u]) does not hold for node 4.
+Result: 3	Valid:  False	SP: False	GHTD: True	in 0.00635838508605957
+[exit 0]

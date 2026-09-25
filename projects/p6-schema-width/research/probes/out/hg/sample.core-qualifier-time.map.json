@@ -1,0 +1,19 @@
+{
+ "relations": {
+  "co-administration-causes": "R0",
+  "publishes": "R1",
+  "treats": "R2"
+ },
+ "roles": {
+  "agent": "V0",
+  "condition": "V1",
+  "dosage": "V2",
+  "effect": "V3",
+  "end_time": "V4",
+  "population": "V5",
+  "publication": "V6",
+  "publisher": "V7",
+  "start_time": "V8",
+  "treatment": "V9"
+ }
+}

@@ -1,0 +1,1 @@
+$ -m khg_width /home/user/knowledge-Hyper-Graphs-/projects/p6-schema-width/results/schemas/p6-biolink-formal-domain-global.json --slots core,qualifier --time-limit 600.0 --solver auto --json

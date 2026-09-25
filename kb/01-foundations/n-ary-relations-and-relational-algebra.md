@@ -2,9 +2,9 @@
 title: N-ary relations, relational algebra and the query hypergraph
 type: concept
 status: draft
-tags: [n-ary, relational-model, codd, join-tree, yannakakis, acyclicity, agm-bound, worst-case-optimal-join, conjunctive-query]
+tags: [n-ary, relational-model, codd, join-tree, yannakakis, acyclicity, agm-bound, worst-case-optimal-join, conjunctive-query, schema-width]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-25
 ---
 
 # N-ary relations, relational algebra and the query hypergraph
@@ -59,11 +59,32 @@ them is a common source of error.
 | **Query hypergraph** | query variables | query atoms | join evaluation, hypertree width, AGM bound |
 | **Instance / fact hypergraph** | domain values (entities) | individual tuples | the knowledge hypergraph |
 
-Fagin's degrees of acyclicity and Beeri–Fagin–Maier–Yannakakis's desirability results are about the
-first two ([Fagin, 1983](https://dl.acm.org/doi/10.1145/2402.322390);
-[Beeri et al., 1983](https://dl.acm.org/doi/10.1145/2402.322389)); a KHG is the third. The results
-transfer to a KHG through its **schema**: if the schema of a fact base is α-acyclic, queries over
-it are tractable, whatever the instance looks like.
+Fagin's degrees of acyclicity and Beeri–Fagin–Maier–Yannakakis's desirability results are about
+the first, the **schema**: both papers study database schemes, which "can be viewed as
+hypergraphs" ([Fagin, 1983](https://dl.acm.org/doi/10.1145/2402.322390), abstract;
+[Beeri et al., 1983](https://dl.acm.org/doi/10.1145/2402.322389), abstract; both abstracts read via
+OpenAlex). The same acyclicity notion reaches the second, the query hypergraph, through
+Yannakakis's algorithm for acyclic queries and Gottlob, Leone and Scarcello's hypertree width
+([Gottlob et al., 2002](https://arxiv.org/abs/cs/9812022), Theorem 4.4: a conjunctive query is
+acyclic if and only if its hypertree width is 1). A KHG is the third.
+
+What transfers to a KHG through its schema is narrower than it looks. The schema hypergraph of a
+KHG (roles as vertices, relations as hyperedges) is the hypergraph of one query: the join of *all*
+relations on same-named roles. If it is α-acyclic, that universal join can be evaluated in time
+polynomial in the sizes of the input and the output, counting the query as part of the input
+(combined complexity), which is the sense of "tractable" here (Section 3). If it is β-acyclic, the
+same holds for the join of *any subset* of the relations on shared role names, because every
+subset of a β-acyclic hypergraph is α-acyclic
+([Brault-Baron, 2016](https://arxiv.org/abs/1403.7076)). Conjunctive query evaluation in general
+is "well-known to be NP-complete"
+([Gottlob, Lanzinger, Pichler and Razgon, 2021](https://arxiv.org/abs/2002.05239), §1). An acyclic
+schema does not make the queries over it tractable: a query can be cyclic whatever the schema, for
+example a triangle over one binary relation or a cycle of facts joined on entity variables, and its
+cost is set by its own hypergraph. Acyclicity is a property of the query or schema, never of the instance.
+(Corrected 2026-09-25. This section had said that Fagin's and BFMY's results are about "the first
+two" hypergraphs, and that "if the schema of a fact base is α-acyclic, queries over it are
+tractable, whatever the instance looks like"; [P6](../../projects/p6-schema-width/) research
+report 01 §1.5.)
 
 ## 3. Acyclic schemas and the Yannakakis algorithm
 
@@ -86,9 +107,23 @@ different terms are all shown to be equivalent to acyclicity"
 property among many; it is the property.
 
 **Reading for KHG design.** A knowledge hypergraph whose relation schemas form an α-acyclic
-hypergraph admits linear-ish multi-way fact retrieval. When the schema is cyclic — and most
-interesting ones are — the cost is governed by the width parameters of
+hypergraph admits linear-ish evaluation of the join of its relations on shared role names; other
+queries are governed by their own hypergraphs (Section 2). When the schema is cyclic, the cost of
+that join is governed by the width parameters of
 [hypergraph-theory-results.md](hypergraph-theory-results.md), Section 6.
+
+Whether real schemas are cyclic was measured on 2026-09-25 by project
+[P6](../../projects/p6-schema-width/) ([survey table](../../projects/p6-schema-width/results/survey.md)).
+Once role names are shared across relations, every Wikidata qualifier schema measured is
+α-cyclic: 1,155 relations from the declared allowed-qualifier constraints, and 13,608 from the
+qualifiers observed in use. So is the Biolink Model v4.4.5 association schema (103 relations).
+The Wikidata cores have hypertree width at least 3 or 4, known only as bounds (for example
+[4, 38] for the declared schema); Biolink's is exactly 2. Relation-local role names make every
+schema acyclic, trivially. Not every KHG schema is cyclic: GO-CAM's, with one central relation
+class, is α-acyclic ([P6 research report 02](../../projects/p6-schema-width/research/02-data-sources-and-naming.md),
+finding 9). The numbers, their measured object and their limits are in
+[hypergraph-theory-results.md](hypergraph-theory-results.md), end of Section 6. (This replaces the
+unsupported aside "and most interesting ones are [cyclic]", 2026-09-25.)
 
 ## 4. Size bounds and worst-case optimal joins
 
@@ -100,13 +135,23 @@ matching that bound: their work "describes a novel algorithm to process these qu
 terms of worst-case data complexity", building directly on the AGM bound
 (H. Q. Ngo, E. Porat, C. Ré, A. Rudra, "Worst-case Optimal Join Algorithms", *PODS 2012*,
 pp. 37–48, and *Journal of the ACM* 65(3):16:1–16:40, 2018,
-https://dl.acm.org/doi/10.1145/3180143; bibliographic details and description from the publisher
-listing, full text not fetched `[unverified]`).
+https://dl.acm.org/doi/10.1145/3180143; bibliographic details of the published versions from the
+publisher listing `[unverified]`; the quoted description and the statements below read on
+2026-09-25 in the [arXiv version](https://arxiv.org/abs/1203.1952)).
 
 The lesson generalises beyond databases: **the arity structure, not the data, determines the
-worst case.** Any KHG query engine that plans joins pairwise is provably suboptimal on cyclic
-queries; this is the strongest technical argument in this KB for treating n-ary facts natively
-rather than decomposing them into binary edges.
+worst case.** What is proved about pairwise plans is specific. For the triangle query
+`R(a,b), S(b,c), T(a,c)` with every relation of size N, the AGM bound on the output is N^{3/2}, yet
+there are instances on which "both AGM's algorithm and any join-only plan take Ω(N²)-time"
+([Ngo, Porat, Ré and Rudra, arXiv:1203.1952](https://arxiv.org/abs/1203.1952), §1). They also give
+a sufficient syntactic condition on a query under which, for each k ≥ 2, instances exist where any
+binary-join plan needs Ω(N²/k²) time while the fractional cover bound is O(N^{1+1/(k−1)}) (same
+source). So a KHG engine that plans joins pairwise is provably slower than worst-case optimal on
+some cyclic queries (the triangle among them), on worst-case instances; this is not a claim about
+every cyclic query or every instance. It remains the strongest technical argument in this KB for
+treating n-ary facts natively rather than decomposing them into binary edges. (Corrected
+2026-09-25 from "provably suboptimal on cyclic queries", which overstated the result;
+[P6](../../projects/p6-schema-width/) research report 01 §1.5.)
 
 ## 5. Directed hyperedges as dependencies and rules
 
@@ -149,7 +194,9 @@ completely and the *representational* half not at all.
 - Brault-Baron, J. "Hypergraph Acyclicity Revisited." *ACM Computing Surveys* 49(3), 2016 (arXiv:1403.7076). https://arxiv.org/abs/1403.7076
 - Yannakakis, M. "Algorithms for Acyclic Database Schemes." *Proceedings of the 7th International Conference on Very Large Data Bases (VLDB)*, pp. 82–94, 1981. Venue and pages from the publisher listing; full text not fetched `[unverified]`. https://dl.acm.org/doi/10.5555/1286831.1286840
 - Atserias, A., Grohe, M., Marx, D. "Size Bounds and Query Plans for Relational Joins." *SIAM Journal on Computing* 42(4):1737–1767, 2013. https://dblp.org/rec/journals/siamcomp/AtseriasGM13.html
-- Ngo, H. Q., Porat, E., Ré, C., Rudra, A. "Worst-case Optimal Join Algorithms." *PODS 2012*, pp. 37–48; *Journal of the ACM* 65(3):16:1–16:40, 2018. Bibliographic details from the publisher listing; full text not fetched `[unverified]`. https://dl.acm.org/doi/10.1145/3180143
+- Ngo, H. Q., Porat, E., Ré, C., Rudra, A. "Worst-case Optimal Join Algorithms." *PODS 2012*, pp. 37–48; *Journal of the ACM* 65(3):16:1–16:40, 2018. Bibliographic details of the two published versions from the publisher listing `[unverified]`. https://dl.acm.org/doi/10.1145/3180143 ; the arXiv version (arXiv:1203.1952, revision dated 27 November 2024) was read on 2026-09-25 for the statements in Section 4: https://arxiv.org/abs/1203.1952
+- Gottlob, G., Lanzinger, M., Pichler, R., Razgon, I. "Complexity Analysis of Generalized and Fractional Hypertree Decompositions." *Journal of the ACM* 68(5):1–50, 2021; arXiv:2002.05239. https://arxiv.org/abs/2002.05239 (§1 read 2026-09-25)
+- Project P6, "Schema width survey" (2026-09-24 to 2026-09-25): [survey table](../../projects/p6-schema-width/results/survey.md), [research report 01, theory and solvers](../../projects/p6-schema-width/research/01-theory-and-solvers.md) (§1.5 lists the corrections applied here), [research report 02, data sources and naming](../../projects/p6-schema-width/research/02-data-sources-and-naming.md).
 - Gottlob, G., Leone, N., Scarcello, F. "Hypertree Decompositions and Tractable Queries." arXiv:cs/9812022, 1998; *JCSS* 64(3):579–627, 2002. https://arxiv.org/abs/cs/9812022
 - Gallo, G., Longo, G., Pallottino, S., Nguyen, S. "Directed hypergraphs and applications." *Discrete Applied Mathematics* 42(2–3):177–201, 1993. https://doi.org/10.1016/0166-218x(93)90045-p
 - Gil Pons, R., Ward, M., Miller, L. "Finding (s,d)-Hypernetworks in F-Hypergraphs is NP-Hard." arXiv:2201.04799, 2022. https://arxiv.org/abs/2201.04799

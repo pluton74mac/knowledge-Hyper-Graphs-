@@ -1,0 +1,100 @@
+{
+ "kind": "relation-schema",
+ "format": "khg-relation-schema/1.0.0",
+ "id": "p6-gamma-not-berge",
+ "version": "0.1.0",
+ "label": "gamma-acyclic, not Berge-acyclic: two relations share two roles",
+ "entity_types": [
+  {
+   "id": "Agent"
+  }
+ ],
+ "roles": [
+  {
+   "id": "buyer"
+  },
+  {
+   "id": "seller"
+  },
+  {
+   "id": "broker"
+  }
+ ],
+ "relations": [
+  {
+   "id": "sale",
+   "roles": [
+    {
+     "role": "buyer",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "seller",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    }
+   ]
+  },
+  {
+   "id": "brokered_sale",
+   "roles": [
+    {
+     "role": "buyer",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "seller",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "broker",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    }
+   ]
+  }
+ ]
+}

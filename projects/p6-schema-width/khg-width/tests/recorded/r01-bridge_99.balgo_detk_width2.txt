@@ -1,0 +1,42 @@
+$ /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/BalancedGo/BalancedGo -graph /tmp/claude-0/-home-user-knowledge-Hyper-Graphs-/9b58e6a1-1989-5ed1-ae3b-676a337fca40/scratchpad/p6/hyperbench/all/bridge_99.hg -width 2 -det -bench
+											[
+												Bag: {IR4v99, IR1v99, Imv98, Iqv99, Uqv99, Umv99}
+												Cover: {ICONNv98, M3v99}
+												Children: 2
+												[
+													Bag: {IR3v99, IR4v99, IR1v99, Iqv99, IR2v99}
+													Cover: {N2v99, N1v99}
+													Children: 1
+													[
+														Bag: {IR3v99, IR4v99, IR1v99, IR5v99, IR2v99}
+														Cover: {N2v99, N3v99}
+														Children: 1
+														[
+															Bag: {IR3v99, IR4v99, IR5v99, Imv99, Iqv100}
+															Cover: {M2v99, ICONNv99}
+														]
+													]
+
+													Bag: {Uqv100, Umv99}
+													Cover: {UCONNv99}
+												]
+											]
+										]
+									]
+								]
+							]
+						]
+					]
+				]
+			]
+		]
+	]
+]
+
+Time: 298.02869 ms
+Time Composition: 
+Decomposition : 298.02869 ms
+
+Width:  2
+Correct:  true
+[exit 0]

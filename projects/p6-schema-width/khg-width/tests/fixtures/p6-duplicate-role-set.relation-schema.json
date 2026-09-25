@@ -1,0 +1,118 @@
+{
+ "kind": "relation-schema",
+ "format": "khg-relation-schema/1.0.0",
+ "id": "p6-duplicate-role-set",
+ "version": "0.1.0",
+ "label": "gamma-acyclic, not Berge-acyclic: two relations with the same role set",
+ "entity_types": [
+  {
+   "id": "Agent"
+  }
+ ],
+ "roles": [
+  {
+   "id": "employee"
+  },
+  {
+   "id": "employer"
+  },
+  {
+   "id": "city"
+  }
+ ],
+ "relations": [
+  {
+   "id": "employment",
+   "roles": [
+    {
+     "role": "employee",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "employer",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    }
+   ]
+  },
+  {
+   "id": "contract",
+   "roles": [
+    {
+     "role": "employee",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "employer",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    }
+   ]
+  },
+  {
+   "id": "headquartered_in",
+   "roles": [
+    {
+     "role": "employer",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    },
+    {
+     "role": "city",
+     "slot": "core",
+     "fillers": [
+      {
+       "entity": [
+        "Agent"
+       ]
+      }
+     ],
+     "min": 1,
+     "max": 1
+    }
+   ]
+  }
+ ]
+}

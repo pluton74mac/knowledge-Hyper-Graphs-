@@ -1,0 +1,32 @@
+{
+ "head": {
+  "vars": [
+   "p",
+   "class"
+  ]
+ },
+ "results": {
+  "bindings": [
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P1855"
+    },
+    "class": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q19820110"
+    }
+   },
+   {
+    "p": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/P39"
+    },
+    "class": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q18608871"
+    }
+   }
+  ]
+ }
+}

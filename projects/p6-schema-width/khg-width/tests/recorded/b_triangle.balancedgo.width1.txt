@@ -1,0 +1,14 @@
+$ BalancedGo -graph b_triangle.hg -width 1 -det
+Used algorithm: DetK @
+Result ( ran with K = 1 )
+ 
+Bag: {}
+Cover: {}
+
+Time: 0.03262 ms
+Time Composition: 
+Decomposition : 0.03262 ms
+
+Width:  0
+Correct:  false
+[exit 0]

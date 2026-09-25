@@ -1,0 +1,27 @@
+{
+ "name": "hyperbench",
+ "family": "hypergraph-benchmarks",
+ "source_url": "https://doi.org/10.5281/zenodo.7180787",
+ "source_ref": "Zenodo record 7180787, version 4 (2023-10-09): Gottlob, Lanzinger, Okulmus, Pichler, \"Experimental Data for log-k-decomp\"",
+ "retrieved": "2026-09-24",
+ "licence": "CC-BY-4.0 (the Zenodo record). Cite the HyperBench papers (Fischl, Gottlob, Longo, Pichler: PODS 2019, doi:10.1145/3294052.3319683; ACM JEA 26, 2021, doi:10.1145/3440015) and the log-k-decomp paper (PODS 2022, doi:10.1145/3517804.3524153) as the HyperBench site asks",
+ "files": [
+  {
+   "path": "raw/parseddata_csv.zip",
+   "sha256": "30b6c052eb4ac21ca7ba620f0b53d1fd0351a7c45c596532d1ac0f66ea5c8905",
+   "md5": "80dfd6c6085f30a048d3b970059a0765",
+   "bytes": 5337510,
+   "source_url": "https://zenodo.org/records/7180787/files/parseddata_csv.zip?download=1",
+   "content": "Run.csv (one row per decomposition run: Graph, Algorithm, K, Timeout, Correct, RunInfo) and Type_of.csv (Graph, Type), among the parsed tables"
+  },
+  {
+   "path": "raw/hyperbench.zip",
+   "sha256": "995afdf6c0c12d02d975f5af5aca40121abd0c79d00110edb4570fc864dbdec8",
+   "md5": "5a35dea169bda5105339ca0de8c0f11b",
+   "bytes": 2411098,
+   "source_url": "https://zenodo.org/records/7180787/files/hyperbench.zip?download=1",
+   "content": "the 3,649 HyperBench instances the runs used (.hg files)"
+  }
+ ],
+ "notes": "P6 (projects/p6-schema-width, DESIGN \u00a76.4 and ruling Q1) reads Run.csv and Type_of.csv from parseddata_csv.zip with survey/hyperbench_baseline.py to recompute the hypertree-width distribution of HyperBench's non-random CQs (n = 1,113; hw 1/2/3 = 673/432/8), and the instance sizes from hyperbench.zip. Only these two files of the record are used. Zenodo lists md5 checksums, and both match the record's (API, checked 2026-09-24); sha256 was computed on retrieval. Fetch: curl -L -o raw/<file> '<source_url>'."
+}

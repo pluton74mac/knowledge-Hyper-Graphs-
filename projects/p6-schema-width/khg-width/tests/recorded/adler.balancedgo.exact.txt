@@ -1,0 +1,44 @@
+$ BalancedGo -graph adler.hg -exact -det -json adler.balancedgo.json
+Used algorithm: DetK @
+Result ( ran with K = 3 )
+ 
+Bag: {V1, V2, V9}
+Cover: {E1}
+Children: 1
+[
+	Bag: {V1, V2, V9, V3, V10}
+	Cover: {E1, E2}
+	Children: 1
+	[
+		Bag: {V1, V2, V9, V3, V10, V4}
+		Cover: {E1, E2, E3}
+		Children: 1
+		[
+			Bag: {V1, V2, V9, V3, V10, V4, V5}
+			Cover: {E1, E4, E2}
+			Children: 1
+			[
+				Bag: {V1, V2, V9, V10, V4, V5, V6}
+				Cover: {E1, E4, E5}
+				Children: 1
+				[
+					Bag: {V1, V2, V9, V10, V5, V6, V7}
+					Cover: {E1, E5, E6}
+					Children: 1
+					[
+						Bag: {V1, V2, V9, V10, V7, V8}
+						Cover: {E7, E1}
+					]
+				]
+			]
+		]
+	]
+]
+
+Time: 0.90138 ms
+Time Composition: 
+Decomposition : 0.90138 ms
+
+Width:  3
+Correct:  true
+[exit 0]
