@@ -123,7 +123,7 @@ class HifStore(AdapterMixin, TableStore):
     def engine_version(self) -> str:
         from khg_contracts import CONTRACTS, __version__
 
-        return f"khg-contracts {__version__} ({CONTRACTS.get('khg-hif', 'khg-hif/1.0.0')})"
+        return f"khg-contracts {__version__} (khg-hif/{CONTRACTS['khg-hif']})"
 
     # -- the file
     def _file_header(self) -> dict[str, Any]:
