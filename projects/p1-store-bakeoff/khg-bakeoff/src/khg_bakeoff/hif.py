@@ -185,6 +185,15 @@ class HifStore(AdapterMixin, TableStore):
             self._reload()  # the file is the durable state: drop what the failed write left in the index
             raise
 
+    # -- fidelity number 2
+    def native_bindings(self, rid: str) -> list[dict[str, Any]] | None:
+        """The bindings of fact ``rid`` as ``from_hif`` decodes them from the file (the index is rebuilt from it; HIF
+        has no copy of the bindings besides its incidences)."""
+        r = self._table.current(rid)
+        if r is None or r.get("kind") != "hyperedge":
+            return None
+        return json.loads(json.dumps(r.get("bindings") or []))
+
     def close(self) -> None:
         if self._owned:
             with contextlib.suppress(OSError):

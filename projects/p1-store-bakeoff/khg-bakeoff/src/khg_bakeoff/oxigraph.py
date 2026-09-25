@@ -38,7 +38,7 @@ from khg_contracts.store import Where
 from khg_contracts.store.table import Entry, TableStore, VersionTable
 
 from .native import NativeReads
-from .rows import Pat, assemble, binding_rows, fact_row, query_instant
+from .rows import Pat, assemble, binding_rows, fact_row, native_binding, query_instant
 from .shared import AdapterMixin
 
 __all__ = ["OxigraphStore", "OxigraphTable", "factory", "graph_name"]
@@ -465,6 +465,26 @@ class OxigraphStore(AdapterMixin, NativeReads, TableStore):
     def _n_key(self, relation: str, digest: str, where: Where, t: int | None, as_of: int | None) -> list[str]:
         body = f"?f khg:relation {s(relation)} ; khg:keyDigest {s(digest)} ."
         return self._ids_where(body, where, t, as_of, None, None)
+
+    # -- fidelity number 2
+    def native_bindings(self, rid: str) -> list[dict[str, Any]] | None:
+        """The bindings of the current version of fact ``rid`` from the binding nodes' triples (not ``payload``)."""
+        f = iri_encode(rid)
+        rows = self.select(PREFIX + f"SELECT ?b ?p ?o WHERE {{ ?g khg:versionOf <{f}> . FILTER NOT EXISTS {{ ?g khg:txTo "
+                                    f"?x }} GRAPH ?g {{ <{f}> a khg:Hyperedge ; khg:binding ?b . ?b ?p ?o }} }}")
+        if not rows and not self._n_is_fact(rid):
+            return None
+        nodes: dict[str, dict[str, Any]] = {}
+        for r in rows:
+            nodes.setdefault(r["b"], {})[r["p"]] = r["o"]
+        out = []
+        for a in nodes.values():
+            out.append(native_binding({
+                "bid": a.get(K + "bid"), "role": a.get(K + "role"), "position": a.get(K + "position"),
+                "direction": a.get(K + "direction"), "value_kind": a.get(K + "valueKind"),
+                "ref": iri_decode(a[K + "value"]) if K + "value" in a else None,
+                "value_json": a.get(K + "valueJSON"), "extensions": a.get(K + "extensions")}))
+        return out
 
     def close(self) -> None:
         with contextlib.suppress(Exception):

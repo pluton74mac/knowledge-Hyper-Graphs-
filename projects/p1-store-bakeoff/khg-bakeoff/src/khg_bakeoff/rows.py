@@ -31,7 +31,7 @@ from khg_contracts.record import NEG_INF, POS_INF, binding_sort_key, bounds, ide
 from khg_contracts.schema import LIFECYCLE_RELATIONS
 
 __all__ = ["BIND_COLS", "ENTITY_COLS", "FACT_COLS", "HEADER_FIELDS", "INT64_HELD", "NEG", "POS", "Pat",
-           "assemble", "binding_rows", "entity_row", "fact_row", "instant", "numeric_instant", "prepare",
+           "assemble", "binding_rows", "entity_row", "fact_row", "instant", "native_binding", "numeric_instant", "prepare",
            "query_instant", "split", "unheld_instants"]
 
 #: The sentinels of -inf and +inf in an int64 backend.
@@ -162,6 +162,23 @@ def assemble(fact: Mapping[str, Any], rows: Iterable[Mapping[str, Any]]) -> dict
     r["recorded_at"] = fact["recorded_at"]
     r["recorded_by"] = fact["recorded_by"]
     return r
+
+
+def native_binding(row: Mapping[str, Any]) -> dict[str, Any]:
+    """One binding rebuilt from a binding row's own columns (fidelity number 2)."""
+    b: dict[str, Any] = {"bid": row.get("bid"), "role": row.get("role")}
+    kind = row.get("value_kind")
+    if kind in ("entity", "fact"):
+        b["value"] = {kind: row.get("ref")}
+    elif row.get("value_json") is not None:
+        b["value"] = json.loads(row["value_json"])
+    if row.get("position") is not None:
+        b["position"] = int(row["position"])
+    if row.get("direction") is not None:
+        b["direction"] = row["direction"]
+    if row.get("extensions") is not None:
+        b["extensions"] = json.loads(row["extensions"])
+    return b
 
 
 def entity_row(record: Mapping[str, Any], t: int) -> dict[str, Any]:

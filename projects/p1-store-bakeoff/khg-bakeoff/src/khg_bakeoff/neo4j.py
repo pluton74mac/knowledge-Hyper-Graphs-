@@ -38,7 +38,7 @@ from khg_contracts.store import Where
 from khg_contracts.store.table import Entry, TableStore
 
 from .native import NativeReads
-from .rows import BIND_COLS, FACT_COLS, Pat, assemble, binding_rows, entity_row, fact_row, query_instant
+from .rows import BIND_COLS, FACT_COLS, Pat, assemble, binding_rows, entity_row, fact_row, native_binding, query_instant
 from .shared import AdapterMixin
 
 __all__ = ["BATCH", "Neo4jStore", "Neo4jTable", "factory"]
@@ -461,6 +461,24 @@ class Neo4jStore(AdapterMixin, NativeReads, TableStore):
         q = (f"MATCH (v:Version:{self.ns} {{relation: $rel, key_digest: $kd}}) WHERE {self._current(t, p)} AND "
              f"{self._filters(where, as_of, p)} RETURN v.id AS id ORDER BY id")
         return [r["id"] for r in self.run(q, p)]
+
+    # -- fidelity number 2
+    def native_bindings(self, rid: str) -> list[dict[str, Any]] | None:
+        """The bindings of the current version of fact ``rid`` from the ``BINDS`` edges and their targets (not
+        ``payload``)."""
+        rows = self.run(f"MATCH (v:Version:{self.ns} {{id: $id, kind: 'fact'}}) WHERE v.tx_to IS NULL "
+                        "OPTIONAL MATCH (v)-[e:BINDS]->(t) RETURN properties(e) AS e, t.id AS target", {"id": rid})
+        if not rows:
+            return None
+        out = []
+        for r in rows:
+            if r["e"] is None:
+                continue
+            e = dict(r["e"])
+            if e.get("value_kind") in ("entity", "fact"):
+                e["ref"] = r["target"]  # the value is where the edge points, not the ref property
+            out.append(native_binding(e))
+        return out
 
     def close(self) -> None:
         if not self._owned:

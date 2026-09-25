@@ -111,10 +111,10 @@ class TypeQLSchema:
         self.relations = list(schema.relation_ids()) + [r for r in LIFECYCLE_RELATIONS
                                                         if r not in schema.relation_ids()]
         self.relation = {r: label("rel-", r) for r in self.relations}
-        self.relation_of = {v: k for k, v in self.relation.items()}
         self.players: dict[str, set[str]] = {}   # relation -> roles with entity or fact fillers
         self.literals: dict[str, set[str]] = {}  # relation -> roles with literal fillers
         self.roles_by_name: dict[str, list[str]] = {}
+        self.unmapped: dict[str, str] = {}  # relations with no TypeQL form, and why
         parent = {t: (ps[0] if ps else None) for t, ps in schema.entity_types.items()}
 
         def chain(t: str) -> set[str]:
@@ -156,7 +156,15 @@ class TypeQLSchema:
                         for r in f["fact"] or [None]:
                             player = "khg-fact" if r is None else self.relation[r]
                             plays.add(f"{player} plays {self.relation[rel]}:{role}")
+            if rel not in self.players:
+                # no entity or fact role: TypeDB refuses a relation type that relates no role (SVL41), and would
+                # delete an instance without players at commit anyway
+                self.unmapped[rel] = "the relation has no entity or fact role (SVL41)"
+                del self.relation[rel]
+                self.literals.pop(rel, None)
+                continue
             rel_lines.append("  " + ", ".join(parts) + ";")
+        self.relation_of = {v: k for k, v in self.relation.items()}
         lines = ["define"]
         lines += [f"  attribute {a}, value {k};" for a, k in sorted(attrs.items())]
         lines.append("  entity khg-entity @abstract, owns khg-id @key, owns khg-record, owns khg-version, "
@@ -499,6 +507,8 @@ class TypeDBStore(AdapterMixin, NativeReads, TableStore):
         if record.get("kind") != "hyperedge":
             return None
         rel = record.get("relation")
+        if rel in self.tq.unmapped:
+            return {"reason": "no_role_player", "relation": rel, "detail": self.tq.unmapped[rel]}
         if rel not in self.tq.relation:
             return {"reason": "undeclared_relation", "relation": rel}
         bindings = record.get("bindings") or []

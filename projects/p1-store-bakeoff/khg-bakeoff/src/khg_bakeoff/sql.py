@@ -21,7 +21,7 @@ from khg_contracts.store import Where
 from khg_contracts.store.table import Entry, TableStore
 
 from .native import NativeReads
-from .rows import BIND_COLS, FACT_COLS, Pat, assemble, binding_rows, entity_row, fact_row
+from .rows import BIND_COLS, FACT_COLS, Pat, assemble, binding_rows, entity_row, fact_row, native_binding
 from .shared import AdapterMixin
 
 __all__ = ["SQLStore", "SQLTable", "ddl"]
@@ -454,4 +454,13 @@ class SQLStore(AdapterMixin, NativeReads, TableStore):
         filt = self._filters("fv", where, as_of, params)
         return [r[0] for r in self.db.q(f"SELECT fv.id FROM fact_version fv WHERE fv.relation = ? AND "
                                         f"fv.key_digest = ? AND {cur} AND {filt} ORDER BY fv.id", params)]
+
+    # -- fidelity number 2
+    def native_bindings(self, rid: str) -> list[dict[str, Any]] | None:
+        """The bindings of the current version of fact ``rid`` from the ``binding`` rows alone (not ``payload``)."""
+        rows = self.db.q("SELECT version FROM fact_version WHERE id = ? AND tx_to IS NULL", (rid,))
+        if not rows:
+            return None
+        return [native_binding(dict(zip(BIND_COLS, r))) for r in self.db.q(
+            f"SELECT {', '.join(BIND_COLS)} FROM binding WHERE fact_id = ? AND version = ?", (rid, rows[0][0]))]
 
