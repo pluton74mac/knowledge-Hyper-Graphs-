@@ -16,7 +16,7 @@ from __future__ import annotations
 import sys
 from typing import Any
 
-from common import (ReadOnlyProbe, assemble, fixture, hand_check, run_read_only, write_out)
+from common import ReadOnlyProbe, assemble, fixture, hand_check, history_check, run_read_only, write_out
 
 FLAGS = frozenset({"literal_values", "special_values", "goals", "nesting", "ordered_roles", "valid_time",
                    "transaction_time", "key_constraint", "atomic_writes", "history_export"})
@@ -380,10 +380,11 @@ def main(names: list[str]) -> None:
                                                 {"role": "agent", "value": {"entity": "ex:metformin"}}])
         result["find_sql_example"] = " ".join(store.last_sql.split())
         store.close()
+        result["transaction_time"] = history_check(lambda s, c: cls(s, clock=c))
         result["read_only_scenarios"] = run_read_only(lambda s, c: cls(s, clock=c))
         if name.startswith("pg"):
             result["temporal_key_constraint"] = temporal_key_demo(cls.PORT)
-        print(name, result["read_only_scenarios"]["counts"], "export diffs:",
+        print(name, result["read_only_scenarios"]["counts"], "as_at:", result["transaction_time"], "export diffs:",
               result["hand"]["export khg-json round trip"]["differences"],
               "hand mismatches:", [k for k, v in result["hand"].items()
                                    if isinstance(v, dict) and v.get("same_as_reference") is False or "error" in v])

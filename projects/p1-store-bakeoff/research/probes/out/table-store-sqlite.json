@@ -1,0 +1,12 @@
+{
+ "store": "MemoryStore write path over SQLiteTable (sqlite3 3.45.1)",
+ "seconds": 1.21,
+ "summary": {
+  "passed": 114,
+  "failed": 0,
+  "inapplicable": 0,
+  "cantTell": 0,
+  "total": 114
+ },
+ "not_passed": {}
+}

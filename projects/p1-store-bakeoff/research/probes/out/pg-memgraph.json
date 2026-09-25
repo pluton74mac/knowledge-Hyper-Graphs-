@@ -1,7 +1,7 @@
 {
  "backend": "memgraph",
  "server": "[{\"version\": \"3.13.1\"}]",
- "native_write_seconds": 0.0446,
+ "native_write_seconds": 0.0199,
  "hand": {
   "get f:king-14": {
    "same_as_reference": true,
@@ -122,13 +122,17 @@
    "same_as_reference": true
   }
  },
- "hand_seconds": 0.172,
- "find_cypher_example": "MATCH (v:Version:S302883714_1 {relation: $rel}), (v)-[b1:BINDS]->(), (v)-[b2:BINDS]->() WHERE b1.role = $r1 AND b1.ident = $i1 AND b2.role = $r2 AND b2.ident = $i2 AND b2.bid <> b1.bid AND v.tx_to IS NULL AND v.status IN $st AND v.rank IN $rk AND v.visibility IN $vis AND v.rel_kind IN $kinds RETURN DISTINCT v.id AS id ORDER BY id",
- "incident_cypher_example": "MATCH (v:Version:S302883714_1)-[e:BINDS]->(:Node:S302883714_1 {id: $node}) WHERE v.tx_to IS NULL AND v.status IN $st AND v.rank IN $rk AND v.visibility IN $vis AND v.rel_kind IN $kinds RETURN DISTINCT v.id AS id ORDER BY id",
- "walk_cypher": "MATCH (:Node:S302883714_1 {id: $fact})<-[a:BINDS {role: $frm}]-(s:Version:S302883714_1)-[b:BINDS {role: $to}]->(n:Node:S302883714_1) WHERE s.relation = 'khg:supersedes' AND s.status = 'asserted' AND s.tx_to IS NULL RETURN s.id AS via, n.id AS dst ORDER BY via, dst",
+ "hand_seconds": 0.138,
+ "find_cypher_example": "MATCH (v:Version:S303842401_52 {relation: $rel}), (v)-[b1:BINDS]->(), (v)-[b2:BINDS]->() WHERE b1.role = $r1 AND b1.ident = $i1 AND b2.role = $r2 AND b2.ident = $i2 AND b2.bid <> b1.bid AND v.tx_to IS NULL AND v.status IN $st AND v.rank IN $rk AND v.visibility IN $vis AND v.rel_kind IN $kinds RETURN DISTINCT v.id AS id ORDER BY id",
+ "incident_cypher_example": "MATCH (v:Version:S303842401_52)-[e:BINDS]->(:Node:S303842401_52 {id: $node}) WHERE v.tx_to IS NULL AND v.status IN $st AND v.rank IN $rk AND v.visibility IN $vis AND v.rel_kind IN $kinds RETURN DISTINCT v.id AS id ORDER BY id",
+ "walk_cypher": "MATCH (:Node:S303842401_52 {id: $fact})<-[a:BINDS {role: $frm}]-(s:Version:S303842401_52)-[b:BINDS {role: $to}]->(n:Node:S303842401_52) WHERE s.relation = 'khg:supersedes' AND s.status = 'asserted' AND s.tx_to IS NULL RETURN s.id AS via, n.id AS dst ORDER BY via, dst",
  "graph_size": {
   "nodes": 102,
   "edges": 99
+ },
+ "transaction_time": {
+  "checks": 85,
+  "mismatches": []
  },
  "read_only_scenarios": {
   "selected": 46,
@@ -149,5 +153,5 @@
   ],
   "not_passed": {}
  },
- "scenario_seconds": 2.36
+ "scenario_seconds": 2.57
 }

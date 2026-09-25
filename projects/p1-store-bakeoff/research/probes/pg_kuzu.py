@@ -12,7 +12,7 @@ import sys
 import time
 from typing import Any
 
-from common import fixture, hand_check, run_read_only, write_out
+from common import fixture, hand_check, history_check, run_read_only, write_out
 from pg_cypher import BIND_PROPS, VERSION_PROPS, CypherProbe, clean
 
 DDL = [
@@ -141,9 +141,10 @@ def main(names: list[str]) -> None:
         result["find_cypher_example"] = store.last_find
         store.close()
         started = time.perf_counter()
+        result["transaction_time"] = history_check(lambda s_, c: cls(s_, clock=c))
         result["read_only_scenarios"] = run_read_only(lambda s_, c: cls(s_, clock=c))
         result["scenario_seconds"] = round(time.perf_counter() - started, 2)
-        print(name, result["version"], result["read_only_scenarios"]["counts"], "export diffs:",
+        print(name, result["version"], result["read_only_scenarios"]["counts"], "as_at:", result["transaction_time"], "export diffs:",
               result["hand"]["export khg-json round trip"]["differences"],
               "hand mismatches:", [k for k, v in result["hand"].items()
                                    if isinstance(v, dict) and (v.get("same_as_reference") is False or "error" in v)],

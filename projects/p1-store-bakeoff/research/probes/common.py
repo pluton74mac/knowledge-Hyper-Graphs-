@@ -495,3 +495,47 @@ def write_out(name: str, data: Mapping[str, Any]) -> Path:
     path = OUT / f"{name}.json"
     path.write_text(json.dumps(data, ensure_ascii=False, indent=1, default=str) + "\n", encoding="utf-8")
     return path
+
+
+# ------------------------------------------------------------------------------------------------ transaction time
+
+HISTORY_PATH = FIXTURE_DIR / "fixture.history.c1.json"
+
+
+def history_check(factory: Callable[[Any, Any], Any]) -> dict[str, Any]:
+    """Transaction-time reads on the history fixture (10 versions; f:king-13 and f:reg-1 have two each, f:reg-1 v2
+    is retracted): get(as_at), get(version), history, incident(as_at) and history/as_at exports, against
+    MemoryStore. The read-only scenarios need writes to make versions, so this is the probes' as_at test."""
+    container = read_container(HISTORY_PATH)
+    _, schema = fixture()
+    ref = MemoryStore(schema, clock=ScenarioClock())
+    ref.load(copy.deepcopy(container))
+    store = factory(schema, ScenarioClock())
+    store.load(copy.deepcopy(container))
+    times = sorted({r["recorded_at"] for r in container["records"]})
+    ids = sorted({r["id"] for r in container["records"]})
+    checks, bad = 0, []
+
+    def same(label: str, a: Any, b: Any) -> None:
+        nonlocal checks
+        checks += 1
+        if jsonio.canonical(a) != jsonio.canonical(b):
+            bad.append(label)
+
+    for t in times:
+        for i in ids:
+            same(f"get {i} as_at {t}", store.get(i, as_at=t), ref.get(i, as_at=t))
+        for node in ("ex:TP53", "ex:KingOfFrance", "ex:LouisXIII"):
+            w = Where(as_at=t)
+            same(f"incident {node} as_at {t}", [r["id"] for r in store.incident(node, where=w)],
+                 [r["id"] for r in ref.incident(node, where=w)])
+        same(f"export as_at {t}", compare_containers(ref.export("khg-json", as_at=t), store.export("khg-json", as_at=t)),
+             [])
+    for i in ids:
+        same(f"history {i}", store.history(i), ref.history(i))
+        for v in (1, 2):
+            same(f"get {i} version {v}", store.get(i, version=v), ref.get(i, version=v))
+    same("export history", compare_containers(ref.export("khg-json", content="history"),
+                                              store.export("khg-json", content="history")), [])
+    store.close()
+    return {"checks": checks, "mismatches": bad}

@@ -22,7 +22,7 @@ import json
 import sys
 from typing import Any
 
-from common import ReadOnlyProbe, assemble, fixture, hand_check, run_read_only, write_out
+from common import ReadOnlyProbe, assemble, fixture, hand_check, history_check, run_read_only, write_out
 from khg_contracts.record.project import KHG_NS, RDF_TYPE, iri_decode, iri_encode, rdf_relation_instance
 
 K = KHG_NS
@@ -252,7 +252,7 @@ class Oxigraph(RDFProbe):
         import pyoxigraph
 
         self.ox = pyoxigraph
-        self.store = pyoxigraph.Store()  # in memory; Store(path) is the RocksDB-backed on-disk store
+        self.store = pyoxigraph.Store()  # RocksDB in a temporary directory; Store(path) keeps it on disk
 
     def _term(self, x: Any) -> Any:
         ox = self.ox
@@ -352,9 +352,10 @@ def main(names: list[str]) -> None:
         result["walk_sparql_level_query"] = store.walk_sparql
         store.close()
         started = time.perf_counter()
+        result["transaction_time"] = history_check(lambda s_, c: cls(s_, clock=c))
         result["read_only_scenarios"] = run_read_only(lambda s_, c: cls(s_, clock=c))
         result["scenario_seconds"] = round(time.perf_counter() - started, 2)
-        print(name, version, result["read_only_scenarios"]["counts"], "export diffs:",
+        print(name, version, result["read_only_scenarios"]["counts"], "as_at:", result["transaction_time"], "export diffs:",
               result["hand"]["export khg-json round trip"]["differences"],
               "hand mismatches:", [k for k, v in result["hand"].items()
                                    if isinstance(v, dict) and (v.get("same_as_reference") is False or "error" in v)],

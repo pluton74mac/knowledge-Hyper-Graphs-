@@ -1,0 +1,31 @@
+ordered role list (relates stop[]): ok
+owned attribute list (owns name[]): ok
+struct value type: ok
+attribute plays a role: REFUSED: [DEX11] Invalid define - the type 'code' of kind 'attribute', which cannot have: 'plays tagged:tag' Caused: [QEX2] Failed to execute define query. Near 1:38 ----- --> define attribute code, value string, plays tagged:tag; relation tagged, relates tag; ^ ----- Caused: [TSV10] Aborting transaction due
+relation plays a role (nesting): ok
+relation owns attribute (literal as owned attribute): ok
+role with @card(0..) (repeated role): ok
+same role name in two relations (scoped roles): ok
+data schema: ok
+insert relation with two players: ok, 1 rows
+insert relation with no role player: ok, 1 rows
+read back the player-less relation: ok, 0 rows
+insert same player twice in one role (multiset): ok, 1 rows
+count role players of f:m2: ok, 1 rows
+schema: ok
+insert airports: ok, 1 rows
+insert route with stop list [YYZ, YUL, YYZ]: REFUSED: [TQL0] [TQL03] TypeQL Error: There is a syntax error parsing error: expected var Near 1:101: --> match $a isa airport, has fid "ex:YYZ"; $b isa airport, has fid "ex:YUL"; insert $r isa route (stop: [$a, $b, $a]), has fid "f:route-1"; ^ Caused: Error in usage of TypeQL. Caused: [QEX1] Failed to parse TypeQL query. Caused: [TSV11] Query failed.
+read route stops: ok, 0 rows []
+read route stop list: REFUSED: [REP254] The language feature is not yet implemented: Lists. Caused: [QEX7] Error in provided query.
+insert pair with YYZ twice: ok, 1 rows
+read pair members (rows): ok, 1 rows [{'id': 'Attribute(fid: "ex:YYZ")', 'm': 'Entity(airport: 0x1e00000000000000000000)', 'p': 'Relation(pair: 0x1f00010000000000000000)'}]
+fetch pair members: ok, docs [{'members': [{'id': 'ex:YYZ'}]}]
+insert station names list: REFUSED: [TQL0] [TQL03] TypeQL Error: There is a syntax error parsing error: expected comparator, expression_base, or var Near 1:52: --> insert $s isa station, has fid "ex:tokyo", has name ["東京駅", "Tokyo Station"]; ^ Caused: Error in usage of TypeQL. Caused: [QEX1] Failed to parse TypeQL query. Caused: [TSV11] Query failed.
+read station names: REFUSED: [REP256] List types are not yet implemented. Caused: [QEX7] Error in provided query. Near 1:47 ----- --> match $s isa station, has fid "ex:tokyo", has name[] $n; ^ -----
+insert struct attribute: ok
+insert struct value: REFUSED: [TQL0] [TQL03] TypeQL Error: There is a syntax error parsing error: expected comparator, expression_base, or var Near 1:46: --> insert $e isa event, has fid "e1", has opened { time: "+1914-12-20T00:00:00Z", precision: 11, calendar: "gregorian" }; ^ Caused: Error in usage of TypeQL. Caused: [QEX1] Failed to parse TypeQL query. Caused: [TSV11] Query failed.
+pair links (member: $x, member: $y) with $x is $y: ok, 0 rows []
+pair links (member: $x, member: $y) any: ok, 0 rows []
+insert pair with YYZ and YUL: ok, 1 rows
+pair f:two links (member: $x, member: $y): ok, 2 rows
+pair f:loop member count (reduce): ok, 1 rows [{'c': '1'}]

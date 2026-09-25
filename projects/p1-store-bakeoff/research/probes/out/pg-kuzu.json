@@ -1,7 +1,7 @@
 {
  "backend": "kuzu",
  "version": "0.11.3",
- "native_write_seconds": 0.4662,
+ "native_write_seconds": 0.2712,
  "hand": {
   "get f:king-14": {
    "same_as_reference": true,
@@ -123,6 +123,10 @@
   }
  },
  "find_cypher_example": "MATCH (v:Version: {relation: $rel}), (v)-[b1:BINDS]->(), (v)-[b2:BINDS]->() WHERE b1.role = $r1 AND b1.ident = $i1 AND b2.role = $r2 AND b2.ident = $i2 AND b2.bid <> b1.bid AND v.tx_to IS NULL AND v.status IN $st AND v.rank IN $rk AND v.visibility IN $vis AND v.rel_kind IN $kinds RETURN DISTINCT v.id AS id ORDER BY id",
+ "transaction_time": {
+  "checks": 85,
+  "mismatches": []
+ },
  "read_only_scenarios": {
   "selected": 46,
   "counts": {
@@ -142,5 +146,5 @@
   ],
   "not_passed": {}
  },
- "scenario_seconds": 15.91
+ "scenario_seconds": 15.27
 }

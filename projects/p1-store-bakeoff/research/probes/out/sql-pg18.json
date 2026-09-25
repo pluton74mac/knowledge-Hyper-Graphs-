@@ -4,7 +4,7 @@
   "records": 40,
   "versions": 40
  },
- "native_write_seconds": 0.0074,
+ "native_write_seconds": 0.0071,
  "version": "PostgreSQL 18.6 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0, 64-bit",
  "hand": {
   "get f:king-14": {
@@ -127,6 +127,10 @@
   }
  },
  "find_sql_example": "SELECT DISTINCT fv.id FROM fact_version fv JOIN binding b1 ON b1.fact_id = fv.id AND b1.version = fv.version AND b1.role = ? AND b1.ident = ? JOIN binding b2 ON b2.fact_id = fv.id AND b2.version = fv.version AND b2.role = ? AND b2.ident = ? AND b2.bid <> b1.bid WHERE fv.relation = ? AND fv.tx_to IS NULL AND fv.status IN (?) AND fv.rank IN (?, ?) AND fv.visibility IN (?) AND fv.rel_kind IN (?) ORDER BY fv.id",
+ "transaction_time": {
+  "checks": 85,
+  "mismatches": []
+ },
  "read_only_scenarios": {
   "selected": 46,
   "counts": {

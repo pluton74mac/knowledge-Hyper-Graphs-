@@ -2,7 +2,7 @@
  "backend": "rdflib",
  "version": "7.6.0",
  "quads": 870,
- "native_write_seconds": 0.0327,
+ "native_write_seconds": 0.0236,
  "hand": {
   "get f:king-14": {
    "same_as_reference": true,
@@ -123,9 +123,13 @@
    "same_as_reference": true
   }
  },
- "hand_seconds": 1.643,
- "find_sparql_example": "PREFIX khg: <https://w3id.org/khg/ns#>\nSELECT DISTINCT ?id WHERE {\n  ?g khg:versionOf ?f . FILTER NOT EXISTS { ?g khg:txTo ?to }\n  GRAPH ?g {\n    ?f khg:relation \"co_administration_causes\" .\n    ?f khg:binding ?b1 . ?b1 khg:role \"agent\" .\n    ?b1 khg:ident \"{\\\"entity\\\":\\\"ex:insulin\\\"}\" .\n    ?f khg:binding ?b2 . ?b2 khg:role \"agent\" .\n    ?b2 khg:ident \"{\\\"entity\\\":\\\"ex:metformin\\\"}\" .\n    FILTER(?b2 != ?b1)\n    ?f khg:status ?st ; khg:rank ?rk ; khg:visibility ?vis ; khg:relKind ?kind ; khg:id ?id .\n    FILTER(?st IN (\"asserted\"))\n    FILTER(?rk IN (\"normal\", \"preferred\"))\n    FILTER(?vis IN (\"visible\"))\n    FILTER(?kind IN (\"fact\"))\n    \n  }\n} ORDER BY ?id",
- "walk_sparql_level_query": "PREFIX khg: <https://w3id.org/khg/ns#>\nSELECT ?sid ?to WHERE {\n  ?g khg:versionOf ?s . FILTER NOT EXISTS { ?g khg:txTo ?to }\n  GRAPH ?g { ?s khg:relation \"khg:supersedes\" ; khg:status \"asserted\" ; khg:id ?sid ;\n             khg:binding ?b1, ?b2 . ?b1 khg:role \"khg:superseded\" ; khg:value <urn:khg:f%3Aborn-skłodowska-warszawa> .\n             ?b2 khg:role \"khg:superseding\" ; khg:value ?toIri . BIND(STR(?toIri) AS ?to) }\n} ORDER BY ?sid ?to",
+ "hand_seconds": 1.561,
+ "find_sparql_example": "PREFIX khg: <https://w3id.org/khg/ns#>\nSELECT DISTINCT ?id WHERE {\n  ?g khg:versionOf ?f . FILTER NOT EXISTS { ?g khg:txTo ?txTo }\n  GRAPH ?g {\n    ?f khg:relation \"co_administration_causes\" .\n    ?f khg:binding ?b1 . ?b1 khg:role \"agent\" .\n    ?b1 khg:ident \"{\\\"entity\\\":\\\"ex:insulin\\\"}\" .\n    ?f khg:binding ?b2 . ?b2 khg:role \"agent\" .\n    ?b2 khg:ident \"{\\\"entity\\\":\\\"ex:metformin\\\"}\" .\n    FILTER(?b2 != ?b1)\n    ?f khg:status ?st ; khg:rank ?rk ; khg:visibility ?vis ; khg:relKind ?kind ; khg:id ?id .\n    FILTER(?st IN (\"asserted\"))\n    FILTER(?rk IN (\"normal\", \"preferred\"))\n    FILTER(?vis IN (\"visible\"))\n    FILTER(?kind IN (\"fact\"))\n    \n  }\n} ORDER BY ?id",
+ "walk_sparql_level_query": "PREFIX khg: <https://w3id.org/khg/ns#>\nSELECT ?sid ?to WHERE {\n  ?g khg:versionOf ?s . FILTER NOT EXISTS { ?g khg:txTo ?txTo }\n  GRAPH ?g { ?s khg:relation \"khg:supersedes\" ; khg:status \"asserted\" ; khg:id ?sid ;\n             khg:binding ?b1, ?b2 . ?b1 khg:role \"khg:superseded\" ; khg:value <urn:khg:f%3Aborn-skłodowska-warszawa> .\n             ?b2 khg:role \"khg:superseding\" ; khg:value ?toIri . BIND(STR(?toIri) AS ?to) }\n} ORDER BY ?sid ?to",
+ "transaction_time": {
+  "checks": 85,
+  "mismatches": []
+ },
  "read_only_scenarios": {
   "selected": 46,
   "counts": {
@@ -145,5 +149,5 @@
   ],
   "not_passed": {}
  },
- "scenario_seconds": 11.92
+ "scenario_seconds": 15.74
 }
