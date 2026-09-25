@@ -110,44 +110,69 @@ leftover databases.
   [IMPLEMENTATION-NOTES](IMPLEMENTATION-NOTES.md) the decisions and deviations. [start-servers.sh](start-servers.sh)
   starts the pinned servers. The corrections of research 01 §11 are applied: P2 DESIGN §6.5 amendments A1–A4 and
   four notes in `kb/04-storage-and-formats/`. Next: one review round, then the second half on P3a's slice.
+- 2026-09-25: [review 01](review/review-01.md) found 15 defects. All 15 are fixed, each with a regression test that
+  fails on the code before the fix (IMPLEMENTATION-NOTES §8).
+  - **Code.** Commits `914b810` (the code and its tests) and the results commit that follows.
+  - **Results regenerated.** All six backends still pass every applicable scenario (114, 114, 114, 114, 70, 107).
+  - **Numbers that changed:**
+    - Column 1, R-08: HIF's silent losses, 0 before, are now 22 (fixture) and 20 (edge), its entities without
+      `recorded_by`. Nothing else was silent.
+    - Column 2, R-09: literals as written are now read from the stored identity, not from a JSON copy per binding.
+      The four database layouts give 9 of 20 on the fixture, down from 20 of 20: the fixture's 11 time literals are
+      lost. On the edge container PostgreSQL gives 5 of 6 (the far-future time literal). TypeDB goes from 0 of 19
+      to 9 of 19, because its owned attributes hold the identities too. HIF stays 20 of 20.
+    - Column 3, R-10: queries that touch what a backend skipped or lacks are n/a. That is 3 of 24 edge queries on
+      SQLite, Oxigraph and Neo4j (the far-future ones), 1 of 13 fixture and 10 of 24 edge queries on TypeDB, and
+      none on PostgreSQL or HIF. Every compared answer is the same, except HIF's `get ex:Dual` (finding 5).
+  - **New.** Round trips per operation, measured (DESIGN §6.1), and finding 8 (HIF and slices that are not
+    `complete`, Q5).
 
 ## Results and findings
 
 **First half (2026-09-25): conformance and fidelity; no timings.**
 - **Sources.** [results/conformance/](results/conformance/) (one EARL report per backend, `summary.md`) and
   [results/fidelity.md](results/fidelity.md) (`fidelity.json`).
-- **Versions.** khg-contracts 1.0.0.dev0 at commit `12159f8`, with C1 `khg-record/1.0.0`, C2 `khg-store/1.0.0` and
-  the 114-scenario suite `khg-scenario/1.0.0`.
+- **Versions.** khg-contracts 1.0.0.dev0 at commit `914b810` (ruling 17 and its addition on review 01), with C1
+  `khg-record/1.0.0`, C2 `khg-store/1.0.0` and the 114-scenario suite `khg-scenario/1.0.0`. Regenerated after the
+  fixes of review 01; [results/roundtrips.md](results/roundtrips.md) adds the engine calls per operation (DESIGN
+  §6.1).
 - **Pass rule.** A backend passes when no applicable scenario fails (PLAN §7). Every inapplicable scenario is a
   fidelity loss, listed by flag in `summary.md`.
 - **The fidelity columns** (DESIGN §5):
-  1. records lost in the round trip, as skipped or silent, on fixture / history / edge;
-  2. of the native layer without the record-level copies: bids, then literals as written, kept (fixture);
-  3. answers equal to `MemoryStore`'s: 13 hand queries on the fixture, 85 transaction-time checks, 24 edge queries;
-  4. inapplicable scenarios.
+  1. Records lost in the round trip, as skipped or silent, on fixture / history / edge. A record whose store fields
+     differ, with no refusal, is silent (R-08).
+  2. What the native layer alone keeps, with no JSON copy of a record or a value: bids, then literals as written
+     (fixture). A literal is rebuilt from the identity the layout stores, so a time literal is lost outside HIF
+     (R-09).
+  3. Answers equal to `MemoryStore`'s: 13 hand queries on the fixture, 85 transaction-time checks and 24 edge
+     queries. A query that touches what the backend skipped or lacks is not compared (n/a, R-10).
+  4. Inapplicable scenarios.
 
 | Backend | Engine | Kind | Applicable / passed / inapplicable (losses by flag) | 1. Round trip: skipped, silent | 2. Native: bids; literals as written | 3. Answers | Load time | Query latency |
 |---|---|---|---|---|---|---|---|---|
-| Incidence table | PostgreSQL 18.6 (psycopg 3.3.6) | client–server | 114 / 114 / 0 | 0, 0 / 0, 0 / 0, 0 | 59/59; 20/20 | 13/13, 85/85, 24/24 | second half, after P3a's slice | second half, after P3a's slice |
-| Incidence table (control) | SQLite 3.45.1 | embedded | 114 / 114 / 0 | 0, 0 / 0, 0 / 1, 0 | 59/59; 20/20 | 13/13, 85/85, 24/24 | second half | second half |
-| Reified RDF, named graph per version | Oxigraph (pyoxigraph 0.5.11) | embedded | 114 / 114 / 0 | 0, 0 / 0, 0 / 1, 0 | 59/59; 20/20 | 13/13, 85/85, 24/24 | second half | second half |
-| Bipartite property graph, version nodes | Neo4j Community 2026.09.0 (neo4j 6.3.1) | client–server | 114 / 114 / 0 | 0, 0 / 0, 0 / 1, 0 | 59/59; 20/20 | 13/13, 85/85, 24/24 | second half | second half |
-| TypeDB, natural mapping | TypeDB CE 3.13.6 (typedb-driver 3.13.6) | client–server | 70 / 70 / 44 (goals 33, ordered_roles 29, special_values 33, transaction_time 7, history_export 1) | 4, 0 / not loaded / 6, 0 | 0/48; 0/19 | 13/13, –, 24/24 | second half | second half |
-| HIF file | khg-contracts `to_hif`/`from_hif` (khg-hif/1.0.0) | embedded | 107 / 107 / 7 (transaction_time 7, history_export 1) | 0, 0 / not loaded / 0, 0 | 59/59; 20/20 | 13/13, –, 23/24 | second half | second half |
+| Incidence table | PostgreSQL 18.6 (psycopg 3.3.6) | client–server | 114 / 114 / 0 | 0, 0 / 0, 0 / 0, 0 | 59/59; 9/20 | 13/13, 85/85, 24/24 | second half, after P3a's slice | second half, after P3a's slice |
+| Incidence table (control) | SQLite 3.45.1 | embedded | 114 / 114 / 0 | 0, 0 / 0, 0 / 1, 0 | 59/59; 9/20 | 13/13, 85/85, 21/21 (3 n/a) | second half | second half |
+| Reified RDF, named graph per version | Oxigraph (pyoxigraph 0.5.11) | embedded | 114 / 114 / 0 | 0, 0 / 0, 0 / 1, 0 | 59/59; 9/20 | 13/13, 85/85, 21/21 (3 n/a) | second half | second half |
+| Bipartite property graph, version nodes | Neo4j Community 2026.09.0 (neo4j 6.3.1) | client–server | 114 / 114 / 0 | 0, 0 / 0, 0 / 1, 0 | 59/59; 9/20 | 13/13, 85/85, 21/21 (3 n/a) | second half | second half |
+| TypeDB, natural mapping | TypeDB CE 3.13.6 (typedb-driver 3.13.6) | client–server | 70 / 70 / 44 (goals 33, ordered_roles 29, special_values 33, transaction_time 7, history_export 1) | 4, 0 / not loaded / 6, 0 | 0/48; 9/19 | 12/12 (1 n/a), –, 14/14 (10 n/a) | second half | second half |
+| HIF file | khg-contracts `to_hif`/`from_hif` (khg-hif/1.0.0) | file, read in memory | 107 / 107 / 7 (transaction_time 7, history_export 1) | 0, 22 / not loaded / 0, 20 | 59/59; 20/20 | 13/13, –, 23/24 | second half | second half |
 
 **Findings.**
 1. **Every backend passes C2's conformance test** under ruling 1. SQLite, PostgreSQL 18.6, Oxigraph and Neo4j apply
    all 114 scenarios and pass them. TypeDB passes the 70 that apply to its natural mapping, and HIF the 107 that
    apply to a snapshot file. Both figures are the ones P2 §6.5 predicted.
-2. **No backend loses anything silently.** Every difference in a round trip is a record the store skipped, with its
-   reason.
+2. **No backend loses a record silently, but the HIF format loses a store field silently.**
+   - Every record missing after a round trip is one the store skipped, with its reason.
+   - The HIF store answers `get(entity)` without `recorded_by`, and does not refuse. That is 22 of 22 fixture
+     entities and 20 of 20 edge entities (finding 5, ruling 18; column 1 counts them since review 01, R-08).
 3. **The int64 backends refuse a 16-digit year instead of storing a wrong value.** A C1 time literal with such a
    year puts an instant near 3.2 × 10^23 s. SQLite, Oxigraph, Neo4j and TypeDB each refuse the one record with an
    instant beyond ±(2^62 − 2) s (ruling 4). PostgreSQL's `numeric` holds it and answers `as_of` reads in year
    10^16 correctly.
-4. **TypeDB's native layer keeps role–value multisets but no bids, positions, directions, binding extensions or
-   literals as written.** The records come back exactly only through the JSON copy of the bindings. On the edge
-   container TypeDB also refuses:
+4. **TypeDB's native layer keeps role–value multisets but no bids, positions, directions or binding extensions.** Its
+   owned attributes hold literal identities, which give back every literal as written but a time literal (9 of 19,
+   as in the other database layouts: finding 7). The records come back exactly only through the JSON copy of the
+   bindings. On the edge container TypeDB also refuses:
    - a multi-typed entity and the fact that binds it (one type per instance);
    - a literal-only fact (a relation type must relate a role, SVL41);
    - the goal, and the ordered and far-future facts, by flag or by instant.
@@ -155,7 +180,18 @@ leftover databases.
    (P2 DESIGN §4.2). This affects 22 of 22 fixture entities. `compare_containers` ignores store fields, and no
    scenario reads one after a reload, so only the store-field comparison and one edge query (`get ex:Dual`) show it.
 6. **PostgreSQL can state part of the key invariant itself.** A `WITHOUT OVERLAPS` guard over preferred facts is
-   sound under D016; the rest of D016 stays in the shared write path.
+   sound under D016; the rest of D016 stays in the shared write path. The guard changes once per write, at its end,
+   so a batch that moves `preferred` between facts is accepted in any order (R-04).
+7. **Outside HIF, no layout keeps a time literal as written except in a JSON copy.**
+   - The SQL, RDF, property-graph and TypeDB layouts compare and index a value by its identity. A time literal's
+     identity is its window and precision, not the time and calendar as written.
+   - Without the per-binding JSON copy, 11 of the fixture's 20 literals, its time literals, are therefore lost as
+     written. HIF's literal nodes keep all 20.
+8. **A slice that is not `complete` is a TypeDB loss and a HIF failure.**
+   - TypeDB skips and counts each fact whose player it does not hold, and the facts that nest it (build ruling Q4,
+     R-03); the rest loads.
+   - The HIF store cannot load such a slice at all: `to_hif` writes an incidence on an undeclared node, and
+     `from_hif` refuses it (KHG-D002). The store now fails such a load cleanly. This is open (Q5 below).
 
 ## Open questions raised
 
@@ -166,3 +202,7 @@ For the director (IMPLEMENTATION-NOTES §7):
 - **Q3.** Should P2 add `khg-recorded-by` to the HIF profile's entity node (a minor profile version)?
 - **Q4.** For P3a slices that are not `complete`: stub player instances in TypeDB, or count those facts as TypeDB
   losses?
+
+Q1 to Q4 are ruled above. New, from the fixes of review 01 (DESIGN §9, IMPLEMENTATION-NOTES §7):
+- **Q5.** HIF and slices that are not `complete`. Should the HIF store skip and count a fact on a node it does not
+  hold, as TypeDB does (a HIF loss)? Or should P2's `to_hif` declare such a node (the `khg-hif` profile)?

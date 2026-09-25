@@ -8,7 +8,7 @@
   },
   "khg_contracts": {
    "version": "1.0.0.dev0",
-   "commit": "12159f8a1bf5434be085d42b79ae9ff67e6446bd",
+   "commit": "914b810e8436202cfacbd9153c024dc4a1e11ad2",
    "src_modified": false
   },
   "khg_bakeoff": "0.1.0",
@@ -36,6 +36,8 @@
       "records_out": 40,
       "differing": 0,
       "skipped": 0,
+      "silent": 0,
+      "silent_ids": [],
       "skip_reasons": {},
       "other_differences": [],
       "header_differences": [],
@@ -52,14 +54,30 @@
       "direction_kept": 0,
       "extensions_kept": 2,
       "literals": 20,
-      "literal_as_written_kept": 20,
+      "literal_as_written_kept": 9,
       "extensions": 2,
-      "lost": {}
+      "lost": {
+       "literal as written": [
+        "f:claim-1 b3",
+        "f:king-13 b3",
+        "f:king-13 b4",
+        "f:king-14 b3",
+        "f:king-14 b4",
+        "f:married-curie b3",
+        "f:married-curie b4",
+        "f:pop-łódź-2019 b3",
+        "f:pop-łódź-2019-dep b3",
+        "f:station-東京 b6",
+        "g:who-1774 b3"
+       ]
+      }
      },
      "answers": {
       "compared": 13,
       "same": 13,
       "both_refused": 0,
+      "n/a": 0,
+      "n/a queries": [],
       "differ": {}
      }
     },
@@ -70,6 +88,8 @@
       "records_out": 10,
       "differing": 0,
       "skipped": 0,
+      "silent": 0,
+      "silent_ids": [],
       "skip_reasons": {},
       "other_differences": [],
       "header_differences": [],
@@ -86,13 +106,20 @@
       "direction_kept": 0,
       "extensions_kept": 0,
       "literals": 2,
-      "literal_as_written_kept": 2,
+      "literal_as_written_kept": 0,
       "extensions": 0,
-      "lost": {}
+      "lost": {
+       "literal as written": [
+        "f:king-13 b3",
+        "f:king-13 b4"
+       ]
+      }
      },
      "answers": {
       "compared": 85,
       "same": 85,
+      "n/a": 0,
+      "n/a queries": [],
       "differ": []
      }
     },
@@ -103,6 +130,8 @@
       "records_out": 40,
       "differing": 1,
       "skipped": 1,
+      "silent": 0,
+      "silent_ids": [],
       "skip_reasons": {
        "f:far-future": {
         "cannot_hold": {
@@ -135,9 +164,15 @@
       "lost": {}
      },
      "answers": {
-      "compared": 24,
-      "same": 24,
+      "compared": 21,
+      "same": 21,
       "both_refused": 0,
+      "n/a": 3,
+      "n/a queries": [
+       "get f:far-future (16-digit year)",
+       "incident far-future post as_of year 10000000000000001 (definite)",
+       "incident far-future post inside its start year (possible)"
+      ],
       "differ": {}
      }
     }
@@ -164,6 +199,8 @@
       "records_out": 40,
       "differing": 0,
       "skipped": 0,
+      "silent": 0,
+      "silent_ids": [],
       "skip_reasons": {},
       "other_differences": [],
       "header_differences": [],
@@ -180,14 +217,30 @@
       "direction_kept": 0,
       "extensions_kept": 2,
       "literals": 20,
-      "literal_as_written_kept": 20,
+      "literal_as_written_kept": 9,
       "extensions": 2,
-      "lost": {}
+      "lost": {
+       "literal as written": [
+        "f:claim-1 b3",
+        "f:king-13 b3",
+        "f:king-13 b4",
+        "f:king-14 b3",
+        "f:king-14 b4",
+        "f:married-curie b3",
+        "f:married-curie b4",
+        "f:pop-łódź-2019 b3",
+        "f:pop-łódź-2019-dep b3",
+        "f:station-東京 b6",
+        "g:who-1774 b3"
+       ]
+      }
      },
      "answers": {
       "compared": 13,
       "same": 13,
       "both_refused": 0,
+      "n/a": 0,
+      "n/a queries": [],
       "differ": {}
      }
     },
@@ -198,6 +251,8 @@
       "records_out": 10,
       "differing": 0,
       "skipped": 0,
+      "silent": 0,
+      "silent_ids": [],
       "skip_reasons": {},
       "other_differences": [],
       "header_differences": [],
@@ -214,13 +269,20 @@
       "direction_kept": 0,
       "extensions_kept": 0,
       "literals": 2,
-      "literal_as_written_kept": 2,
+      "literal_as_written_kept": 0,
       "extensions": 0,
-      "lost": {}
+      "lost": {
+       "literal as written": [
+        "f:king-13 b3",
+        "f:king-13 b4"
+       ]
+      }
      },
      "answers": {
       "compared": 85,
       "same": 85,
+      "n/a": 0,
+      "n/a queries": [],
       "differ": []
      }
     },
@@ -231,6 +293,8 @@
       "records_out": 41,
       "differing": 0,
       "skipped": 0,
+      "silent": 0,
+      "silent_ids": [],
       "skip_reasons": {},
       "other_differences": [],
       "header_differences": [],
@@ -247,14 +311,20 @@
       "direction_kept": 0,
       "extensions_kept": 0,
       "literals": 6,
-      "literal_as_written_kept": 6,
+      "literal_as_written_kept": 5,
       "extensions": 0,
-      "lost": {}
+      "lost": {
+       "literal as written": [
+        "f:far-future b3"
+       ]
+      }
      },
      "answers": {
       "compared": 24,
       "same": 24,
       "both_refused": 0,
+      "n/a": 0,
+      "n/a queries": [],
       "differ": {}
      }
     }
@@ -281,6 +351,8 @@
       "records_out": 40,
       "differing": 0,
       "skipped": 0,
+      "silent": 0,
+      "silent_ids": [],
       "skip_reasons": {},
       "other_differences": [],
       "header_differences": [],
@@ -297,14 +369,30 @@
       "direction_kept": 0,
       "extensions_kept": 2,
       "literals": 20,
-      "literal_as_written_kept": 20,
+      "literal_as_written_kept": 9,
       "extensions": 2,
-      "lost": {}
+      "lost": {
+       "literal as written": [
+        "f:claim-1 b3",
+        "f:king-13 b3",
+        "f:king-13 b4",
+        "f:king-14 b3",
+        "f:king-14 b4",
+        "f:married-curie b3",
+        "f:married-curie b4",
+        "f:pop-łódź-2019 b3",
+        "f:pop-łódź-2019-dep b3",
+        "f:station-東京 b6",
+        "g:who-1774 b3"
+       ]
+      }
      },
      "answers": {
       "compared": 13,
       "same": 13,
       "both_refused": 0,
+      "n/a": 0,
+      "n/a queries": [],
       "differ": {}
      }
     },
@@ -315,6 +403,8 @@
       "records_out": 10,
       "differing": 0,
       "skipped": 0,
+      "silent": 0,
+      "silent_ids": [],
       "skip_reasons": {},
       "other_differences": [],
       "header_differences": [],
@@ -331,13 +421,20 @@
       "direction_kept": 0,
       "extensions_kept": 0,
       "literals": 2,
-      "literal_as_written_kept": 2,
+      "literal_as_written_kept": 0,
       "extensions": 0,
-      "lost": {}
+      "lost": {
+       "literal as written": [
+        "f:king-13 b3",
+        "f:king-13 b4"
+       ]
+      }
      },
      "answers": {
       "compared": 85,
       "same": 85,
+      "n/a": 0,
+      "n/a queries": [],
       "differ": []
      }
     },
@@ -348,6 +445,8 @@
       "records_out": 40,
       "differing": 1,
       "skipped": 1,
+      "silent": 0,
+      "silent_ids": [],
       "skip_reasons": {
        "f:far-future": {
         "cannot_hold": {
@@ -380,9 +479,15 @@
       "lost": {}
      },
      "answers": {
-      "compared": 24,
-      "same": 24,
+      "compared": 21,
+      "same": 21,
       "both_refused": 0,
+      "n/a": 3,
+      "n/a queries": [
+       "get f:far-future (16-digit year)",
+       "incident far-future post as_of year 10000000000000001 (definite)",
+       "incident far-future post inside its start year (possible)"
+      ],
       "differ": {}
      }
     }
@@ -409,6 +514,8 @@
       "records_out": 40,
       "differing": 0,
       "skipped": 0,
+      "silent": 0,
+      "silent_ids": [],
       "skip_reasons": {},
       "other_differences": [],
       "header_differences": [],
@@ -425,14 +532,30 @@
       "direction_kept": 0,
       "extensions_kept": 2,
       "literals": 20,
-      "literal_as_written_kept": 20,
+      "literal_as_written_kept": 9,
       "extensions": 2,
-      "lost": {}
+      "lost": {
+       "literal as written": [
+        "f:claim-1 b3",
+        "f:king-13 b3",
+        "f:king-13 b4",
+        "f:king-14 b3",
+        "f:king-14 b4",
+        "f:married-curie b3",
+        "f:married-curie b4",
+        "f:pop-łódź-2019 b3",
+        "f:pop-łódź-2019-dep b3",
+        "f:station-東京 b6",
+        "g:who-1774 b3"
+       ]
+      }
      },
      "answers": {
       "compared": 13,
       "same": 13,
       "both_refused": 0,
+      "n/a": 0,
+      "n/a queries": [],
       "differ": {}
      }
     },
@@ -443,6 +566,8 @@
       "records_out": 10,
       "differing": 0,
       "skipped": 0,
+      "silent": 0,
+      "silent_ids": [],
       "skip_reasons": {},
       "other_differences": [],
       "header_differences": [],
@@ -459,13 +584,20 @@
       "direction_kept": 0,
       "extensions_kept": 0,
       "literals": 2,
-      "literal_as_written_kept": 2,
+      "literal_as_written_kept": 0,
       "extensions": 0,
-      "lost": {}
+      "lost": {
+       "literal as written": [
+        "f:king-13 b3",
+        "f:king-13 b4"
+       ]
+      }
      },
      "answers": {
       "compared": 85,
       "same": 85,
+      "n/a": 0,
+      "n/a queries": [],
       "differ": []
      }
     },
@@ -476,6 +608,8 @@
       "records_out": 40,
       "differing": 1,
       "skipped": 1,
+      "silent": 0,
+      "silent_ids": [],
       "skip_reasons": {
        "f:far-future": {
         "cannot_hold": {
@@ -508,9 +642,15 @@
       "lost": {}
      },
      "answers": {
-      "compared": 24,
-      "same": 24,
+      "compared": 21,
+      "same": 21,
       "both_refused": 0,
+      "n/a": 3,
+      "n/a queries": [
+       "get f:far-future (16-digit year)",
+       "incident far-future post as_of year 10000000000000001 (definite)",
+       "incident far-future post inside its start year (possible)"
+      ],
       "differ": {}
      }
     }
@@ -537,6 +677,8 @@
       "records_out": 36,
       "differing": 4,
       "skipped": 4,
+      "silent": 0,
+      "silent_ids": [],
       "skip_reasons": {
        "f:born-scribe": {
         "missing_flags": [
@@ -574,7 +716,7 @@
       "direction_kept": 0,
       "extensions_kept": 0,
       "literals": 19,
-      "literal_as_written_kept": 0,
+      "literal_as_written_kept": 9,
       "extensions": 2,
       "lost": {
        "extensions": [
@@ -589,25 +731,20 @@
         "f:king-14 b4",
         "f:married-curie b3",
         "f:married-curie b4",
-        "f:pop-łódź-2019 b2",
         "f:pop-łódź-2019 b3",
-        "f:pop-łódź-2019-dep b2",
         "f:pop-łódź-2019-dep b3",
-        "f:station-東京 b2",
-        "f:station-東京 b3",
-        "f:station-東京 b4",
-        "f:station-東京 b5",
-        "f:station-東京 b6",
-        "f:station-東京 b7",
-        "f:station-東京 b8",
-        "f:station-東京 b9"
+        "f:station-東京 b6"
        ]
       }
      },
      "answers": {
-      "compared": 13,
-      "same": 13,
-      "both_refused": 1,
+      "compared": 12,
+      "same": 12,
+      "both_refused": 0,
+      "n/a": 1,
+      "n/a queries": [
+       "find at_least flight_route stop YYZ at position 3"
+      ],
       "differ": {}
      }
     },
@@ -623,6 +760,8 @@
       "records_out": 35,
       "differing": 6,
       "skipped": 6,
+      "silent": 0,
+      "silent_ids": [],
       "skip_reasons": {
        "ex:Dual": {
         "cannot_hold": {
@@ -685,9 +824,22 @@
       "lost": {}
      },
      "answers": {
-      "compared": 24,
-      "same": 24,
-      "both_refused": 2,
+      "compared": 14,
+      "same": 14,
+      "both_refused": 0,
+      "n/a": 10,
+      "n/a queries": [
+       "get f:far-future (16-digit year)",
+       "incident far-future post as_of year 10000000000000001 (definite)",
+       "incident far-future post inside its start year (possible)",
+       "find alias_list two equal aliases",
+       "find alias_list alias at position 2",
+       "get ex:Dual (two types)",
+       "incident ex:Dual",
+       "find position_held holder any_unbound (goals)",
+       "find measured_constant, empty pattern (literal-only fact)",
+       "find measured_constant by value"
+      ],
       "differ": {}
      }
     }
@@ -819,15 +971,40 @@
    "layout": "HIF file",
    "engine": "HIF file",
    "version": "khg-hif/1.0.0 (khg-contracts 1.0.0.dev0 to_hif/from_hif)",
-   "kind": "embedded",
+   "kind": "file, read in memory",
    "datasets": {
     "fixture": {
      "loaded": true,
      "round_trip": {
       "records_in": 40,
       "records_out": 40,
-      "differing": 0,
+      "differing": 22,
       "skipped": 0,
+      "silent": 22,
+      "silent_ids": [
+       "ex:AirCanada",
+       "ex:Chronicler_Ødegård",
+       "ex:HeLa",
+       "ex:KingOfFrance",
+       "ex:Kraków",
+       "ex:LouisXIII",
+       "ex:LouisXIV",
+       "ex:Maria_Skłodowska",
+       "ex:Mazarin",
+       "ex:Paris",
+       "ex:Pierre_Curie",
+       "ex:R-hydrolysis-7",
+       "ex:TP53",
+       "ex:Warszawa",
+       "ex:YUL",
+       "ex:YYZ",
+       "ex:anonymous_scribe",
+       "ex:hypoglycaemia",
+       "ex:insulin",
+       "ex:metformin",
+       "ex:Łódź",
+       "ex:東京駅"
+      ],
       "skip_reasons": {},
       "other_differences": [],
       "header_differences": [],
@@ -919,6 +1096,8 @@
       "compared": 13,
       "same": 13,
       "both_refused": 0,
+      "n/a": 0,
+      "n/a queries": [],
       "differ": {}
      }
     },
@@ -932,8 +1111,31 @@
      "round_trip": {
       "records_in": 41,
       "records_out": 41,
-      "differing": 0,
+      "differing": 20,
       "skipped": 0,
+      "silent": 20,
+      "silent_ids": [
+       "ex:Diamond",
+       "ex:Dual",
+       "ex:FarFuturePost",
+       "ex:Futurist",
+       "ex:KingOfFrance",
+       "ex:Kraków",
+       "ex:Paris",
+       "ex:R-1",
+       "ex:R-2",
+       "ex:R-3",
+       "ex:R-4",
+       "ex:R-5",
+       "ex:R-6",
+       "ex:R-7",
+       "ex:R-8",
+       "ex:Warszawa",
+       "ex:Łódź",
+       "ex:東京駅",
+       "ex:ｚ",
+       "ex:𠮷"
+      ],
       "skip_reasons": {},
       "other_differences": [],
       "header_differences": [],
@@ -1019,6 +1221,8 @@
       "compared": 24,
       "same": 23,
       "both_refused": 0,
+      "n/a": 0,
+      "n/a queries": [],
       "differ": {
        "get ex:Dual (two types)": {
         "store": [

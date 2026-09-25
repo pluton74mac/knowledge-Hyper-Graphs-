@@ -8,7 +8,7 @@
   },
   "khg_contracts": {
    "version": "1.0.0.dev0",
-   "commit": "12159f8a1bf5434be085d42b79ae9ff67e6446bd",
+   "commit": "914b810e8436202cfacbd9153c024dc4a1e11ad2",
    "src_modified": false
   },
   "khg_bakeoff": "0.1.0",
@@ -287,7 +287,7 @@
    "layout": "HIF file",
    "engine": "HIF file",
    "version": "khg-hif/1.0.0 (khg-contracts 1.0.0.dev0 to_hif/from_hif)",
-   "kind": "embedded",
+   "kind": "file, read in memory",
    "declared_flags": [
     "atomic_writes",
     "goals",

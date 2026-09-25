@@ -1,6 +1,6 @@
 # P1 conformance runs (first half)
 
-khg-contracts 1.0.0.dev0 at commit `12159f8a1bf5434be085d42b79ae9ff67e6446bd`; khg-record/1.0.0, khg-store/1.0.0, khg-scenario/1.0.0 (114 scenarios); khg-contracts' own runner (`conformance.run`). A backend passes when no applicable scenario fails (PLAN §7); every inapplicable scenario is a fidelity loss, listed by flag.
+khg-contracts 1.0.0.dev0 at commit `914b810e8436202cfacbd9153c024dc4a1e11ad2`; khg-record/1.0.0, khg-store/1.0.0, khg-scenario/1.0.0 (114 scenarios); khg-contracts' own runner (`conformance.run`). A backend passes when no applicable scenario fails (PLAN §7); every inapplicable scenario is a fidelity loss, listed by flag.
 
 | Backend | Engine | Kind | Applicable | Passed | Failed | cantTell | Inapplicable (losses) | Passes |
 |---|---|---|---|---|---|---|---|---|
@@ -9,7 +9,7 @@ khg-contracts 1.0.0.dev0 at commit `12159f8a1bf5434be085d42b79ae9ff67e6446bd`; k
 | oxigraph | Oxigraph 0.5.11 (pyoxigraph) | embedded | 114 | 114 | 0 | 0 | 0 | yes |
 | neo4j | Neo4j 2026.09.0 community | client-server | 114 | 114 | 0 | 0 | 0 | yes |
 | typedb | TypeDB CE 3.13.6 | client-server | 70 | 70 | 0 | 0 | 44 | yes |
-| hif | HIF file khg-hif/1.0.0 (khg-contracts 1.0.0.dev0 to_hif/from_hif) | embedded | 107 | 107 | 0 | 0 | 7 | yes |
+| hif | HIF file khg-hif/1.0.0 (khg-contracts 1.0.0.dev0 to_hif/from_hif) | file, read in memory | 107 | 107 | 0 | 0 | 7 | yes |
 
 ## Losses by flag
 
