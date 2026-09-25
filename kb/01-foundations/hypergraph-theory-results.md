@@ -260,8 +260,9 @@ decomposition validated on the schema hypergraph, and each lower bound with a st
 | Schema | Relations | Class (GYO residue, relations) | hw | ghw | fhw |
 |---|---|---|---|---|---|
 | Wikidata, declared allowed-qualifier constraints (WDQS, 2026-09-24), wd-roles r1 naming | 1,155 | α-cyclic (391) | [4, 38] | [4, 25] | [35/11, 24] |
-| Wikidata, observed qualifiers with ≥ 10 uses and ≥ 0.1 % (SQID counts), wd-roles r1 | 13,608 | α-cyclic (748) | [4, 68] | [4, 29] | [63/19, 79/3] |
-| Wikidata, every observed qualifier (SQID counts), wd-roles r1 | 13,608 | α-cyclic (1,441) | [3, 61] | [3, 39] | [2, 75/2] |
+| Wikidata, observed qualifiers on ≥ 10 statements and ≥ 0.1 % (exact counts, dump of 2026-09-22), wd-roles r1 | 13,315 | α-cyclic (751) | [4, 65] | [4, 30] | [75/23, 53/2] |
+| Wikidata, every observed qualifier (same counts), wd-roles r1 | 13,315 | α-cyclic (1,453) | [3, 53] | [3, 35] | [2, 269/8] |
+| The same two over the items with an English Wikipedia article (P3a's corpus slice) | 12,706 | α-cyclic (603; 1,292) | [4, 48]; [4, 51] | [4, 26]; [4, 36] | [7/2, 250/11]; [8/3, 143/4] |
 | Each Wikidata schema with relation-local roles (control) | as above | Berge-acyclic (0) | 1 | 1 | 1 |
 | Biolink Model v4.4.5 associations, global slot names | 103 | α-cyclic (5) | 2 | 2 | 2 |
 | Baseline: HyperBench, 1,113 non-random conjunctive queries | | | 1 / 2 / 3 for 673 / 432 / 8 queries | | |
@@ -275,26 +276,32 @@ decomposition validated on the schema hypergraph, and each lower bound with a st
   does. Not every KHG schema is cyclic: GO-CAM's schema (one central relation class) is α-acyclic
   by GYO in one pass ([P6 research report 02](../../projects/p6-schema-width/research/02-data-sources-and-naming.md),
   finding 9).
-- **Wikidata's universal-join width is at least 3 or 4 and is not settled.** Across the six
-  wd-roles r1 rows, the cyclic cores have 391 to 1,446 relations. HyperBench has exact hw for only 6 of its 23 graphs with 300 to 999
-  edges (research report 01 §3.5), and the external solvers (BalancedGo and log-k-decomp) used
-  their full 20-minute budget per row without deciding a width. With time roles the declared
-  schema's bound becomes [4, 43].
+- **Wikidata's universal-join width is at least 3 or 4 and is not settled.** Across the twelve
+  wd-roles r1 rows (declared; observed over the dump and over the slice; with and without time
+  roles), the cyclic cores have 391 to 1,458 relations. HyperBench has exact hw for only 6 of its
+  23 graphs with 300 to 999 edges (research report 01 §3.5), and the external solvers (BalancedGo
+  and log-k-decomp) used their full 20-minute budget per row without deciding a width. With time
+  roles the declared schema's bound becomes [4, 43]. On the slice the cores are smaller and so are
+  the upper bounds, but not the lower bounds: observed-all's is 4 there against 3 over the dump,
+  since widths are not monotone under shrinking relations.
 - **Biolink's association schema is exactly hw = ghw = fhw = 2**, with a five-relation core,
   within the range of real conjunctive queries (1,105 of HyperBench's 1,113 non-random queries have
   hw ≤ 2). Every non-random HyperBench query has hw ≤ 3
   ([Fischl et al., 2021](https://doi.org/10.1145/3440015)), so the lower bound of 4 already puts
-  the declared and robust-observed Wikidata schemas beyond all of them. The comparison is by hw
+  the declared and robust-observed Wikidata schemas, and both observed schemas of the slice,
+  beyond all of them. The comparison is by hw
   only: HyperBench holds queries collected with a bias toward cyclic ones (its SPARQL and Wikidata
   subsets hold only cyclic queries), while these are schemas.
 - **Primal treewidth overstates.** The relation-local control of the declared schema has hw 1 but
   treewidth 116, set by its largest relation (117 roles); the declared wd-roles r1 schema has
   treewidth in [116, 235].
 
-**Limits.** The Wikidata widths are bounds, not exact values. The observed rows rest on SQID usage
-counts (dump of 2026-08-10) over DeltaBot main-statement counts of 2026-09-23. They are to be
-replaced by P3a's exact counts from the 2026-09-22 dump, when those rows are rerun and P3a's
-corpus-slice rows are added (DESIGN §6.6). The numbers depend on the role naming: wd-roles r1
+**Limits.** The Wikidata widths are bounds, not exact values, found under time limits on a
+shared machine. The observed rows use P3a's exact counts from the Wikidata JSON dump of
+2026-09-22 (re-run 2026-09-25; the earlier rows on SQID's counts of the 2026-08-10 dump, with
+13,608 relations and hw in [4, 68] and [3, 61], are kept in the project's `results/superseded/`).
+That dump holds items and property entities, not lexemes, so 294 lexicographic properties are not
+relations here. The numbers depend on the role naming: wd-roles r1
 ([wd-roles.md](../../projects/p6-schema-width/wd-roles.md), shared with P3a) names a property's
 main-value role after the property, which joins its main use to its uses as a qualifier elsewhere
 and enlarges the cyclic core by 16 % to 51 % over a property-local naming (research report 02
@@ -390,8 +397,8 @@ because a fact touching `λ` shards costs roughly `λ − 1` extra messages.
 - BalancedGo, commit `872c662` (v1.7.2-2), MIT. https://github.com/cem-okulmus/BalancedGo ; Gottlob, G., Okulmus, C., Pichler, R. "Fast and parallel decomposition of constraint satisfaction problems." *Constraints* 27(3):284–326, 2022. https://doi.org/10.1007/s10601-022-09332-1
 - log-k-decomp, v1.1.0 (commit `5e021dd`), MIT. https://github.com/cem-okulmus/log-k-decomp ; Gottlob, G., Lanzinger, M., Okulmus, C., Pichler, R. "Fast Parallel Hypertree Decompositions in Logarithmic Recursion Depth." *PODS 2022*, pp. 325–336. https://doi.org/10.1145/3517804.3524153
 - Biolink Model v4.4.5 (commit `a4180f8`, 2026-09-18), model licence CC0-1.0. https://github.com/biolink/biolink-model ; Unni, D., et al. "Biolink Model: A universal schema for knowledge graphs in clinical, biomedical, and translational science." *Clinical and Translational Science* 15(8):1848–1855, 2022. https://doi.org/10.1111/cts.13302
-- Wikidata Query Service (property constraints, fetched 2026-09-24), https://query.wikidata.org/ ; SQID property statistics (dump of 2026-08-10), https://sqid.toolforge.org/data/properties.json ; Wikidata data licence CC0-1.0, https://www.wikidata.org/wiki/Wikidata:Copyright
-- Project P6, "Schema width survey": survey table [results/survey.md](../../projects/p6-schema-width/results/survey.md) (commit 7c58957, 2026-09-25), [DESIGN.md](../../projects/p6-schema-width/DESIGN.md), research reports [01, theory and solvers](../../projects/p6-schema-width/research/01-theory-and-solvers.md) and [02, data sources and naming](../../projects/p6-schema-width/research/02-data-sources-and-naming.md), the naming [wd-roles r1](../../projects/p6-schema-width/wd-roles.md), and the checker [khg-width](../../projects/p6-schema-width/khg-width/) (MIT).
+- Wikidata Query Service (property constraints, fetched 2026-09-24), https://query.wikidata.org/ ; Wikidata JSON dump `wikidata-20260922-all.json.bz2`, qualifier usage counted by project P3a ([qualifier-usage-20260922.json](../../projects/p3a-clean-nary-corpus/qualifier-usage-20260922.json)), https://dumps.wikimedia.org/wikidatawiki/entities/20260921/wikidata-20260922-all.json.bz2 ; SQID property statistics (dump of 2026-08-10; the superseded observed rows), https://sqid.toolforge.org/data/properties.json ; Wikidata data licence CC0-1.0, https://www.wikidata.org/wiki/Wikidata:Copyright
+- Project P6, "Schema width survey": survey table [results/survey.md](../../projects/p6-schema-width/results/survey.md) (commit 7c58957, 2026-09-25; observed rows re-run on P3a's counts in commit c065478, 2026-09-25), [DESIGN.md](../../projects/p6-schema-width/DESIGN.md), research reports [01, theory and solvers](../../projects/p6-schema-width/research/01-theory-and-solvers.md) and [02, data sources and naming](../../projects/p6-schema-width/research/02-data-sources-and-naming.md), the naming [wd-roles r1](../../projects/p6-schema-width/wd-roles.md), and the checker [khg-width](../../projects/p6-schema-width/khg-width/) (MIT).
 - Zhou, D., Huang, J., Schölkopf, B. "Learning with Hypergraphs: Clustering, Classification, and Embedding." *NIPS 2006*. https://proceedings.neurips.cc/paper/2006/hash/dff8e9c2ac33381546d96deea9922999-Abstract.html
 - Schlag, S., Heuer, T., Gottesbüren, L., Akhremtsev, Y., Schulz, C., Sanders, P. "High-Quality Hypergraph Partitioning." arXiv:2106.08696, 2021; *ACM Journal of Experimental Algorithmics*, 2022. https://arxiv.org/abs/2106.08696 and https://dl.acm.org/doi/10.1145/3529090
 - Karypis, G., Aggarwal, R., Kumar, V., Shekhar, S. "Multilevel Hypergraph Partitioning: Applications in VLSI Domain." *IEEE Transactions on Very Large Scale Integration (VLSI) Systems* 7(1):69–79, 1999. Publisher listing consulted; full text not fetched `[unverified]`. https://dl.acm.org/doi/pdf/10.1145/266021.266273

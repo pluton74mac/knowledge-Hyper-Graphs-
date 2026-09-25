@@ -20,23 +20,40 @@ note with the survey table (arXiv or a workshop), the checker as a tool in the r
 | [zenodo/metadata.json](zenodo/metadata.json) | the Zenodo deposition metadata (REST API format, top-level `metadata` key) |
 | [zenodo/assemble.sh](zenodo/assemble.sh) | stages the deposit in a directory outside git and builds the two upload files; uploads nothing |
 
-Order of release: **(1)** re-run the observed rows with P3a's counts and update the numbers; **(2)** reserve the Zenodo
-DOI; **(3)** submit the note; **(4)** publish the deposit; **(5)** publish the post.
+Order of release: **(1)** re-run the observed rows with P3a's counts and update the numbers (done 2026-09-25);
+**(2)** reserve the Zenodo DOI; **(3)** submit the note; **(4)** publish the deposit; **(5)** publish the post.
 
 ## 0. Decisions for the owner
 
-- **D1. SQID and DeltaBot files in the deposit.** The request for this package named the raw "WDQS/SQID snapshots";
-  `assemble.sh` leaves the 2 SQID files and the 3 DeltaBot templates out **by default** and adds them with
-  `--with-sqid` and `--with-deltabot`. Why: DESIGN §6.1 and `results/README.md` say SQID's statistics are "used, not
-  redistributed", and SQID's repository states a licence for its code (Apache-2.0) but none for these data files
-  (checked 2026-09-25); DESIGN §6.1 records the DeltaBot templates as Template-namespace text under CC BY-SA 3.0,
-  which a CC0 record cannot relicense. The cost of leaving them out: `reproduce.sh` verifies all 38 files of the
-  Wikidata manifest and the generator reads `sqid-properties.json` and `usage_main_statements.wikitext`, so the schema
-  files cannot be regenerated from the deposit alone (re-measuring the committed schema files still works). SQID
-  overwrites its file, so it cannot be fetched again; the DeltaBot templates can, by revision id. Sizes from the dry
-  run: default 101 files, 60.1 MB, zip 10.6 MB; with both flags 106 files, 144.6 MB, zip 41.6 MB. Options: keep the
-  default; add the DeltaBot files and list their CC BY-SA 3.0 in the README (the record's single licence field stays
-  CC0); or add both after asking SQID's maintainers about terms.
+- **D1. SQID and DeltaBot files in the deposit** (revisited after the P3a-count re-run, 2026-09-25).
+  - *What the deposit needs now.* No committed schema file depends on SQID or DeltaBot any more. The observed schemas
+    are built from P3a's `projects/p3a-clean-nary-corpus/qualifier-usage-20260922.json`, and the declared ones from
+    the WDQS constraints alone. That file is statistics of the Wikidata JSON dump of 2026-09-22, derived from CC0 data
+    and deposited under CC0 like the WDQS results. `assemble.sh` deposits it (item 4 of its header), and `--final`
+    refuses when the observed rows use it and it is not tracked. Rebuilt with the SQID and DeltaBot data emptied, all
+    ten Wikidata schema files came out byte-identical (IMPLEMENTATION-NOTES §8). So, as *data*, the SQID and DeltaBot
+    files are no longer needed.
+  - *What the scripts still need.* The generator still *reads* them: `khg_width.sources.wikidata.RAW_FILES` lists
+    `sqid-properties.json` and `usage_main_statements.wikitext`, `run_survey.py generate` verifies them against the
+    manifest, and `reproduce.sh` step 2 verifies all 38 files of the Wikidata manifest. A deposit without them can
+    therefore re-validate and re-measure the committed schema files, but cannot regenerate them with the scripts as
+    they stand. SQID overwrites its file, so it cannot be fetched again; the DeltaBot templates can, by revision id.
+    Making the two files optional when `--p3a-counts` is given is a small change to the loader and the manifest
+    check. It was not made here, because it changes a generator source whose hash every provenance file records.
+  - *Why they stay out by default.* DESIGN §6.1 and `results/README.md` say SQID's statistics are "used, not
+    redistributed", and SQID's repository states a licence for its code (Apache-2.0) but none for these data files
+    (checked 2026-09-25). DESIGN §6.1 records the DeltaBot templates as Template-namespace text under CC BY-SA 3.0,
+    which a CC0 record cannot relicense. `assemble.sh` adds them with `--with-sqid` and `--with-deltabot`.
+  - *Sizes* (`assemble.sh --final` at commit `f4cb303`, 2026-09-25): default 127 files, 81.5 MB, zip 18.2 MB,
+    status `final`, `SHA256SUMS` verified in the tree and inside the zip; with both flags 132 files, 166.1 MB, zip
+    49.2 MB. (Before the re-run: 101 files, 60.1 MB, zip 10.6 MB.) The growth is the four slice schemas, their
+    sixteen reports and logs, P3a's counts file (13.8 MB) and `p3a-crosscheck.json` (1.1 MB).
+  - *The note* still cites DeltaBot's template [28] once, for the declared properties' share of main statements
+    (1.27 of 1.79 billion, 71 %). P3a's counts give the same share over the 2026-09-22 dump (1.27 of 1.78 billion,
+    71 %), if one count source is preferred; SQID [27] is cited only for the research probe.
+  - *Options:* (a) keep the default (recommended): the deposit is complete as data, and regenerating from it alone
+    needs the loader change above; (b) add the DeltaBot files, listing their CC BY-SA 3.0 in the README (the record's
+    single licence field stays CC0); (c) add both after asking SQID's maintainers about terms.
 - **D2. Authorship.** Name, affiliation and ORCID go in `note.md` (`author:`), `zenodo/metadata.json` (`creators`)
   and the deposit README's citation. No name or e-mail was written into any file. The repository URL in the note,
   README, metadata and post contains the GitHub account name; for a double-blind venue, replace it with an anonymous
@@ -52,18 +69,19 @@ DOI; **(3)** submit the note; **(4)** publish the deposit; **(5)** publish the p
 - **D6. HyperBench-derived numbers in a CC0 record.** `hyperbench-baseline.json` and the figure's HyperBench panel are
   aggregate counts recomputed from CC BY 4.0 run data; the README keeps the attribution. Keep them (recommended) or
   drop them from the deposit.
-- **D7. Repository visibility.** The note, the deposit and the post link the repository; it must be public at release.
+- **D7. Repository visibility.** Done: the repository was made public on 2026-09-25. The note, the deposit and the
+  post link it.
 - Note: DESIGN §8 named the post draft `post-draft.md`; this folder uses `post.md`, as asked.
 
-## 1. When to publish: after the P3a-count re-run
+## 1. The P3a-count re-run: done (2026-09-25, commit `c065478`)
 
-The observed rows still rest on SQID's counts (dump of 2026-08-10) over DeltaBot's (2026-09-23). Every number they
-produce is marked **†** in `note.md` (25 places) and `post.md` (5), and the note opens with a PROVISIONAL box.
-Release only after P3a's exact counts replace them.
+The observed rows rested on SQID's counts (dump of 2026-08-10) over DeltaBot's (2026-09-23), and the draft marked
+every number they produced with **†**. They were re-run on P3a's exact counts on 2026-09-25; the results are commit
+`c065478`, the updated note, post and base the commit after it. No † mark, PROVISIONAL box or provisional bullet is
+left. The steps, kept for a repeat (IMPLEMENTATION-NOTES §8 has the details):
 
-1. **P3a's file is committed**: `projects/p3a-clean-nary-corpus/qualifier-usage-20260922.json` (format
-   `p3a-qualifier-usage/1`, naming `wd-roles r1`; DESIGN §2.5 and ruling Q9). It is not in the repository at commit
-   `eb672d0` (2026-09-25).
+1. **P3a's file**: `projects/p3a-clean-nary-corpus/qualifier-usage-20260922.json` (format `p3a-qualifier-usage/1`,
+   naming `wd-roles r1`; DESIGN §2.5 and ruling Q9), committed as `13e5bdb`.
 2. **Re-run the observed rows** (on a machine with the raw Wikidata files and the HyperBench zips, which step 2 of the
    script verifies):
 
@@ -75,14 +93,15 @@ Release only after P3a's exact counts replace them.
        --p3a-counts projects/p3a-clean-nary-corpus/qualifier-usage-20260922.json --rows observed --jobs 3
    ```
 
-   The SQID-based observed files and their reports move to `results/superseded/`, the P3a-based ones and the 8 slice
-   rows are added, and `results/p3a-crosscheck.json` is written. The `observed` group holds 8 wd-roles r1 rows (4 dump,
-   4 slice) and 8 controls; at 27 to 42 minutes per wd-roles r1 row in this run, expect roughly 2 hours with
-   `--jobs 3` on 4 cores (an estimate).
-3. **Check**: `cd projects/p6-schema-width/khg-width && python -m pytest -q` passes (the survey tests re-validate every
-   certificate); `results/pending-rerun.json` is gone; no row of `results/survey.csv` has `counts_source` = `SQID`.
-4. **Update the numbers.** `grep -n "†" projects/p6-schema-width/publication/*.md` lists every place. This prints
-   the new values:
+   Done with `--jobs 2`, because the machine was shared with another session's database servers (each report and
+   `results/machine.json` record the load): 03:33 to 05:56 UTC, 2 h 23 min, all 16 rows with status 0, 1,483 to
+   2,534 s per wd-roles r1 row. The SQID-based observed files and their reports moved unchanged to
+   `results/superseded/`, the P3a-based ones and the 8 slice rows were added, and `results/p3a-crosscheck.json` was
+   written (its entries are two vocabulary differences, IMPLEMENTATION-NOTES §8).
+3. **Check** (done): `cd projects/p6-schema-width/khg-width && python -m pytest -q` passes, 108 tests (the survey
+   tests re-validate every certificate and lower-bound witness of all 23 rows); `results/pending-rerun.json` is gone;
+   no row of `results/survey.csv` has `counts_source` = `SQID`.
+4. **Update the numbers** (done). This prints the observed rows:
 
    ```bash
    python3 - <<'EOF'
@@ -95,24 +114,23 @@ Release only after P3a's exact counts replace them.
    EOF
    ```
 
-   | Where | Number | Source after the re-run |
+   | Where | Number now | Source |
    |---|---|---|
-   | abstract, §2.5, Table 1 | 13,608 relations; roles | `relations`, `roles` |
-   | abstract, Table 1, finding 2 | 391 to 1,446 residue relations; hw [4, 68], [3, 61] | `witness_size`; `hw_lower`, `hw_upper` |
+   | abstract, §2.5, Table 1 | 13,315 and 12,706 relations; roles | `relations`, `roles` |
+   | abstract, Table 1, finding 2 | 391 to 1,458 residue relations; hw [4, 65], [3, 53] (dump), [4, 48], [4, 51] (slice) | `witness_size`; `hw_lower`, `hw_upper` |
    | Table 1 | core, ghw, fhw, tw | `core_relations`, `core_roles`, `{ghw,fhw,tw}_{lower,upper}` |
-   | Controls paragraph | 34,472 and 83,426 roles; tw 33, 760, 35, 762 | the relation-local rows' `roles`, `tw_lower` |
-   | bounds paragraph | cliques of 17 and 60 roles; "finished only for observed-robust" | `reports/<row>.json.gz`: `widths.ghw.lower_witness` (`roles`, `rho`, `complete`) |
-   | bounds paragraph | 1,641 to 2,515 s | `wall_seconds`, min and max over the wd-roles r1 rows |
-   | finding 5 | 328, 34, 1,149, 0.29 | research report 02 §2.4 (SQID); recompute from P3a's file, or keep them and say they are SQID-based |
-   | abstract ("strictly more for two of the three"), end of §5 | depends on the hw lower bounds | re-read after the update |
-   | figure | regenerated by `reproduce.sh` | `results/figure-widths.png` |
+   | Controls paragraph | 34,050, 83,572, 31,572 and 62,641 roles; tw 34, 771, 36, 410 (36, 773, 38, 412 with time) | the relation-local rows' `roles`, `tw_lower` |
+   | bounds paragraph | cliques of 18, 61, 17 and 53 roles; "finished only for the two observed-robust schemas" | `reports/<row>.json.gz`: `widths.ghw.lower_witness` (`roles`, `rho`, `complete`) |
+   | bounds paragraph | 1,483 to 2,534 s | `wall_seconds`, min and max over the wd-roles r1 rows |
+   | finding 5 | 333, 36, 1,134, 0.30 | recomputed from P3a's file, scope `dump` (`all`), with R02 §2.4's method; the same code gives R02's 328, 34, 1,149, 0.29 on SQID's counts |
+   | abstract ("strictly more for two of the three"), end of §5 | still true: hw ≥ 4 for declared and observed-robust, ≥ 3 for observed-all; ≥ 4 for both slice schemas | the hw lower bounds |
+   | figure | regenerated; `make_figure.py` now labels each column on three short lines so that twelve fit | `results/figure-widths.png` |
 
-   Then add the 8 slice rows to Table 1 (see the comment under it), rewrite the Observed bullet of §2.5 (comment
-   there), delete the PROVISIONAL box, every †, and the "Observed counts† are provisional" bullet of §6.
-5. **Base update**, per the gate log (`notes/research-log/2026-09-25-p6-gate.md`, "What remains"): the P6 README
-   results table, the "Measured" subsection of `kb/01-foundations/hypergraph-theory-results.md` and register entry
-   [01.3] carry the same observed numbers.
-6. **Commit.** That commit is the one the note (`[COMMIT]`) and the deposit name.
+5. **Base update** (done), per the gate log's "What remains": the P6 README, the "Measured" subsection of
+   `kb/01-foundations/hypergraph-theory-results.md` and the register entries [01.3], [01.6] and [02.6]; the run log
+   is `notes/research-log/2026-09-25-p6-rerun.md`.
+6. **Commit.** The commit the owner releases from (after the DOI and the author are filled in) is the one the note
+   (`[COMMIT]`) and the deposit name.
 
 ## 2. The Zenodo deposit
 
@@ -154,16 +172,17 @@ pandoc note.md -s -o note.tex -V geometry:margin=1in -V fontsize=10pt \
 xelatex note.tex && xelatex note.tex          # or: pandoc note.md -o note.pdf --pdf-engine=xelatex (same -V options)
 ```
 
-- The text uses Unicode (α, β, γ, ρ, ≤, ⊂, †), so use XeLaTeX; pdfLaTeX will fail on it. Fonts are named by file
+- The text uses Unicode (α, β, γ, ρ, ≤, ⊂), so use XeLaTeX; pdfLaTeX will fail on it. Fonts are named by file
   (`FreeSerif.otf`, or `DejaVuSerif.ttf`, both in TeX Live) because arXiv's XeLaTeX finds TeX Live fonts only by file
   name ("practically no fonts are registered with fontconfig", info.arxiv.org/help/faq/texlive.html, read
   2026-09-25).
 - Run from this folder so `../results/figure-widths.png` resolves; for arXiv, copy the figure next to `note.tex` and
   fix the path.
-- The `<!-- OWNER -->` comments disappear in LaTeX output; the PROVISIONAL box does not, so delete it.
-- **Length.** In this single-column layout: 8 pages, of which about 6 are body and 2 references. A two-column
-  build (0.75 in margins, without the table, which pandoc's `longtable` cannot place in two columns) came to 6 pages
-  with references. A venue template will change this; to cut, shorten §3.4, the Controls paragraph and the
+- The `<!-- OWNER -->` comments disappear in LaTeX output.
+- **Length.** In this single-column layout, after the re-run (with the eight slice rows in Table 1): 9 pages, the
+  body on 6 of them and the references from page 7 (pandoc 3.9 and tectonic, 2026-09-25). Before the re-run it was 8.
+  A two-column build of that earlier draft (0.75 in margins, without the table, which pandoc's `longtable` cannot
+  place in two columns) came to 6 pages with references. A venue template will change this; to cut, shorten §3.4, the Controls paragraph and the
   "Benchmarks and solvers" paragraph first.
 
 **arXiv (recommended now).**
@@ -199,8 +218,8 @@ previously-published track, if it keeps one).
 
 ## 4. The post
 
-After the note is on arXiv and the deposit is published: fill in the three links, replace the † numbers and delete
-the † line and the `<!-- OWNER -->` comment. Where to post is the owner's choice (PLAN §5: "The post is the owner's").
+After the note is on arXiv and the deposit is published: fill in the three links and delete the `<!-- OWNER -->`
+comment. The numbers were updated after the re-run (section 1). Where to post is the owner's choice (PLAN §5: "The post is the owner's").
 
 ## 5. After release
 

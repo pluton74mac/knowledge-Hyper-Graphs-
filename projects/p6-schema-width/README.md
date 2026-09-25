@@ -61,6 +61,11 @@ C1 from P2 (`khg-relation-schema/1.0.0`; `khg_contracts.schema.schema_hypergraph
 - 2026-09-25: one review round: every certificate re-validated by an independent validator, lower bounds
   reproduced, 4,000 random hypergraphs fuzzed against brute force; no wrong number; 9 findings (4 medium, 5 low)
   fixed with regression tests; the 8 affected rows re-run. **Gate met.**
+- 2026-09-25: publication draft (note, post, Zenodo package, release steps) in [publication/](publication/).
+- 2026-09-25: the observed rows re-run on P3a's exact counts from the 2026-09-22 dump (16 rows, 8 of them new rows on
+  P3a's corpus slice); the SQID-based rows kept in `results/superseded/`. The note, the post and the base carry the
+  new numbers ([IMPLEMENTATION-NOTES §8](IMPLEMENTATION-NOTES.md);
+  [run log](../../notes/research-log/2026-09-25-p6-rerun.md)).
 
 ## Results and findings
 
@@ -72,8 +77,10 @@ reports class and width for any `khg-relation-schema/1.0.0` file and flags every
 | Schema (core + qualifier roles) | Relations | Class | Core (relations) | hw |
 |---|---|---|---|---|
 | Wikidata, declared allowed-qualifier constraints, wd-roles r1 | 1,155 | α-cyclic | 391 | [4, 38] |
-| Wikidata, observed (robust usage), wd-roles r1 | 13,608 | α-cyclic | 748 | [4, 68] |
-| Wikidata, observed (all usage), wd-roles r1 | 13,608 | α-cyclic | 1,441 | [3, 61] |
+| Wikidata, observed (robust usage) in the dump of 2026-09-22, wd-roles r1 | 13,315 | α-cyclic | 751 | [4, 65] |
+| Wikidata, observed (all usage) in the dump of 2026-09-22, wd-roles r1 | 13,315 | α-cyclic | 1,453 | [3, 53] |
+| Wikidata, observed (robust usage) on the items with an English Wikipedia article (P3a's slice) | 12,706 | α-cyclic | 603 | [4, 48] |
+| Wikidata, observed (all usage) on the same items | 12,706 | α-cyclic | 1,292 | [4, 51] |
 | Wikidata, any of the above with relation-local roles (control) | | Berge-acyclic | 0 | 1 |
 | Biolink Model v4.4.5 associations | 103 | α-cyclic | 5 | 2 (exact; ghw = fhw = 2) |
 | HyperBench, 1,113 non-random conjunctive queries (baseline; a collection biased toward cyclic queries) | | | | 1 / 2 / 3 for 673 / 432 / 8 |
@@ -83,20 +90,29 @@ reports class and width for any `khg-relation-schema/1.0.0` file and flags every
    every naming that shares roles across relations; only relation-local roles make it acyclic, and trivially.
    The acyclicity class therefore does not separate the variants; the width does.
 2. **Wikidata's cyclic core is large and its width is at least 3–4.** The universal-join width of the qualifier
-   schema is bounded, not settled: the cores are 391–1,446 relations, a size where exact hypertree width is known
+   schema is bounded, not settled: the cores are 391–1,458 relations, a size where exact hypertree width is known
    for only a few HyperBench instances. Every upper bound carries a validated decomposition; every lower bound a
-   stored witness.
+   stored witness. Restricted to the items with an English Wikipedia article, the observed cores shrink (603 and
+   1,292 relations) but the lower bounds do not (4 and 4).
 3. **Biolink's association schema is small and exactly width 2**, like most real conjunctive queries.
 4. **The number is the width of joining all relations on same-named roles** (DESIGN §2): it bounds the cost of
    the universal join, not of arbitrary queries over the knowledge base.
-5. **Declared qualifier lists overstate use** (P39 allows 104 qualifiers; 34 are used robustly), so the survey
-   reports declared and observed schemas side by side.
+5. **Declared qualifier lists overstate use** (P39 allows 104 qualifiers; in the dump of 2026-09-22, 36 are used
+   robustly), so the survey reports declared and observed schemas side by side.
 
-The observed rows use SQID usage counts (dump of 2026-08-10) until P3a's exact counts from the 2026-09-22 dump
-replace them; P3a's slice rows are added then (the survey scripts handle both, DESIGN §6.6).
+The observed rows use P3a's exact counts from the 2026-09-22 dump (re-run 2026-09-25): scope `dump` is every item
+and property entity, scope `slice` the 7,584,990 items with an English Wikipedia article that P3a's corpus keeps.
+The first observed rows, on SQID's usage counts (dump of 2026-08-10), are in `results/superseded/`; against them
+the relations went from 13,608 to 13,315 (294 lexicographic properties, whose main statements are all on lexemes,
+forms or senses, which the dump's `all` scope does not hold, are no longer relations), the residues grew slightly
+(748 → 751, 1,441 → 1,453) and the hw upper bounds fell (68 → 65, 61 → 53); no class and no hw lower bound
+changed, while some ghw, fhw and tw bounds moved either way (a different schema, IMPLEMENTATION-NOTES §8). P3a's
+own classification agrees with P6's: the cross-check file lists only two vocabulary differences in slot names,
+which reach no measured hypergraph ([IMPLEMENTATION-NOTES §8](IMPLEMENTATION-NOTES.md)).
 
-**Publication (PLAN §5): not yet shipped.** The note (outline in DESIGN §8) and a Zenodo deposit of the raw
-snapshot and schema files are prepared by the next session step and released by the owner.
+**Publication (PLAN §5): not yet shipped.** The note, the post and the Zenodo deposit are prepared in
+[publication/](publication/) and carry the re-run's numbers; the owner releases them
+([RELEASE.md](publication/RELEASE.md)).
 
 ## Open questions raised
 

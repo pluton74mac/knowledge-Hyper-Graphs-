@@ -7,15 +7,16 @@ abstract: |
   A relation-type schema of a knowledge hypergraph can be read as a hypergraph whose vertices are role names and
   whose hyperedges are relations. Its acyclicity class in Fagin's hierarchy (Berge, γ, β, α) and its hypertree width
   are those of the conjunctive query that joins all relations on same-named roles. We measure both for Wikidata's
-  qualifier schemas, declared (allowed-qualifier constraints, 1,155 properties) and observed (qualifier usage, 13,608
-  properties†), and for the association classes of the Biolink Model v4.4.5 (103 relations). A new checker reports
-  hw, ghw, fhw and tw exactly or as bounds; every upper bound comes with a decomposition validated on the input, and
-  every lower bound with a stored witness. Every schema whose role names are shared across relations is α-cyclic;
-  only relation-local role names make the schemas acyclic, and then trivially. Biolink's association schema has
-  hw = ghw = fhw = 2. Wikidata's cyclic cores have 391 to 1,446† relations, and their hypertree width lies in [4, 38]
-  for the declared schema and in [4, 68]† and [3, 61]† for the observed ones: at least that of every one of
-  HyperBench's 1,113 non-random conjunctive queries (all hw ≤ 3), and strictly more for two of the three. The number
-  bounds the cost of the universal role join, not of arbitrary queries over the data.
+  qualifier schemas, declared (allowed-qualifier constraints, 1,155 properties) and observed (exact qualifier usage in
+  the dump of 2026-09-22, 13,315 properties, and in its items with an English Wikipedia article), and for the
+  association classes of the Biolink Model v4.4.5 (103 relations). A new checker reports hw, ghw, fhw and tw exactly
+  or as bounds; every upper bound comes with a decomposition validated on the input, and every lower bound with a
+  stored witness. Every schema whose role names are shared across relations is α-cyclic; only relation-local role
+  names make the schemas acyclic, and then trivially. Biolink's association schema has hw = ghw = fhw = 2. Wikidata's
+  cyclic cores have 391 to 1,458 relations, and their hypertree width lies in [4, 38] for the declared schema and in
+  [4, 65] and [3, 53] for the observed ones over the whole dump: at least that of every one of HyperBench's 1,113
+  non-random conjunctive queries (all hw ≤ 3), and strictly more for two of the three. The number bounds the cost of
+  the universal role join, not of arbitrary queries over the data.
 keywords: [hypergraph acyclicity, hypertree width, database schemes, knowledge hypergraphs, Wikidata, Biolink Model]
 type: project
 status: draft
@@ -24,15 +25,10 @@ updated: 2026-09-25
 ---
 
 <!-- OWNER: a draft for the owner to release; nothing has been published from a Claude session.
-     Before release (RELEASE.md): (1) re-run the observed rows with P3a's exact counts; (2) replace every number
-     marked † from results/survey.csv and add the eight corpus-slice rows; (3) delete the PROVISIONAL box and every
-     † mark; (4) fill in the author, the commit and the Zenodo DOI (search for "[" placeholders).
+     The observed rows were re-run on exact counts from the 2026-09-22 dump on 2026-09-25, and every number here is
+     from results/survey.csv and the reports at that commit. Before release (RELEASE.md): fill in the author, the
+     commit and the Zenodo DOI (search for "[" placeholders).
      pandoc's LaTeX writer drops HTML comments like this one. -->
-
-> **PROVISIONAL: re-check before release.** Every number marked † comes from the *observed* Wikidata schemas, whose
-> qualifier counts are still SQID estimates (dump of 2026-08-10) over DeltaBot main-statement counts (2026-09-23).
-> They will be replaced by exact counts from one pass over the Wikidata JSON dump of 2026-09-22. After that re-run,
-> update each † number from `results/survey.csv`, add the eight corpus-slice rows, and remove this box and the marks.
 
 # 1. The question
 
@@ -108,16 +104,16 @@ restrict what an association says ("formal + domain"); Biolink has no interval b
   P2306; "no value" means none), after removing the 57, fetched from the Wikidata Query Service (main graph) on
   2026-09-24, 09:35–09:44 UTC [24]. They carry 1.27 of the 1.79 billion main statements (71 %; DeltaBot counts of
   2026-09-23 [28]).
-- **Observed†.** Every property with at least one main statement, minus the 57: 13,608† relations. A qualifier is a
-  role of the property if it is used on its statements: *robust* means at least 10 uses and at least 0.1 % of the
-  property's main statements, *all* means at least one use. Counts are SQID's qualifier counts [27] from the dump of
-  2026-08-10 over DeltaBot's main-statement counts [28]; whether SQID counts statements or snaks is `[unverified]`.
+- **Observed.** Every property with at least one main statement in the Wikidata JSON dump of 2026-09-22 [32], minus
+  the 57: 13,315 relations. A qualifier is a role of the property if it is used on its statements: *robust* means on
+  at least 10 statements and at least 0.1 % of the property's main statements, *all* means on at least one. The
+  counts are exact statement counts per (property, qualifier) from one pass over the dump, over every item and
+  property entity, made by the companion corpus's dump slicer under the same naming.
+- **Observed on the corpus slice.** The same over the 7,584,990 items that have an English Wikipedia article, the
+  part of Wikidata the companion corpus keeps: 12,706 relations. These *slice* rows describe the schema of that
+  corpus rather than of all of Wikidata.
 - **Biolink Model v4.4.5** (commit `a4180f8`): one relation per concrete association class, 103 in all, with core
   roles `subject` and `object` [29].
-
-<!-- OWNER: after the re-run the Observed bullet reads "exact statement counts per (property, qualifier) from one pass
-     over wikidata-20260922-all.json.bz2", the SQID/DeltaBot sentence goes, and the eight slice rows (items with an
-     English Wikipedia article) are introduced here. -->
 
 # 3. Method
 
@@ -160,14 +156,18 @@ dashes [R01 §4.3]. The search bisects on *k* between the validated bounds: at e
 preprocessing flags to *find* a decomposition, validated on the unreduced *H*, and BalancedGo runs once more without
 them; only a "no" from a run without preprocessing is a lower bound. Each attempt runs at most 120 s, all attempts on
 one schema at most 1,200 s, and each Python step at most 600 s. Seed 20260924; Linux x86-64, 4 CPUs, Python 3.11.15,
-Go 1.24.7. The limits make the bounds machine-dependent, so every attempt is logged with command, time and outcome.
+Go 1.24.7. The observed rows ran two at a time on a machine shared with other work, and each report records the load
+it ran under. The limits make the bounds machine-dependent, so every attempt is logged with command, time and
+outcome.
 
 ## 3.4 Independent validation
 
 One review round (per the project record; its working files are not in the repository) re-validated every stored
 certificate with an independent validator, reproduced the lower bounds and fuzzed 4,000 random hypergraphs against
 brute force. It found no wrong number and nine defects (four medium, five low), each fixed with a regression test; the
-eight affected rows were re-run.
+eight affected rows were re-run. The observed rows were then re-run on the exact counts of Section 2.5; the review
+predates them, and they passed the same test suite, which re-validates every stored certificate and lower-bound
+witness.
 
 # 4. Results
 
@@ -175,39 +175,46 @@ Table 1 gives the rows that carry the findings; the deposit has the full table w
 and run times. The core is the GYO residue with twin roles merged and universal roles removed.
 
 | Schema | Slots | Relations / roles | Class (residue) | Core | hw | ghw | fhw | tw |
-|----------|-----|---------------|-------------|------------|-------|-------|---------------|------------|
+|---------------|-------|--------------|--------------|-------------|-----------|-----------|----------------------|-----------------|
 | WD declared | cq | 1,155 / 1,892 | cyclic (391) | 391 / 578 | [4, 38] | [4, 25] | [35/11, 24] | [116, 235] |
 | WD declared | cq+t | 1,155 / 1,893 | cyclic (392) | 392 / 580 | [4, 43] | [4, 25] | [35/11, 24] | [118, 237] |
-| WD robust† | cq | 13,608 / 13,677 | cyclic (748) | 748 / 527 | [4, 68] | [4, 29] | [63/19, 79/3] | [55, 131] |
-| WD robust† | cq+t | 13,608 / 13,677 | cyclic (765) | 765 / 537 | [4, 68] | [4, 31] | [63/19, 103/4] | [57, 133] |
-| WD all† | cq | 13,608 / 14,158 | cyclic (1,441) | 1,441 / 1,984 | [3, 61] | [3, 39] | [2, 75/2] | [760, 1248] |
-| WD all† | cq+t | 13,608 / 14,158 | cyclic (1,446) | 1,446 / 1,987 | [3, 61] | [3, 39] | [11/5, 75/2] | [762, 1195] |
+| WD robust | cq | 13,315 / 13,391 | cyclic (751) | 751 / 530 | [4, 65] | [4, 30] | [75/23, 53/2] | [55, 139] |
+| WD robust | cq+t | 13,315 / 13,391 | cyclic (767) | 767 / 539 | [4, 60] | [4, 30] | [75/23, 185/7] | [57, 140] |
+| WD all | cq | 13,315 / 13,886 | cyclic (1,453) | 1,453 / 1,998 | [3, 53] | [3, 35] | [2, 269/8] | [771, 1226] |
+| WD all | cq+t | 13,315 / 13,886 | cyclic (1,458) | 1,458 / 2,001 | [3, 52] | [3, 35] | [11/5, 269/8] | [773, 1228] |
+| WD robust, slice | cq | 12,706 / 12,810 | cyclic (603) | 603 / 460 | [4, 48] | [4, 26] | [7/2, 250/11] | [51, 114] |
+| WD robust, slice | cq+t | 12,706 / 12,810 | cyclic (613) | 613 / 466 | [4, 59] | [4, 26] | [7/2, 114/5] | [53, 116] |
+| WD all, slice | cq | 12,706 / 13,189 | cyclic (1,292) | 1,292 / 1,558 | [4, 51] | [4, 36] | [8/3, 143/4] | [452, 838] |
+| WD all, slice | cq+t | 12,706 / 13,189 | cyclic (1,297) | 1,297 / 1,560 | [4, 47] | [4, 36] | [8/3, 34] | [452, 852] |
 | BL formal | cq | 103 / 35 | cyclic (5) | 5 / 8 | 2 | 2 | 2 | 19 |
 | BL formal+dom. | cq | 103 / 60 | cyclic (5) | 5 / 8 | 2 | 2 | 2 | 23 |
 | Controls | both | see text | Berge (0) | 0 / 0 | 1 | 1 | 1 | rank − 1 |
 | HyperBench | | 1,113 CQs | | | 1 / 2 / 3: 673 / 432 / 8 | | | |
 
-: Survey results. WD = Wikidata (wd-roles r1): declared, observed-robust, observed-all; BL = Biolink v4.4.5, global
-slot names. cq = core and qualifier roles, cq+t adds time roles. Class: "cyclic" = not α-acyclic, with the GYO
-residue's relation count. Core: relations / roles. `[l, u]` is a bound, a single value exact. † provisional.
+: Survey results. WD = Wikidata (wd-roles r1): declared, observed-robust, observed-all, over the whole dump or over
+the slice (items with an English Wikipedia article); BL = Biolink v4.4.5, global slot names. cq = core and qualifier
+roles, cq+t adds time roles. Class: "cyclic" = not α-acyclic, with the GYO residue's relation count. Core: relations /
+roles. `[l, u]` is a bound, a single value exact.
 
-<!-- OWNER: the eight slice rows go here after the re-run (observed-robust and observed-all, scope slice, cq and cq+t);
-     keep only the wd-roles r1 rows in the table and fold the slice controls into "Controls". -->
-
-**Controls.** With relation-local roles, Wikidata declared, observed-robust†, observed-all† and Biolink formal have
-9,999, 34,472†, 83,426† and 1,020 roles. Each is Berge-acyclic with hw = ghw = fhw = 1, and its treewidth is its
-largest relation's size minus one (the rank): 116, 33†, 760† and 19 (118, 35† and 762† with time roles).
+**Controls.** With relation-local roles, Wikidata declared, observed-robust, observed-all and Biolink formal have
+9,999, 34,050, 83,572 and 1,020 roles. Each is Berge-acyclic with hw = ghw = fhw = 1, and its treewidth is its
+largest relation's size minus one (the rank): 116, 34, 771 and 19 (118, 36 and 773 with time roles). On the slice,
+observed-robust and observed-all have 31,572 and 62,641 roles and treewidth 36 and 410 (38 and 412 with time roles).
 
 **Where the Wikidata bounds come from.** The hw lower bounds follow from hw ≥ ghw ≥ $\rho(K)$ for a primal clique *K*
-of the core: $\rho(K) = 4$ on 37 roles (declared), 4 on 17 roles† (observed-robust) and 3 on 60 roles†
-(observed-all). The clique enumeration finished within its 600 s step only for observed-robust; for the other two the
-best bound found by then is reported. The solvers spent their full 1,200 s on each wd-roles r1 row, and every attempt
-timed out at 120 s but one: a width-41 BalancedGo decomposition (declared, with time roles) that violated the special
-condition; repaired to a validated width-46 hypertree decomposition, it improved neither bound. The Wikidata upper
-bounds are therefore khg-width's own. A wd-roles r1 row took 1,641 to 2,515 s† of wall time; a Biolink row under a
+of the core: $\rho(K) = 4$ on 37 roles (declared), 4 on 18 roles (observed-robust) and 3 on 61 roles (observed-all),
+and on the slice 4 on 17 roles (observed-robust) and 4 on 53 roles (observed-all). The clique enumeration finished
+within its 600 s step only for the two observed-robust schemas; for the others the best bound found by then is
+reported. On the slice, observed-all's bound (4) is above the dump's (3), although each of its relations is a relation
+of the dump's schema with a subset of its roles: widths are not monotone under shrinking relations (Section 2.2). The
+53 roles that need four slice relations to cover are covered by two in the dump, instance of (P31) and has part(s)
+(P527), whose observed qualifier lists are longer there. The solvers spent their full 1,200 s on each wd-roles r1
+row, and every attempt timed out at 120 s but one: a width-41 BalancedGo decomposition (declared, with time roles)
+that violated the special condition; repaired to a validated width-46 hypertree decomposition, it improved neither
+bound. The Wikidata upper bounds are therefore khg-width's own. A wd-roles r1 row took 1,483 to 2,534 s of wall time; a Biolink row under a
 second.
 
-![(a) hw per schema, a point when exact and a bar for [lower, upper], beside the hw distribution of HyperBench's non-random conjunctive queries; (b) GYO residue size of the Wikidata schemas. Observed rows are provisional†.](../results/figure-widths.png){width=80%}
+![(a) hw per schema, a point when exact and a bar for [lower, upper], beside the hw distribution of HyperBench's non-random conjunctive queries; (b) GYO residue size of the Wikidata schemas. Wikidata columns: declared, then observed-robust and observed-all over the whole dump and over the slice.](../results/figure-widths.png){width=80%}
 
 **The HyperBench baseline.** HyperBench collects hypergraphs of conjunctive queries and constraint problems [14, 15].
 Recomputed from its published runs [16], its 1,113 non-random conjunctive queries have exact hw 1 (673, 60.5 %),
@@ -221,13 +228,15 @@ graphs with 300 to 999 edges and for none of the 6 with 1,000 or more [R01 §3.5
 1. **Real knowledge-hypergraph schemas are cyclic once roles are shared.** Every Wikidata schema under wd-roles r1,
    with or without time roles, and both Biolink schemas under global slot names, are α-cyclic. The research probe
    found the same under generic, property-local and typed namings, on the declared table and on observed tables built
-   from the SQID counts [R02 §3.3]. Only relation-local roles give acyclic schemas, trivially. So the class does not
-   separate the variants; the width does. *Limits:* two schema families, and not every such schema is cyclic:
-   GO-CAM's is α-acyclic by GYO in one pass [R02 §4.5; 31].
+   from SQID's earlier counts [27; R02 §3.3]. Only relation-local roles give acyclic schemas, trivially. So the class
+   does not separate the variants; the width does. *Limits:* two schema families, and not every such schema is
+   cyclic: GO-CAM's is α-acyclic by GYO in one pass [R02 §4.5; 31].
 2. **Wikidata's cyclic core is large, and its universal-join width is at least 3 to 4 and unsettled.** The residues
-   have 391 to 1,446† relations; hw lies in [4, 38] (declared), [4, 68]† (observed-robust) and [3, 61]†
-   (observed-all), each upper bound certified and each lower bound witnessed. *Limits:* wide intervals; the lower
-   bounds are clique bounds, two of them from an enumeration that did not finish (observed-all's, 3, is below
+   have 391 to 1,458 relations; hw lies in [4, 38] (declared), [4, 65] (observed-robust) and [3, 53]
+   (observed-all), each upper bound certified and each lower bound witnessed. On the slice, the items with an English
+   Wikipedia article, the cores are smaller (603 and 1,292 relations against 751 and 1,453) and so are the upper
+   bounds, hw in [4, 48] and [4, 51]; the lower bounds are not. *Limits:* wide intervals; the lower bounds are clique
+   bounds, three of them from an enumeration that did not finish (observed-all's on the dump, 3, is below
    observed-robust's, 4, although its schema has more roles); machine-dependent limits.
 3. **Biolink's association schema is small and exactly width 2**: hw = ghw = fhw = 2 on a five-relation core, with or
    without the domain slots, inside the range of real conjunctive queries (1,105 of HyperBench's 1,113 have hw ≤ 2).
@@ -237,29 +246,32 @@ graphs with 300 to 999 edges and for none of the 6 with 1,000 or more [R01 §3.5
    reports that of 1,915,550 CQOF+ queries in the Wikidata logs studied by Bonifati, Martens and Timm, 590,005 have
    hw 2 and the rest hw 1 ([15], quoting [21]; `[unverified]` against the original). Treewidth is the wrong
    yardstick: the declared relation-local control has hw 1 and tw 116, set by its largest relation.
-5. **Declared qualifier lists overstate use.** Position held (P39) allows 104 qualifiers; 328† distinct qualifiers
-   occur on its statements and 34† pass the robust threshold, all of them allowed. Over the 1,149† properties with an
-   allowed list and main statements, the median Jaccard similarity of the allowed and robust observed sets is 0.29†
-   [R02 §2.4]. Hence both schemas are reported. *Limits:* the observed schemas depend on the threshold, the dump date
-   and the count source.
+5. **Declared qualifier lists overstate use.** Counted over the whole dump of 2026-09-22 (every item and property
+   entity): position held (P39) allows 104 qualifiers; 333 distinct qualifiers occur on its statements and 36 pass
+   the robust threshold, all of them allowed. Over the 1,134 properties with an allowed list and main statements, the
+   median Jaccard similarity of the allowed and robust observed sets is 0.30 (the measure of [R02 §2.4], recomputed on
+   these counts). Hence both schemas are reported. *Limits:* the observed schemas depend on the threshold, the dump
+   date and the scope.
 
 All three Wikidata schemas are at least as wide as every non-random conjunctive query in HyperBench (hw ≤ 3), and
-the declared and observed-robust† ones, with hw ≥ 4, are wider than all of them.
+the declared and observed-robust ones, with hw ≥ 4, are wider than all of them; so are both observed schemas of the
+slice.
 
 # 6. Limits and threats to validity
 
 - **Bounds, not exact values, for Wikidata.** No solver decided any *k* on a Wikidata core within 120 s per attempt
   and 1,200 s per schema. Longer runs or other methods may narrow the intervals.
 - **Naming dependence.** wd-roles r1 is one defensible naming among several. On the research probe (an earlier
-  version of the naming, SQID counts for the observed tables), naming the main value after its property grew the
-  residue by 16 % to 51 %, and typing roles by constraint classes by up to 99 % [R02 §3.4]. Only the 120 most shared
+  version of the naming, SQID's counts [27] for the observed tables), naming the main value after its property grew
+  the residue by 16 % to 51 %, and typing roles by constraint classes by up to 99 % [R02 §3.4]. Only the 120 most shared
   declared and observed qualifiers were reviewed for the meta list [R02 §2.3]. The naming version is recorded in
   every file; a new version means regenerating the schemas and re-running the rows.
 - **The universal-join reading.** The widths describe the role join of the scheme, not queries over the data; a query
   over an α-acyclic scheme can itself be cyclic.
-- **Observed counts† are provisional.** Two dates (2026-08-10 and 2026-09-23) and a third-party count whose unit is
-  `[unverified]`. They are to be replaced by exact counts from the 2026-09-22 dump, with rows added for the items with
-  an English Wikipedia article (the part kept in the companion n-ary corpus).
+- **What was counted.** The observed schemas count statements on the items and property entities of the JSON dump of
+  2026-09-22. Lexemes are not in it, so 294 lexicographic properties (dictionary identifiers, sense and form links)
+  that have main statements by Wikidata's own count [28] but none on items or properties are not relations here. Two
+  properties used in the dump were no longer listed by the Query Service two days later and are left out.
 - **A live source.** The constraints come from the live Query Service, which serves only the main graph since
   scholarly articles were split off in 2025 [R02 §1]; a refetch gives a new snapshot. The one used is deposited.
 - **New software.** Mitigated by certificates validated on the input, brute-force oracles and solver agreement in the
@@ -299,8 +311,8 @@ still sound. The survey scripts regenerate the schema files and re-run every row
 
 **Data statement.** The Wikidata Query Service is live and cannot return the same bytes again, so the snapshot used is
 deposited: Zenodo, `[DOI to be assigned]`, CC0-1.0, like Wikidata's structured data [26]. The deposit holds the raw
-query results of 2026-09-24 and the Biolink v4.4.5 sources with sha256 manifests, the nine generated schema files with
-provenance, the per-row reports (certificates, lower-bound witnesses, every solver attempt), the survey table, the
+query results of 2026-09-24 and the Biolink v4.4.5 sources with sha256 manifests, the qualifier-usage counts from the
+dump of 2026-09-22, the thirteen generated schema files with provenance, the per-row reports (certificates, lower-bound witnesses, every solver attempt), the survey table, the
 figure and the solver log. HyperBench's data [16] (CC BY 4.0) is referenced, not redistributed.
 
 <!-- OWNER: if the deposit also carries the SQID and DeltaBot files (RELEASE.md, decision D1), say so here with their
@@ -369,5 +381,7 @@ figure and the solver log. HyperBench's data [16] (CC BY 4.0) is referenced, not
 [30] D. Marx. Tractable hypergraph properties for constraint satisfaction and conjunctive queries. *Journal of the ACM* 60(6), article 42, 2013. https://doi.org/10.1145/2535926 ; arXiv:0911.0801
 
 [31] P. D. Thomas et al. Gene Ontology Causal Activity Modeling (GO-CAM) moves beyond GO annotations to structured descriptions of biological functions and systems. *Nature Genetics*, 2019. https://doi.org/10.1038/s41588-019-0500-1
+
+[32] Wikimedia. Wikidata JSON dump `wikidata-20260922-all.json.bz2` (dump directory 20260921; md5 `7f70e4a1858ba6182ea9329a1ef588c5`), CC0-1.0. https://dumps.wikimedia.org/wikidatawiki/entities/20260921/wikidata-20260922-all.json.bz2
 
 **Project documents** (in the repository at the commit above): [R01] `projects/p6-schema-width/research/01-theory-and-solvers.md`; [R02] `projects/p6-schema-width/research/02-data-sources-and-naming.md`; the naming `projects/p6-schema-width/wd-roles.md` (r1); the design `projects/p6-schema-width/DESIGN.md`.

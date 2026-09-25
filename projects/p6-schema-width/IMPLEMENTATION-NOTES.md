@@ -21,10 +21,11 @@ ambiguous the research prototypes' behaviour was preferred and the choice is lis
 | §4.4 CI (F7) | `.github/workflows/ci.yml`, job `khg-width`, appended as given | simulated locally on Python 3.10 |
 | §6 survey scripts | `survey/run_survey.py`, `hyperbench_baseline.py`, `make_figure.py`, `reproduce.sh`, `crosscheck.sh` | smoke run here; the full run is commit 5f8683d (coordinator) |
 | §6.1 HyperBench manifest (Q1) | `datasets/hypergraph-benchmarks/hyperbench/MANIFEST.json`; family added to `datasets/README.md` | done |
-| §6.2 schema files | `results/schemas/` (9 files with provenance) | generated; the two observed-robust Wikidata files regenerated under ruling Q10 (§7) |
+| §6.2 schema files | `results/schemas/` (13 files with provenance) | generated; the two observed-robust Wikidata files regenerated under ruling Q10 (§7); the four observed files rebuilt from P3a's counts and the four slice files added (§8) |
 
-The first full survey (15 rows, the HyperBench baseline and the figure) is commit 5f8683d. After the review fixes (§7)
-the rows listed in `results/pending-rerun.json` wait for a re-run; the `survey` tests check every other row.
+The first full survey (15 rows, the HyperBench baseline and the figure) is commit 5f8683d. The rows the review fixes
+touched (§7) were re-run in 7c58957, and the 16 observed rows on P3a's counts on 2026-09-25 (§8); no row waits in
+`results/pending-rerun.json`, so the `survey` tests check all 23.
 
 ## 2. Package
 
@@ -222,7 +223,8 @@ relations. Universal roles are reported only when there are two relations or mor
   `biolink-associations.json` exactly; residues 5/18 (formal) and 5/19 (formal + domain) as R02.
 - Wikidata residues under r1 (core,qualifier): declared 391/615 (R02's value exactly; 392/617 with time),
   observed-robust 748/542 (R02: 741/537), observed-all 1,441/2,012 (R02: 1,423/1,982). The differences come from rule
-  5, rule 6a and the kept out-of-scope qualifiers; R02's numbers were expectations, not targets.
+  5, rule 6a and the kept out-of-scope qualifiers; R02's numbers were expectations, not targets. (These observed
+  residues are the SQID-based ones, now in `results/superseded/`; the P3a-based ones are in §8.)
 - Generation takes 142 s (DESIGN: about 2 minutes), dominated by `check_schema` on the large documents, and is
   deterministic: two runs gave identical bytes. The Wikidata `.json.gz` files total 3.6 MB (DESIGN: about 4 MB).
 - Provenance records `git describe --dirty` (the files are generated before their commit, so it reads the previous commit with `-dirty`)
@@ -352,3 +354,125 @@ hw ≥ 2 holds anyway.
 
 **Test counts after the fixes.** In a fresh Python 3.10 venv with `[dev]` only, as the CI job runs:
 88 pass and 20 skip. With SciPy, linkml, both solvers and the committed results: 108 pass. `pyflakes` is clean.
+
+## 8. The P3a-count re-run (2026-09-25)
+
+P3a's `projects/p3a-clean-nary-corpus/qualifier-usage-20260922.json` (commit `13e5bdb`; sha256 `c76f8b38…b634b`;
+format `p3a-qualifier-usage/1`, naming `wd-roles r1`, dump `20260922`) replaced SQID's counts, as ruling Q9 and
+DESIGN §6.6 provide. The run followed RELEASE.md §1 step 2:
+`reproduce.sh --p3a-counts projects/p3a-clean-nary-corpus/qualifier-usage-20260922.json --rows observed --jobs 2`.
+
+**The input, checked before use.** `all`: 13,317 relations, 1,778,475,846 main statements, 78,971 (relation,
+qualifier) entries; `kept`: 12,707 relations, 138,848,175 statements (the 7,584,990 kept items are P3a's README
+figure; the file itself has no item count). `out_of_scope` lists the 57 rule-8 properties; `all.out_of_scope_relations`
+holds the 45 of them that have main statements (`kept`: 24). P39: 1,993,604 statements; P580 on 1,292,907, P582 on
+986,437, P2937 on 690,298, P1365 on 331,437. Relation P580 carries P582 on 48 statements and `P580:qualifier` on 7
+(rule 6a). Over `all.relations`: 14,869 statements left out under 6b, 98,453 mismatched rank reasons under 6c
+(P2241 71,957, P7452 26,496) and 39,687 self-qualified statements. Every figure the P3a session reported matched,
+except that the 57 are in `out_of_scope`, and only 45 of them in `out_of_scope_relations`.
+
+**Environment.** A fresh venv from `git archive HEAD` (commit `786e78c`), not an editable install, so that edits
+another session was making to `src/khg_contracts/` could not reach the run (none of the commits since `7c58957` touch
+the schema code). `build-solvers.sh` built both solvers afresh from GitHub at the pinned commits; the binaries are
+byte-identical to those of the first run (BalancedGo `112c0b6e…`, log-k-decomp `97f2fe8a…`), so `-trimpath` builds
+reproduce. Same limits as the first run: 600 s per Python step, 120 s per solver attempt, 1,200 s of solver time per
+row, bisection on k. `--jobs 2` instead of 3, because another session's database servers shared the 4 CPUs.
+
+**Recording the load.** `run_survey.py run` now writes, into each report's `survey` block, the rows run at a time
+(`jobs`) and the machine's load averages when the row started and ended; `table` collects them in `machine.json` under
+`load`. A sampler outside the repository recorded, every 30 s, the CPU used by the survey's process tree and by
+everything else (`/proc`). Over the 2 h 23 min (286 samples) the survey used 1.79 cores on average (median 1.98, never
+more than 2.15), and everything else 0.50 (median 0.21, 90th percentile 1.24, maximum 2.16): mostly the other
+session's Java and TypeDB servers, and Python processes, this session's own checks included. The machine's 1-minute
+load average was 2.87 on average and 6.70 at most; the rows' own records, taken at each row's start and end, show
+1-minute averages between 1.3 and 2.7 (5-minute: 1.7 to 3.3). Contention was therefore moderate but not zero. The
+Python steps and the solver attempts run under time limits, so bounds found here may differ on an idle machine.
+
+**Install.** Generation and install took about 5 minutes (03:33 to 03:38 UTC). As DESIGN §6.6 specifies: the declared
+and Biolink files came out byte-identical and were left untouched; the four dump-scope observed files were rebuilt
+from P3a's counts, and the SQID-based ones moved, with their provenance and their eight rows' reports and logs, to
+`results/superseded/` (24 files); the four slice files are new; `p3a-crosscheck.json` was written; the 16 observed
+rows went to `pending-rerun.json`, which the run then emptied and removed.
+
+**Relations: P3a's scopes against the WDQS snapshot of 2026-09-24.**
+- *Dump:* 13,315 relations, against SQID's 13,608. The relation list is the WDQS properties (minus the 57) with at
+  least one main statement in the count source. 294 properties have main statements in DeltaBot's counts (2.79
+  million together) but none on any item or property entity of the dump. By datatype and label they are lexicographic
+  properties: 241 external identifiers of dictionaries, 13 `WikibaseSense`, 6 `WikibaseForm`, 6 `WikibaseLexeme`,
+  18 item-valued (P5911 paradigm class, P5186 conjugation class, …) and 10 transliterations. DeltaBot counts main
+  statements on every entity type; P3a's `all` scope is "every entity in the dump: items and property entities"
+  (its `scopes` field), so statements on lexemes, forms and senses are not in it. One property, P3865 (type of
+  reference), has 2 main statements in P3a's counts and none in DeltaBot's. 13,608 − 294 + 1 = 13,315.
+- P3a's `all` has 13,317 relations: P6307 (1 statement) and P10492 (8,101 statements) are not in the WDQS property
+  list of 2026-09-24, so they have no datatype or label there and are left out. `kept`: 12,707 relations, less
+  P6307: 12,706.
+- Qualifier ids: P642 (on P31, P39, P279, P945 and P1142) and P4003 (on P2013) occur in the dump but are not WDQS
+  properties on 2026-09-24; they are dropped and counted (`observed_unknown_qualifier_ids`: 6 in the dump scope, 4 in
+  the slice).
+- Rule 8: P3a's 57 properties, computed from the dump's own property entities, equal P6's 57 from WDQS.
+
+**The cross-check (`results/p3a-crosscheck.json`).** It compares P3a's own classification (`time_model` per
+relation, `slot` per qualifier, the rule-8 list) with P6's, applied to P3a's counts. Its entries: dump 5,333, slice
+4,218, all of field `slot`, and all of two kinds, which are vocabulary rather than disagreement:
+- 4,930 (slice 3,914): P2241 and P7452, which P3a's slot vocabulary calls `rank_reason` and P6's schema declares as
+  `meta` usages. Under rule 6c a reason that matches its rank goes to the record's `rank_reason` field, not to a role,
+  and one that does not is a `meta` binding; the schema can only declare the latter, and P3a reports that part
+  separately (`rank_reason_mismatch`).
+- 403 (slice 304): P1534 on interval relations, which P3a keys as `P1534` with slot `end_cause`, and which P6 does not
+  declare as a usage (the built-in `khg:end_cause`; `_slot` returns `None`). `crosscheck_p3a` skips the built-in only
+  when the role is keyed `khg:end_cause`, so these are listed.
+
+No `time_model` differs on any of the 13,317 (12,707) relations, the rule-8 lists are equal, and every id in
+`all.out_of_scope_relations` is excluded by P6. `meta` and the built-in end cause are outside every slot set the
+survey measures, so neither kind can change a hypergraph. `crosscheck_p3a` was left as it is: normalising the two
+vocabularies would change a generator source whose hash every provenance file records.
+
+**Results** (`results/survey.md`; `cq` = core and qualifier roles, `cqt` adds time roles; every value an exact value
+or a `[lower, upper]` bound with a validated certificate and a stored witness):
+
+| Row (wd-roles r1) | Relations / roles | Class (GYO residue) | Core | hw | ghw | fhw | tw | Wall (s) |
+|---|---|---|---|---|---|---|---|---|
+| observed-robust, dump, cq | 13,315 / 13,391 | cyclic (751) | 751 / 530 | [4, 65] | [4, 30] | [75/23, 53/2] | [55, 139] | 1,944 |
+| observed-robust, dump, cqt | 13,315 / 13,391 | cyclic (767) | 767 / 539 | [4, 60] | [4, 30] | [75/23, 185/7] | [57, 140] | 1,818 |
+| observed-all, dump, cq | 13,315 / 13,886 | cyclic (1,453) | 1,453 / 1,998 | [3, 53] | [3, 35] | [2, 269/8] | [771, 1226] | 2,502 |
+| observed-all, dump, cqt | 13,315 / 13,886 | cyclic (1,458) | 1,458 / 2,001 | [3, 52] | [3, 35] | [11/5, 269/8] | [773, 1228] | 2,534 |
+| observed-robust, slice, cq | 12,706 / 12,810 | cyclic (603) | 603 / 460 | [4, 48] | [4, 26] | [7/2, 250/11] | [51, 114] | 1,713 |
+| observed-robust, slice, cqt | 12,706 / 12,810 | cyclic (613) | 613 / 466 | [4, 59] | [4, 26] | [7/2, 114/5] | [53, 116] | 1,483 |
+| observed-all, slice, cq | 12,706 / 13,189 | cyclic (1,292) | 1,292 / 1,558 | [4, 51] | [4, 36] | [8/3, 143/4] | [452, 838] | 2,065 |
+| observed-all, slice, cqt | 12,706 / 13,189 | cyclic (1,297) | 1,297 / 1,560 | [4, 47] | [4, 36] | [8/3, 34] | [452, 852] | 2,082 |
+
+The relation-local controls are Berge-acyclic with hw = ghw = fhw = 1 and tw = rank − 1: dump 34,050 / 38,436 roles
+(tw 34 / 36) and 83,572 / 87,958 (tw 771 / 773); slice 31,572 / 35,006 (tw 36 / 38) and 62,641 / 66,075 (tw 410 /
+412); 24 to 61 s each.
+
+- **Solvers.** On all eight wd-roles r1 rows the bisection used the full 1,200 s, and every attempt (10 per row;
+  BalancedGo and log-k-decomp with preprocessing, BalancedGo without) timed out at 120 s; no disagreement, demotion or
+  invalid output. Every hw upper bound is khg-width's own `hd-repair` HD, every hw lower bound hw ≥ ghw.
+- **ghw lower bounds**, from primal cliques of the core (cq): ρ = 4 on 18 roles (observed-robust, dump; enumeration
+  complete), 3 on 61 (observed-all, dump; stopped at 600 s), 4 on 17 (observed-robust, slice; complete), 4 on 53
+  (observed-all, slice; stopped).
+- **Slice against dump.** Every relation of the observed-all slice schema is a relation of the dump schema with a
+  subset of its roles (checked for cq and cqt; not so for observed-robust, whose threshold is relative: 327 slice
+  relations have a robust qualifier that is not robust over the dump). Yet the slice's lower bound, 4, is above the
+  dump's, 3. Widths are not monotone under shrinking edges: the 53-role clique behind the slice's bound needs four
+  slice relations to cover, and two dump relations cover it (P31 with 772 roles and P527 with 577 in the dump, 411 and
+  392 in the slice). The dump's clique enumeration stopped at its step limit before finding a better clique.
+- **Against the SQID-based rows** (now in `superseded/`): relations 13,608 → 13,315 (above); residues 748 → 751,
+  765 → 767, 1,441 → 1,453 and 1,446 → 1,458; hw upper bounds 68 → 65 and 60, 61 → 53 and 52; hw lower bounds
+  unchanged (4, 4, 3, 3); ghw upper bounds 29 → 30 and 31 → 30 (robust) and 39 → 35 (all); fhw lower bound of
+  observed-robust 63/19 → 75/23 (3.32 → 3.26: a different schema, a different clique), fhw upper bounds 79/3 → 53/2,
+  103/4 → 185/7 and 75/2 → 269/8; tw bounds [55, 131] → [55, 139], [57, 133] → [57, 140], [760, 1248] → [771, 1226]
+  and [762, 1195] → [773, 1228]. The controls' tw (the largest relation minus one) went 33 → 34, 35 → 36, 760 → 771
+  and 762 → 773. These are different schemas, not a better or worse measurement of the same one; no class changed.
+- **Finding 5 of the note, recomputed** on P3a's dump scope with research report 02 §2.4's method (the same code
+  reproduces R02's SQID numbers 328, 34, 1,149 and 0.29 exactly): P39 allows 104 qualifiers, 333 occur on its
+  statements, 36 pass the robust threshold, all of them allowed; over the 1,134 properties with an allowed list and
+  main statements, the median Jaccard similarity of the allowed and robust sets is 0.30 (0.3038). On the slice: 234 occur,
+  34 are robust (33 allowed; P31 is not), 1,115 properties, median 0.25.
+- **D1** (RELEASE.md): the ten Wikidata schema files rebuilt with the SQID and DeltaBot data emptied came out
+  byte-identical (file and C1 schema sha256), so no committed schema depends on them; the generator still reads the
+  two files (`RAW_FILES`) and the manifest check requires them.
+- **Tests.** `python -m pytest -q` in `khg-width/` with both solvers: 108 pass (11 min 55 s); the survey tests
+  re-validate every certificate and lower-bound witness of all 23 rows.
+- **Figure.** With twelve hw columns the old tick labels overlapped; `make_figure.py` now writes each on three short
+  lines (table, scope, slots). The output stays deterministic (two runs, identical bytes).
