@@ -2595,6 +2595,14 @@ fixed them (`impl-notes/review-*.md`); these are the questions it left open.
     `VersionTable` and behaves exactly as before. This is an implementation API of khg-contracts **outside the C2
     contract**: `khg-store/1.0.0`, its protocol, flags and 114 scenarios are unchanged, and a store that implements
     `Store` another way needs none of it. P1's adapters build on it and import public names only.
+18. **Records a backend cannot hold (2026-09-25, from P1).** A valid record that a backend cannot hold (an instant
+    beyond its integer range, a relation shape its type system refuses) is refused with a `ValidationError` without
+    a code, naming the reason in `info["cannot_hold"]`, as ruling 17 describes. As with ruling 13, a registered code
+    joins the registry in 1.1 (a minor addition, §11). `load(..., on_missing="skip")` skips such a record and counts
+    it in the `LoadReport` exactly like a record that needs a missing flag; every skip is a fidelity loss of that
+    backend. The HIF profile (`khg-hif/1.0.0`) carries no store fields on entity nodes, so a HIF store answers
+    `get(entity)` without `khg-recorded-by`; that stays a measured loss of the HIF format in 1.0, and adding it is a
+    candidate for a profile minor version.
 
 **Clarifications the review made normative.** Each is implemented and tested; the notes give the evidence.
 - §2.7 and D014: a history may go from `superseded` to `disputed` in one version (an undone supersession resolved

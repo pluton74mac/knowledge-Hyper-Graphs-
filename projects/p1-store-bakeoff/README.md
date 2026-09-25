@@ -66,6 +66,20 @@ On the ten decisions of [research/01-backends.md](research/01-backends.md) §10:
 
 The corrections of §11 (P2 DESIGN §6.5 and four KB notes) are applied with the implementation, cited to the probes.
 
+## Director's rulings on the build (2026-09-25)
+
+On the four open questions of [IMPLEMENTATION-NOTES.md](IMPLEMENTATION-NOTES.md):
+
+1. **A code for "cannot hold" (Q1).** Not in 1.0. The refusal stays a `ValidationError` without a code, with the
+   reason in `info["cannot_hold"]`; a registered code joins the registry in khg-store 1.1 (P2 DESIGN §14, ruling 18,
+   following ruling 13).
+2. **`on_missing="skip"` (Q2).** Accepted as built: it skips records refused by `cannot_hold` and counts them, and
+   each skip is a fidelity loss of that backend (ruling 18).
+3. **`khg-recorded-by` on HIF entity nodes (Q3).** No profile change now. The missing store field is a measured loss
+   of the HIF format and is reported as such; adding it is a candidate for a `khg-hif` minor version.
+4. **TypeDB and slices that are not complete (Q4).** No stub instances: stubs would be emulation, which ruling 8
+   excludes. A fact whose player TypeDB does not hold is refused and counted as a TypeDB loss.
+
 ## Log
 
 - 2026-09-25: started (first half: backends and conformance). Pace as P6: one agent per stage, one review round.
