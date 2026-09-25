@@ -4,7 +4,7 @@ type: index
 status: draft
 tags: [foundations, hypergraph, mathematics, index]
 created: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-25
 ---
 
 # 01 — Foundations
@@ -28,7 +28,7 @@ instead.
 | [notation-cheatsheet.md](notation-cheatsheet.md) | The symbols used across this KB, the source each convention comes from, and a clash index for the letters the literature overloads (`H`, `W`, `r`, `m`, `d(v)`, `L`). |
 | [incidence-and-matrix-representations.md](incidence-and-matrix-representations.md) | Incidence matrix, adjacency matrices, the five hypergraph Laplacians (Chung, Bolla, Rodríguez, Zhou–Huang–Schölkopf, Chan–Louis), adjacency tensors and Z/H eigenpairs, and the three graph expansions (clique, star, line) with a precise account of what each one loses. |
 | [hypergraphs-vs-bipartite-vs-simplicial.md](hypergraphs-vs-bipartite-vs-simplicial.md) | The exact correspondences with bipartite (Levi/König) graphs, abstract simplicial complexes, cell and combinatorial complexes (Hajij et al. 2022), set systems and block designs — and why "a hypergraph is just a bipartite graph" is true but unhelpful. |
-| [hypergraph-theory-results.md](hypergraph-theory-results.md) | Berge's programme, duality, transversals and hitting sets, the Helly property and conformality, the four degrees of acyclicity (Berge/γ/β/α, Fagin 1983), hypertree and fractional hypertree width (Gottlob et al.), colouring, and hypergraph cuts and partitioning (hMETIS, KaHyPar). |
+| [hypergraph-theory-results.md](hypergraph-theory-results.md) | Berge's programme, duality, transversals and hitting sets, the Helly property and conformality, the four degrees of acyclicity (Berge/γ/β/α, Fagin 1983), hypertree and fractional hypertree width (Gottlob et al.) with where real KHG schemas fall (P6's measurement of Wikidata and Biolink, 2026-09-25), colouring, and hypergraph cuts and partitioning (hMETIS, KaHyPar). |
 | [random-walks-spectral-and-expansion.md](random-walks-spectral-and-expansion.md) | The natural random walk and why it collapses to the clique expansion, edge-dependent vertex weights, the non-linear Laplacian and the hypergraph Cheeger inequality `γ₂/2 ≤ φ_H ≤ 2√γ₂`, spectral sparsification, and the two distinct "hypergraph expander" traditions. |
 | [higher-order-interactions.md](higher-order-interactions.md) | The complex-systems programme: Battiston et al. 2020, Bick et al. 2023, higher-order motifs, simplicial closure, the three tensor centralities (Benson 2019) and node-and-edge nonlinear centrality (Tudisco–Higham 2021), plus the field's own internal critique. |
 

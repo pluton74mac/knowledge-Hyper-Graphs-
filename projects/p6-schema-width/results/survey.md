@@ -17,6 +17,6 @@
 | biolink-formal-global-cq | biolink | global | core,qualifier | 103 / 35 | cyclic (gyo_residue 5) | 5 / 8 | 2 | 2 | 2 | 19 |
 | biolink-formal-domain-global-cq | biolink | global | core,qualifier | 103 / 60 | cyclic (gyo_residue 5) | 5 / 8 | 2 | 2 | 2 | 23 |
 | biolink-formal-relation-local-cq | biolink | relation-local | core,qualifier | 103 / 1020 | berge (join tree) | 0 / 0 | 1 | 1 | 1 | 19 |
-| hyperbench-cq | HyperBench (Zenodo 10.5281/zenodo.7180787) | n/a | n/a | 1113 CQs | selected to be cyclic | n/a | hw 1 / 2 / 3 = 673 / 432 / 8 | | | |
+| hyperbench-cq | HyperBench (Zenodo 10.5281/zenodo.7180787) | n/a | n/a | 1113 CQs | biased toward cyclic | n/a | hw 1 / 2 / 3 = 673 / 432 / 8 | | | |
 
-Values are exact (`2`) or bounds (`[2, 4]`, `(1, 3/2]` for fhw > 1). The HyperBench row counts non-random CQs, which were selected to be cyclic; compare by structural parameter and hw (R01 §3.6).
+Values are exact (`2`) or bounds (`[2, 4]`, `(1, 3/2]` for fhw > 1). The HyperBench row counts non-random CQs, a collection biased toward cyclic queries (673 of them still have hw 1); compare by structural parameter and hw (R01 §3.6).

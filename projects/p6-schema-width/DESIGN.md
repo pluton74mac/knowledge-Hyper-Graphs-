@@ -454,7 +454,7 @@ Each row runs `khg-width FILE --slots … --time-limit 600 --solver auto --json`
 decomposition, the lower bound 1 plus the largest K refuted without timeout.
 
 The row is **non-random CQs, n = 1,113, hw 1 / 2 / 3 = 673 / 432 / 8** ([R01 §3.5]). Its note says that these are
-queries selected to be cyclic, so the comparison is by structural parameter and hw ([R01 §3.6]).
+queries in a collection biased toward cyclic queries, so the comparison is by structural parameter and hw ([R01 §3.6]).
 
 ### 6.5 Table columns
 

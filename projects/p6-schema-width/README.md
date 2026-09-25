@@ -21,7 +21,7 @@ checker that reports the acyclicity class and width of any relation-type schema 
 
 Question [01.3] of the [open-questions register](../../kb/00-index/open-questions.md) (Theme 5, bridges
 between theories): nobody has measured where real KHG schemas sit in the acyclicity hierarchy or what their
-hypertree width is, and that number predicts query cost directly. P11 consumes the checker.
+hypertree width is. That number bounds the cost of joining all relations on shared roles (the universal join), not of arbitrary queries; P6 measured it (see Results). P11 consumes the checker.
 
 ## Gate (PLAN §4)
 
@@ -76,7 +76,7 @@ reports class and width for any `khg-relation-schema/1.0.0` file and flags every
 | Wikidata, observed (all usage), wd-roles r1 | 13,608 | α-cyclic | 1,441 | [3, 61] |
 | Wikidata, any of the above with relation-local roles (control) | | Berge-acyclic | 0 | 1 |
 | Biolink Model v4.4.5 associations | 103 | α-cyclic | 5 | 2 (exact; ghw = fhw = 2) |
-| HyperBench, 1,113 non-random conjunctive queries (baseline, selected to be cyclic) | | | | 1 / 2 / 3 for 673 / 432 / 8 |
+| HyperBench, 1,113 non-random conjunctive queries (baseline; a collection biased toward cyclic queries) | | | | 1 / 2 / 3 for 673 / 432 / 8 |
 
 **Findings.**
 1. **Real knowledge-hypergraph schemas are cyclic once roles are global.** Every Wikidata schema is α-cyclic under

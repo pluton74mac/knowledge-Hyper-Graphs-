@@ -448,10 +448,10 @@ def table(out: Path) -> list[dict]:
     if hb:
         cq = hb["groups"]["CQ"]
         md.append(f"| hyperbench-cq | HyperBench (Zenodo 10.5281/zenodo.7180787) | n/a | n/a | {cq['n']} CQs | "
-                  f"selected to be cyclic | n/a | hw 1 / 2 / 3 = "
+                  f"biased toward cyclic | n/a | hw 1 / 2 / 3 = "
                   f"{' / '.join(str(cq['exact_hw'].get(str(k), 0)) for k in (1, 2, 3))} | | | |")
     md += ["", "Values are exact (`2`) or bounds (`[2, 4]`, `(1, 3/2]` for fhw > 1). The HyperBench row counts "
-           "non-random CQs, which were selected to be cyclic; compare by structural parameter and hw (R01 §3.6)."]
+           "non-random CQs, a collection biased toward cyclic queries (673 of them still have hw 1); compare by structural parameter and hw (R01 §3.6)."]
     (out / "survey.md").write_text("\n".join(md) + "\n")
     (out / "survey.json").write_text(json.dumps({"rows": trs, "hyperbench": hb}, indent=1) + "\n")
     # figure data

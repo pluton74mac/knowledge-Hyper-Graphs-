@@ -70,10 +70,10 @@ fetched during this research run; the bibliographic fields are reported as found
 - Codd, E. F. "A relational model of data for large shared data banks." *Communications of the ACM* 13(6):377–387, 1970. https://dl.acm.org/doi/10.1145/362384.362685
 - Yannakakis, M. "Algorithms for Acyclic Database Schemes." *Proceedings of the 7th International Conference on Very Large Data Bases (VLDB)*, pp. 82–94, 1981. `[unverified]` — venue and pages from the publisher listing. https://dl.acm.org/doi/10.5555/1286831.1286840
 - Gottlob, G., Leone, N., Scarcello, F. "Hypertree Decompositions and Tractable Queries." arXiv:cs/9812022, 1998; *Journal of Computer and System Sciences* 64(3):579–627, 2002. https://arxiv.org/abs/cs/9812022
-- Gottlob, G., Lanzinger, M., Pichler, R., Razgon, I. "Complexity Analysis of Generalized and Fractional Hypertree Decompositions." arXiv:2002.05239, 2020. https://arxiv.org/abs/2002.05239
+- Gottlob, G., Lanzinger, M., Pichler, R., Razgon, I. "Complexity Analysis of Generalized and Fractional Hypertree Decompositions." arXiv:2002.05239, 2020; *Journal of the ACM* 68(5):1–50, 2021 (journal details via OpenAlex, 2026-09-25). https://arxiv.org/abs/2002.05239 and https://doi.org/10.1145/3457374
 - Atserias, A., Grohe, M., Marx, D. "Size Bounds and Query Plans for Relational Joins." *SIAM Journal on Computing* 42(4):1737–1767, 2013. https://dblp.org/rec/journals/siamcomp/AtseriasGM13.html
-- Grohe, M., Marx, D. "Constraint solving via fractional edge covers." *ACM Transactions on Algorithms*, 2014. `[unverified]` — volume and pages not confirmed from a fetched source.
-- Ngo, H. Q., Porat, E., Ré, C., Rudra, A. "Worst-case Optimal Join Algorithms." *PODS 2012*, pp. 37–48; *Journal of the ACM* 65(3):16:1–16:40, 2018. `[unverified]` — details from the publisher listing. https://dl.acm.org/doi/10.1145/3180143
+- Grohe, M., Marx, D. "Constraint solving via fractional edge covers." *ACM Transactions on Algorithms* 11(1), article 4 (pp. 4:1–4:20), 2014; arXiv:1711.04506. Volume and article number confirmed 2026-09-25 from OpenAlex and from reference [34] of Gottlob et al. 2021 (resolves the earlier `[unverified]`). https://doi.org/10.1145/2636918 and https://arxiv.org/abs/1711.04506
+- Ngo, H. Q., Porat, E., Ré, C., Rudra, A. "Worst-case Optimal Join Algorithms." *PODS 2012*, pp. 37–48; *Journal of the ACM* 65(3):16:1–16:40, 2018. `[unverified]` — details of the published versions from the publisher listing. https://dl.acm.org/doi/10.1145/3180143 ; the arXiv version (arXiv:1203.1952, revision of 27 November 2024) was read on 2026-09-25 for the pairwise-plan statement in `n-ary-relations-and-relational-algebra.md` §4. https://arxiv.org/abs/1203.1952
 - Fatemi, B., Taslakian, P., Vazquez, D., Poole, D. "Knowledge Hypergraphs: Prediction Beyond Binary Relations." *IJCAI 2020*, pp. 2191–2197. https://doi.org/10.24963/ijcai.2020/303
 - Wen, J., Li, J., Mao, Y., Chen, S., Zhang, R. "On the Representation and Embedding of Knowledge Bases Beyond Binary Relations." *IJCAI 2016*, pp. 1300–1307. https://www.ijcai.org/Proceedings/16/Papers/188.pdf
 - Yadati, N. "Neural Message Passing for Multi-Relational Ordered and Recursive Hypergraphs." *Advances in Neural Information Processing Systems* 33 (NeurIPS 2020). `[unverified]` — proceedings page URL not resolved. https://proceedings.neurips.cc/paper/2020
@@ -100,6 +100,43 @@ fetched during this research run; the bibliographic fields are reported as found
 - XGI documentation. "Basic hypergraph functionality" tutorial, stable docs, accessed 2026-09-20. https://xgi.readthedocs.io/en/stable/api/tutorials/focus_1.html
 - XGI documentation. `xgi.core.hypergraph.Hypergraph` and `xgi.core.dihypergraph.DiHypergraph`, stable docs, accessed 2026-09-19/20. https://xgi.readthedocs.io/en/stable/api/core/xgi.core.hypergraph.Hypergraph.html and https://xgi.readthedocs.io/en/stable/api/core/xgi.core.dihypergraph.DiHypergraph.html
 - HyperNetX documentation. Glossary, accessed 2026-09-20. https://hypernetx.readthedocs.io/en/latest/glossary.html
+
+## Added by project P6 (2026-09-25) — acyclicity, widths, and the schema width survey
+
+Cited by [`kb/01-foundations/hypergraph-theory-results.md`](../../kb/01-foundations/hypergraph-theory-results.md)
+§5–§6 (corrections and the "Measured" subsection) and
+[`kb/01-foundations/n-ary-relations-and-relational-algebra.md`](../../kb/01-foundations/n-ary-relations-and-relational-algebra.md)
+§2–§4. The corrections come from P6 research report 01 §1.5 and were checked against these sources on
+2026-09-25. Corrects the Grohe–Marx entry above (now resolved) and the Gottlob et al. 2020 entry (journal
+version added).
+
+### Theory
+
+- Gottlob, G., Miklós, Z., Schwentick, T. "Generalized hypertree decompositions: NP-hardness and tractable variants." *Journal of the ACM* 56(6), article 30, 2009. https://doi.org/10.1145/1568318.1568320 (result as stated in Gottlob et al. 2021)
+- Adler, I., Gottlob, G., Grohe, M. "Hypertree width and related hypergraph invariants." *European Journal of Combinatorics* 28(8):2167–2181, 2007. https://doi.org/10.1016/j.ejc.2007.04.013 (hw ≤ 3·ghw + 1, cited through Grohe and Marx 2014; not read directly)
+- Marx, D. "Tractable Hypergraph Properties for Constraint Satisfaction and Conjunctive Queries." *Journal of the ACM* 60(6), article 42, 2013 (preliminary version STOC 2010). https://doi.org/10.1145/2535926 ; arXiv:0911.0801, https://arxiv.org/abs/0911.0801 (abstract read 2026-09-25)
+- Moll, L., Tazari, S., Thurley, M. "Computing hypergraph width measures exactly." *Information Processing Letters* 112(6):238–242, 2012. https://doi.org/10.1016/j.ipl.2011.12.002 ; arXiv:1106.4719, https://arxiv.org/abs/1106.4719 (introduction read 2026-09-25)
+- Duris, D. "Some characterizations of γ and β-acyclicity of hypergraphs." *Information Processing Letters* 112(16):617–620, 2012. https://doi.org/10.1016/j.ipl.2012.05.005 (content as stated in Brault-Baron 2016)
+
+### Benchmark, solvers and measured schemas
+
+- Fischl, W., Gottlob, G., Longo, D. M., Pichler, R. "HyperBench: A Benchmark and Tool for Hypergraphs and Empirical Findings." *PODS 2019*, pp. 464–480. https://doi.org/10.1145/3294052.3319683 ; arXiv:1811.08181, https://arxiv.org/abs/1811.08181
+- Fischl, W., Gottlob, G., Longo, D. M., Pichler, R. "HyperBench: A Benchmark and Tool for Hypergraphs and Empirical Findings." *ACM Journal of Experimental Algorithmics* 26:1–40, 2021. https://doi.org/10.1145/3440015 ; arXiv:2009.01769, https://arxiv.org/abs/2009.01769
+- Gottlob, G., Lanzinger, M., Okulmus, C., Pichler, R. "Experimental Data for log-k-decomp." Zenodo, published 2023-10-09, CC BY 4.0 (the HyperBench instances and all published decomposition runs; P6's baseline of 1,113 non-random CQs is recomputed from it). https://doi.org/10.5281/zenodo.7180787
+- Bonifati, A., Martens, W., Timm, T. "Navigating the Maze of Wikidata Query Logs." *WWW 2019*, pp. 127–138. `[unverified]` — the query-log width figures are quoted through Fischl et al. 2021, not from the original.
+- BalancedGo, commit `872c662` (v1.7.2-2), MIT, built with Go 1.24.7. https://github.com/cem-okulmus/BalancedGo ; Gottlob, G., Okulmus, C., Pichler, R. "Fast and parallel decomposition of constraint satisfaction problems." *Constraints* 27(3):284–326, 2022. https://doi.org/10.1007/s10601-022-09332-1
+- log-k-decomp, v1.1.0 (commit `5e021dd`), MIT. https://github.com/cem-okulmus/log-k-decomp ; Gottlob, G., Lanzinger, M., Okulmus, C., Pichler, R. "Fast Parallel Hypertree Decompositions in Logarithmic Recursion Depth." *PODS 2022*, pp. 325–336. https://doi.org/10.1145/3517804.3524153
+- Biolink Model v4.4.5 (tag commit `a4180f8`, 2026-09-18; model licence CC0-1.0, repository licence Apache-2.0). https://github.com/biolink/biolink-model ; Unni, D., et al. "Biolink Model: A universal schema for knowledge graphs in clinical, biomedical, and translational science." *Clinical and Translational Science* 15(8):1848–1855, 2022. https://doi.org/10.1111/cts.13302
+- Wikidata Query Service, property constraints fetched 2026-09-24. https://query.wikidata.org/ ; SQID property statistics, qualifier usage from the dump of 2026-08-10. https://sqid.toolforge.org/data/properties.json ; Wikidata data licence CC0-1.0. https://www.wikidata.org/wiki/Wikidata:Copyright
+
+### Project P6 files
+
+- Survey table (commit 7c58957, 2026-09-25): [projects/p6-schema-width/results/survey.md](../../projects/p6-schema-width/results/survey.md), with `survey.csv`, `survey.json`, per-row reports and the figure.
+- Design: [projects/p6-schema-width/DESIGN.md](../../projects/p6-schema-width/DESIGN.md) (the measured object, §2.1).
+- Research report 01, theory and solvers (2026-09-24): [projects/p6-schema-width/research/01-theory-and-solvers.md](../../projects/p6-schema-width/research/01-theory-and-solvers.md) (§1.5, the corrections).
+- Research report 02, data sources and role naming (2026-09-24): [projects/p6-schema-width/research/02-data-sources-and-naming.md](../../projects/p6-schema-width/research/02-data-sources-and-naming.md).
+- Role naming wd-roles r1, shared with P3a: [projects/p6-schema-width/wd-roles.md](../../projects/p6-schema-width/wd-roles.md).
+- The checker `khg-width` (MIT): [projects/p6-schema-width/khg-width/](../../projects/p6-schema-width/khg-width/).
 
 ## 02-knowledge-representation
 
@@ -859,6 +896,16 @@ GitHub REST API was not reachable from this session).
 - No δ-hyperbolicity / Gromov-hyperbolicity measurement published for JF17K, FB-AUTO, M-FB15K, WikiPeople or WD50K; none of the five hyperbolic n-ary papers reports one.
 - No system located that exposes relational-algebra primitives over a knowledge-hypergraph embedding store as planner-callable operations for an LLM. Nearest neighbours: LOTUS semantic operators (tables, not embeddings), StarQE/NQE/SQE/LKHGT (operators internal to the model), agentic GraphRAG frameworks (topological, not algebraic actions).
 - Lu, Tupikina and Alam 2026 (v3) does not index HCNet, HART, THOR, HYPER², PolygonE or the gyro-centroid follow-up; "gyro" does not occur in the paper.
+
+## Added by project P6 (2026-09-25) — width recognition and reification
+
+Cited by [`kb/05-query-embeddings-reasoning/query-languages-for-hypergraphs.md`](../../kb/05-query-embeddings-reasoning/query-languages-for-hypergraphs.md)
+§10.2 and §10.3, corrected from P6 research report 01 §1.5 and checked against these sources on 2026-09-25.
+
+- Gottlob, G., Lanzinger, M., Pichler, R., Razgon, I. "Complexity Analysis of Generalized and Fractional Hypertree Decompositions." *Journal of the ACM* 68(5):1–50, 2021; arXiv:2002.05239. https://arxiv.org/abs/2002.05239 and https://doi.org/10.1145/3457374 (ghw ≤ 2 and fhw ≤ 2 NP-complete; tractable cases under the BIP, BMIP and bounded degree)
+- Grohe, M., Marx, D. "Constraint Solving via Fractional Edge Covers." *ACM Transactions on Algorithms* 11(1), article 4, 2014; arXiv:1711.04506. https://arxiv.org/abs/1711.04506 and https://doi.org/10.1145/2636918 (ghw ≤ hw ≤ 3·ghw + 1, citing Adler, Gottlob and Grohe 2007)
+- Brault-Baron, J. "Hypergraph Acyclicity Revisited." *ACM Computing Surveys* 49(3), 2016; arXiv:1403.7076. https://arxiv.org/abs/1403.7076 (Remark 7: on graphs all acyclicity degrees coincide, so a reified query is acyclic exactly when the n-ary one is Berge-acyclic)
+- Project P6, research report 01, "Acyclicity degrees, width measures and hypertree-decomposition solvers", 2026-09-24, §1.3 (reification probe: hw 1 → 2 for a covered triangle, 3 → 4 for K5, 2 → 2 for a bare triangle) and §1.5. [projects/p6-schema-width/research/01-theory-and-solvers.md](../../projects/p6-schema-width/research/01-theory-and-solvers.md)
 
 ## 06-visualization
 
@@ -1941,9 +1988,12 @@ repository pages on the same date.
 - https://aclanthology.org/P98-1013/ — 02-knowledge-representation, 03-construction
 - https://archive.org/details/graphshypergraph0000berg — 01-foundations, 08-history-and-frontier
 - https://archive.org/details/hypergraphscombi0000berg — 01-foundations, 08-history-and-frontier
+- https://arxiv.org/abs/1403.7076 — 01-foundations, 05-query-embeddings-reasoning
+- https://arxiv.org/abs/1711.04506 — 01-foundations, 05-query-embeddings-reasoning
 - https://arxiv.org/abs/1802.06916 — 03-construction, 08-history-and-frontier
 - https://arxiv.org/abs/1905.08287 — 01-foundations, 05-query-embeddings-reasoning
 - https://arxiv.org/abs/1906.11295 — 05-query-embeddings-reasoning, 10-comparative-and-critique
+- https://arxiv.org/abs/2002.05239 — 01-foundations, 05-query-embeddings-reasoning
 - https://arxiv.org/abs/2102.09557 — 05-query-embeddings-reasoning, 08-history-and-frontier
 - https://arxiv.org/abs/2104.11329 — 01-foundations, 08-history-and-frontier
 - https://arxiv.org/abs/2106.08166 — 05-query-embeddings-reasoning, 07-applications
@@ -1998,7 +2048,10 @@ repository pages on the same date.
 - https://doi.org/10.1093/comnet/cnad019 — 08-history-and-frontier, 09-ecosystem
 - https://doi.org/10.1109/TPAMI.2022.3182052 — 08-history-and-frontier, 09-ecosystem
 - https://doi.org/10.1137/21M1414024 — 08-history-and-frontier, 09-ecosystem
+- https://doi.org/10.1145/1568318.1568320 — 01-foundations, 05-query-embeddings-reasoning
 - https://doi.org/10.1145/2629489 — 03-construction, 08-history-and-frontier
+- https://doi.org/10.1145/2636918 — 01-foundations, 05-query-embeddings-reasoning
+- https://doi.org/10.1145/3457374 — 01-foundations, 05-query-embeddings-reasoning
 - https://doi.org/10.1145/3458723 — 05-query-embeddings-reasoning, 10-comparative-and-critique
 - https://doi.org/10.1145/3580305.3599490 — 05-query-embeddings-reasoning, 09-ecosystem
 - https://doi.org/10.1145/3589778 — 08-history-and-frontier, 09-ecosystem
@@ -2053,4 +2106,4 @@ repository pages on the same date.
 - https://www.wikidata.org/wiki/Help:Statements — 02-knowledge-representation, 06-visualization
 - https://www.wikidata.org/wiki/Wikidata:Data_model — 02-knowledge-representation, 06-visualization
 
-_1007 distinct URLs; 185 shared across sections._
+_1031 distinct URLs; 191 shared across sections._

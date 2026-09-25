@@ -4,7 +4,7 @@ type: glossary
 status: reviewed
 tags: [glossary, index]
 created: 2026-09-20
-updated: 2026-09-24
+updated: 2026-09-25
 ---
 
 # Glossary
@@ -72,7 +72,10 @@ See: [Hypergraph neural networks](../05-query-embeddings-reasoning/hypergraph-ne
 
 **α-acyclicity** (alpha-acyclicity) — the weakest and most general of Fagin's degrees of hypergraph
 acyclicity: the hypergraph admits a join tree, equivalently reduces to empty under
-[GYO reduction](#g). Exactly the boundary of tractable join evaluation.
+[GYO reduction](#g). Equivalent to hypertree width 1: the first tractable class of joins, not the
+boundary of tractability, which extends to bounded [hypertree width](#h) and beyond. A KHG schema
+that is α-acyclic makes the join of its relations on shared role names cheap, not every query over
+it; real Wikidata and Biolink schemas are α-cyclic once roles are shared (P6, 2026-09-25).
 See: [Classical hypergraph theory results](../01-foundations/hypergraph-theory-results.md).
 
 **AMIE** — the reference rule-mining system for incomplete knowledge bases, and the source of the
@@ -470,8 +473,8 @@ coherence, diversity), itself averaged with the question's F1.
 See: [Evaluating constructed knowledge hypergraphs](../03-construction/evaluation-of-constructed-khgs.md).
 
 **γ-acyclicity** (gamma-acyclicity) — the strongest of Fagin's three degrees, characterised by
-DM-reducibility and by a rooted join tree for every hyperedge. Strictly stronger than β-acyclicity,
-strictly weaker than Berge acyclicity.
+DM-reducibility and by having, for every hyperedge e, a join tree *with disjoint branches* rooted at
+e. Strictly stronger than β-acyclicity, strictly weaker than Berge acyclicity.
 See: [Classical hypergraph theory results](../01-foundations/hypergraph-theory-results.md).
 
 **GETD** — a 2020 n-ary embedding model generalising Tucker decomposition by reshaping the core
@@ -852,9 +855,10 @@ length** optimisation, the first principled answer to "what should count as one 
 See: [The current research frontier](../08-history-and-frontier/current-frontier-directions.md).
 
 **Hypertree width** (`hw`, `ghw`, `fhw`) — the width parameters measuring how far a query hypergraph
-is from acyclic. Only `hw ≤ k` is polynomial-time checkable for fixed k; `ghw ≤ 2` and `fhw ≤ 2` are
-NP-complete. The same parameter indexes hypergraph-neural-network expressivity, which is the KB's
-most striking cross-field connection.
+is from acyclic, with `fhw ≤ ghw ≤ hw ≤ 3·ghw + 1`. `hw ≤ k` is polynomial-time checkable for every
+fixed k; `ghw ≤ k` is NP-complete for k ≥ 2 and `fhw ≤ 2` too, with tractable cases under bounded
+intersections or bounded degree. The same parameter (`ghw`) indexes hypergraph-neural-network
+expressivity, which is the KB's most striking cross-field connection.
 See: [Classical hypergraph theory results](../01-foundations/hypergraph-theory-results.md)
 and [Hypergraph neural networks](../05-query-embeddings-reasoning/hypergraph-neural-networks.md).
 
@@ -1805,8 +1809,8 @@ See: [Hypergraph drawing algorithms](../06-visualization/hypergraph-drawing-algo
 
 **WCOJ** (worst-case optimal join) — a join algorithm whose running time matches the AGM bound;
 invented for exactly the access pattern a hypergraph query has, a multiway join over relations
-sharing variables. Any KHG engine that plans joins pairwise is provably suboptimal on cyclic
-queries.
+sharing variables. Pairwise (join-only) plans are provably slower than worst-case optimal on some
+cyclic queries, the triangle among them, on worst-case instances.
 See: [N-ary relations, relational algebra and the query hypergraph](../01-foundations/n-ary-relations-and-relational-algebra.md).
 
 **WD20K** — the inductive hyper-relational benchmark family: WD20K(25) provides textual descriptions

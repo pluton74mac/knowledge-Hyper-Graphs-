@@ -273,3 +273,13 @@ GitHub REST API was not reachable from this session).
 - No δ-hyperbolicity / Gromov-hyperbolicity measurement published for JF17K, FB-AUTO, M-FB15K, WikiPeople or WD50K; none of the five hyperbolic n-ary papers reports one.
 - No system located that exposes relational-algebra primitives over a knowledge-hypergraph embedding store as planner-callable operations for an LLM. Nearest neighbours: LOTUS semantic operators (tables, not embeddings), StarQE/NQE/SQE/LKHGT (operators internal to the model), agentic GraphRAG frameworks (topological, not algebraic actions).
 - Lu, Tupikina and Alam 2026 (v3) does not index HCNet, HART, THOR, HYPER², PolygonE or the gyro-centroid follow-up; "gyro" does not occur in the paper.
+
+## Added by project P6 (2026-09-25) — width recognition and reification
+
+Cited by [`kb/05-query-embeddings-reasoning/query-languages-for-hypergraphs.md`](../../kb/05-query-embeddings-reasoning/query-languages-for-hypergraphs.md)
+§10.2 and §10.3, corrected from P6 research report 01 §1.5 and checked against these sources on 2026-09-25.
+
+- Gottlob, G., Lanzinger, M., Pichler, R., Razgon, I. "Complexity Analysis of Generalized and Fractional Hypertree Decompositions." *Journal of the ACM* 68(5):1–50, 2021; arXiv:2002.05239. https://arxiv.org/abs/2002.05239 and https://doi.org/10.1145/3457374 (ghw ≤ 2 and fhw ≤ 2 NP-complete; tractable cases under the BIP, BMIP and bounded degree)
+- Grohe, M., Marx, D. "Constraint Solving via Fractional Edge Covers." *ACM Transactions on Algorithms* 11(1), article 4, 2014; arXiv:1711.04506. https://arxiv.org/abs/1711.04506 and https://doi.org/10.1145/2636918 (ghw ≤ hw ≤ 3·ghw + 1, citing Adler, Gottlob and Grohe 2007)
+- Brault-Baron, J. "Hypergraph Acyclicity Revisited." *ACM Computing Surveys* 49(3), 2016; arXiv:1403.7076. https://arxiv.org/abs/1403.7076 (Remark 7: on graphs all acyclicity degrees coincide, so a reified query is acyclic exactly when the n-ary one is Berge-acyclic)
+- Project P6, research report 01, "Acyclicity degrees, width measures and hypertree-decomposition solvers", 2026-09-24, §1.3 (reification probe: hw 1 → 2 for a covered triangle, 3 → 4 for K5, 2 → 2 for a bare triangle) and §1.5. [projects/p6-schema-width/research/01-theory-and-solvers.md](../../projects/p6-schema-width/research/01-theory-and-solvers.md)
