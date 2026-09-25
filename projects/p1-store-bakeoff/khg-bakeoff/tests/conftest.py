@@ -39,6 +39,7 @@ def _local_only(host, *args, **kwargs):
 
 socket.getaddrinfo = _local_only
 os.environ.setdefault("P1_TMP", tempfile.gettempdir())
+os.environ.setdefault("KHG_BAKEOFF_FIXTURES", str(FIXTURES))
 
 
 @pytest.fixture(scope="session")

@@ -118,10 +118,16 @@ FIXTURE_DIR = Path(data.path("fixture/fixture.c1.json")).parent
 
 
 def _edge_dir() -> Path:
+    """``KHG_BAKEOFF_FIXTURES``, else ``projects/p1-store-bakeoff/fixtures`` next to an editable install, else
+    ``fixtures`` in or above the working directory."""
     env = os.environ.get("KHG_BAKEOFF_FIXTURES")
     if env:
         return Path(env)
-    return Path(__file__).resolve().parents[3] / "fixtures"
+    for d in (Path(__file__).resolve().parents[3] / "fixtures", Path.cwd() / "fixtures",
+              Path.cwd().parent / "fixtures"):
+        if (d / "edge.c1.json").is_file():
+            return d
+    raise FileNotFoundError("the edge-case container: set KHG_BAKEOFF_FIXTURES to projects/p1-store-bakeoff/fixtures")
 
 
 def datasets() -> dict[str, tuple[Path, Path]]:

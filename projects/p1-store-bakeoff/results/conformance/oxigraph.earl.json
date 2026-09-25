@@ -1,0 +1,2446 @@
+{
+ "@context": {
+  "@vocab": "http://www.w3.org/ns/earl#",
+  "earl": "http://www.w3.org/ns/earl#",
+  "dct": "http://purl.org/dc/terms/",
+  "title": "dct:title",
+  "identifier": "dct:identifier",
+  "hasVersion": "dct:hasVersion",
+  "outcome": {
+   "@type": "@vocab"
+  },
+  "mode": {
+   "@type": "@vocab"
+  }
+ },
+ "assertor": {
+  "@id": "khg-contracts:conformance",
+  "@type": [
+   "Assertor",
+   "Software"
+  ],
+  "title": "khg-contracts conformance runner",
+  "hasVersion": "1.0.0.dev0"
+ },
+ "subject": {
+  "@id": "store:oxigraph",
+  "@type": "TestSubject",
+  "title": "oxigraph",
+  "interface_version": "khg-store/1.0.0",
+  "record_format": "khg-record/1.0.0",
+  "capabilities": [
+   "atomic_writes",
+   "goals",
+   "history_export",
+   "key_constraint",
+   "literal_values",
+   "nesting",
+   "ordered_roles",
+   "special_values",
+   "transaction_time",
+   "valid_time"
+  ],
+  "tested_capabilities": [
+   "atomic_writes",
+   "goals",
+   "history_export",
+   "key_constraint",
+   "literal_values",
+   "nesting",
+   "ordered_roles",
+   "special_values",
+   "transaction_time",
+   "valid_time"
+  ],
+  "contracts": {
+   "khg-record": "1.0.0",
+   "khg-relation-schema": "1.0.0",
+   "khg-hif": "1.0.0",
+   "role-convention": "1.0.0",
+   "khg-queue": "1.0.0",
+   "khg-store": "1.0.0",
+   "khg-scenario": "1.0.0",
+   "khg-scorers": "1.0.0",
+   "khg-c5-io": "1.0.0",
+   "khg-c4-items": "0.1.0",
+   "khg-render": "1",
+   "khg-migration-report": "1.0.0",
+   "khg-codes": "1.0.0",
+   "khg-malformed-cases": "1.0.0",
+   "khg-content-key": "1",
+   "khg-core-key": "1",
+   "khg-key-digest": "1",
+   "khg-event": "1",
+   "khg-literal-node": "1",
+   "khg-literal-binding": "1",
+   "khg-special-node": "1",
+   "khg-schema": "1",
+   "khg-decision": "1",
+   "khg-timed": "1"
+  }
+ },
+ "suite": {
+  "format": "khg-scenario/1.0.0",
+  "scenarios": 114,
+  "selected": 114,
+  "only": null
+ },
+ "summary": {
+  "passed": 114,
+  "failed": 0,
+  "inapplicable": 0,
+  "cantTell": 0,
+  "total": 114
+ },
+ "@graph": [
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-EXP-001",
+    "@type": "TestCase",
+    "identifier": "S-EXP-001",
+    "title": "load then export khg-json gives the fixture back, header included",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-EXP-001c",
+    "@type": "TestCase",
+    "identifier": "S-EXP-001c",
+    "title": "load then export khg-json gives the fixture back, header included (capability-limited fixture @fixture[core])",
+    "requires": [
+     "literal_values",
+     "nesting"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-EXP-002",
+    "@type": "TestCase",
+    "identifier": "S-EXP-002",
+    "title": "the fixture rebuilt through put and one supersede event exports equal to it (given its header)",
+    "requires": [
+     "atomic_writes",
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-EXP-003",
+    "@type": "TestCase",
+    "identifier": "S-EXP-003",
+    "title": "the HIF export validates and equals fixture.hif.json",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-EXP-004",
+    "@type": "TestCase",
+    "identifier": "S-EXP-004",
+    "title": "export as_at reconstructs an earlier snapshot",
+    "requires": [
+     "atomic_writes",
+     "transaction_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-EXP-005",
+    "@type": "TestCase",
+    "identifier": "S-EXP-005",
+    "title": "a history export holds every version and reloads to the same store",
+    "requires": [
+     "atomic_writes",
+     "history_export",
+     "literal_values",
+     "transaction_time",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-EXP-006",
+    "@type": "TestCase",
+    "identifier": "S-EXP-006",
+    "title": "a directed slice exports as a directed HIF file",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-EXP-007",
+    "@type": "TestCase",
+    "identifier": "S-EXP-007",
+    "title": "the same writes on two fresh stores give byte-identical exports",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-EXP-007c",
+    "@type": "TestCase",
+    "identifier": "S-EXP-007c",
+    "title": "the same writes on two fresh stores give byte-identical exports (capability-limited fixture @fixture[core])",
+    "requires": [
+     "literal_values",
+     "nesting"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-EXP-008",
+    "@type": "TestCase",
+    "identifier": "S-EXP-008",
+    "title": "a write whose transaction time precedes the store's latest is refused",
+    "requires": [
+     "atomic_writes",
+     "transaction_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-EXP-009",
+    "@type": "TestCase",
+    "identifier": "S-EXP-009",
+    "title": "a store filled only by put exports its own document id",
+    "requires": []
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-EXP-010",
+    "@type": "TestCase",
+    "identifier": "S-EXP-010",
+    "title": "transaction time increases per store: a new id cannot be written before another id's latest",
+    "requires": [
+     "atomic_writes",
+     "transaction_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-EXP-011",
+    "@type": "TestCase",
+    "identifier": "S-EXP-011",
+    "title": "a slice of claims alone keeps its fact reference as an external node and is not complete",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-KEY-001",
+    "@type": "TestCase",
+    "identifier": "S-KEY-001",
+    "title": "a put that breaks the key invariant raises KeyCollision and writes nothing",
+    "requires": [
+     "key_constraint",
+     "literal_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-KEY-002",
+    "@type": "TestCase",
+    "identifier": "S-KEY-002",
+    "title": "find_by_key without as_of returns the key's timeline in id order",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-KEY-002c",
+    "@type": "TestCase",
+    "identifier": "S-KEY-002c",
+    "title": "find_by_key without as_of returns the key's timeline in id order (capability-limited fixture @fixture[core])",
+    "requires": [
+     "literal_values",
+     "nesting"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-KEY-003",
+    "@type": "TestCase",
+    "identifier": "S-KEY-003",
+    "title": "find_by_key with as_of returns the holder at that time",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-KEY-003c",
+    "@type": "TestCase",
+    "identifier": "S-KEY-003c",
+    "title": "find_by_key with as_of returns the holder at that time (capability-limited fixture @fixture[core])",
+    "requires": [
+     "literal_values",
+     "nesting",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-KEY-004",
+    "@type": "TestCase",
+    "identifier": "S-KEY-004",
+    "title": "one preferred fact may stand beside normal ones on a key",
+    "requires": [
+     "atomic_writes",
+     "key_constraint",
+     "literal_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-KEY-005",
+    "@type": "TestCase",
+    "identifier": "S-KEY-005",
+    "title": "a deprecated fact never collides and is hidden by default",
+    "requires": [
+     "key_constraint",
+     "literal_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-KEY-006",
+    "@type": "TestCase",
+    "identifier": "S-KEY-006",
+    "title": "a non-temporal key collides whatever the dates",
+    "requires": [
+     "key_constraint"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-KEY-007",
+    "@type": "TestCase",
+    "identifier": "S-KEY-007",
+    "title": "close_older on a succession: the caller ends the older fact at the newer start, then puts",
+    "requires": [
+     "key_constraint",
+     "literal_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-KEY-008",
+    "@type": "TestCase",
+    "identifier": "S-KEY-008",
+    "title": "dispute: one transition writes the new fact, both statuses and the khg:disputes record",
+    "requires": [
+     "atomic_writes",
+     "key_constraint"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-KEY-009",
+    "@type": "TestCase",
+    "identifier": "S-KEY-009",
+    "title": "a year-precision handover is a succession, not a collision; the possible overlap is a warning",
+    "requires": [
+     "atomic_writes",
+     "key_constraint",
+     "literal_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-KEY-010",
+    "@type": "TestCase",
+    "identifier": "S-KEY-010",
+    "title": "a transition back to asserted drops status_ref and re-checks the key",
+    "requires": [
+     "atomic_writes",
+     "key_constraint"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-KEY-011",
+    "@type": "TestCase",
+    "identifier": "S-KEY-011",
+    "title": "a special value in a key role gives no key digest and never collides",
+    "requires": [
+     "atomic_writes",
+     "key_constraint",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-KEY-012",
+    "@type": "TestCase",
+    "identifier": "S-KEY-012",
+    "title": "an undated fact beside a dated one on a temporal key: no collision, a possible-overlap warning",
+    "requires": [
+     "key_constraint",
+     "literal_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-KEY-013",
+    "@type": "TestCase",
+    "identifier": "S-KEY-013",
+    "title": "two undated facts on one temporal key: no collision, a possible-overlap warning",
+    "requires": [
+     "key_constraint",
+     "literal_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-KEY-014",
+    "@type": "TestCase",
+    "identifier": "S-KEY-014",
+    "title": "same start (R01 case 3b): close_older does not apply, the action is dispute",
+    "requires": [
+     "key_constraint",
+     "literal_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-KEY-015",
+    "@type": "TestCase",
+    "identifier": "S-KEY-015",
+    "title": "backfill (X4): the incoming fact is the older one, so it is the one closed",
+    "requires": [
+     "key_constraint",
+     "literal_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-KEY-016",
+    "@type": "TestCase",
+    "identifier": "S-KEY-016",
+    "title": "a refining claim on the same key is a merge: it becomes a new version of the stored fact",
+    "requires": [
+     "key_constraint",
+     "literal_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-KEY-017",
+    "@type": "TestCase",
+    "identifier": "S-KEY-017",
+    "title": "a new claim on a disputed key joins the dispute",
+    "requires": [
+     "atomic_writes",
+     "key_constraint"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-KEY-018",
+    "@type": "TestCase",
+    "identifier": "S-KEY-018",
+    "title": "one put spanning two relations reports every collision with its own policy",
+    "requires": [
+     "atomic_writes",
+     "key_constraint",
+     "literal_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-KEY-019",
+    "@type": "TestCase",
+    "identifier": "S-KEY-019",
+    "title": "key literals compare exactly: 2019 at year precision and 30 June 2019 are different keys",
+    "requires": [
+     "key_constraint",
+     "literal_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-LIFE-001",
+    "@type": "TestCase",
+    "identifier": "S-LIFE-001",
+    "title": "supersede is one event; the walk forward ends at the current belief",
+    "requires": [
+     "atomic_writes"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-LIFE-002",
+    "@type": "TestCase",
+    "identifier": "S-LIFE-002",
+    "title": "the walk runs backward",
+    "requires": [
+     "atomic_writes"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-LIFE-003",
+    "@type": "TestCase",
+    "identifier": "S-LIFE-003",
+    "title": "the walk branches on conflation",
+    "requires": [
+     "atomic_writes"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-LIFE-004",
+    "@type": "TestCase",
+    "identifier": "S-LIFE-004",
+    "title": "a superseding fact must be asserted when the event runs, so events cannot form a cycle",
+    "requires": [
+     "atomic_writes"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-LIFE-005",
+    "@type": "TestCase",
+    "identifier": "S-LIFE-005",
+    "title": "put cannot create a record in status superseded",
+    "requires": []
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-LIFE-006",
+    "@type": "TestCase",
+    "identifier": "S-LIFE-006",
+    "title": "retraction writes khg:retracts; a retracted fact does not come back",
+    "requires": [
+     "atomic_writes"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-LIFE-007",
+    "@type": "TestCase",
+    "identifier": "S-LIFE-007",
+    "title": "retracting a supersession record restores the superseded fact (undo) and drops its status_ref",
+    "requires": [
+     "atomic_writes"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-LIFE-008",
+    "@type": "TestCase",
+    "identifier": "S-LIFE-008",
+    "title": "binding a goal slot is a new version with the same bid",
+    "requires": [
+     "goals",
+     "literal_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-LIFE-009",
+    "@type": "TestCase",
+    "identifier": "S-LIFE-009",
+    "title": "a fully bound goal becomes asserted by a transition that drops the goal block",
+    "requires": [
+     "goals",
+     "key_constraint",
+     "literal_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-LIFE-010",
+    "@type": "TestCase",
+    "identifier": "S-LIFE-010",
+    "title": "a goal with an unbound slot cannot become asserted",
+    "requires": [
+     "goals",
+     "literal_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-LIFE-011",
+    "@type": "TestCase",
+    "identifier": "S-LIFE-011",
+    "title": "an asserted fact cannot become a goal",
+    "requires": []
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-LIFE-012",
+    "@type": "TestCase",
+    "identifier": "S-LIFE-012",
+    "title": "a supersession chain A -> B -> C: the walk's terminal is C, whose predecessors stay superseded",
+    "requires": [
+     "atomic_writes"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-LIFE-013",
+    "@type": "TestCase",
+    "identifier": "S-LIFE-013",
+    "title": "undoing a keyed correction must resolve the superseding fact, here by a dispute",
+    "requires": [
+     "atomic_writes",
+     "key_constraint"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-LIFE-014",
+    "@type": "TestCase",
+    "identifier": "S-LIFE-014",
+    "title": "a new version of a superseding fact must keep the correction's key digest",
+    "requires": [
+     "atomic_writes",
+     "key_constraint",
+     "literal_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-PUT-001",
+    "@type": "TestCase",
+    "identifier": "S-PUT-001",
+    "title": "put then get returns the record",
+    "requires": []
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-PUT-002",
+    "@type": "TestCase",
+    "identifier": "S-PUT-002",
+    "title": "an identical put is a no-op",
+    "requires": []
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-PUT-003",
+    "@type": "TestCase",
+    "identifier": "S-PUT-003",
+    "title": "one invalid record in a batch writes nothing",
+    "requires": [
+     "atomic_writes"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-PUT-004",
+    "@type": "TestCase",
+    "identifier": "S-PUT-004",
+    "title": "a candidate never enters a store",
+    "requires": []
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-PUT-005",
+    "@type": "TestCase",
+    "identifier": "S-PUT-005",
+    "title": "put reports the validator's code",
+    "requires": [
+     "literal_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-PUT-006",
+    "@type": "TestCase",
+    "identifier": "S-PUT-006",
+    "title": "optimistic concurrency: a stale expect is refused",
+    "requires": []
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-PUT-007",
+    "@type": "TestCase",
+    "identifier": "S-PUT-007",
+    "title": "unbound is accepted in a goal and refused elsewhere",
+    "requires": [
+     "goals",
+     "literal_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-PUT-008",
+    "@type": "TestCase",
+    "identifier": "S-PUT-008",
+    "title": "put cannot change the status of an existing id",
+    "requires": []
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-PUT-009",
+    "@type": "TestCase",
+    "identifier": "S-PUT-009",
+    "title": "a reference to an entity the store does not hold is refused",
+    "requires": []
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-PUT-010",
+    "@type": "TestCase",
+    "identifier": "S-PUT-010",
+    "title": "a value naming a redirected entity is refused (redirects are rewritten in 1.2)",
+    "requires": [
+     "literal_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-001",
+    "@type": "TestCase",
+    "identifier": "S-READ-001",
+    "title": "incident is complete and in id order; goals are not asserted",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-001c",
+    "@type": "TestCase",
+    "identifier": "S-READ-001c",
+    "title": "incident is complete and in id order; goals are not asserted (capability-limited fixture @fixture[core])",
+    "requires": [
+     "literal_values",
+     "nesting"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-002",
+    "@type": "TestCase",
+    "identifier": "S-READ-002",
+    "title": "a node in two roles returns the fact once; the role filter",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-002c",
+    "@type": "TestCase",
+    "identifier": "S-READ-002c",
+    "title": "a node in two roles returns the fact once; the role filter (capability-limited fixture @fixture[core])",
+    "requires": [
+     "literal_values",
+     "nesting"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-003",
+    "@type": "TestCase",
+    "identifier": "S-READ-003",
+    "title": "default reads hide superseded, quoted, deprecated, goal and lifecycle records",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-003c",
+    "@type": "TestCase",
+    "identifier": "S-READ-003c",
+    "title": "default reads hide superseded, quoted, deprecated, goal and lifecycle records (capability-limited fixture @fixture[core])",
+    "requires": [
+     "literal_values",
+     "nesting"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-004",
+    "@type": "TestCase",
+    "identifier": "S-READ-004",
+    "title": "the status filter can include superseded facts",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-004c",
+    "@type": "TestCase",
+    "identifier": "S-READ-004c",
+    "title": "the status filter can include superseded facts (capability-limited fixture @fixture[core])",
+    "requires": [
+     "literal_values",
+     "nesting"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-005",
+    "@type": "TestCase",
+    "identifier": "S-READ-005",
+    "title": "incident on a fact id finds nesting and lifecycle records",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-005c",
+    "@type": "TestCase",
+    "identifier": "S-READ-005c",
+    "title": "incident on a fact id finds nesting and lifecycle records (capability-limited fixture @fixture[core])",
+    "requires": [
+     "literal_values",
+     "nesting"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-006",
+    "@type": "TestCase",
+    "identifier": "S-READ-006",
+    "title": "keyset pagination is stable",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-007",
+    "@type": "TestCase",
+    "identifier": "S-READ-007",
+    "title": "degree equals the length of incident",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-007c",
+    "@type": "TestCase",
+    "identifier": "S-READ-007c",
+    "title": "degree equals the length of incident (capability-limited fixture @fixture[core])",
+    "requires": [
+     "literal_values",
+     "nesting"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-008",
+    "@type": "TestCase",
+    "identifier": "S-READ-008",
+    "title": "find at_least matches a multiset; a repeated role needs distinct bindings",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-008c",
+    "@type": "TestCase",
+    "identifier": "S-READ-008c",
+    "title": "find at_least matches a multiset; a repeated role needs distinct bindings (capability-limited fixture @fixture[core])",
+    "requires": [
+     "literal_values",
+     "nesting"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-009",
+    "@type": "TestCase",
+    "identifier": "S-READ-009",
+    "title": "find exact needs the whole binding multiset",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-009c",
+    "@type": "TestCase",
+    "identifier": "S-READ-009c",
+    "title": "find exact needs the whole binding multiset (capability-limited fixture @fixture[core])",
+    "requires": [
+     "literal_values",
+     "nesting"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-010",
+    "@type": "TestCase",
+    "identifier": "S-READ-010",
+    "title": "find by a time literal: precision takes part in equality; the calendar does not",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-010c",
+    "@type": "TestCase",
+    "identifier": "S-READ-010c",
+    "title": "find by a time literal: precision takes part in equality; the calendar does not (capability-limited fixture @fixture[core])",
+    "requires": [
+     "literal_values",
+     "nesting"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-011",
+    "@type": "TestCase",
+    "identifier": "S-READ-011",
+    "title": "quantities match with unit and bounds",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-011c",
+    "@type": "TestCase",
+    "identifier": "S-READ-011c",
+    "title": "quantities match with unit and bounds (capability-limited fixture @fixture[core])",
+    "requires": [
+     "literal_values",
+     "nesting"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-012",
+    "@type": "TestCase",
+    "identifier": "S-READ-012",
+    "title": "ordered roles match by position; a pattern without a position matches any position",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-013",
+    "@type": "TestCase",
+    "identifier": "S-READ-013",
+    "title": "an any_unbound pattern finds goals, which appear only when asked for",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-014",
+    "@type": "TestCase",
+    "identifier": "S-READ-014",
+    "title": "find matches novalue",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-015",
+    "@type": "TestCase",
+    "identifier": "S-READ-015",
+    "title": "get ignores the Where filters",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-015c",
+    "@type": "TestCase",
+    "identifier": "S-READ-015c",
+    "title": "get ignores the Where filters (capability-limited fixture @fixture[core])",
+    "requires": [
+     "literal_values",
+     "nesting"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-016",
+    "@type": "TestCase",
+    "identifier": "S-READ-016",
+    "title": "get_many returns every requested record in one call",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-016c",
+    "@type": "TestCase",
+    "identifier": "S-READ-016c",
+    "title": "get_many returns every requested record in one call (capability-limited fixture @fixture[core])",
+    "requires": [
+     "literal_values",
+     "nesting"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-017",
+    "@type": "TestCase",
+    "identifier": "S-READ-017",
+    "title": "timeless relations pass every as_of filter, in both modes",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-017c",
+    "@type": "TestCase",
+    "identifier": "S-READ-017c",
+    "title": "timeless relations pass every as_of filter, in both modes (capability-limited fixture @fixture[core])",
+    "requires": [
+     "literal_values",
+     "nesting",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-018",
+    "@type": "TestCase",
+    "identifier": "S-READ-018",
+    "title": "an empty pattern lists the relation's facts, paginated",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-018c",
+    "@type": "TestCase",
+    "identifier": "S-READ-018c",
+    "title": "an empty pattern lists the relation's facts, paginated (capability-limited fixture @fixture[core])",
+    "requires": [
+     "literal_values",
+     "nesting"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-READ-019",
+    "@type": "TestCase",
+    "identifier": "S-READ-019",
+    "title": "vocabulary ids (units, globes, rank reasons) are not nodes: incident finds nothing",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-TIME-001",
+    "@type": "TestCase",
+    "identifier": "S-TIME-001",
+    "title": "as_of filters by valid time; an ended fact stays asserted",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-TIME-001c",
+    "@type": "TestCase",
+    "identifier": "S-TIME-001c",
+    "title": "as_of filters by valid time; an ended fact stays asserted (capability-limited fixture @fixture[core])",
+    "requires": [
+     "literal_values",
+     "nesting",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-TIME-002",
+    "@type": "TestCase",
+    "identifier": "S-TIME-002",
+    "title": "as_at before a supersession sees the older belief; so does the walk",
+    "requires": [
+     "atomic_writes",
+     "transaction_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-TIME-003",
+    "@type": "TestCase",
+    "identifier": "S-TIME-003",
+    "title": "definite and possible readings at year precision",
+    "requires": [
+     "literal_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-TIME-004",
+    "@type": "TestCase",
+    "identifier": "S-TIME-004",
+    "title": "as_of and as_at compose",
+    "requires": [
+     "atomic_writes",
+     "literal_values",
+     "transaction_time",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-TIME-005",
+    "@type": "TestCase",
+    "identifier": "S-TIME-005",
+    "title": "an undated fact: definite reads skip it, possible reads and reads without as_of keep it",
+    "requires": [
+     "literal_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-TIME-006",
+    "@type": "TestCase",
+    "identifier": "S-TIME-006",
+    "title": "end_validity keeps the status and adds the end binding",
+    "requires": [
+     "literal_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-TIME-007",
+    "@type": "TestCase",
+    "identifier": "S-TIME-007",
+    "title": "a Julian date is compared on the proleptic Gregorian line",
+    "requires": [
+     "literal_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-TIME-008",
+    "@type": "TestCase",
+    "identifier": "S-TIME-008",
+    "title": "an end-only (until) fact has no definite validity: the start is unknown",
+    "requires": [
+     "literal_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-TIME-009",
+    "@type": "TestCase",
+    "identifier": "S-TIME-009",
+    "title": "a somevalue end (ended, date unknown) has no definite validity after the start window",
+    "requires": [
+     "literal_values",
+     "special_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-TIME-010",
+    "@type": "TestCase",
+    "identifier": "S-TIME-010",
+    "title": "precision 7 is an ordinal century: +1900/7 is 1801-1900",
+    "requires": [
+     "literal_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-TIME-011",
+    "@type": "TestCase",
+    "identifier": "S-TIME-011",
+    "title": "precision 6 is an ordinal millennium; precision 8 is a decade",
+    "requires": [
+     "literal_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-TIME-012",
+    "@type": "TestCase",
+    "identifier": "S-TIME-012",
+    "title": "a BCE Julian date: historical year -44 is astronomical -43, and Julian 15 March is Gregorian 13 March",
+    "requires": [
+     "literal_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-VER-001",
+    "@type": "TestCase",
+    "identifier": "S-VER-001",
+    "title": "each write makes a version; get(as_at) returns the older one",
+    "requires": [
+     "atomic_writes",
+     "literal_values",
+     "transaction_time",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-VER-002",
+    "@type": "TestCase",
+    "identifier": "S-VER-002",
+    "title": "add_evidence makes a new version with the same content",
+    "requires": []
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-VER-003",
+    "@type": "TestCase",
+    "identifier": "S-VER-003",
+    "title": "adding an end date is a refinement; changing a core binding is refused",
+    "requires": [
+     "literal_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-VER-004",
+    "@type": "TestCase",
+    "identifier": "S-VER-004",
+    "title": "a new version that rewrites earlier evidence is refused",
+    "requires": []
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-VER-005",
+    "@type": "TestCase",
+    "identifier": "S-VER-005",
+    "title": "a transition outside the table (retracted to disputed) is refused",
+    "requires": [
+     "atomic_writes"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-VER-006",
+    "@type": "TestCase",
+    "identifier": "S-VER-006",
+    "title": "superseded content is frozen",
+    "requires": [
+     "goals",
+     "literal_values",
+     "nesting",
+     "ordered_roles",
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-VER-006c",
+    "@type": "TestCase",
+    "identifier": "S-VER-006c",
+    "title": "superseded content is frozen (capability-limited fixture @fixture[core])",
+    "requires": [
+     "literal_values",
+     "nesting"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-VER-007",
+    "@type": "TestCase",
+    "identifier": "S-VER-007",
+    "title": "a somevalue binding refined to a value keeps its bid",
+    "requires": [
+     "special_values"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-VER-008",
+    "@type": "TestCase",
+    "identifier": "S-VER-008",
+    "title": "entity versions: labels may change, types only grow, redirect_to is set once",
+    "requires": []
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  },
+  {
+   "@type": "Assertion",
+   "assertedBy": "khg-contracts:conformance",
+   "subject": "store:oxigraph",
+   "test": {
+    "@id": "S-VER-009",
+    "@type": "TestCase",
+    "identifier": "S-VER-009",
+    "title": "end_validity may replace a novalue end (a world change): the status stays asserted",
+    "requires": [
+     "literal_values",
+     "special_values",
+     "valid_time"
+    ]
+   },
+   "mode": "automatic",
+   "result": {
+    "@type": "TestResult",
+    "outcome": "passed"
+   }
+  }
+ ]
+}
