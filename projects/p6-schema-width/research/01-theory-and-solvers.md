@@ -269,13 +269,15 @@ orderings is the simplest instance of that idea (section 4.6).
 
 **What the number is a number of.** P2's `schema_hypergraph` puts one vertex per global role and one edge per
 relation (DESIGN §3, F4). That is Fagin's database-scheme hypergraph with roles as attributes. Its width is the width
-of **the conjunctive query that joins all relations on same-named roles** (the universal-relation join). It is also
-the width of every query that joins some of them in that way; β-acyclicity makes that robust to taking subsets
-(1.3). It is **not** the width of arbitrary KHG queries. Those join facts on entity variables, and their hypergraph
+of **the conjunctive query that joins all relations on same-named roles** (the universal-relation join). It does
+not bound the width of a query that joins only some of them in that way: a partial hypergraph can be wider
+(dropping the covering edge from a triangle with a cover turns hw 1 into hw 2). Only β-acyclicity carries over to
+every subset (1.3). *Corrected 2026-09-25: an earlier version said the width held for every such partial join.*
+It is **not** the width of arbitrary KHG queries. Those join facts on entity variables, and their hypergraph
 is the query's, not the schema's. For real Wikidata SPARQL logs the query-side answer is already published: of
 1,915,550 CQOF+ queries, 590,005 have hw 2 and the rest hw 1, and HyperBench's 354 distinct cyclic Wikidata
 hypergraphs all have hw 2 (section 3.4). The survey is still meaningful. It measures how entangled the
-shared-role structure (mainly the qualifiers) is. That entanglement bounds the cost of role-aligned joins, and it
+shared-role structure (mainly the qualifiers) is. That entanglement bounds the cost of the universal role join, and it
 decides whether pairwise checks suffice for global consistency, which is the BFMY side. The claim "predicts query
 cost directly" should be narrowed to that.
 

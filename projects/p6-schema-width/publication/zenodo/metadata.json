@@ -1,0 +1,67 @@
+{
+  "metadata": {
+    "upload_type": "dataset",
+    "title": "Schema width survey: Wikidata qualifier schemas (WDQS snapshot of 2026-09-24) and the Biolink Model v4.4.5, with generated schema files and results",
+    "creators": [
+      {
+        "name": "[OWNER: Family name, Given names]",
+        "affiliation": "[OWNER: affiliation, or delete this key]"
+      }
+    ],
+    "description": "<p>Inputs and outputs of a survey of the acyclicity class (Berge, gamma, beta, alpha or cyclic) and the hypertree widths (hw, ghw, fhw and tw) of knowledge-hypergraph relation-type schemas, read as hypergraphs with roles as vertices and relations as hyperedges: the Wikidata qualifier schemas, declared (allowed-qualifier constraints of 1,155 properties) and observed (qualifier usage of the properties in use), and the 103 association classes of the Biolink Model v4.4.5.</p><p>Contents (one zip archive, paths relative to the source repository): the raw Wikidata Query Service results of 2026-09-24 with their sha256 manifest; the Biolink Model v4.4.5 source files; the generated schema files (khg-relation-schema/1.0.0) with provenance; one full report per survey row (class, witness, widths with methods, validated decompositions, lower-bound witnesses, every solver attempt); the survey table, figure, HyperBench baseline and solver log. README.md describes every file, the licences and how to reproduce the survey with the repository at the commit it names.</p><p>The Wikidata Query Service is live and cannot return the same bytes again; this deposit keeps the snapshot the measured schema files were generated from. The checker, khg-width (MIT), and the survey scripts are in the source repository.</p>",
+    "access_right": "open",
+    "license": "cc0-1.0",
+    "keywords": [
+      "hypergraph acyclicity",
+      "hypertree width",
+      "generalized hypertree width",
+      "fractional hypertree width",
+      "database schemes",
+      "knowledge hypergraphs",
+      "n-ary relations",
+      "Wikidata",
+      "property constraints",
+      "qualifiers",
+      "Biolink Model",
+      "HyperBench"
+    ],
+    "related_identifiers": [
+      {
+        "relation": "isSupplementTo",
+        "identifier": "https://github.com/pluton74mac/knowledge-Hyper-Graphs-",
+        "resource_type": "software"
+      },
+      {
+        "relation": "isDerivedFrom",
+        "identifier": "https://query.wikidata.org/"
+      },
+      {
+        "relation": "isDerivedFrom",
+        "identifier": "https://github.com/biolink/biolink-model/tree/a4180f818e9722c493788c5ff1f047fde64f13a7"
+      },
+      {
+        "relation": "references",
+        "identifier": "10.1111/cts.13302",
+        "resource_type": "publication-article"
+      },
+      {
+        "relation": "references",
+        "identifier": "10.5281/zenodo.7180787",
+        "resource_type": "dataset"
+      },
+      {
+        "relation": "references",
+        "identifier": "10.1145/3440015",
+        "resource_type": "publication-article"
+      },
+      {
+        "relation": "references",
+        "identifier": "10.1145/3294052.3319683",
+        "resource_type": "publication-conferencepaper"
+      }
+    ],
+    "version": "1.0.0",
+    "language": "eng",
+    "notes": "Licences: the Wikidata-derived files and every generated file are CC0-1.0 (Wikidata structured data is CC0, https://www.wikidata.org/wiki/Wikidata:Copyright). Biolink Model v4.4.5: CC0-1.0 by the model's license field; the Biolink repository's LICENSE (included) is Apache-2.0; credit Unni et al. 2022, doi:10.1111/cts.13302. HyperBench (CC BY 4.0, doi:10.5281/zenodo.7180787) is referenced, not redistributed; cite Fischl et al., PODS 2019 and ACM JEA 26 (2021). Any file under another licence (the optional SQID and DeltaBot files) is listed in README.md."
+  }
+}
