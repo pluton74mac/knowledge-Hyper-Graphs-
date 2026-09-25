@@ -7,6 +7,8 @@
   ``{fact}``, no valid-time filter, the latest versions).
 - ``SystemClock``, ``ScenarioClock``; ``Timed(store)``; ``compare_containers(a, b)``.
 - ``conformance.run(factory, *, only=None, capabilities=None)``: the 114 scenarios, as an EARL-shaped report.
+- ``store.table``: the version-table interface and ``TableStore``, the reference store over any version table
+  (ruling 17; an implementation API outside C2).
 - The errors of §6.1: ``ValidationError``, ``KeyCollision``, ``VersionError``, ``ConcurrencyError``, ``NotFound``,
   ``CapabilityMissing``.
 """

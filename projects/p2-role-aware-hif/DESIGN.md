@@ -2566,6 +2566,19 @@ fixed them (`impl-notes/review-*.md`); these are the questions it left open.
     still requires a reason on a deprecated statement). The naming P3a and P6 share is
     [wd-roles r1](../p6-schema-width/wd-roles.md).
 
+**Director's ruling on P1 research 01 (2026-09-25).** Raised by
+[P1 research 01](../p1-store-bakeoff/research/01-backends.md) §9 risk 1 and §10 D2.
+17. **The version-table interface is public.** `khg_contracts.store.table` publishes the interface of
+    `MemoryStore`'s version table (`VersionTableProtocol`, its 13 members `MEMBERS`, `Entry`, `VersionTable`,
+    `bound_nodes`) and `TableStore`, the reference store over any version table: the write path of §6.2 and the reads
+    of §6.3, with two hooks for a backend. `transaction()` wraps each `put`, `apply` and `load` in one backend
+    transaction. `cannot_hold(record)` names a record the backend cannot hold. `put` and `apply` refuse such a
+    record after every §6.2 check, and `load` treats it like a record that needs a missing flag. The refusal is a
+    `ValidationError` without a code; no new KHG code. `MemoryStore` is `TableStore` over the in-memory
+    `VersionTable` and behaves exactly as before. This is an implementation API of khg-contracts **outside the C2
+    contract**: `khg-store/1.0.0`, its protocol, flags and 114 scenarios are unchanged, and a store that implements
+    `Store` another way needs none of it. P1's adapters build on it and import public names only.
+
 **Clarifications the review made normative.** Each is implemented and tested; the notes give the evidence.
 - §2.7 and D014: a history may go from `superseded` to `disputed` in one version (an undone supersession resolved
   by a dispute). An event still may not.

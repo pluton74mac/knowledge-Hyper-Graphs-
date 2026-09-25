@@ -1,8 +1,13 @@
-"""``MemoryStore``: the reference C2 store (DESIGN §6.3), and ``memory_factory`` for the conformance suite.
+"""``MemoryStore``: the reference C2 store (DESIGN §6.3), and ``memory_factory`` for the conformance suite;
+``TableStore``: the same store over any version table (ruling 17, published by ``store.table``).
 
-It holds a version list per id and indexes node -> facts, relation -> facts, (relation, key digest) -> facts and
-``status_ref``. With ``capabilities=None`` it has every flag; a set of flags limits it (the capability-limited runs):
-a call that needs a missing flag raises ``CapabilityMissing``.
+``TableStore`` holds its versions in a version table (``store.table.VersionTableProtocol``): a version list per id
+and the indexes node -> facts, relation -> facts, (relation, key digest) -> facts and ``status_ref``. Its write path
+and its reads use the table only. ``transaction()`` wraps each write (``put``, ``apply``, ``load``) in one backend
+transaction, and ``cannot_hold(record)`` names the records a backend cannot hold; neither does anything by default.
+``MemoryStore`` is ``TableStore`` over the in-memory ``VersionTable``. With ``capabilities=None`` a store has every
+flag; a set of flags limits it (the capability-limited runs): a call that needs a missing flag raises
+``CapabilityMissing``.
 
 - **put** is all or nothing (§6.2): a new id becomes version 1 in status asserted, quoted or goal (candidate is
   D017, other statuses and lifecycle records D014); content equal to the current version is a no-op; anything else
@@ -14,14 +19,18 @@ a call that needs a missing flag raises ``CapabilityMissing``.
   and ``as_at``, and any embedded relation-schema records, which ``iter_records`` and ``export`` give back.
 - **Reads** return copies, in code-point id order, with ``limit``/``after`` keyset pagination; ``get`` ignores
   ``Where``; ``incident(node)`` returns each hyperedge that binds the node (an entity or a fact) once.
+- **A record the backend cannot hold** (``cannot_hold`` is not None) is refused by ``put`` and ``apply`` after every
+  other check, and by ``load`` like a record that needs a missing flag (``on_missing="skip"`` skips it and the
+  records that reference it), with a ``ValidationError`` that has no code and ``info["cannot_hold"]``.
 """
 from __future__ import annotations
 
+import contextlib
 import copy
 import itertools
 import os
 import time
-from typing import Any, Iterable, Iterator, Literal, Mapping, Sequence
+from typing import Any, Callable, Iterable, Iterator, Literal, Mapping, Sequence
 
 from .. import CONTRACTS, jsonio
 from ..errors import CapabilityMissing, ConcurrencyError, ValidationError, VersionError
@@ -39,7 +48,7 @@ from .flags import data_flags, pattern_flags, where_flags
 from .protocol import (INTERFACE_VERSION, RECORD_FORMAT, Clock, LoadReport, Pattern, Receipt, Record, StoreInfo)
 from .where import DEFAULT_WHERE, Where
 
-__all__ = ["MemoryStore", "memory_factory"]
+__all__ = ["MemoryStore", "TableStore", "memory_factory"]
 
 _ANY = object()
 
@@ -60,19 +69,68 @@ def _page(limit: Any, after: Any) -> None:
         raise TypeError(f"after is None or an id, not {type(after).__name__}")
 
 
-class MemoryStore(EventsMixin, StoreBase):
-    """The reference store: every C2 method, in memory, with capability flags for the limited runs."""
+class TableStore(EventsMixin, StoreBase):
+    """Every C2 method over a version table, with capability flags for the limited runs (ruling 17).
 
-    def __init__(self, schema: Any, *, clock: Clock | None = None, capabilities: Iterable[str] | None = None,
-                 store_id: str = "memory"):
+    ``table`` is a function of the store's ``Schema`` that returns the version table (``store.table``); None gives
+    the in-memory ``VersionTable``. A backend subclass overrides ``transaction()`` to make each write one backend
+    transaction, ``cannot_hold(record)`` to refuse what it cannot hold, and any read with a native query.
+    """
+
+    def __init__(self, schema: Any, *, table: Callable[[Any], Any] | None = None, clock: Clock | None = None,
+                 capabilities: Iterable[str] | None = None, store_id: str = "store"):
         super().__init__(schema, clock=clock, capabilities=capabilities, store_id=store_id)
-        self._table = VersionTable(self.schema)
+        self._table = VersionTable(self.schema) if table is None else table(self.schema)
         self._header: dict[str, Any] | None = None
         self._documents: list[dict[str, Any]] = []
+        self._writing = 0
 
     def __repr__(self) -> str:
-        return (f"MemoryStore({self.schema.ref!r}, store_id={self.store_id!r}, ids={len(self._table)}, "
+        return (f"{type(self).__name__}({self.schema.ref!r}, store_id={self.store_id!r}, ids={len(self._table)}, "
                 f"capabilities={len(self.capabilities)} of 10)")
+
+    @property
+    def table(self) -> Any:
+        """The version table."""
+        return self._table
+
+    # ------------------------------------------------------------------------------------------ backend hooks
+
+    def transaction(self) -> contextlib.AbstractContextManager[Any]:
+        """The context of one write (``put``, ``apply`` or ``load``): a backend begins its transaction on entry,
+        commits it when the block ends and rolls it back when the block raises. The default does nothing: the
+        in-memory table is written only after every check has passed."""
+        return contextlib.nullcontext()
+
+    @contextlib.contextmanager
+    def writing(self) -> Iterator[None]:
+        """``transaction()`` around a block, re-entrant: only the outermost block opens one, so a subclass can add
+        its own work (a header row, say) to the transaction of ``put``, ``apply`` or ``load``."""
+        if self._writing:
+            yield
+            return
+        self._writing += 1
+        try:
+            with self.transaction():
+                yield
+        finally:
+            self._writing -= 1
+
+    def cannot_hold(self, record: Mapping[str, Any]) -> dict[str, Any] | None:
+        """None when the backend can hold ``record`` (a record in canonical form, which may lack its store
+        fields); else what it cannot hold, as a dict (``{"reason": ..., ...}``) that becomes
+        ``info["cannot_hold"]`` of the refusal. The default holds everything."""
+        return None
+
+    def _refusal(self, rid: Any, why: Mapping[str, Any]) -> ValidationError:
+        return ValidationError(f"{rid}: the store {self.store_id!r} cannot hold this record ({why.get('reason')})",
+                               info={"id": rid, "cannot_hold": dict(why)})
+
+    def _check_held(self, pending: Pending) -> None:
+        for r in pending.records():
+            why = self.cannot_hold(r)
+            if why is not None:
+                raise self._refusal(r["id"], why)
 
     def info(self) -> StoreInfo:
         return {"interface_version": INTERFACE_VERSION, "record_format": RECORD_FORMAT,
@@ -83,7 +141,17 @@ class MemoryStore(EventsMixin, StoreBase):
 
     def put(self, records: Record | Sequence[Record], *, actor: str, at: str | None = None,
             expect: Mapping[str, int] | None = None) -> Receipt:
-        """Write one record or a batch, all or nothing (§6.2)."""
+        """Write one record or a batch, all or nothing (§6.2), in one ``transaction()``."""
+        with self.writing():
+            return self._put(records, actor=actor, at=at, expect=expect)
+
+    def apply(self, event: Mapping[str, Any], *, actor: str, at: str | None = None) -> Receipt:
+        """Apply one event atomically (``_events``), in one ``transaction()``."""
+        with self.writing():
+            return super().apply(event, actor=actor, at=at)
+
+    def _put(self, records: Record | Sequence[Record], *, actor: str, at: str | None,
+             expect: Mapping[str, int] | None) -> Receipt:
         actor = self._actor(actor)
         when = self._at(at)
         if isinstance(records, (str, bytes)):
@@ -145,7 +213,12 @@ class MemoryStore(EventsMixin, StoreBase):
     def load(self, container: Any, *, header: Mapping[str, Any] | None = None, at: str | None = None,
              on_missing: Literal["raise", "skip"] = "raise") -> LoadReport:
         """Trusted bulk import (§6.2): V001 and D018 (and C010 or C002 for what it cannot index); see the module
-        docstring."""
+        docstring. One ``transaction()``."""
+        with self.writing():
+            return self._load(container, header=header, at=at, on_missing=on_missing)
+
+    def _load(self, container: Any, *, header: Mapping[str, Any] | None, at: str | None,
+              on_missing: str) -> LoadReport:
         started = time.perf_counter()
         if on_missing not in ("raise", "skip"):
             raise ValueError(f"on_missing is raise or skip, not {on_missing!r}")
@@ -236,13 +309,20 @@ class MemoryStore(EventsMixin, StoreBase):
         return head, rows
 
     def _missing(self, staged: list[dict[str, Any]], on_missing: str) -> set[str]:
-        """The ids to skip: those whose records need a missing flag, then those that reference them."""
+        """The ids to skip: those whose records need a missing flag or that the backend cannot hold, then those
+        that reference them."""
         drop: set[str] = set()
         for r in staged:
             missing = sorted(data_flags(r) - self.capabilities)
             if missing and on_missing == "raise":
                 raise CapabilityMissing(missing[0], f"{r['id']} needs {', '.join(missing)}", info={"id": r["id"]})
             if missing:
+                drop.add(r["id"])
+                continue
+            why = self.cannot_hold(r)
+            if why is not None and on_missing == "raise":
+                raise self._refusal(r["id"], why)
+            if why is not None:
                 drop.add(r["id"])
         changed = bool(drop)
         while changed:
@@ -467,6 +547,14 @@ class MemoryStore(EventsMixin, StoreBase):
                 e = self._table.entry_at(rid, t)
                 if e is not None:
                     yield copy.deepcopy(e.record)
+
+
+class MemoryStore(TableStore):
+    """The reference store: ``TableStore`` over the in-memory ``VersionTable``."""
+
+    def __init__(self, schema: Any, *, clock: Clock | None = None, capabilities: Iterable[str] | None = None,
+                 store_id: str = "memory"):
+        super().__init__(schema, clock=clock, capabilities=capabilities, store_id=store_id)
 
 
 def memory_factory(schema: Any, clock: Clock) -> MemoryStore:
