@@ -80,6 +80,25 @@ On the four open questions of [IMPLEMENTATION-NOTES.md](IMPLEMENTATION-NOTES.md)
 4. **TypeDB and slices that are not complete (Q4).** No stub instances: stubs would be emulation, which ruling 8
    excludes. A fact whose player TypeDB does not hold is refused and counted as a TypeDB loss.
 
+## Director's rulings on review 01 (2026-09-25)
+
+[Review 01](review/review-01.md) reproduced every conformance and fidelity result and found 15 defects (3 high, 5
+medium, 7 low). All 15 are fixed in this half, each with a regression test. Two need a ruling:
+
+- **R-06, what "native reads" means for timing.** Every adapter pushes filters, `limit` and counting into its engine
+  where the engine can express them (`degree` is a native count; TypeDB's `find` matches and limits in TypeQL), and
+  fetches the records of one call in a bounded number of queries, never one query per record. The rows returned are
+  rebuilt into records by one shared Python function, the same for every backend, so the Python cost is equal across
+  rows and the engine part is what differs. HIF is a file format: its reads run on the in-memory index built from the
+  file, and its rows are labelled "file, read in memory". DESIGN.md gets a table of round trips per operation and
+  adapter.
+- **R-07, the public table interface.** The header and documents get public accessors in `khg_contracts.store.table`
+  (an addition to ruling 17, still outside C2), and a failed `load` rolls the header back. `MemoryStore` must still
+  behave exactly as before; the differential check of review 01 is re-run.
+
+Also before timing: `put` is timed separately from `load` (research D2), and the TypeDB server is cleaned of
+leftover databases.
+
 ## Log
 
 - 2026-09-25: started (first half: backends and conformance). Pace as P6: one agent per stage, one review round.
