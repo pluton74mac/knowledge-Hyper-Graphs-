@@ -147,7 +147,7 @@ consumer. Each project records the contract versions it consumed.
 | P1 | Format and store bake-off | 1 | finding | not started | | | |
 | P3b | Completion replication | 1 | finding | not started | | | |
 | P5 | Reader study | 1 | finding | not started | | | |
-| P6 | Schema width survey | 1 | finding + tool | in progress | | | C1 khg-relation-schema/1.0.0 |
+| P6 | Schema width survey | 1 | finding + tool | passed | | | C1 khg-relation-schema/1.0.0 |
 | P7 | Fact identity and supersession | 1 | capability | not started | | | |
 | P9 | Extraction gate | 1 | capability | not started | | | |
 | P10 | Judgment-model walker | 1 | capability | not started | | | |
