@@ -1601,7 +1601,7 @@ The suite absorbs [DA]'s scenarios C2-01…27, [DC]'s 18 and [DB]'s 4 (graft [J-
 
 | Backend | Layout | Flags lacking natively | Scenarios that apply |
 |---|---|---|---|
-| Incidence table (PostgreSQL 18, SQLite, DuckDB) | `fact_version`, `binding` (typed literal columns plus window columns from `derived.valid_time`), `entity`, a lifecycle index and a one-row `document` table. Temporal keys use `EXCLUDE USING gist (relation WITH =, key_digest WITH =, int8range(valid_from, valid_to) WITH &&)` over the instants in seconds, or in PostgreSQL 18 `PRIMARY KEY (relation, key_digest, valid WITHOUT OVERLAPS)`; both need `btree_gist` for the text columns. Rank exceptions are handled in code. The database uses collation `C` (A1) | none | 114 |
+| Incidence table (PostgreSQL 18, SQLite, DuckDB) | `fact_version`, `binding` (typed literal columns plus window columns from `derived.valid_time`), `entity`, a lifecycle index and a one-row `document` table. A database constraint can state only the part of D016 that holds for every legal state: the definite windows of the current, asserted, **preferred** facts on one key never overlap. It is `EXCLUDE USING gist (relation WITH =, key_digest WITH =, int8range(valid_from, valid_to) WITH &&)` over those facts' instants in seconds, or in PostgreSQL 18 `PRIMARY KEY (relation, key_digest, valid WITHOUT OVERLAPS)`; both need `btree_gist` for the text columns. The rest of D016 (a preferred fact beside normal ones, the disputed-key rule) stays in code: over every fact the constraint would refuse legal states. Ids sort in code-point order (collation `C`) (A1) | none | 114 |
 | Reified RDF 1.2 (`project.rdf_relation_instance`) | one fact node plus one node per binding, named graphs per version, and the header in the default graph | none with named graphs per version; `transaction_time` and `history_export` without them (A2) | 114 with named graphs per version; 107 without (A2) |
 | Bipartite property graph | `(:Fact)-[:BINDS {bid, role, position, direction}]->(...)`, an indexed `key_digest`, and a `(:Document)` node. This layout has no version nodes; `(:Version)-[:VERSION_OF]->(:Node)`, with bindings pointing at identity nodes, keeps transaction time (A3) | none with version nodes; `transaction_time` and `history_export` without them (A3) | 114 with version nodes; 107 without (A3) |
 | TypeDB 3.x | relations with scoped role names, literals as owned attributes; P1 owns the mapping rules. A relation left without role players is deleted at commit, a repeated player in one role collapses, bids and positions have no home, and an instance has one type (A4) | `ordered_roles`, `special_values`, `goals`, `transaction_time`, `history_export` | 70 (find 5 of 13, incident 13 of 24, export 3 of 11) |
@@ -1613,6 +1613,15 @@ The suite absorbs [DA]'s scenarios C2-01…27, [DC]'s 18 and [DB]'s 4 (graft [J-
   instants in seconds. PostgreSQL 16 and 18 both refused an overlapping copy of `f:king-14` with the `EXCLUDE` form,
   and 18 with `WITHOUT OVERLAPS`. A PostgreSQL column under an ICU collation sorts ids out of code-point order, so
   the database uses `C` (§2.3, §7; probes `sql_incidence.py`, `ordering_probe.py`).
+  - *Corrected after P1's build and review 01 (R-11, R-05).* The constraint covers the current asserted
+    **preferred** facts only. Over every asserted fact it refuses legal D016 states, such as a preferred fact
+    beside two overlapping normal ones, and code cannot relax a database constraint. The rest of D016 stays in code
+    ([P1 IMPLEMENTATION-NOTES §3](../p1-store-bakeoff/IMPLEMENTATION-NOTES.md), the key guard).
+  - A write changes the guard rows once, at its end, so a batch that moves `preferred` from one fact to another is
+    accepted in any order.
+  - Code-point order needs more than a `C` database: an ICU cluster gives a database created with `LOCALE 'C'` the
+    ICU provider. P1 puts `COLLATE "C"` on every text column and creates its database with
+    `LOCALE_PROVIDER libc`.
 - **A2.** With a named graph per version, the RDF layout answered 85 of 85 transaction-time checks and all 46
   read-only scenarios. The row's own layout therefore keeps `transaction_time` and `history_export`, and 107 is the
   count for a layout without named graphs (§3; probe `rdf_relation_instance.py`).
@@ -1620,6 +1629,10 @@ The suite absorbs [DA]'s scenarios C2-01…27, [DC]'s 18 and [DB]'s 4 (graft [J-
   114 apply (§4; probe `pg_cypher.py`).
 - **A4.** The reasons behind TypeDB's gaps were probed in TypeDB CE 3.13.6 (§5.2, §5.5; probes `typedb_features.py`,
   `typedb_lists.py`, `typedb_probe.py`). The figure 70 stands.
+  - *Added after P1's build (review 01, R-11).* A relation type that relates no role cannot even be defined
+    (`[SVL41] Non abstract relation type … must relate at least one role`). A literal-only relation therefore has no
+    TypeQL form at all, which is stronger than "a relation left without role players is deleted at commit"; its
+    facts are refused ([P1 IMPLEMENTATION-NOTES §3, §5](../p1-store-bakeoff/IMPLEMENTATION-NOTES.md)).
 
 P1's adapters since measured 114 of 114 on SQLite, PostgreSQL 18.6, Oxigraph and Neo4j, 70 on TypeDB and 107 on HIF
 ([P1 results](../p1-store-bakeoff/results/conformance/summary.md)).
@@ -2595,6 +2608,19 @@ fixed them (`impl-notes/review-*.md`); these are the questions it left open.
     `VersionTable` and behaves exactly as before. This is an implementation API of khg-contracts **outside the C2
     contract**: `khg-store/1.0.0`, its protocol, flags and 114 scenarios are unchanged, and a store that implements
     `Store` another way needs none of it. P1's adapters build on it and import public names only.
+
+    *Addition to ruling 17 (2026-09-25, the director's ruling on P1 review 01, R-07; and R-02).* Still outside C2,
+    still additive; `MemoryStore` behaves exactly as before (review 01's differential check, re-run, is identical).
+    - **Header state.** The header `load` keeps and its embedded documents have public accessors on `TableStore`,
+      `kept_header` and `kept_documents` (copies; settable when a backend reopens a store). A backend persists them
+      inside the write's transaction.
+    - **Rollback.** `writing()` restores both when the outermost write fails, so a failed `load` rolls the header
+      back. The backend's `transaction()` rolls back the table. The clock is not rolled back; a failed write may
+      have moved it forward, which only makes later transaction times later.
+    - **An optional table member, `prefetch(records)`** (`store.table.OPTIONAL_MEMBERS`). `load` calls it once with
+      the records it is about to check, before its checks read their ids. A backend table can then read those
+      ids' versions in a bounded number of queries (none on an empty store) instead of one query per record.
+      `VersionTable` does not have it.
 18. **Records a backend cannot hold (2026-09-25, from P1).** A valid record that a backend cannot hold (an instant
     beyond its integer range, a relation shape its type system refuses) is refused with a `ValidationError` without
     a code, naming the reason in `info["cannot_hold"]`, as ruling 17 describes. As with ruling 13, a registered code

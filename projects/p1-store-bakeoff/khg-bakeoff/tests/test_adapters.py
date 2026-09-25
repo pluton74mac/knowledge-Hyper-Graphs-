@@ -1,13 +1,17 @@
 """Adapter behaviour the suite does not reach (DESIGN §2–§3): refusals through the existing error model,
-all-or-nothing writes, reopening a persistent store, the HIF file, the PostgreSQL key guard and collation."""
+all-or-nothing writes, the header state (review 01, R-07), reopening a persistent store, the HIF file, the
+PostgreSQL key guard (R-04) and code-point order (R-05)."""
 from __future__ import annotations
 
 import copy
 import json
+import os
+import re
+from pathlib import Path
 
 import pytest
 
-from khg_contracts.errors import CapabilityMissing, ValidationError
+from khg_contracts.errors import CapabilityMissing, KeyCollision, ValidationError
 from khg_contracts.store import MemoryStore, ScenarioClock, compare_containers, conformance, parse_timestamp
 from khg_contracts.validate import validate_hif
 
@@ -112,6 +116,52 @@ def test_a_failed_batch_writes_nothing(name, schema, fixture_doc):
         s.close()
 
 
+# ------------------------------------------------------------------------------------------------ header state (R-07)
+
+
+def test_r07_the_adapters_use_the_public_header_accessors_only():
+    """Ruling 17 as amended on review 01: no adapter reads or writes ``TableStore``'s private header state."""
+    import khg_bakeoff
+
+    paths = sorted(Path(khg_bakeoff.__file__).parent.glob("*.py"))
+    assert len(paths) >= 15
+    for path in paths:
+        text = path.read_text(encoding="utf-8")
+        assert not re.search(r"\._header\b|\._documents\b", text), path.name
+        assert "store._table" not in text and "store._writes" not in text, path.name
+
+
+def _break_the_commit(name, s, monkeypatch):
+    """Make the backend fail after ``TableStore.load`` has kept the new header, inside the write's transaction."""
+    if name == "oxigraph":
+        monkeypatch.setattr(s, "_pending_quads", lambda: (_ for _ in ()).throw(RuntimeError("commit failed")))
+    elif name == "hif":
+        monkeypatch.setattr(s, "_persist", lambda: (_ for _ in ()).throw(RuntimeError("commit failed")))
+    else:
+        monkeypatch.setattr(s._table, "flush", lambda: (_ for _ in ()).throw(RuntimeError("commit failed")))
+
+
+@pytest.mark.parametrize("name", backend_params())
+def test_r07_a_failed_load_rolls_the_header_back(name, schema, fixture_doc, monkeypatch):
+    s = fresh(name, schema)
+    try:
+        first = {"header": fixture_doc["header"], "records": [r for r in fixture_doc["records"]
+                                                              if r["kind"] == "entity"]}
+        s.load(copy.deepcopy(first))
+        kept, before = s.info()["header"], s.export("khg-jsonl")
+        other = copy.deepcopy(fixture_doc)
+        other["header"]["document_id"] = "doc:failed-load"
+        other["records"] = [r for r in other["records"] if r["kind"] == "hyperedge"]
+        with monkeypatch.context() as m:
+            _break_the_commit(name, s, m)
+            with pytest.raises(RuntimeError):
+                s.load(other, on_missing="skip")
+        assert s.info()["header"] == s.kept_header == kept and s.kept_documents == []
+        assert s.export("khg-jsonl") == before
+    finally:
+        s.close()
+
+
 # ------------------------------------------------------------------------------------------------ reopening
 
 
@@ -174,10 +224,9 @@ def test_a_hif_store_without_a_kept_header_computes_it(schema, fixture_doc):
 
 
 @pytest.mark.parametrize("name", backend_params(("postgres",)))
-def test_postgres_collation_and_key_guard(name, schema, fixture_doc):
+def test_postgres_key_guard(name, schema, fixture_doc):
     s = fresh(name, schema)
     try:
-        assert s.db.q("SELECT datcollate FROM pg_database WHERE datname = current_database()")[0][0] == "C"
         s.load(copy.deepcopy(fixture_doc))
         assert s.key_guard == "on" and s.db.q("SELECT count(*) FROM key_period")[0][0] == 0
         king = conformance.suite().resolve({"@": "f:king-14", "set": {"rank": "preferred"}})
@@ -210,3 +259,119 @@ def test_postgres_suspends_the_guard_when_a_trusted_load_breaks_it(name, schema,
         assert s.key_guard == "suspended" and len(list(s.iter_records())) == 40
     finally:
         s.close()
+
+
+@pytest.mark.parametrize("name", backend_params(("postgres",)))
+def test_r04_postgres_accepts_a_batch_that_moves_preferred_between_facts(name, schema, fixture_doc):
+    """R-04: the guard rows of a write are deleted, then inserted, at its flush, so the order of the batch does not
+    matter; the result equals ``MemoryStore``'s."""
+    entities = [r for r in fixture_doc["records"] if r["kind"] == "entity"]
+    suite = conformance.suite()
+    king = suite.resolve({"@": "f:king-14", "set": {"rank": "preferred"}})
+    king_b = dict(copy.deepcopy(king), id="f:king-14b", rank="normal")
+    swap = [dict(copy.deepcopy(king_b), rank="preferred"), dict(copy.deepcopy(king), rank="normal")]  # B first
+    s, m = fresh(name, schema), MemoryStore(schema, clock=ScenarioClock(), store_id="postgres")
+    try:
+        for store in (s, m):
+            store.put(entities, actor="t")
+            store.put([king, king_b], actor="t")
+            assert store.put(swap, actor="t")["records"] == [("f:king-14", 2, "versioned"),
+                                                              ("f:king-14b", 2, "versioned")]
+        assert compare_containers(m.export("khg-json"), s.export("khg-json"), ignore=()) == []
+        assert [r[0] for r in s.db.q("SELECT fact_id FROM key_period")] == ["f:king-14b"]
+        back = [dict(copy.deepcopy(king), rank="preferred"), dict(copy.deepcopy(king_b), rank="normal")]
+        s.put(back, actor="t")  # and back, the other order
+        assert [r[0] for r in s.db.q("SELECT fact_id FROM key_period")] == ["f:king-14"]
+    finally:
+        s.close()
+
+
+@pytest.mark.parametrize("name", backend_params(("postgres",)))
+def test_r04_a_refusal_of_the_key_guard_is_the_c2_error(name, schema, fixture_doc):
+    """R-04: when the database's guard refuses a write the write path accepted, the caller gets ``KeyCollision``
+    (KHG-D016), never a psycopg error, and nothing is written."""
+    s = fresh(name, schema)
+    try:
+        s.load(copy.deepcopy(fixture_doc))
+        digest = s.db.q("SELECT key_digest FROM fact_version WHERE id = 'f:king-14'")[0][0]
+        s.db.x("INSERT INTO key_period VALUES ('position_held', ?, '(,)'::int8range, 'f:phantom')", (digest,))
+        before = s.export("khg-jsonl")
+        with pytest.raises(KeyCollision) as e:
+            s.put(conformance.suite().resolve({"@": "f:king-14", "set": {"rank": "preferred"}}), actor="t")
+        assert e.value.codes == ("KHG-D016",) and e.value.info["guard"]["facts"] == ["f:king-14"]
+        assert s.export("khg-jsonl") == before and s.get("f:king-14")["rank"] == "normal"
+    finally:
+        s.close()
+
+
+@pytest.mark.parametrize("name", backend_params(("postgres",)))
+def test_r05_every_text_column_orders_by_code_point(name, schema):
+    """R-05: ``COLLATE "C"`` on every text column, and a database whose default collation is code-point order
+    (the check reads the locale provider)."""
+    s = fresh(name, schema)
+    try:
+        cols = s.db.q("SELECT table_name, column_name, collation_name FROM information_schema.columns "
+                      "WHERE table_schema = ? AND data_type = 'text'", (s.db.namespace,))
+        assert len(cols) >= 20 and all(c[2] == "C" for c in cols), [c for c in cols if c[2] != "C"]
+        provider, collate, locale = s.db.q("SELECT datlocprovider, datcollate, datlocale FROM pg_database "
+                                           "WHERE datname = current_database()")[0]
+        assert (provider, collate) == ("c", "C") or (provider, locale) == ("b", "C")
+    finally:
+        s.close()
+
+
+@pytest.fixture()
+def icu_database():
+    """A database with the ICU locale provider on the test server (dropped afterwards), or a skip where the
+    server was built without ICU."""
+    import psycopg
+
+    conninfo = os.environ["KHG_BAKEOFF_POSTGRES"]
+    name = f"khg_icu_{os.getpid()}_{os.urandom(3).hex()}"
+    admin = psycopg.connect(f"{conninfo} dbname=postgres", autocommit=True)
+    try:
+        try:
+            admin.execute(f"CREATE DATABASE {name} LOCALE_PROVIDER icu ICU_LOCALE 'en-US' LOCALE 'C' "
+                          "TEMPLATE template0")
+        except psycopg.errors.FeatureNotSupported as e:
+            pytest.skip(f"this PostgreSQL server was built without ICU: {e}")
+        yield conninfo, name
+    finally:
+        admin.execute(f"DROP DATABASE IF EXISTS {name}")
+        admin.close()
+
+
+ASTRAL_IDS = ["f:Z", "f:a", "f:é", "f:ł", "f:東京", "f:ｚ", "f:\ufffd", "f:\U00020bb7"]  # code-point order
+
+
+@pytest.mark.parametrize("name", backend_params(("postgres",)))
+def test_r05_an_icu_database_is_refused_and_the_columns_order_by_code_point_in_it(name, schema, icu_database):
+    """R-05 against an ICU database: opening a store there is refused, naming the provider; and the adapter's
+    tables, created in it, still order ids and page after one by code point, where ICU orders them otherwise."""
+    import psycopg
+
+    from khg_bakeoff.postgres import TEXT, PostgresStore
+    from khg_bakeoff.sql import ddl
+
+    conninfo, database = icu_database
+    with pytest.raises(ValueError, match="icu"):
+        PostgresStore(schema, conninfo=conninfo, database=database)
+    con = psycopg.connect(f"{conninfo} dbname={database}", autocommit=True)
+    try:
+        assert con.execute("SELECT datlocprovider FROM pg_database WHERE datname = current_database()"
+                           ).fetchone()[0] == "i"
+        assert con.execute("SELECT 'f:\u6771\u4eac' < 'f:\uff5a'").fetchone()[0] is False  # ICU's order here
+        con.execute("CREATE SCHEMA probe")
+        con.execute("SET search_path TO probe")
+        for stmt in ddl("NUMERIC", TEXT):
+            con.execute(stmt)
+        for i in reversed(ASTRAL_IDS):
+            con.execute("INSERT INTO fact_version VALUES (%s, 1, 0, NULL, 'x', 'x', 'r', 'fact', 'asserted', NULL, "
+                        "'normal', 'visible', NULL, 0, 0, 0, 0, 0, '{}')", [i])
+        got = [r[0] for r in con.execute("SELECT id FROM fact_version ORDER BY id")]
+        assert got == ASTRAL_IDS == sorted(ASTRAL_IDS)
+        page = [r[0] for r in con.execute("SELECT id FROM fact_version WHERE id > %s ORDER BY id LIMIT 3",
+                                          ["f:ł"])]
+        assert page == ["f:東京", "f:ｚ", "f:\ufffd"]
+    finally:
+        con.close()

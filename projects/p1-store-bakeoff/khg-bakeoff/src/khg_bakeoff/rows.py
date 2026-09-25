@@ -32,8 +32,7 @@ from khg_contracts.schema import LIFECYCLE_RELATIONS
 
 __all__ = ["BIND_COLS", "ENTITY_COLS", "FACT_COLS", "HEADER_FIELDS", "INT64_HELD", "NEG", "POS", "Pat",
            "assemble", "binding_rows", "entity_row", "fact_row", "instant", "native_binding", "numeric_instant",
-           "prepare",
-           "query_instant", "split", "unheld_instants"]
+           "prepare", "query_instant", "record_of", "split", "unheld_instants", "value_from_identity"]
 
 #: The sentinels of -inf and +inf in an int64 backend.
 NEG, POS = -(2 ** 62), 2 ** 62
@@ -165,14 +164,48 @@ def assemble(fact: Mapping[str, Any], rows: Iterable[Mapping[str, Any]]) -> dict
     return r
 
 
+def record_of(row: Mapping[str, Any], bindings: Iterable[Mapping[str, Any]] = ()) -> dict[str, Any]:
+    """The record of one stored version, from its row: an entity row (``record``, the canonical JSON of the
+    record) or a fact row with its binding rows (``assemble``). Every adapter rebuilds its records with this one
+    function (the director's ruling on review 01, R-06), so the Python work per row is the same on every backend."""
+    if row.get("record") is not None:
+        return json.loads(row["record"])
+    return assemble(row, bindings)
+
+
+def value_from_identity(ident: str | None) -> dict[str, Any] | None:
+    """The value as written, rebuilt from a stored value identity (``record.identity_key``), or None when the
+    identity does not determine it: a time literal's identity is its window and precision, not the time and calendar
+    as written, and an unbound value has no identity. Every other literal's identity is its canonical form."""
+    if ident is None:
+        return None
+    try:
+        value = json.loads(ident)
+    except (TypeError, ValueError):
+        return None
+    if not isinstance(value, dict) or len(value) != 1:
+        return None
+    lit = value.get("literal")
+    if isinstance(lit, dict) and (lit.get("datatype") == "time" or "window" in lit):
+        return None
+    return value
+
+
 def native_binding(row: Mapping[str, Any]) -> dict[str, Any]:
-    """One binding rebuilt from a binding row's own columns (fidelity number 2)."""
+    """One binding rebuilt from a binding row's structural columns and its stored value identity (fidelity
+    number 2), never from ``value_json``: bid, role, position, direction, extensions, ``ident`` (the identity the
+    engine compares on), and the value where the structure or the identity determines it (an entity or fact from
+    ``ref``; a literal or special value from ``ident`` unless it is a time literal, ``value_from_identity``)."""
     b: dict[str, Any] = {"bid": row.get("bid"), "role": row.get("role")}
     kind = row.get("value_kind")
-    if kind in ("entity", "fact"):
+    if kind in ("entity", "fact") and row.get("ref") is not None:
         b["value"] = {kind: row.get("ref")}
-    elif row.get("value_json") is not None:
-        b["value"] = json.loads(row["value_json"])
+        b["ident"] = identity_key(b["value"])
+    else:
+        b["ident"] = row.get("ident")
+        value = value_from_identity(row.get("ident"))
+        if value is not None:
+            b["value"] = value
     if row.get("position") is not None:
         b["position"] = int(row["position"])
     if row.get("direction") is not None:

@@ -5,6 +5,8 @@
 and the indexes node -> facts, relation -> facts, (relation, key digest) -> facts and ``status_ref``. Its write path
 and its reads use the table only. ``transaction()`` wraps each write (``put``, ``apply``, ``load``) in one backend
 transaction, and ``cannot_hold(record)`` names the records a backend cannot hold; neither does anything by default.
+The kept header and documents are public (``kept_header``, ``kept_documents``) and are restored when a write fails;
+``load`` calls the table's optional ``prefetch(records)`` before its checks read the loaded ids.
 ``MemoryStore`` is ``TableStore`` over the in-memory ``VersionTable``. With ``capabilities=None`` a store has every
 flag; a set of flags limits it (the capability-limited runs): a call that needs a missing flag raises
 ``CapabilityMissing``.
@@ -105,16 +107,48 @@ class TableStore(EventsMixin, StoreBase):
     @contextlib.contextmanager
     def writing(self) -> Iterator[None]:
         """``transaction()`` around a block, re-entrant: only the outermost block opens one, so a subclass can add
-        its own work (a header row, say) to the transaction of ``put``, ``apply`` or ``load``."""
+        its own work (a header row, say) to the transaction of ``put``, ``apply`` or ``load``. When the outermost
+        block raises, the kept header and documents are restored as they were before it (the backend rolls back
+        its table); the clock is not rolled back."""
         if self._writing:
             yield
             return
         self._writing += 1
+        state = (self._header, self._documents)
         try:
             with self.transaction():
                 yield
+        except BaseException:
+            self._header, self._documents = state
+            raise
         finally:
             self._writing -= 1
+
+    # ------------------------------------------------------------------------------------------ header state
+
+    @property
+    def kept_header(self) -> dict[str, Any] | None:
+        """The header ``load`` kept (the container's, without ``content`` and ``as_at``), as a copy; None before
+        any load. A backend persists it with its data and sets it when it reopens a store."""
+        return copy.deepcopy(self._header)
+
+    @kept_header.setter
+    def kept_header(self, header: Mapping[str, Any] | None) -> None:
+        if header is not None and not isinstance(header, Mapping):
+            raise TypeError(f"the kept header is a mapping or None, not {type(header).__name__}")
+        self._header = None if header is None else copy.deepcopy(dict(header))
+
+    @property
+    def kept_documents(self) -> list[dict[str, Any]]:
+        """The embedded relation-schema records ``load`` kept, as copies ([] when none)."""
+        return copy.deepcopy(self._documents)
+
+    @kept_documents.setter
+    def kept_documents(self, documents: Sequence[Mapping[str, Any]]) -> None:
+        if isinstance(documents, (str, bytes, Mapping)) or not isinstance(documents, Sequence) or \
+                not all(isinstance(d, Mapping) for d in documents):
+            raise TypeError("the kept documents are a sequence of mappings")
+        self._documents = [copy.deepcopy(dict(d)) for d in documents]
 
     def cannot_hold(self, record: Mapping[str, Any]) -> dict[str, Any] | None:
         """None when the backend can hold ``record`` (a record in canonical form, which may lack its store
@@ -246,6 +280,9 @@ class TableStore(EventsMixin, StoreBase):
                 raise fail("KHG-C010", f"{r['id']}: a loaded hyperedge has a string relation",
                            f"/records/{i}/relation")
             raw.append(r)
+        prefetch = getattr(self._table, "prefetch", None)
+        if prefetch is not None:  # an optional member: the table may read these ids in bulk (store.table)
+            prefetch(raw)
         staged = [normalize(r) for r in self._carry_loaded(raw)]
         skipped = self._missing(staged, on_missing)
         kept = [r for r in staged if r["id"] not in skipped]

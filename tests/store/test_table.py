@@ -13,8 +13,8 @@ import pytest
 from khg_contracts import jsonio
 from khg_contracts.errors import CapabilityMissing, ValidationError
 from khg_contracts.store import ALL_FLAGS, MemoryStore, ScenarioClock, compare_containers, conformance
-from khg_contracts.store.table import (MEMBERS, Entry, TableStore, VersionTable, VersionTableProtocol,
-                                       bound_nodes)
+from khg_contracts.store.table import (MEMBERS, OPTIONAL_MEMBERS, Entry, TableStore, VersionTable,
+                                       VersionTableProtocol, bound_nodes)
 
 
 class JournalTable:
@@ -259,3 +259,94 @@ def test_a_missing_flag_comes_before_what_the_backend_cannot_hold(schema, fixtur
     with pytest.raises(CapabilityMissing):
         s.load(copy.deepcopy(fixture_doc))
     assert s.load(copy.deepcopy(fixture_doc), on_missing="skip")["skipped"] == ["g:who-1774"]
+
+
+# ------------------------------------------------------------------------------------------------ header state
+# (an addition to ruling 17 from P1 review 01, R-07: public accessors, and a failed load rolls the header back)
+
+
+class FailingCommitStore(JournalStore):
+    """A ``JournalStore`` whose backend commit fails when ``fail_commit`` is set: the write path has finished, the
+    kept header has been set, and the backend then rolls the table back."""
+
+    fail_commit = False
+
+    @contextlib.contextmanager
+    def transaction(self):
+        with super().transaction():
+            yield
+            if self.fail_commit:
+                raise RuntimeError("the backend commit failed")
+
+
+def test_the_kept_header_and_documents_are_public(schema, fixture_doc):
+    s = JournalStore(schema, clock=ScenarioClock())
+    assert s.kept_header is None and s.kept_documents == []
+    doc = copy.deepcopy(fixture_doc)
+    embedded = {"kind": "relation-schema", "id": "p1:embedded", "note": "an embedded document"}
+    doc["records"].insert(0, embedded)
+    s.load(doc)
+    want = {k: v for k, v in fixture_doc["header"].items() if k not in ("content", "as_at")}
+    assert s.kept_header == want == s.info()["header"] and s.kept_documents == [embedded]
+    got = s.kept_header
+    got["document_id"] = "changed"  # a copy: changing it changes nothing
+    assert s.kept_header == want
+    reopened = JournalStore(schema, clock=ScenarioClock())
+    reopened.kept_header, reopened.kept_documents = want, [embedded]  # a backend reopening its store
+    assert reopened.info()["header"] == want and list(reopened.iter_records()) == [embedded]
+    with pytest.raises(TypeError):
+        reopened.kept_header = ["not", "a", "mapping"]
+    with pytest.raises(TypeError):
+        reopened.kept_documents = {"kind": "relation-schema"}
+
+
+def test_a_failed_load_rolls_the_header_back(schema, fixture_doc):
+    s = FailingCommitStore(schema, clock=ScenarioClock())
+    s.fail_commit = True
+    doc = copy.deepcopy(fixture_doc)
+    doc["records"].insert(0, {"kind": "relation-schema", "id": "p1:embedded"})
+    with pytest.raises(RuntimeError):
+        s.load(doc)
+    assert s.log == ["begin", "rollback"] and len(s.table) == 0
+    assert s.kept_header is None and s.info()["header"] is None and s.kept_documents == []
+    assert list(s.iter_records()) == []
+    s.fail_commit = False
+    s.load(copy.deepcopy(fixture_doc))  # a header already kept is restored, not dropped
+    kept = s.kept_header
+    s.fail_commit = True
+    other = copy.deepcopy(fixture_doc)
+    other["header"]["document_id"] = "doc:other"
+    other["records"] = [dict(r, id=r["id"] + "-other") for r in other["records"] if r["kind"] == "entity"]
+    with pytest.raises(RuntimeError):
+        s.load(other)
+    assert s.kept_header == kept and s.info()["header"]["document_id"] != "doc:other"
+
+
+class PrefetchingTable(JournalTable):
+    """A ``JournalTable`` with the optional ``prefetch`` member, logging every read of an id."""
+
+    def __init__(self, schema: Any):
+        super().__init__(schema)
+        self.calls: list[tuple[str, Any]] = []
+
+    def prefetch(self, records):
+        self.calls.append(("prefetch", sorted(r["id"] for r in records)))
+
+    def entries(self, rid):
+        self.calls.append(("entries", rid))
+        return super().entries(rid)
+
+
+def test_load_prefetches_its_ids_before_reading_them(schema, fixture_doc):
+    s = TableStore(schema, table=PrefetchingTable, clock=ScenarioClock())
+    s.load(copy.deepcopy(fixture_doc))
+    calls = s.table.calls
+    assert calls[0] == ("prefetch", sorted(r["id"] for r in fixture_doc["records"]))
+    assert sum(1 for c in calls if c[0] == "prefetch") == 1 and len(calls) > 1  # then the per-id reads it serves
+    a = MemoryStore(schema, clock=ScenarioClock())
+    a.load(copy.deepcopy(fixture_doc))
+    assert [jsonio.canonical(r) for r in a.iter_records()] == [jsonio.canonical(r) for r in s.iter_records()]
+    s.table.calls.clear()
+    s.put(s.get("f:reg-1") | {"rank": "preferred"}, actor="t")  # only load prefetches
+    assert all(c[0] != "prefetch" for c in s.table.calls)
+    assert "prefetch" in OPTIONAL_MEMBERS and not hasattr(VersionTable(schema), "prefetch")

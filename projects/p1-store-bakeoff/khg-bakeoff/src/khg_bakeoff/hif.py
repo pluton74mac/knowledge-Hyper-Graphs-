@@ -3,12 +3,15 @@
 
 ``HifStore(schema, *, path=None, clock=None, capabilities=None, store_id="hif")`` keeps an in-memory version table
 (``VersionTable``) as its index. Each write is one transaction: when it ends, the store writes the HIF file of its
-snapshot to a temporary file, swaps it in with ``os.replace`` and **rebuilds its index from the file**, so every read
-is served from what HIF kept. When a write fails, the index is rebuilt from the file as it was. A file that already
-holds a store is reopened.
+snapshot, decodes that text with ``from_hif`` (a snapshot HIF cannot hold fails the write here, before the file is
+touched), writes it to a temporary file, swaps it in with ``os.replace`` and **rebuilds its index from it**, so every
+read is served from what HIF kept. When a write fails, the index is rebuilt from the file as it was. A file that
+already holds a store is reopened.
 
-HIF holds one version per id, so the store declares neither ``transaction_time`` nor ``history_export``
-(ruling 3). Two facts HIF has no place for travel in the file's metadata, under ``hif:metadata`` key ``p1-store``:
+HIF is a file format, not an engine: every read runs ``TableStore``'s logic on the in-memory index rebuilt from the
+file, so its rows are labelled "file, read in memory" (the director's ruling on review 01, R-06); ``trips`` counts
+its file reads and writes. HIF holds one version per id, so the store declares neither ``transaction_time`` nor
+``history_export`` (ruling 3). Two facts HIF has no place for travel in the file's metadata, under ``hif:metadata`` key ``p1-store``:
 whether a document header is kept (a store without one computes it, S-EXP-009) and the store's latest transaction
 time. Everything else is what ``to_hif`` writes. Every write rewrites the whole file: O(size) per write, the KB's
 anti-pattern for a system of record, kept here as the interchange baseline.
@@ -27,7 +30,7 @@ from khg_contracts.store import ALL_FLAGS, format_timestamp, parse_timestamp
 from khg_contracts.store.protocol import RECORD_FORMAT
 from khg_contracts.store.table import Entry, TableStore, VersionTable
 
-from .shared import AdapterMixin
+from .shared import AdapterMixin, Trips
 
 __all__ = ["FLAGS", "HifStore", "HifTable", "MARKER", "factory"]
 
@@ -102,11 +105,12 @@ class HifStore(AdapterMixin, TableStore):
 
     FLAGS = FLAGS
     ENGINE = "HIF file"
-    KIND = "embedded"
+    KIND = "file, read in memory"
     INT64 = False  # the index is Python's; the file holds literals as written
 
     def __init__(self, schema: Any, *, path: str | os.PathLike | None = None, clock: Any = None,
                  capabilities: Iterable[str] | None = None, store_id: str = "hif"):
+        self.trips = Trips()
         super().__init__(schema, table=HifTable, clock=clock,
                          capabilities=self.FLAGS if capabilities is None else capabilities, store_id=store_id)
         self._owned = path is None
@@ -127,7 +131,7 @@ class HifStore(AdapterMixin, TableStore):
 
     # -- the file
     def _file_header(self) -> dict[str, Any]:
-        kept = self._header
+        kept = self.kept_header
         if kept is not None:
             header = json.loads(json.dumps(kept))
         else:
@@ -142,44 +146,58 @@ class HifStore(AdapterMixin, TableStore):
         return header
 
     def _persist(self) -> None:
+        """Write the snapshot as the store's HIF file, and rebuild the index from that file's text. The text is
+        decoded before it replaces the file: a snapshot HIF cannot hold (a fact on a node the file would not
+        declare, say) fails the write and leaves the file as it was."""
         doc = self.export("hif", header=self._file_header())
+        text = jsonio.canonical(doc)
+        inner, header = self._decode(json.loads(text))
         tmp = self.path.with_name(self.path.name + ".tmp")
-        tmp.write_text(jsonio.canonical(doc), encoding="utf-8")
+        tmp.write_text(text, encoding="utf-8")
+        self.trips.hit("file")
         os.replace(tmp, self.path)  # one file, rewritten whole on every write
         self.persist_count += 1
-        self._reload()
+        self._table.replace(inner)
+        self.kept_header = header
 
     def _reload(self) -> None:
-        inner = VersionTable(self.schema)
-        header: dict[str, Any] | None = None
+        """Rebuild the index and the kept header from the file (an empty store when there is none)."""
+        inner, header = VersionTable(self.schema), None
         if self.path.exists() and self.path.stat().st_size > 0:
-            container = hif.from_hif(json.loads(self.path.read_text(encoding="utf-8")), self.schema)
-            for r in container["records"]:
-                if r.get("kind") in ("entity", "hyperedge"):
-                    inner.add(r, parse_timestamp(r["recorded_at"]))
-            header = {k: v for k, v in container["header"].items() if k not in ("content", "as_at")}
-            ext = header.get("extensions") or {}
-            md = ext.get(_METADATA) or {}
-            marker = md.pop(MARKER, None) or {}
-            if not marker.get("hif_metadata") and not md:
-                ext.pop(_METADATA, None)
-            if not marker.get("extensions") and not ext:
-                header.pop("extensions", None)
-            if marker.get("latest") is not None:
-                inner.latest = max(inner.latest or 0, parse_timestamp(marker["latest"]))
-            if not marker.get("header_kept", True):
-                header = None
+            self.trips.hit("file")
+            inner, header = self._decode(json.loads(self.path.read_text(encoding="utf-8")))
         self._table.replace(inner)
-        self._header = header
+        self.kept_header = header
+
+    def _decode(self, doc: Any) -> tuple[VersionTable, dict[str, Any] | None]:
+        """The index and the kept header of one HIF file (``from_hif``; ``ValidationError`` when it is not valid)."""
+        inner = VersionTable(self.schema)
+        container = hif.from_hif(doc, self.schema)
+        for r in container["records"]:
+            if r.get("kind") in ("entity", "hyperedge"):
+                inner.add(r, parse_timestamp(r["recorded_at"]))
+        header: dict[str, Any] | None = {k: v for k, v in container["header"].items() if k not in ("content", "as_at")}
+        ext = header.get("extensions") or {}
+        md = ext.get(_METADATA) or {}
+        marker = md.pop(MARKER, None) or {}
+        if not marker.get("hif_metadata") and not md:
+            ext.pop(_METADATA, None)
+        if not marker.get("extensions") and not ext:
+            header.pop("extensions", None)
+        if marker.get("latest") is not None:
+            inner.latest = max(inner.latest or 0, parse_timestamp(marker["latest"]))
+        if not marker.get("header_kept", True):
+            header = None
+        return inner, header
 
     # -- transactions
     @contextlib.contextmanager
     def transaction(self) -> Iterator[None]:
-        before = jsonio.canonical([self._header, self._documents])
+        before = jsonio.canonical([self.kept_header, self.kept_documents])
         self._table.writes = 0
         try:
             yield
-            if self._table.writes or jsonio.canonical([self._header, self._documents]) != before:
+            if self._table.writes or jsonio.canonical([self.kept_header, self.kept_documents]) != before:
                 self._persist()
         except BaseException:
             self._reload()  # the file is the durable state: drop what the failed write left in the index

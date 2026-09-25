@@ -26,6 +26,12 @@ its reads use thirteen members (``MEMBERS``), which ``VersionTableProtocol`` sta
 The four ``by_*`` indexes return sets of ids that the caller only reads. They cover every version ever written, so a
 read at an earlier ``as_at`` finds its candidates too; the reader then checks the version it picks.
 
+A table may also give one **optional** member (``OPTIONAL_MEMBERS``; an addition to ruling 17 from P1 review 01):
+
+| Member | Meaning |
+|---|---|
+| ``prefetch(records)`` | a hint: ``load`` calls it once, with the records it is about to check (entities and hyperedges with a string id, as given, before normalisation), before its checks read any of their ids. A backend table can then read the versions of those ids in a bounded number of queries (none on an empty store) and answer ``current``, ``entries``, ``entry_at`` and ``latest_version`` for them until the write ends, instead of one query per record |
+
 - ``Entry(record, t, schema)``: one stored version, with its key digest, bounds and identity keys computed on first
   use.
 - ``VersionTable(schema)``: the in-memory table, ``MemoryStore``'s.
@@ -44,6 +50,15 @@ read at an earlier ``as_at`` finds its candidates too; the reader then checks th
     ``ValidationError`` without a code, with ``info["id"]`` and ``info["cannot_hold"]``;
   - any of ``get``, ``history``, ``incident``, ``find``, ``find_by_key``, ``iter_records``, with a native query that
     returns what the table-backed read returns.
+
+  **Header state** (an addition to ruling 17 from P1 review 01). ``load`` keeps the container's header, without
+  ``content`` and ``as_at``, and its embedded relation-schema records. A backend reads them through the public
+  accessors ``kept_header`` (a dict or None) and ``kept_documents`` (a list), both copies, to persist them in the
+  write's transaction (inside ``writing()``), and sets them through the same accessors when it reopens a store.
+
+  **What a failed write undoes.** The backend's ``transaction()`` rolls back the table. ``writing()`` restores the kept
+  header and documents when the outermost write raises, so a failed ``load`` leaves the header as it was. The clock is
+  not rolled back: a failed write may have moved it forward, which only makes later transaction times later.
 """
 from __future__ import annotations
 
@@ -52,11 +67,14 @@ from typing import AbstractSet, Any, Protocol, Sequence, runtime_checkable
 from ._table import Entry, VersionTable, bound_nodes
 from .memory import TableStore
 
-__all__ = ["MEMBERS", "Entry", "TableStore", "VersionTable", "VersionTableProtocol", "bound_nodes"]
+__all__ = ["MEMBERS", "OPTIONAL_MEMBERS", "Entry", "TableStore", "VersionTable", "VersionTableProtocol",
+           "bound_nodes"]
 
 #: The thirteen members of a version table that the write path and the reads use.
 MEMBERS = ("latest", "__contains__", "__len__", "ids", "entries", "current", "entry_at", "latest_version", "add",
            "by_node", "by_relation", "by_key", "by_ref")
+#: The members a version table may give (``load`` calls ``prefetch`` when the table has it).
+OPTIONAL_MEMBERS = ("prefetch",)
 
 
 @runtime_checkable

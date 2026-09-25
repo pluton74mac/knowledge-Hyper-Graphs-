@@ -10,17 +10,34 @@ engine for the results files.
 3. whatever the adapter adds (``_cannot_hold``: TypeDB's single-typed instances, for one).
 
 The refusal is ``TableStore``'s: a ``ValidationError`` without a code, ``info["cannot_hold"]`` holding the dict
-returned here; ``load(on_missing="skip")`` lists the id in ``LoadReport.skipped``.
+returned here; ``load(on_missing="skip")`` lists the id in ``LoadReport.skipped``. ``refusals`` keeps the last reason
+given for each id (the fidelity report states why a load skipped a record).
+
+``Trips`` counts the calls each adapter makes to its engine, by kind (DESIGN §6.1).
 """
 from __future__ import annotations
 
+from collections import Counter
 from typing import Any, Mapping
 
 from khg_contracts.store import ALL_FLAGS
 
 from .rows import INT64_HELD, unheld_instants
 
-__all__ = ["AdapterMixin"]
+__all__ = ["AdapterMixin", "Trips"]
+
+
+class Trips(Counter):
+    """The engine calls an adapter made, by kind (the round trips of DESIGN §6.1): ``read``, a query that returns
+    rows; ``write``, a statement or bulk call that changes data; ``tx``, a transaction's begin, commit, rollback or
+    savepoint; ``file``, a file read or written (HIF). Every adapter counts at the one place it calls its engine."""
+
+    def hit(self, kind: str, n: int = 1) -> None:
+        self[kind] += n
+
+    def calls(self) -> int:
+        """Every call counted."""
+        return sum(self.values())
 
 
 def _malformed(record: Mapping[str, Any]) -> str | None:
@@ -53,8 +70,24 @@ class AdapterMixin:
     INT64 = True
 
     schema: Any
+    #: The engine calls made so far (``Trips``); the adapters count them, ``khg_bakeoff.trips`` reads them.
+    trips: Trips
 
     def cannot_hold(self, record: Mapping[str, Any]) -> dict[str, Any] | None:
+        why = self._why_not(record)
+        if why is not None and isinstance(record, Mapping) and isinstance(record.get("id"), str):
+            self.refusals[record["id"]] = why  # why a load skipped it (the fidelity report)
+        return why
+
+    @property
+    def refusals(self) -> dict[str, dict[str, Any]]:
+        """The last refusal ``cannot_hold`` gave for each id."""
+        got = self.__dict__.get("_refusals")
+        if got is None:
+            got = self.__dict__["_refusals"] = {}
+        return got
+
+    def _why_not(self, record: Mapping[str, Any]) -> dict[str, Any] | None:
         why = _malformed(record)
         if why is not None:
             return {"reason": "malformed_record", "detail": why}

@@ -9,29 +9,40 @@ by SQLite and PostgreSQL.
 
 Versions are immutable rows; a new version sets ``tx_to`` of its predecessor (a system-time period [tx_from, tx_to)
 in microseconds, as in SQL:2011 system versioning). A dialect object gives the connection, the placeholder, the
-instant column type and the bulk insert (``executemany`` in SQLite, ``COPY`` in PostgreSQL).
+instant column type, the text column type (PostgreSQL: ``COLLATE "C"``), the bulk insert (``executemany`` in
+SQLite, ``COPY`` in PostgreSQL) and the batched close of previous versions; it counts every statement it sends
+(``trips``).
+
+**Writes** are buffered and written when the write ends, or before any query of the write that reads them: the
+rows in bulk, then ``tx_to`` of the versions they close in one statement per chunk. **A load** first reads the
+versions of the ids it brings in one query per table and chunk (``prefetch``, the optional member of the version
+table): none at all when the store is empty.
 """
 from __future__ import annotations
 
 import contextlib
 import json
-from typing import Any, Iterator, Mapping, Sequence
+from typing import Any, Iterable, Iterator, Mapping, Sequence
 
+from khg_contracts import jsonio
 from khg_contracts.store import Where
 from khg_contracts.store.table import Entry, TableStore
 
 from .native import NativeReads
-from .rows import BIND_COLS, FACT_COLS, Pat, assemble, binding_rows, entity_row, fact_row, native_binding
+from .rows import BIND_COLS, FACT_COLS, Pat, binding_rows, entity_row, fact_row, native_binding, record_of
 from .shared import AdapterMixin
 
-__all__ = ["SQLStore", "SQLTable", "ddl"]
+__all__ = ["CHUNK", "SQLStore", "SQLTable", "ddl"]
 
 _UNSET: Any = object()
-_CHUNK = 500
+#: Ids per query when a read or a prefetch names them.
+CHUNK = 500
+_TABLES = ("entity_version", "fact_version", "binding")
 
 
 def ddl(instant_type: str, text: str = "TEXT") -> list[str]:
-    """The tables and indexes, with the column type of the four instants (BIGINT or NUMERIC)."""
+    """The tables and indexes, with the column type of the four instants (BIGINT or NUMERIC) and of every text
+    column (PostgreSQL gives ``TEXT COLLATE "C"``, so ids order by code point whatever the database's locale)."""
     return [
         f"CREATE TABLE meta (k {text} PRIMARY KEY, v {text})",
         f"""CREATE TABLE entity_version (id {text} NOT NULL, version INTEGER NOT NULL, tx_from BIGINT NOT NULL,
@@ -54,38 +65,70 @@ def ddl(instant_type: str, text: str = "TEXT") -> list[str]:
     ]
 
 
-class SQLTable:
-    """The version table over the incidence tables (``store.table.VersionTableProtocol``).
+def _chunks(items: Sequence[Any], size: int = CHUNK) -> Iterator[list[Any]]:
+    for i in range(0, len(items), size):
+        yield list(items[i:i + size])
 
-    Inside a write it reads its own uncommitted rows (one connection, one transaction). During a bulk load it
-    buffers the rows and writes them with the dialect's bulk insert when the load ends, or before any read that
-    needs them. Entries read inside a write are cached until the write ends."""
+
+def _marks(n: int) -> str:
+    return ", ".join("?" for _ in range(n))
+
+
+class SQLTable:
+    """The version table over the incidence tables (``store.table.VersionTableProtocol``, with ``prefetch``).
+
+    Inside a write it reads its own uncommitted rows (one connection, one transaction). Rows are buffered and
+    written by ``flush``: when the write ends, or before any query that reads the tables. Entries read inside a
+    write are cached until the write ends; the ids a load prefetched are answered from memory."""
 
     def __init__(self, schema: Any, db: Any):
         self.schema = schema
         self.db = db
-        self.bulk = False
-        self.bulk_empty = False  # set by the store: the bulk load began on an empty store
+        self.bulk = False  # a trusted load is in progress (set by the store)
+        self.bulk_empty = False  # ... and it began on an empty store
         self._cache: dict[tuple[str, int], Entry] = {}
+        self._known: dict[str, list[Entry]] = {}  # prefetched ids: every version, this write's included
+        self._held: set[str] = set()  # prefetched ids the store held before this write
         self._latest: Any = _UNSET
         self._latest_dirty = False
-        self._buf: dict[str, list[dict[str, Any]]] = {"entity_version": [], "fact_version": [], "binding": []}
+        self._buf: dict[str, list[dict[str, Any]]] = {t: [] for t in _TABLES}
         self._buffered: dict[str, dict[str, Any]] = {}  # id -> its newest buffered version row
+        self._closes: dict[str, list[tuple[int, str]]] = {"entity_version": [], "fact_version": []}
 
     # -- helpers
+    def pending(self) -> bool:
+        return bool(self._buffered or self._closes["entity_version"] or self._closes["fact_version"])
+
     def q(self, sql: str, params: Sequence[Any] = ()) -> list[tuple]:
-        if self._buffered:
-            self.flush()
+        """A query over any id: the buffered rows are written first."""
+        if self.pending():
+            self.flush(final=False)
+        return self.db.q(sql, params)
+
+    def q_id(self, rid: str, sql: str, params: Sequence[Any] = ()) -> list[tuple]:
+        """A query about the id ``rid`` only: the buffered rows are written first when one is of ``rid``."""
+        if rid in self._buffered:
+            self.flush(final=False)
         return self.db.q(sql, params)
 
     def reset(self) -> None:
         """Forget the caches and buffers (after a commit or a rollback)."""
         self._cache.clear()
+        self._known.clear()
+        self._held.clear()
         self._latest = _UNSET
         self._latest_dirty = False
         for rows in self._buf.values():
             rows.clear()
         self._buffered.clear()
+        for closes in self._closes.values():
+            closes.clear()
+
+    def is_empty(self) -> bool:
+        """Whether the store holds no version (one query)."""
+        rows = self.q("SELECT CASE WHEN EXISTS (SELECT 1 FROM fact_version) OR EXISTS (SELECT 1 FROM entity_version) "
+                      "THEN 1 ELSE 0 END")
+        return not rows[0][0]
 
     # -- latest
     @property
@@ -98,21 +141,16 @@ class SQLTable:
     @latest.setter
     def latest(self, t: int | None) -> None:
         self._latest = t
-        if self.bulk:
-            self._latest_dirty = True
-        else:
-            self._write_latest()
-
-    def _write_latest(self) -> None:
-        self.db.put_meta("latest", None if self._latest is None else str(self._latest))
-        self._latest_dirty = False
+        self._latest_dirty = True  # written by flush
 
     # -- ids
     def __contains__(self, rid: object) -> bool:
         if not isinstance(rid, str):
             return False
-        return bool(self.q("SELECT 1 FROM fact_version WHERE id = ? UNION ALL "
-                           "SELECT 1 FROM entity_version WHERE id = ? LIMIT 1", (rid, rid)))
+        if rid in self._known:
+            return bool(self._known[rid])
+        return bool(self.q_id(rid, "SELECT 1 FROM fact_version WHERE id = ? UNION ALL "
+                                   "SELECT 1 FROM entity_version WHERE id = ? LIMIT 1", (rid, rid)))
 
     def __len__(self) -> int:
         return int(self.q("SELECT count(*) FROM (SELECT id FROM fact_version UNION "
@@ -121,11 +159,40 @@ class SQLTable:
     def ids(self) -> list[str]:
         return sorted(r[0] for r in self.q("SELECT id FROM fact_version UNION SELECT id FROM entity_version"))
 
+    # -- prefetch (the optional member; TableStore.load calls it)
+    def prefetch(self, records: Iterable[Mapping[str, Any]]) -> None:
+        """Read every version of the ids a load brings: three queries per ``CHUNK`` ids, none on an empty
+        store. ``entries``, ``current``, ``entry_at`` and ``latest_version`` then answer them from memory."""
+        ids = sorted({jsonio.nfc(r["id"]) for r in records} - set(self._known))
+        for rid in ids:
+            self._known[rid] = []
+        if not ids or (self.bulk and self.bulk_empty):
+            return
+        for chunk in _chunks(ids):
+            facts = [dict(zip(FACT_COLS, row)) for row in self.q(
+                f"SELECT {', '.join(FACT_COLS)} FROM fact_version WHERE id IN ({_marks(len(chunk))}) "
+                "ORDER BY id, version", chunk)]
+            binds: dict[tuple[str, int], list[dict[str, Any]]] = {}
+            if facts:
+                for row in self.q(f"SELECT {', '.join(BIND_COLS)} FROM binding WHERE fact_id IN "
+                                  f"({_marks(len(chunk))})", chunk):
+                    b = dict(zip(BIND_COLS, row))
+                    binds.setdefault((b["fact_id"], int(b["version"])), []).append(b)
+            for f in facts:
+                key = (f["id"], int(f["version"]))
+                self._known[f["id"]].append(Entry(record_of(f, binds.get(key, [])), int(f["tx_from"]),
+                                                  self.schema))
+            for rid, version, tx_from, text in self.q(
+                    f"SELECT id, version, tx_from, record FROM entity_version WHERE id IN ({_marks(len(chunk))}) "
+                    "ORDER BY id, version", chunk):
+                self._known[rid].append(Entry(record_of({"record": text}), int(tx_from), self.schema))
+        self._held |= {rid for rid in ids if self._known[rid]}
+
     # -- versions
     def _entries(self, rid: str, cond: str = "", params: Sequence[Any] = (), order: str = "",
                  limit: str = "") -> list[Entry]:
-        facts = self.q(f"SELECT {', '.join(FACT_COLS)} FROM fact_version WHERE id = ?{cond} ORDER BY version{order}"
-                       f"{limit}", (rid, *params))
+        facts = self.q_id(rid, f"SELECT {', '.join(FACT_COLS)} FROM fact_version WHERE id = ?{cond} "
+                               f"ORDER BY version{order}{limit}", (rid, *params))
         if facts:
             out = []
             for row in facts:
@@ -133,30 +200,37 @@ class SQLTable:
                 key = (rid, int(f["version"]))
                 e = self._cache.get(key)
                 if e is None:
-                    rows = [dict(zip(BIND_COLS, b)) for b in self.q(
-                        f"SELECT {', '.join(BIND_COLS)} FROM binding WHERE fact_id = ? AND version = ?",
+                    rows = [dict(zip(BIND_COLS, b)) for b in self.q_id(
+                        rid, f"SELECT {', '.join(BIND_COLS)} FROM binding WHERE fact_id = ? AND version = ?",
                         (rid, f["version"]))]
-                    e = self._cache[key] = Entry(assemble(f, rows), int(f["tx_from"]), self.schema)
+                    e = self._cache[key] = Entry(record_of(f, rows), int(f["tx_from"]), self.schema)
                 out.append(e)
             return out
         out = []
-        for version, tx_from, text in self.q(f"SELECT version, tx_from, record FROM entity_version WHERE id = ?{cond} "
-                                             f"ORDER BY version{order}{limit}", (rid, *params)):
+        for version, tx_from, text in self.q_id(rid, f"SELECT version, tx_from, record FROM entity_version WHERE "
+                                                     f"id = ?{cond} ORDER BY version{order}{limit}", (rid, *params)):
             key = (rid, int(version))
             e = self._cache.get(key)
             if e is None:
-                e = self._cache[key] = Entry(json.loads(text), int(tx_from), self.schema)
+                e = self._cache[key] = Entry(record_of({"record": text}), int(tx_from), self.schema)
             out.append(e)
         return out
 
     def entries(self, rid: str) -> list[Entry]:
+        if rid in self._known:
+            return list(self._known[rid])
         return self._entries(rid)
 
     def current(self, rid: str) -> dict[str, Any] | None:
-        es = self._entries(rid, order=" DESC", limit=" LIMIT 1")
-        return es[0].record if es else None
+        e = self.entry_at(rid)
+        return e.record if e is not None else None
 
     def entry_at(self, rid: str, as_at: int | None = None) -> Entry | None:
+        if rid in self._known:
+            for e in reversed(self._known[rid]):
+                if as_at is None or e.t <= as_at:
+                    return e
+            return None
         if as_at is None:
             es = self._entries(rid, order=" DESC", limit=" LIMIT 1")
         else:
@@ -164,56 +238,66 @@ class SQLTable:
         return es[0] if es else None
 
     def latest_version(self, rid: str) -> int:
-        rows = self.q("SELECT max(version) FROM fact_version WHERE id = ? UNION ALL "
-                      "SELECT max(version) FROM entity_version WHERE id = ?", (rid, rid))
+        if rid in self._known:
+            es = self._known[rid]
+            return int(es[-1].record.get("version", len(es))) if es else 0
+        rows = self.q_id(rid, "SELECT max(version) FROM fact_version WHERE id = ? UNION ALL "
+                              "SELECT max(version) FROM entity_version WHERE id = ?", (rid, rid))
         return max((int(r[0]) for r in rows if r[0] is not None), default=0)
 
     # -- writes
     def add(self, record: dict[str, Any], t: int) -> Entry:
         rid = record["id"]
         if record["kind"] == "entity":
-            table, rows = "entity_version", [entity_row(record, t)]
+            table, row = "entity_version", entity_row(record, t)
             binds: list[dict[str, Any]] = []
         else:
-            table, rows = "fact_version", [fact_row(record, self.schema, t, as_instant=self.db.as_instant)]
+            table, row = "fact_version", fact_row(record, self.schema, t, as_instant=self.db.as_instant)
             binds = binding_rows(record)
         prev = self._buffered.get(rid)
-        if prev is not None:
+        if prev is not None:  # the previous version is still in the buffer
             prev["tx_to"] = t
-        elif not (self.bulk and self.bulk_empty):  # a bulk load into an empty store has no earlier rows
-            self.db.x(f"UPDATE {table} SET tx_to = ? WHERE id = ? AND tx_to IS NULL", (t, rid))
-        if self.bulk:
-            self._buf[table] += rows
-            self._buf["binding"] += binds
-            self._buffered[rid] = rows[0]
-        else:
-            self.db.insert(table, rows)
-            if binds:
-                self.db.insert("binding", binds)
-        self._added(record, rows[0])
+        elif rid in self._known:
+            if rid in self._held:  # a version is already written: close it at the flush
+                self._closes[table].append((t, rid))
+        elif not (self.bulk and self.bulk_empty):
+            self._closes[table].append((t, rid))  # closes nothing when the id is new
+        self._buf[table].append(row)
+        self._buf["binding"] += binds
+        self._buffered[rid] = row
+        self._added(record, row)
         self.latest = t if self.latest is None else max(self.latest, t)
         e = Entry(record, t, self.schema)
         self._cache[(rid, int(record["version"]))] = e
+        if rid in self._known:
+            self._known[rid].append(e)
         return e
 
     def _added(self, record: Mapping[str, Any], row: Mapping[str, Any]) -> None:
-        """A hook after each version is written (PostgreSQL maintains its key guard here)."""
+        """A hook after each version is buffered (PostgreSQL buffers its key-guard change here)."""
 
-    def flush(self) -> None:
-        """Write the buffered rows of a bulk load (and the latest transaction time)."""
+    def flush(self, final: bool = True) -> None:
+        """Write what the write buffered: close the previous versions, then insert the rows in bulk, then the
+        latest transaction time. ``final``: the write is ending (the store's flush before its commit, or a load's),
+        not a query of the write that needs the rows."""
         buffered, self._buffered = self._buffered, {}
-        for table in ("entity_version", "fact_version", "binding"):
+        self._held |= {rid for rid in buffered if rid in self._known}  # written from here on
+        for table, closes in self._closes.items():
+            if closes:
+                self.db.close_versions(table, closes)
+                self._closes[table] = []
+        for table in _TABLES:
             rows = self._buf[table]
             if rows:
                 self.db.bulk_insert(table, rows)
-                rows.clear()
-        if buffered:
-            self._flushed(list(buffered))
+                self._buf[table] = []
+        self._flushed(list(buffered), final)
         if self._latest_dirty:
-            self._write_latest()
+            self.db.put_meta("latest", None if self._latest is None else str(self._latest))
+            self._latest_dirty = False
 
-    def _flushed(self, ids: list[str]) -> None:
-        """A hook after a bulk load's rows are written."""
+    def _flushed(self, ids: list[str], final: bool) -> None:
+        """A hook after the rows are written (PostgreSQL writes its key guard here when ``final``)."""
 
     # -- indexes
     def by_node(self, node: str) -> set[str]:
@@ -235,10 +319,13 @@ class SQLTable:
 
 class SQLStore(AdapterMixin, NativeReads, TableStore):
     """A C2 store on the incidence tables: ``TableStore``'s write path over ``SQLTable``, one database transaction
-    per write, and the reads in SQL. Subclasses give ``_connect`` (a dialect object, see ``sqlite.SQLiteDB``)."""
+    per write, and the reads in SQL. Subclasses give ``db`` (a dialect object, see ``sqlite.SQLiteDB``)."""
 
-    def _open_table(self, db: Any) -> SQLTable:
-        return SQLTable(self.schema, db)
+    db: Any
+
+    @property
+    def trips(self) -> Any:
+        return self.db.trips
 
     # -- transactions
     @contextlib.contextmanager
@@ -250,37 +337,35 @@ class SQLStore(AdapterMixin, NativeReads, TableStore):
         except BaseException:
             self.db.rollback()
             self._table.reset()
-            self._restore_documents()
             raise
-        self.db.commit()
-        self._table.reset()
+        try:
+            self.db.commit()
+        finally:
+            self._table.reset()
 
     def load(self, container: Any, **kwargs: Any) -> Any:
-        """Trusted bulk import (C2 ``load``): ``TableStore``'s checks, the rows written in bulk, the kept header in
-        ``meta``; one transaction."""
+        """Trusted bulk import (C2 ``load``): ``TableStore``'s checks over the prefetched ids, the rows written in
+        bulk, the kept header in ``meta``; one transaction."""
         with self.writing():
-            self._table.bulk_empty = len(self._table) == 0
-            self._table.bulk = True
+            table: SQLTable = self._table
+            table.bulk_empty = table.is_empty()
+            table.bulk = True
             try:
                 report = TableStore.load(self, container, **kwargs)
-                self._table.flush()
+                table.flush()
             finally:
-                self._table.bulk = False
-            self._save_documents()
+                table.bulk = False
+            self._save_header()
         return report
 
-    def _save_documents(self) -> None:
-        self.db.put_meta("header", json.dumps(self._header, ensure_ascii=False))
-        self.db.put_meta("documents", json.dumps(self._documents, ensure_ascii=False))
+    def _save_header(self) -> None:
+        self.db.put_meta("header", jsonio.canonical(self.kept_header))
+        self.db.put_meta("documents", jsonio.canonical(self.kept_documents))
 
-    def _read_documents(self) -> None:
+    def _read_header(self) -> None:
         rows = dict(self.db.q("SELECT k, v FROM meta WHERE k IN ('header', 'documents')"))
-        self._header = json.loads(rows["header"]) if rows.get("header") else None
-        self._documents = json.loads(rows["documents"]) if rows.get("documents") else []
-
-    def _restore_documents(self) -> None:
-        with contextlib.suppress(Exception):
-            self._read_documents()
+        self.kept_header = json.loads(rows["header"]) if rows.get("header") else None
+        self.kept_documents = json.loads(rows["documents"]) if rows.get("documents") else []
 
     # -- the parts of a query
     def _as_of(self, as_of: int | None) -> Any:
@@ -300,7 +385,7 @@ class SQLStore(AdapterMixin, NativeReads, TableStore):
             vs = sorted(values)
             if not vs:
                 return "1 = 0"
-            parts.append(f"{alias}.{col} IN ({', '.join('?' for _ in vs)})")
+            parts.append(f"{alias}.{col} IN ({_marks(len(vs))})")
             params += vs
         if as_of is not None:
             lo, hi = ("s_hi", "e_lo") if where.valid_mode == "definite" else ("s_lo", "e_hi")
@@ -318,92 +403,94 @@ class SQLStore(AdapterMixin, NativeReads, TableStore):
             tail += f" LIMIT {int(limit)}"
         return cond, tail
 
-    # -- native reads
-    def _fact_rows(self, ids: Sequence[str], t: int | None) -> dict[str, dict[str, Any]]:
-        out: dict[str, dict[str, Any]] = {}
-        for i in range(0, len(ids), _CHUNK):
-            chunk = list(ids[i:i + _CHUNK])
-            params: list[Any] = list(chunk)
-            cur = self._current("fv", t, params)
-            for row in self.db.q(f"SELECT {', '.join('fv.' + c for c in FACT_COLS)} FROM fact_version fv WHERE "
-                                 f"fv.id IN ({', '.join('?' for _ in chunk)}) AND {cur}", params):
-                f = dict(zip(FACT_COLS, row))
-                out[f["id"]] = f
-        return out
-
-    def _binding_rows(self, keys: Sequence[tuple[str, int]]) -> dict[tuple[str, int], list[dict[str, Any]]]:
-        out: dict[tuple[str, int], list[dict[str, Any]]] = {k: [] for k in keys}
-        ids = sorted({k[0] for k in keys})
-        for i in range(0, len(ids), _CHUNK):
-            chunk = ids[i:i + _CHUNK]
-            for row in self.db.q(f"SELECT {', '.join(BIND_COLS)} FROM binding WHERE fact_id IN "
-                                 f"({', '.join('?' for _ in chunk)})", chunk):
+    # -- reading records (rows, then rows.record_of)
+    def _fact_rows(self, cond: str, params: Sequence[Any]) -> tuple[list[dict[str, Any]], dict[tuple, list]]:
+        """The fact rows ``fv`` that ``cond`` selects, and the binding rows of exactly those versions (two
+        queries)."""
+        facts = [dict(zip(FACT_COLS, row)) for row in self.db.q(
+            f"SELECT {', '.join('fv.' + c for c in FACT_COLS)} FROM fact_version fv WHERE {cond}", params)]
+        binds: dict[tuple, list] = {}
+        if facts:
+            for row in self.db.q(f"SELECT {', '.join('b.' + c for c in BIND_COLS)} FROM binding b JOIN fact_version fv "
+                                 f"ON b.fact_id = fv.id AND b.version = fv.version WHERE {cond}", params):
                 b = dict(zip(BIND_COLS, row))
-                key = (b["fact_id"], int(b["version"]))
-                if key in out:
-                    out[key].append(b)
-        return out
+                binds.setdefault((b["fact_id"], int(b["version"])), []).append(b)
+        return facts, binds
 
     def _n_records(self, ids: Sequence[str], t: int | None) -> list[dict[str, Any]]:
-        facts = self._fact_rows(ids, t)
-        binds = self._binding_rows([(f["id"], int(f["version"])) for f in facts.values()])
-        entities: dict[str, dict[str, Any]] = {}
-        rest = [i for i in ids if i not in facts]
-        for i in range(0, len(rest), _CHUNK):
-            chunk = rest[i:i + _CHUNK]
+        got: dict[str, dict[str, Any]] = {}
+        for chunk in _chunks(list(ids)):
             params: list[Any] = list(chunk)
-            cur = self._current("ev", t, params)
-            for rid, text in self.db.q(f"SELECT ev.id, ev.record FROM entity_version ev WHERE ev.id IN "
-                                       f"({', '.join('?' for _ in chunk)}) AND {cur}", params):
-                entities[rid] = json.loads(text)
-        out = []
-        for i in ids:
-            if i in facts:
-                f = facts[i]
-                out.append(assemble(f, binds[(i, int(f["version"]))]))
-            elif i in entities:
-                out.append(entities[i])
-        return out
+            cond = f"fv.id IN ({_marks(len(chunk))}) AND {self._current('fv', t, params)}"
+            facts, binds = self._fact_rows(cond, params)
+            for f in facts:
+                got[f["id"]] = record_of(f, binds.get((f["id"], int(f["version"])), []))
+            rest = [i for i in chunk if i not in got]
+            if rest:
+                params = list(rest)
+                cur = self._current("ev", t, params)
+                for rid, text in self.db.q(f"SELECT ev.id, ev.record FROM entity_version ev WHERE ev.id IN "
+                                           f"({_marks(len(rest))}) AND {cur}", params):
+                    got[rid] = record_of({"record": text})
+        return [got[i] for i in ids if i in got]
+
+    def _n_scan(self, t: int | None, history: bool) -> list[dict[str, Any]]:
+        params: list[Any] = []
+        if history:
+            cond = "1 = 1" if t is None else "fv.tx_from <= ?"
+            params = [] if t is None else [t]
+        else:
+            cond = self._current("fv", t, params)
+        facts, binds = self._fact_rows(cond, params)
+        out = [(f["id"], int(f["version"]), record_of(f, binds.get((f["id"], int(f["version"])), [])))
+               for f in facts]
+        eparams: list[Any] = []
+        if history:
+            econd = "1 = 1" if t is None else "ev.tx_from <= ?"
+            eparams = [] if t is None else [t]
+        else:
+            econd = self._current("ev", t, eparams)
+        for rid, version, text in self.db.q(f"SELECT ev.id, ev.version, ev.record FROM entity_version ev WHERE {econd}",
+                                            eparams):
+            out.append((rid, int(version), record_of({"record": text})))
+        out.sort(key=lambda x: (x[0], x[1]))
+        return [r for _, _, r in out]
 
     def _n_get(self, id: str, t: int | None, version: int | None) -> dict[str, Any] | None:
+        if not isinstance(id, str):
+            return None
         if version is None:
             got = self._n_records([id], t)
             return got[0] if got else None
-        cond, params = " AND version = ?", [id, version]
+        params: list[Any] = [id, version]
+        cond = "fv.id = ? AND fv.version = ?"
         if t is not None:
-            cond += " AND tx_from <= ?"
+            cond += " AND fv.tx_from <= ?"
             params.append(t)
-        rows = self.db.q(f"SELECT {', '.join(FACT_COLS)} FROM fact_version WHERE id = ?{cond}", params)
-        if rows:
-            f = dict(zip(FACT_COLS, rows[0]))
-            return assemble(f, self._binding_rows([(id, int(f["version"]))])[(id, int(f["version"]))])
-        rows = self.db.q(f"SELECT record FROM entity_version WHERE id = ?{cond}", params)
-        return json.loads(rows[0][0]) if rows else None
+        facts, binds = self._fact_rows(cond, params)
+        if facts:
+            f = facts[0]
+            return record_of(f, binds.get((f["id"], int(f["version"])), []))
+        rows = self.db.q(f"SELECT record FROM entity_version ev WHERE {cond.replace('fv.', 'ev.')}", params)
+        return record_of({"record": rows[0][0]}) if rows else None
 
     def _n_versions(self, id: str, t: int | None = None) -> list[dict[str, Any]]:
-        cond, params = ("", [id]) if t is None else (" AND tx_from <= ?", [id, t])
-        facts = [dict(zip(FACT_COLS, r)) for r in self.db.q(
-            f"SELECT {', '.join(FACT_COLS)} FROM fact_version WHERE id = ?{cond} ORDER BY version", params)]
+        if not isinstance(id, str):
+            return []
+        cond, params = ("fv.id = ?", [id]) if t is None else ("fv.id = ? AND fv.tx_from <= ?", [id, t])
+        facts, binds = self._fact_rows(cond, params)
         if facts:
-            binds = self._binding_rows([(id, int(f["version"])) for f in facts])
-            return [assemble(f, binds[(id, int(f["version"]))]) for f in facts]
-        return [json.loads(r[0]) for r in self.db.q(
-            f"SELECT record FROM entity_version WHERE id = ?{cond} ORDER BY version", params)]
-
-    def _n_ids(self, t: int | None) -> list[str]:
-        if t is None:
-            rows = self.db.q("SELECT id FROM entity_version UNION SELECT id FROM fact_version")
-        else:
-            rows = self.db.q("SELECT id FROM entity_version WHERE tx_from <= ? UNION "
-                             "SELECT id FROM fact_version WHERE tx_from <= ?", (t, t))
-        return sorted(r[0] for r in rows)
+            facts.sort(key=lambda f: int(f["version"]))
+            return [record_of(f, binds.get((f["id"], int(f["version"])), [])) for f in facts]
+        return [record_of({"record": r[0]}) for r in self.db.q(
+            f"SELECT ev.record FROM entity_version ev WHERE {cond.replace('fv.', 'ev.')} ORDER BY ev.version", params)]
 
     def _n_is_fact(self, id: str) -> bool:
         return bool(self.db.q("SELECT 1 FROM fact_version WHERE id = ? LIMIT 1", (id,)))
 
-    def _n_incident(self, node: str, role: str | None, relation: str | None, where: Where, t: int | None,
-                    as_of: int | None, after: str | None, limit: int | None) -> list[str]:
-        params: list[Any] = [node]
+    def _incident_where(self, node: str, role: str | None, relation: str | None, where: Where, t: int | None,
+                        as_of: int | None, params: list[Any]) -> str:
+        params.append(node)
         sub = "b.ref = ?"
         if role is not None:
             sub += " AND b.role = ?"
@@ -414,10 +501,21 @@ class SQLStore(AdapterMixin, NativeReads, TableStore):
         if relation is not None:
             rel = " AND fv.relation = ?"
             params.append(relation)
-        cond, tail = self._page_sql("fv", after, limit, params)
-        sql = (f"SELECT fv.id FROM fact_version fv WHERE EXISTS (SELECT 1 FROM binding b WHERE b.fact_id = fv.id "
-               f"AND b.version = fv.version AND {sub}) AND {cur} AND {filt}{rel}{cond}{tail}")
-        return [r[0] for r in self.db.q(sql, params)]
+        return (f"EXISTS (SELECT 1 FROM binding b WHERE b.fact_id = fv.id AND b.version = fv.version AND {sub}) "
+                f"AND {cur} AND {filt}{rel}")
+
+    def _n_incident(self, node: str, role: str | None, relation: str | None, where: Where, t: int | None,
+                    as_of: int | None, after: str | None, limit: int | None) -> list[str]:
+        params: list[Any] = []
+        cond = self._incident_where(node, role, relation, where, t, as_of, params)
+        page, tail = self._page_sql("fv", after, limit, params)
+        return [r[0] for r in self.db.q(f"SELECT fv.id FROM fact_version fv WHERE {cond}{page}{tail}", params)]
+
+    def _n_count(self, node: str, role: str | None, relation: str | None, where: Where, t: int | None,
+                 as_of: int | None) -> int:
+        params: list[Any] = []
+        cond = self._incident_where(node, role, relation, where, t, as_of, params)
+        return int(self.db.q(f"SELECT count(*) FROM fact_version fv WHERE {cond}", params)[0][0])
 
     def _n_find(self, relation: str, pats: list[Pat], match: str, where: Where, t: int | None, as_of: int | None,
                 after: str | None, limit: int | None) -> list[str]:
@@ -455,9 +553,24 @@ class SQLStore(AdapterMixin, NativeReads, TableStore):
         return [r[0] for r in self.db.q(f"SELECT fv.id FROM fact_version fv WHERE fv.relation = ? AND "
                                         f"fv.key_digest = ? AND {cur} AND {filt} ORDER BY fv.id", params)]
 
+    def _n_bound_by(self, relation: str, role: str, idents: Sequence[str], where: Where, t: int | None,
+                    as_of: int | None) -> dict[str, list[str]]:
+        out: dict[str, list[str]] = {}
+        for chunk in _chunks(list(idents)):
+            params: list[Any] = [relation, role, *chunk]
+            cur = self._current("fv", t, params)
+            filt = self._filters("fv", where, as_of, params)
+            for ident, rid in self.db.q(
+                    f"SELECT DISTINCT b.ident, fv.id FROM fact_version fv JOIN binding b ON b.fact_id = fv.id AND "
+                    f"b.version = fv.version WHERE fv.relation = ? AND b.role = ? AND b.ident IN "
+                    f"({_marks(len(chunk))}) AND {cur} AND {filt} ORDER BY fv.id", params):
+                out.setdefault(ident, []).append(rid)
+        return out
+
     # -- fidelity number 2
     def native_bindings(self, rid: str) -> list[dict[str, Any]] | None:
-        """The bindings of the current version of fact ``rid`` from the ``binding`` rows alone (not ``payload``)."""
+        """The bindings of the current version of fact ``rid`` from the ``binding`` rows' structural columns and
+        stored identities (``rows.native_binding``: not ``value_json``, not ``payload``)."""
         rows = self.db.q("SELECT version FROM fact_version WHERE id = ? AND tx_to IS NULL", (rid,))
         if not rows:
             return None

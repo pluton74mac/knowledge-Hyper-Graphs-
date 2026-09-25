@@ -1,4 +1,4 @@
-"""The fidelity measures of the gate table (DESIGN §5; research 01 D5; ruling 5).
+"""The fidelity measures of the gate table (DESIGN §5; research 01 D5; ruling 5; review 01, R-08 to R-10).
 
 For each backend and each data set (P2's ``fixture.c1.json`` and ``fixture.history.c1.json``, and P1's edge-case
 container ``fixtures/edge.c1.json``):
@@ -6,19 +6,25 @@ container ``fixtures/edge.c1.json``):
 1. **Container round trip.** ``load(on_missing="skip")`` → ``export("khg-json")`` (with the container's
    ``content`` and ``as_at``) → ``compare_containers`` against the input: the records that differ, split into those
    the store skipped (a missing flag, or ``cannot_hold``, or a reference to a skipped record, each with its reason)
-   and any other difference, which would be a silent loss. ``compare_containers`` ignores the store fields; they are
-   compared separately, against ``MemoryStore`` holding the same records.
-2. **Structural fidelity of the native layer.** Every held fact's bindings rebuilt from the layout's per-binding
-   structure alone (``native_bindings``: rows, triples, edges, role players and owned attributes, incidences),
-   without the record-level copies (``payload``, TypeDB's ``khg-bindings``). Per binding: bids, positions,
-   directions, extensions and literals as written that survive; per fact: whether the role–value multiset
-   survives.
+   and those lost silently. ``compare_containers`` ignores the store fields, so they are compared separately,
+   against ``MemoryStore`` holding the same records; a record whose store fields differ is a silent loss too (the
+   HIF format drops an entity's ``recorded_by``: review 01, R-08).
+2. **Structural fidelity of the native layer.** Every held fact's bindings rebuilt from the layout's native structure
+   alone (``native_bindings``: binding rows, triples, edges and their targets, role players and owned attributes,
+   HIF incidences), never from a JSON copy of the record or of a value (``payload``, TypeDB's ``khg-bindings``, the
+   per-binding ``value_json`` and ``khg:valueJSON``; review 01, R-09). Per binding: bids, positions, directions,
+   extensions and literals as written that survive, where a literal is rebuilt from the value identity the layout
+   stores (``rows.value_from_identity``), so a literal the native layer cannot hold as written (a time literal,
+   whose identity is its window) counts as lost; per fact: whether the role–identity multiset survives, from the
+   stored identities.
 3. **Answer fidelity.** A query set compared with ``MemoryStore``'s answer: ids in order for lists, the record
    for ``get``, steps and terminals for walks, the count for ``degree``; a refusal counts as the same answer when
    the reference refuses alike. The reference is ``MemoryStore`` with the backend's flags, loaded with the same
-   container minus the records the backend skipped, so only the queries are compared. The query sets are the 13
-   hand queries of research 01 on the fixture, ``EDGE`` on the edge container, and the 85 transaction-time checks
-   of research 01 on the history fixture. The full query set (D6) comes in the second half.
+   container minus the records the backend skipped, so only the queries are compared. A query whose reference
+   answer differs from that of a full reference (every flag, the whole container) touches what the backend skipped
+   or lacks: it is not compared, and is counted as n/a (review 01, R-10). The query sets are the 13 hand queries of
+   research 01 on the fixture, ``EDGE`` on the edge container, and the 85 transaction-time checks of research 01 on
+   the history fixture. The full query set (D6) comes in the second half.
 4. **Inapplicable scenarios** by flag, from the conformance run (``conformance.losses``).
 """
 from __future__ import annotations
@@ -155,7 +161,9 @@ def _skip_reasons(store: Any, container: Mapping[str, Any], skipped: Iterable[st
         if missing:
             out[rid] = {"missing_flags": missing}
             continue
-        why = store.cannot_hold(r) if hasattr(store, "cannot_hold") else None
+        why = getattr(store, "refusals", {}).get(rid)  # the reason the load gave (a load-only one included)
+        if why is None and hasattr(store, "cannot_hold"):
+            why = store.cannot_hold(r)
         out[rid] = {"cannot_hold": why} if why else {"references": "a skipped record"}
     return out
 
@@ -169,14 +177,18 @@ def _export(store: Any, container: Mapping[str, Any]) -> dict[str, Any]:
 def round_trip(store: Any, container: Mapping[str, Any], report: Mapping[str, Any],
                reference: Any) -> dict[str, Any]:
     """Number 1: the C1 content against the input (store fields ignored, as ``compare_containers`` does by
-    default), and the store fields against ``reference`` (``MemoryStore`` holding the same records)."""
+    default), and the store fields against ``reference`` (``MemoryStore`` holding the same records). ``silent``
+    lists the records that differ without the store having skipped them: in C1 content or in a store field."""
     exported = _export(store, container)
     diffs = compare_containers(container, exported)
     records = [d for d in diffs if "id" in d]
     skipped = set(report["skipped"])
     stored = [d for d in compare_containers(_export(reference, container), exported, ignore=()) if "id" in d]
+    silent = sorted({d["id"] for d in records if d.get("id") not in skipped} |
+                    {d["id"] for d in stored if d.get("id") not in skipped})
     return {"records_in": len(container["records"]), "records_out": len(exported["records"]),
-            "differing": len(records), "skipped": len(skipped),
+            "differing": len({d["id"] for d in records} | set(silent)), "skipped": len(skipped),
+            "silent": len(silent), "silent_ids": silent,
             "skip_reasons": _skip_reasons(store, container, sorted(skipped)),
             "other_differences": [d["path"] for d in records if d.get("id") not in skipped],
             "header_differences": [d["path"] for d in diffs if "id" not in d],
@@ -186,17 +198,20 @@ def round_trip(store: Any, container: Mapping[str, Any], report: Mapping[str, An
 # ------------------------------------------------------------------------------------------------ 2. native layer
 
 
-def _ident(value: Any) -> str | None:
-    if not isinstance(value, Mapping):
+def _source_ident(value: Any) -> str | None:
+    """The value identity of a source binding (``record.identity_key``); None for an unbound value, which has none
+    (as ``Entry.idents``), or a value that cannot be read."""
+    if not isinstance(value, Mapping) or "unbound" in value:
         return None
-    if "identity" in value:  # TypeDB keeps a literal's identity only
-        return value["identity"]
-    if "unbound" in value:
-        return "unbound:" + jsonio.canonical(value["unbound"].get("var"))
     try:
         return identity_key(value)
     except (KHGError, ValueError, TypeError, KeyError):
         return None
+
+
+def _native_ident(b: Mapping[str, Any]) -> str | None:
+    """The identity a rebuilt binding carries: the one the layout stores (``ident``), else its value's."""
+    return b["ident"] if "ident" in b else _source_ident(b.get("value"))
 
 
 def native(store: Any, container: Mapping[str, Any], skipped: Iterable[str]) -> dict[str, Any]:
@@ -214,21 +229,22 @@ def native(store: Any, container: Mapping[str, Any], skipped: Iterable[str]) -> 
             continue
         tally["facts"] += 1
         sb = src.get("bindings") or []
-        want = sorted((b["role"], _ident(b["value"])) for b in sb)
-        if want == sorted((b["role"], _ident(b.get("value"))) for b in got):
+        want = sorted((b["role"], _source_ident(b["value"]) or "") for b in sb)
+        if want == sorted((b.get("role"), _native_ident(b) or "") for b in got):
             tally["multiset_kept"] += 1
         else:
             lost.setdefault("role-value multiset", []).append(rid)
         by_bid = {b.get("bid"): b for b in got if b.get("bid") is not None}
-        pool = [b for b in got]
+        pool = list(got)
         for b in sb:
             tally["bindings"] += 1
+            ident = _source_ident(b["value"])
             n = by_bid.get(b["bid"])
-            if n is not None and n.get("role") == b["role"] and _ident(n.get("value")) == _ident(b["value"]):
+            if n is not None and n.get("role") == b["role"] and _native_ident(n) == ident:
                 tally["bid_kept"] += 1
+                pool.remove(n)
             else:
-                n = next((x for x in pool if x.get("role") == b["role"] and _ident(x.get("value")) ==
-                          _ident(b["value"])), None)
+                n = next((x for x in pool if x.get("role") == b["role"] and _native_ident(x) == ident), None)
                 if n is not None:
                     pool.remove(n)
             for field in ("position", "direction", "extensions"):
@@ -240,7 +256,8 @@ def native(store: Any, container: Mapping[str, Any], skipped: Iterable[str]) -> 
                         lost.setdefault(field, []).append(f"{rid} {b['bid']}")
             if "literal" in b["value"]:
                 tally["literals"] += 1
-                if n is not None and jsonio.canonical(n.get("value")) == jsonio.canonical(b["value"]):
+                if n is not None and n.get("value") is not None and \
+                        jsonio.canonical(n["value"]) == jsonio.canonical(b["value"]):
                     tally["literal_as_written_kept"] += 1
                 else:
                     lost.setdefault("literal as written", []).append(f"{rid} {b['bid']}")
@@ -291,38 +308,48 @@ def _answer(store: Any, op: str, args: Mapping[str, Any]) -> tuple[str, Any]:
     return "answer", result
 
 
-def answers(store: Any, reference: Any, queries: Iterable[tuple[str, str, dict[str, Any]]]) -> dict[str, Any]:
-    compared, same, refused, differ = 0, 0, 0, {}
+def answers(store: Any, reference: Any, full: Any,
+            queries: Iterable[tuple[str, str, dict[str, Any]]]) -> dict[str, Any]:
+    """Number 3 on ``queries``: ``same`` of ``compared``; a query whose ``reference`` answer differs from the
+    ``full`` reference's touches what the backend skipped or lacks, and is ``n/a`` (not compared)."""
+    compared, same, refused, differ, n_a = 0, 0, 0, {}, []
     for label, op, args in queries:
-        a = _answer(store, op, copy.deepcopy(args))
         b = _answer(reference, op, copy.deepcopy(args))
+        if b != _answer(full, op, copy.deepcopy(args)):
+            n_a.append(label)
+            continue
+        a = _answer(store, op, copy.deepcopy(args))
         compared += 1
         if a == b:
             same += 1
             refused += a[0] == "refused"
         else:
             differ[label] = {"store": a, "reference": b}
-    return {"compared": compared, "same": same, "both_refused": refused, "differ": differ}
+    return {"compared": compared, "same": same, "both_refused": refused, "n/a": len(n_a), "n/a queries": n_a,
+            "differ": differ}
 
 
-def history_answers(store: Any, reference: Any, container: Mapping[str, Any]) -> dict[str, Any]:
-    """Research 01's transaction-time checks: get(as_at), get(version), history, incident(as_at), exports."""
+def history_answers(store: Any, reference: Any, full: Any, container: Mapping[str, Any]) -> dict[str, Any]:
+    """Research 01's transaction-time checks: get(as_at), get(version), history, incident(as_at), exports; n/a as in
+    ``answers``."""
     times = sorted({r["recorded_at"] for r in container["records"]})
     ids = sorted({r["id"] for r in container["records"]})
-    compared, bad = 0, []
+    compared, bad, n_a = 0, [], []
+
+    def run(s: Any, f: Callable[[Any], Any]) -> str:
+        try:
+            return jsonio.canonical(f(s))
+        except KHGError as e:
+            return f"refused {e.code or type(e).__name__}"
 
     def check(label: str, f: Callable[[Any], Any]) -> None:
         nonlocal compared
+        b = run(reference, f)
+        if b != run(full, f):
+            n_a.append(label)
+            return
         compared += 1
-        try:
-            a = jsonio.canonical(f(store))
-        except KHGError as e:
-            a = f"refused {e.code or type(e).__name__}"
-        try:
-            b = jsonio.canonical(f(reference))
-        except KHGError as e:
-            b = f"refused {e.code or type(e).__name__}"
-        if a != b:
+        if run(store, f) != b:
             bad.append(label)
 
     for t in times:
@@ -337,7 +364,7 @@ def history_answers(store: Any, reference: Any, container: Mapping[str, Any]) ->
         for v in (1, 2):
             check(f"get {i} version {v}", lambda s, i=i, v=v: s.get(i, version=v))
     check("export history", lambda s: s.export("khg-json", content="history")["records"])
-    return {"compared": compared, "same": compared - len(bad), "differ": bad}
+    return {"compared": compared, "same": compared - len(bad), "n/a": len(n_a), "n/a queries": n_a, "differ": bad}
 
 
 # ------------------------------------------------------------------------------------------------ the measure
@@ -363,14 +390,16 @@ def measure(name: str, endpoint: str | None = None, *, only: Iterable[str] = DAT
                     "records": [r for r in container["records"] if r["id"] not in set(report["skipped"])]}
             reference = MemoryStore(schema, clock=ScenarioClock(), capabilities=store.capabilities)
             reference.load(copy.deepcopy(kept))
+            full = MemoryStore(schema, clock=ScenarioClock())  # every flag, the whole container
+            full.load(copy.deepcopy(container))
             entry: dict[str, Any] = {"loaded": True, "round_trip": round_trip(store, container, report, reference)}
             entry["native"] = native(store, container, report["skipped"])
             if ds == "fixture":
-                entry["answers"] = answers(store, reference, HAND)
+                entry["answers"] = answers(store, reference, full, HAND)
             elif ds == "edge":
-                entry["answers"] = answers(store, reference, EDGE)
+                entry["answers"] = answers(store, reference, full, EDGE)
             else:
-                entry["answers"] = history_answers(store, reference, container)
+                entry["answers"] = history_answers(store, reference, full, container)
             out[ds] = entry
         finally:
             store.close()

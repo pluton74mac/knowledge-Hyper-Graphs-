@@ -15,6 +15,13 @@
 # The clients are pinned in khg-bakeoff/pyproject.toml (pip install "./khg-bakeoff[all,dev]"): psycopg 3.3.6,
 # neo4j 6.3.1, typedb-driver 3.13.6, pyoxigraph 0.5.11. SQLite is the Python standard library's (3.45.1 here).
 # Neo4j needs Java 21 on PATH; about 1.3 GB of RAM at the heap and page cache below.
+#
+# Licences (review 01, R-12; khg-bakeoff/README.md has the table): PostgreSQL 18.6, the PostgreSQL Licence;
+# Neo4j Community 2026.09.0, GPL v3; TypeDB CE 3.13.6, MPL 2.0. Clients: psycopg, LGPL-3.0-only; neo4j driver,
+# Apache-2.0 AND Python-2.0; typedb-driver, Apache-2.0; pyoxigraph, MIT or Apache-2.0; SQLite, public domain.
+#
+# Every server listens on 127.0.0.1 only: TypeDB's monitoring endpoint, which cannot be bound to an address, is
+# disabled (review 01, R-13).
 set -euo pipefail
 
 ROOT=${P1_ROOT:?set P1_ROOT to a directory outside the repository}
@@ -114,7 +121,8 @@ typedb() {
   if [ ! -d "$home" ]; then
     tar xzf "$dir/typedb-all-linux-x86_64.tar.gz" -C "$dir"
   fi
-  # server/config.yml with: listen on 127.0.0.1, data and logs under $dir, diagnostics reporting off
+  # server/config.yml with: listen on 127.0.0.1, data and logs under $dir, monitoring and diagnostics reporting off
+  # (the monitoring port has no listen address and would listen on 0.0.0.0:4104)
   cat > "$dir/config.yml" <<EOF
 server:
     listen-address: 127.0.0.1:$TYPEDB_PORT
@@ -151,7 +159,7 @@ logging:
 
 diagnostics:
     monitoring:
-        enabled: true
+        enabled: false
         port: 4104
     reporting:
         metrics: false

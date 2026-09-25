@@ -6,8 +6,8 @@ import pytest
 from khg_contracts.record import NEG_INF, POS_INF, normalize
 from khg_contracts.store import MemoryStore
 
-from khg_bakeoff.rows import (INT64_HELD, NEG, POS, assemble, instant, native_binding, numeric_instant, prepare,
-                              query_instant, split, unheld_instants)
+from khg_bakeoff.rows import (INT64_HELD, NEG, POS, assemble, entity_row, instant, native_binding, numeric_instant,
+                              prepare, query_instant, record_of, split, unheld_instants, value_from_identity)
 
 
 def stored(record):
@@ -21,9 +21,38 @@ def test_split_and_assemble_are_inverse_on_every_fixture_fact(schema, fixture_do
         rec = stored(r)
         fact, rows = split(rec, schema, 5)
         assert fact["tx_from"] == 5 and fact["tx_to"] is None and fact["n_bindings"] == len(rows)
-        assert assemble(fact, reversed(rows)) == rec  # binding order is restored
-        assert [native_binding(row) for row in rows] == [
-            {k: v for k, v in b.items()} for b in rec["bindings"]]
+        assert assemble(fact, reversed(rows)) == rec == record_of(fact, rows)  # binding order is restored
+        for row, b in zip(rows, rec["bindings"], strict=True):
+            native = native_binding(dict(row, value_json="not read"))  # R-09: never from value_json
+            assert {k: v for k, v in native.items() if k not in ("value", "ident")} == \
+                {k: v for k, v in b.items() if k != "value"}
+            assert native["ident"] == row["ident"]
+            time = b["value"].get("literal", {}).get("datatype") == "time"
+            if time or "unbound" in b["value"]:  # the identity does not give the value as written
+                assert "value" not in native
+            else:
+                assert native["value"] == b["value"]
+
+
+def test_record_of_is_the_one_row_to_record_function(schema, fixture_doc):
+    """R-06: an entity row or a fact row with its binding rows gives the record back."""
+    for r in fixture_doc["records"]:
+        rec = stored(r)
+        if r["kind"] == "entity":
+            assert record_of(entity_row(rec, 3)) == rec
+        else:
+            assert record_of(*split(rec, schema, 3)) == rec
+
+
+def test_value_from_identity():
+    lang = {"literal": {"datatype": "lang_string", "value": "Tokyo Station", "lang": "en"}}
+    time = {"literal": {"datatype": "time", "time": "+1643-05-14T00:00:00Z", "precision": 11,
+                        "calendar": "gregorian"}}
+    from khg_contracts.record import identity_key
+
+    assert value_from_identity(identity_key(lang)) == lang
+    assert value_from_identity(identity_key({"special": "novalue"})) == {"special": "novalue"}
+    assert value_from_identity(identity_key(time)) is None and value_from_identity(None) is None
 
 
 def test_the_fact_row_holds_what_the_reads_filter_on(schema, fixture_doc):
