@@ -12,7 +12,7 @@ import pkgutil
 from types import MappingProxyType, ModuleType
 from typing import Mapping
 
-__version__ = "1.0.0.dev1"
+__version__ = "1.0.0.dev2"
 
 #: Every format id of DESIGN §11.1, and every hash domain, mapped to its version. Stamped into ``StoreInfo`` and into
 #: scorer reports so a consumer can record the contracts it used.

@@ -22,7 +22,7 @@ HASH_DOMAINS = ["khg-content-key", "khg-core-key", "khg-key-digest", "khg-event"
 
 
 def test_version_matches_the_distribution_metadata():
-    assert khg_contracts.__version__ == "1.0.0.dev1"
+    assert khg_contracts.__version__ == "1.0.0.dev2"
     assert md.version("khg-contracts") == khg_contracts.__version__
 
 

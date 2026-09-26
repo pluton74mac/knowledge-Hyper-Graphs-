@@ -170,14 +170,14 @@ Optional hardening: pin each action to a commit SHA instead of a tag.
 
 On a branch from `main`:
 
-1. **The version, 1.0.0.dev1 → 1.0.0.** The version lives in `src/khg_contracts/__init__.py` (hatchling reads it,
+1. **The version, 1.0.0.dev2 → 1.0.0.** The version lives in `src/khg_contracts/__init__.py` (hatchling reads it,
    `[tool.hatch.version]`), and two W0 tests pin it:
 
    ```sh
-   sed -i 's/__version__ = "1.0.0.dev1"/__version__ = "1.0.0"/' src/khg_contracts/__init__.py
-   sed -i 's/__version__ == "1.0.0.dev1"/__version__ == "1.0.0"/' tests/packaging/test_api.py
-   sed -i 's/out\["version"\] == "1.0.0.dev1"/out["version"] == "1.0.0"/' tests/packaging/test_import_hygiene.py
-   git grep -n "1.0.0.dev1" -- src tests pyproject.toml      # nothing left
+   sed -i 's/__version__ = "1.0.0.dev2"/__version__ = "1.0.0"/' src/khg_contracts/__init__.py
+   sed -i 's/__version__ == "1.0.0.dev2"/__version__ == "1.0.0"/' tests/packaging/test_api.py
+   sed -i 's/out\["version"\] == "1.0.0.dev2"/out["version"] == "1.0.0"/' tests/packaging/test_import_hygiene.py
+   git grep -n "1.0.0.dev2" -- src tests pyproject.toml      # nothing left
    ```
 
 2. **The classifier (optional).** `pyproject.toml` says `Development Status :: 3 - Alpha`. For a 1.0.0 that consumers
