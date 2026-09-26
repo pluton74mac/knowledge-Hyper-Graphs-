@@ -87,6 +87,56 @@ def test_the_library_free_steps_of_g1_give_the_golden_digests(c1, schema, name, 
     assert sha(hif.from_hif(first, schema)) == want["c1"]
 
 
+# ------------------------------------------------------------------------------------------------ not complete
+
+
+def _not_complete(c1, drop, complete="absent"):
+    """``c1`` without the records ``drop``, with ``complete`` absent or set: valid C1, since only a complete container
+    must hold what its records reference (D002, §2.1)."""
+    c = copy.deepcopy(c1)
+    c["records"] = [r for r in c["records"] if r["id"] not in drop]
+    del c["header"]["complete"]
+    if complete != "absent":
+        c["header"]["complete"] = complete
+    return c
+
+
+@pytest.mark.parametrize("complete", ["absent", False])
+def test_a_container_that_is_not_complete_round_trips_with_the_entities_it_does_not_hold(c1, schema, complete):
+    """Ruling 19 (P1 Q5): a fact whose players the container does not hold. ``to_hif`` names such an entity in its
+    incidence and writes no node record for it (HIF allows a node that only incidences name); ``from_hif`` refused
+    the file (D002) and now reads the node as the entity value."""
+    from khg_contracts.validate import validate_container, validate_hif
+    c = _not_complete(c1, {"ex:Warszawa", "ex:TP53"}, complete)
+    assert validate_container(c, schema=schema)["ok"]
+    h = hif.to_hif(c, schema)
+    declared = {n["node"] for n in h["nodes"]}
+    assert {"ex:Warszawa", "ex:TP53"} <= {i["node"] for i in h["incidences"]} and not {"ex:Warszawa",
+                                                                                        "ex:TP53"} & declared
+    assert validate_hif(h, schema=schema)["ok"]
+    back = hif.from_hif(h, schema)
+    assert _same(back, canonical_container(c)) and back == canonical_container(c)
+    assert ("complete" in back["header"]) is (complete is False)
+    reg = next(r for r in back["records"] if r["id"] == "f:reg-1")
+    assert [(b["bid"], b["value"]) for b in reg["bindings"]] == [
+        ("b1", {"entity": "ex:HeLa"}), ("b2", {"entity": "ex:TP53"}), ("b3", {"entity": "ex:TP53"})]
+
+
+@pytest.mark.parametrize("complete", ["absent", False])
+def test_a_container_that_is_not_complete_round_trips_with_a_fact_it_does_not_hold(c1, schema, complete):
+    """Ruling 19: the same for a fact value. ``to_hif`` marks the reference ``khg-external``, which the profile
+    accepted only in a slice (P017); any file that is not complete now holds one."""
+    from khg_contracts.validate import validate_container, validate_hif
+    c = _not_complete(c1, {"f:born-louis14-paris"}, complete)
+    assert validate_container(c, schema=schema)["ok"]
+    h = hif.to_hif(c, schema)
+    assert "khg-slice" not in h["metadata"]
+    assert next(n for n in h["nodes"] if n["node"] == "_:ref:f:born-louis14-paris")["attrs"] == {
+        "khg-kind": "fact-ref", "khg-ref": "f:born-louis14-paris", "khg-external": True}
+    assert validate_hif(h, schema=schema)["ok"]
+    assert _same(hif.from_hif(h, schema), canonical_container(c))
+
+
 def test_from_hif_reads_paths_and_bytes(c1, schema):
     path = data.path("fixture/fixture.hif.json")
     assert _same(hif.from_hif(path, data.path("fixture/fixture.relation-schema.json")), c1)

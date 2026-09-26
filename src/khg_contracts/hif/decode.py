@@ -2,13 +2,19 @@
 
 ``from_hif(hif, schema=None)`` runs layers J, V, H, R and P, then decodes. Without ``schema`` it uses
 ``metadata["khg-schema-document"]``; without either it raises D009. A file without ``khg-profile`` is P001: foreign
-HIF import comes in 1.1.
+HIF import comes in 1.1. Files stamped ``khg-hif/1.0.0`` and ``khg-hif/1.1.0`` are read alike.
+
+A file that is not complete (``khg-complete`` absent or false; every slice) may name entities and facts it does not
+hold (§4.6; ruling 19, ``profile.external_allowed``). An incidence on a node without a node record is then the entity
+of that id, and a ``khg-external`` fact reference the fact of its ``khg-ref``; neither gets a record.
 
 Decoding (``decode``) refuses:
 
 - a node or edge declared twice (D001);
-- an incidence naming an undeclared edge (D003) or node (D002), and a fact reference that does not resolve (D002);
-- an external reference outside a slice (P017);
+- an incidence naming an undeclared edge (D003); an incidence naming an undeclared node (D002) in a complete file,
+  or naming an undeclared derived ``_:`` node in any file (``to_hif`` declares every derived node); and a fact
+  reference that does not resolve and is not ``khg-external`` in a file that may name what it does not hold (D002);
+- an external reference in a complete file that is not a slice (P017);
 - a derived node id that does not match its value, its (record id, bid) or its reference (D005);
 - a schema id or hash that differs from the declared ones (D009);
 - a repeated ``khg-bid`` in one edge (P016);
@@ -32,7 +38,7 @@ from ..schema import Schema
 from ._doc import attrs_of, mapping, records
 from .convention import role_position
 from .encode import as_schema
-from .profile import DECLARATION_KEYS, EDGE_FIELDS, ENTITY_FIELDS, METADATA, WEIGHT, id_key
+from .profile import DECLARATION_KEYS, EDGE_FIELDS, ENTITY_FIELDS, METADATA, WEIGHT, external_allowed, id_key
 
 __all__ = ["PROFILE_STEPS", "decode", "from_hif"]
 
@@ -50,7 +56,7 @@ class _Decoder:
         self.doc, self.schema = doc, schema
         self.md = mapping(doc.get("metadata"))
         self.directed = doc.get("network-type") == "directed"
-        self.sliced = "khg-slice" in self.md
+        self.external = external_allowed(self.md)  # the file may name entities and facts it does not hold
         self.out: list[Finding] = []
         self.nodes: dict[str, tuple[int, Mapping[str, Any]]] = {}
         self.entities: list[dict[str, Any]] = []
@@ -122,8 +128,8 @@ class _Decoder:
             ref = attrs.get("khg-ref")
             if not (isinstance(ref, str) and ref_node_id(ref) == nid):
                 self.add("KHG-D005", f"/nodes/{j}/node", f"fact-ref node {nid!r} does not match khg-ref {ref!r}")
-            if attrs.get("khg-external") and not self.sliced:
-                self.add("KHG-P017", f"/nodes/{j}/attrs/khg-external", "an external fact reference outside a slice")
+            if attrs.get("khg-external") and not self.external:
+                self.add("KHG-P017", f"/nodes/{j}/attrs/khg-external", "an external fact reference in a complete file")
         elif kind not in _SPECIAL_KINDS:
             self.add("KHG-P013", f"/nodes/{j}/attrs/khg-kind", f"unknown node kind {kind!r}")
 
@@ -170,10 +176,12 @@ class _Decoder:
             if not isinstance(eid, str) or eid not in self.edges:
                 self.add("KHG-D003", f"/incidences/{i}/edge", f"edge {eid!r} is not declared")
                 continue
-            if not isinstance(nid, str) or nid not in self.nodes:
-                self.add("KHG-D002", f"/incidences/{i}/node", f"node {nid!r} is not declared")
-                continue
-            edge, node = self.edges[eid], self.nodes[nid]
+            node = self.nodes.get(nid) if isinstance(nid, str) else None
+            if node is None:
+                node = self.undeclared(i, nid)
+                if node is None:
+                    continue
+            edge = self.edges[eid]
             attrs = attrs_of(inc)
             bid, role = attrs.get("khg-bid"), attrs.get("role")
             key = (eid, id_key(bid))
@@ -193,6 +201,15 @@ class _Decoder:
                 binding["direction"] = direction
             self.extensions(binding, attrs, inc, f"/incidences/{i}")
             edge[1]["bindings"].append(binding)
+
+    def undeclared(self, i: int, nid: Any) -> tuple[int, Mapping[str, Any]] | None:
+        """The node an incidence names without a node record: in a file that may name what it does not hold, an
+        entity the file does not hold (an id without the ``_:`` prefix, since ``to_hif`` declares every derived
+        node), read as an entity node without attrs; otherwise D002 and None."""
+        if isinstance(nid, str) and self.external and not nid.startswith("_:"):
+            return -1, {"node": nid, "attrs": {"khg-kind": "entity"}}
+        self.add("KHG-D002", f"/incidences/{i}/node", f"node {nid!r} is not declared")
+        return None
 
     def value(self, i: int, eid: str, bid: Any, nid: str, node: Mapping[str, Any]) -> dict[str, Any] | None:
         """The binding value a node carries; None (with D005 for a derived id of another binding) when it cannot
@@ -246,11 +263,12 @@ class _Decoder:
         return None
 
     def check_references(self) -> None:
-        """A fact reference resolves to an edge of the file, or is external in a slice (D002)."""
+        """A fact reference resolves to an edge of the file, or is external in a file that may name what it does
+        not hold (D002)."""
         for i, ref, nid in self.refs:
             if ref in self.edges:
                 continue
-            if not (self.sliced and attrs_of(self.nodes[nid][1]).get("khg-external")):
+            if not (self.external and attrs_of(self.nodes[nid][1]).get("khg-external")):
                 self.add("KHG-D002", f"/incidences/{i}/node", f"fact reference {ref!r} does not resolve")
 
     def run(self) -> tuple[dict[str, Any] | None, list[Finding]]:
@@ -273,7 +291,7 @@ def decode(hif: Mapping[str, Any], schema: Schema) -> tuple[dict[str, Any] | Non
 
 
 def from_hif(hif: Any, schema: Any = None) -> dict[str, Any]:
-    """The canonical C1 container of a ``khg-hif/1.0.0`` file (§4.3).
+    """The canonical C1 container of a ``khg-hif`` file, 1.0.0 or 1.1.0 (§4.3).
 
     ``hif`` is a parsed document, raw ``bytes`` or a path; ``schema`` a ``Schema``, a schema document or a path,
     else the file's ``khg-schema-document``. Runs layers J, V, H, R and P, then decoding, and raises

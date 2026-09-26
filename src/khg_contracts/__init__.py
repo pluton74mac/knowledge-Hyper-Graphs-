@@ -12,14 +12,14 @@ import pkgutil
 from types import MappingProxyType, ModuleType
 from typing import Mapping
 
-__version__ = "1.0.0.dev0"
+__version__ = "1.0.0.dev1"
 
 #: Every format id of DESIGN §11.1, and every hash domain, mapped to its version. Stamped into ``StoreInfo`` and into
 #: scorer reports so a consumer can record the contracts it used.
 CONTRACTS: Mapping[str, str] = MappingProxyType({
     "khg-record": "1.0.0",
     "khg-relation-schema": "1.0.0",
-    "khg-hif": "1.0.0",
+    "khg-hif": "1.1.0",  # DESIGN §14 ruling 19
     "role-convention": "1.0.0",
     "khg-queue": "1.0.0",
     "khg-store": "1.0.0",

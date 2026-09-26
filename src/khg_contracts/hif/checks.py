@@ -1,10 +1,11 @@
-"""The Python checks of the ``khg-hif/1.0.0`` profile (DESIGN §4.2-§4.6, §8.1).
+"""The Python checks of the ``khg-hif`` profile, 1.0.0 and 1.1.0 (DESIGN §4.2-§4.6, §8.1).
 
 The draft-07 profile schema (``khg-hif-1.0.0.schema.json``) covers the declaration block, the id types and grammar,
 the node kinds and their payloads, the edge and incidence ``attrs``; these checks cover what a schema cannot say:
 
 - P004: an entity id uses the reserved ``_:`` prefix, or a derived node lacks its kind's prefix;
-- P017: a ``khg-external`` fact reference outside a slice, or naming a fact the file holds;
+- P017: a ``khg-external`` fact reference in a complete file that is not a slice, or naming a fact the file holds
+  (1.0.0 accepted one only in a slice; 1.1.0 in any file that is not complete, ``profile.external_allowed``);
 - P010 and P011: the direction rule (``directed`` iff every incidence has a direction);
 - P016: two incidence records of one edge share a ``khg-bid``.
 
@@ -16,7 +17,7 @@ from typing import Any, Mapping
 
 from ..errors import make_finding
 from ._doc import attrs_of, mapping, records
-from .profile import KIND_PREFIXES, id_key
+from .profile import KIND_PREFIXES, external_allowed, id_key
 
 __all__ = ["profile_findings"]
 
@@ -26,6 +27,7 @@ Finding = dict[str, str]
 def _node_findings(doc: Mapping[str, Any], md: Mapping[str, Any]) -> list[Finding]:
     out = []
     present = {e.get("edge") for _, e in records(doc, "edges") if isinstance(e.get("edge"), str)}
+    external = external_allowed(md)
     for j, node in records(doc, "nodes"):
         nid, attrs = node.get("node"), attrs_of(node)
         kind = attrs.get("khg-kind")
@@ -38,9 +40,9 @@ def _node_findings(doc: Mapping[str, Any], md: Mapping[str, Any]) -> list[Findin
                                     f"a {kind} node id starts with {' or '.join(KIND_PREFIXES[kind])}"))
         ref = attrs.get("khg-ref")
         if kind == "fact-ref" and attrs.get("khg-external") and (
-                "khg-slice" not in md or (isinstance(ref, str) and ref in present)):
+                not external or (isinstance(ref, str) and ref in present)):
             out.append(make_finding("KHG-P017", f"/nodes/{j}/attrs/khg-external",
-                                    "an external fact reference outside a slice, or to a fact the file holds"))
+                                    "an external fact reference in a complete file, or to a fact the file holds"))
     return out
 
 

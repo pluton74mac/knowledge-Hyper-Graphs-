@@ -12,7 +12,7 @@ from khg_contracts.errors import (CapabilityMissing, ConcurrencyError, KeyCollis
                                   ValidationError, VersionError, make_finding)
 
 SECTION_11_1 = {
-    "khg-record": "1.0.0", "khg-relation-schema": "1.0.0", "khg-hif": "1.0.0", "role-convention": "1.0.0",
+    "khg-record": "1.0.0", "khg-relation-schema": "1.0.0", "khg-hif": "1.1.0", "role-convention": "1.0.0",
     "khg-queue": "1.0.0", "khg-store": "1.0.0", "khg-scenario": "1.0.0", "khg-scorers": "1.0.0",
     "khg-c5-io": "1.0.0", "khg-c4-items": "0.1.0", "khg-render": "1", "khg-migration-report": "1.0.0",
     "khg-codes": "1.0.0", "khg-malformed-cases": "1.0.0",
@@ -22,7 +22,7 @@ HASH_DOMAINS = ["khg-content-key", "khg-core-key", "khg-key-digest", "khg-event"
 
 
 def test_version_matches_the_distribution_metadata():
-    assert khg_contracts.__version__ == "1.0.0.dev0"
+    assert khg_contracts.__version__ == "1.0.0.dev1"
     assert md.version("khg-contracts") == khg_contracts.__version__
 
 
