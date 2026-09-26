@@ -71,11 +71,14 @@ Every machine-readable part is in [design-examples/](design-examples/). The prot
 
 | Clause | Test | Asserts | Evidence now |
 |---|---|---|---|
-| **G1** round trip with roles intact | `tests/gate/test_roundtrip.py` | See the G1 list below | The revised loader prototype passes every assertion (§1.4). The golden digests are `sha256:1bb3d9e6…75d3` (full) and `sha256:2ad268e1…bee8` (slice) |
+| **G1** round trip with roles intact | `tests/gate/test_roundtrip.py` | See the G1 list below | The revised loader prototype passes every assertion (§1.4). The golden digests are `sha256:1bb3d9e6…75d3` (full) and `sha256:2ad268e1…bee8` (slice); since ruling 19 also `sha256:e17e08f4…aadd` and `sha256:fb12d840…2867` (not complete, and its slice) |
 | **G2** each malformed case rejected | `tests/gate/test_malformed.py` | Each of the 180 cases in `malformed-cases.json` passes the rule of §8.2. The harness self-checks run. Code coverage and engine containment hold (§8.1) | All 180 pass in the validator prototype under jsonschema 4.26.0. fastjsonschema 2.22.2's codes are contained in jsonschema's for all 180. No unpatched base has an error finding. Every active code of layers J–I is listed, except D019, which S-PUT-006 covers |
 | **G3** smoke: queue, structural lint, store, export | `tests/gate/test_smoke.py` | See the G3 list below | Prototype replay reproduces `sha256:518db0f4…7f29` from `smoke-base.c1.json`. The queue passes the Q layer, and both exports are valid |
 
-**G1 asserts** the following for `fixture.c1.json` and for its directed slice.
+**G1 asserts** the following for `fixture.c1.json` and for its directed slice. Since ruling 19 (§14) it asserts them
+also for the fixture as a container that is not complete, and for that container's directed slice: the fixture without
+`ex:KingOfFrance`, `ex:TP53`, `ex:YYZ` and `f:born-louis14-paris`, which its facts name, and without `complete`
+(`tests/gate/g1_chain.py`).
 
 1. The chain runs `to_hif(c, schema)` → `load_xgi` → `export_xgi` → `load_hnx` → `export_hnx` →
    `from_hif(h, schema)`. The first HIF is valid against the vendored schema and the profile, under both engines.
@@ -1042,8 +1045,10 @@ A file without `khg-profile` is P001. v1 has no foreign fallback; importing such
 
 Decoding refuses:
 - a duplicate node or edge (D001);
-- an undeclared edge (D003), node or fact reference (D002);
-- an external reference outside a slice, or to a fact present in the file (P017);
+- an undeclared edge (D003); an undeclared node (D002) in a complete file, or an undeclared derived `_:` node in any
+  file; a fact reference that does not resolve and is not external (D002). In a file that is not complete, an
+  undeclared node without the `_:` prefix is an entity the file does not hold (§4.6; ruling 19);
+- an external reference in a complete file that is not a slice, or to a fact present in the file (P017);
 - a derived id that does not match its value, (record id, bid) or reference (D005);
 - a schema id or hash that differs from the declared one (D009);
 - a repeated `khg-bid` in one edge (P016);
@@ -1071,11 +1076,11 @@ codes F001–F005 and F007–F014 are planned, not registered (§8.1; critique S
 | `role-convention` | `"1.0.0"` | yes (R003) |
 | `role-vocabulary` | `{role: {label?, ...}}` | no |
 | `hif-schema`, `hif-schema-sha256` | the raw URL pinned at commit `b691a3d…`; `"sha256:639466b7…2196"` | yes (P001; P009 when not the pinned value) |
-| `khg-profile`, `khg-record` | `"khg-hif/1.0.0"`, `"khg-record/1.0.0"` | yes (P001; V001 for an unknown version) |
+| `khg-profile`, `khg-record` | `"khg-hif/1.0.0"`, or `"khg-hif/1.1.0"` for a file that names what it does not hold (§4.6); `"khg-record/1.0.0"` | yes (P001; V001 for an unknown version) |
 | `khg-schema`, `khg-schema-sha256` | `"<id>/<version>"` and its digest | yes (P001; D009) |
 | `khg-document-id` | the header's `document_id` | yes (P001) |
 | `khg-literal-nodes` | `"shared"` or `"per_binding"` | yes (P001, P009) |
-| `khg-complete` | the header's `complete`; `false` on every slice | no |
+| `khg-complete` | the header's `complete`; `false` on every slice. A file that is not complete (absent or `false`) may name entities and facts it does not hold (§4.6) | no |
 | `khg-slice` | `{relations}` | on slices |
 | `khg-schema-document` | the relation-type schema, inlined | no |
 
@@ -1090,8 +1095,23 @@ A **slice**, `to_hif(c, schema, relations=[...])`, exports three things (critiqu
 - the entities that kept records reference.
 
 A fact reference to a fact outside the slice becomes an external reference node (`khg-external: true`). Every
-slice writes `khg-complete: false` and `khg-slice`. Decoding accepts external references only in slices, so any
-slice reloads. A slice of `claims` alone keeps `f:born-louis14-paris` as external (S-EXP-011).
+slice writes `khg-complete: false` and `khg-slice`. A slice of `claims` alone keeps `f:born-louis14-paris` as external
+(S-EXP-011).
+
+**What a file does not hold** (ruling 19; `khg-hif/1.1.0`). A container that is not complete (§2.1) may name entities
+and facts it does not hold, and so may its slices.
+- `to_hif` writes such an entity as the node of its incidences, with no node record, which HIF allows [R02 §5 case
+  28]; such a fact is an external reference node.
+- Decoding reads an undeclared node without the `_:` prefix as that entity, and accepts an external reference, in any
+  file that is not complete (`khg-complete` absent or `false`) or is a slice. Neither gets a record, so the container
+  comes back as it was, through XGI and HyperNetX too (G1).
+- In a complete file both stay refused (D002, P017). An undeclared derived node is D002 in any file, since `to_hif`
+  declares every derived node.
+- A file that names an entity without a node record, or holds an external reference outside a slice, is stamped
+  `khg-hif/1.1.0`, the lowest version whose features it uses (§11.2). Every other file keeps `khg-hif/1.0.0` and its
+  bytes. The reader reads 1.0.x and 1.1.x files by the same rules.
+
+So any valid container, and any slice of it, reloads.
 
 The fixture's **directed slice** keeps the 9 relations whose every usage has a direction. It is directed, with 42
 nodes (20 entities, 16 literals, 3 fact references, 3 special nodes), 16 edges and 52 incidences, in
@@ -2296,7 +2316,7 @@ has one smoke test in `tests/cli/`.
 | Artefact | Format id | Versioned with |
 |---|---|---|
 | C1 | `khg-record/1.0.0` | itself |
-| schema language, HIF profile | `khg-relation-schema/1.0.0`, `khg-hif/1.0.0` | C1 |
+| schema language, HIF profile | `khg-relation-schema/1.0.0`, `khg-hif/1.1.0` (ruling 19; files that do not use 1.1 are stamped 1.0.0) | C1 |
 | upstream convention | `role-convention` 1.0.0 (four rules) | itself; minor versions only |
 | C3 | `khg-queue/1.0.0` | C1, in lockstep (PLAN §7) |
 | C2 and its scenarios | `khg-store/1.0.0` (`info().interface_version`), `khg-scenario/1.0.0` | their own semver |
@@ -2629,6 +2649,33 @@ fixed them (`impl-notes/review-*.md`); these are the questions it left open.
     backend. The HIF profile (`khg-hif/1.0.0`) carries no store fields on entity nodes, so a HIF store answers
     `get(entity)` without `khg-recorded-by`; that stays a measured loss of the HIF format in 1.0, and adding it is a
     candidate for a profile minor version.
+
+**Director's ruling on P1's fixes (2026-09-25).** Raised by [P1](../p1-store-bakeoff/README.md) Q5
+(IMPLEMENTATION-NOTES §7): the HIF store could not load a slice that is not `complete`. Built 2026-09-26.
+19. **A valid C1 container round-trips through HIF, complete or not.** A container that is not complete may name
+    entities and facts it does not hold (§2.1), and so may its slices. `to_hif` wrote such an entity as an incidence
+    node without a node record, and such a fact as a `khg-external` reference, but `from_hif` refused the file: D002
+    for the node, and P017 for an external reference outside a slice. W6 and the S4 integration had recorded the gap
+    without a ruling. The ruling makes it part of G1, P2's gate, rather than a P1 skip rule, with the smallest change
+    that needs no `khg-hif` major version. What changed (§4.3, §4.5, §4.6;
+    [impl-notes/ruling-19.md](impl-notes/ruling-19.md)):
+    - **Reading.** In a file that is not complete (`khg-complete` absent or `false`) or is a slice, decoding reads an
+      undeclared node without the `_:` prefix as the entity of that id, and P017 accepts an external fact reference.
+      In a complete file both stay refused, and an undeclared derived node is D002 in any file.
+    - **Writing.** `to_hif` writes the same records as before. It stamps a file `khg-hif/1.1.0` only when the file
+      uses the addition (a node without a record, or an external reference outside a slice). Every other file is
+      byte-identical and stays `khg-hif/1.0.0` (§11.2). Layer V reads 1.0.x and 1.1.x, both by the 1.1 rules.
+    - **G1** runs two more chains: the fixture as a container that is not complete (without `ex:KingOfFrance`,
+      `ex:TP53`, `ex:YYZ` and `f:born-louis14-paris`) and its directed slice. `golden-sha256.json` has their digests;
+      the two earlier chains' digests are unchanged.
+
+    **Versions.** `khg-hif` goes from 1.0.0 to **1.1.0**, a minor version. The profile's rules change (a P check and
+    a decoding refusal), and a 1.0 reader refuses the new files, with V001 once they are stamped. `CONTRACTS["khg-hif"]`
+    is 1.1.0. Unchanged: the profile schema, `role-convention` 1.0.0, C1 `khg-record/1.0.0`, C2 `khg-store/1.0.0`
+    with its 114 scenarios, and every code; the registry's meanings of D002, P017 and layer P state the new rule.
+    khg-contracts goes from 1.0.0.dev0 to **1.0.0.dev1**: 1.0.0 is not released, and its first release includes this.
+    P1 can now run its HIF row on such slices. Its one test that pinned the refusal changes with this ruling (impl
+    note).
 
 **Clarifications the review made normative.** Each is implemented and tested; the notes give the evidence.
 - §2.7 and D014: a history may go from `superseded` to `disputed` in one version (an undone supersession resolved

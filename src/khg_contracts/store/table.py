@@ -70,6 +70,13 @@ from .memory import TableStore
 __all__ = ["MEMBERS", "OPTIONAL_MEMBERS", "Entry", "TableStore", "VersionTable", "VersionTableProtocol",
            "bound_nodes"]
 
+# The names this module publishes from the private ``_table`` say where they are published, in reprs and docs (P1
+# review 01, R-07; deferred to P1's second half, done with ruling 19). Nothing reads ``__module__``, and pickling finds
+# them here as well.
+for _name in (Entry, VersionTable, bound_nodes):
+    _name.__module__ = __name__
+del _name
+
 #: The thirteen members of a version table that the write path and the reads use.
 MEMBERS = ("latest", "__contains__", "__len__", "ids", "entries", "current", "entry_at", "latest_version", "add",
            "by_node", "by_relation", "by_key", "by_ref")
