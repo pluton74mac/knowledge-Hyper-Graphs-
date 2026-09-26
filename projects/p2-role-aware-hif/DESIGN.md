@@ -3,7 +3,7 @@ title: "P2 design: role-aware HIF and the shared contracts C1, C2, C3 and C5"
 type: project
 status: draft
 created: 2026-09-23
-updated: 2026-09-23
+updated: 2026-09-26
 ---
 
 # P2 design: role-aware HIF and the shared contracts
@@ -2781,8 +2781,8 @@ request: P3a's (its DESIGN §11 and `notes/c4-change-proposal.md`; P3a rulings 2
 §8 D4, D5; P7 rulings 4 and 5) and P9's (its DESIGN §3.8, §8 and §10 D5, D6; P9 rulings 5 and 6), read on the
 branches `claude/p3a-corpus`, `claude/p7-identity-memory` and `claude/p9-extraction-gate` on 2026-09-26. They ship
 as one minor release of the contracts, khg-contracts 1.0.0.dev2
-([impl-notes/contracts-1-1.md](impl-notes/contracts-1-1.md)), built 2026-09-26. Every change is backward compatible: a valid file stays valid, and C2 `khg-store/1.0.0` with its 114
-scenarios is unchanged.
+([impl-notes/contracts-1-1.md](impl-notes/contracts-1-1.md)), built 2026-09-26. Every change is backward compatible:
+a valid file stays valid, and C2 `khg-store/1.0.0` with its 114 scenarios is unchanged.
 20. **C4 `khg-c4-items` 0.2.0 (P3a's proposal, part A; P9's candidate table).** Every change is an optional field
     or a new enum value (§9.6):
     - the header names its corpus (`corpus {id, version, tier?}`), and its `record_format` is any `khg-record`
@@ -2873,13 +2873,14 @@ scenarios is unchanged.
     enum value and a reader that takes more are minor (§11.2). The reader takes 1.0.x and 1.1.x wherever a C1 stamp
     appears (containers, HIF metadata, queue and C4 headers). Writers stamp the lowest version whose features a
     document uses (`record.required_format`, `schema.required_format`), so the fixture, the migrated sample and every
-    packaged file stay 1.0.0. The record schema `khg-record-1.0.0.schema.json` does not change (as the HIF profile
-    schema did not in ruling 19); the meta-schema `khg-relation-schema-1.1.0.schema.json` replaces the 1.0.0 file.
-    `StoreInfo.record_format` is `khg-record/1.1.0`. The new checks use existing codes (M003 for separators, M015 for
-    `monotone`, D013 for a filler added to a non-monotone role), whose registry meanings say so. C2 `khg-store/1.0.0`
-    and its 114 scenarios are unchanged: no method changes its signature, and a store built on `StoreBase` or
-    `TableStore` reads 1.1 keys through `record.key_digest`. A backend that checks `find_by_key`'s roles itself (P1's
-    `NativeReads`) must take the separators too before it holds a 1.1 schema (a four-line change, in the impl note).
+    packaged container and schema stay 1.0.0. The record schema `khg-record-1.0.0.schema.json` does not change (as
+    the HIF profile schema did not in ruling 19); the meta-schema `khg-relation-schema-1.1.0.schema.json` replaces the
+    1.0.0 file. `StoreInfo.record_format` is `khg-record/1.1.0`. The new checks use existing codes (M003 for
+    separators, M015 for `monotone`, D013 for a filler added to a non-monotone role), whose registry meanings say so.
+    C2 `khg-store/1.0.0` and its 114 scenarios are unchanged: no method changes its signature, and a store built on
+    `StoreBase` or `TableStore` reads 1.1 keys through `record.key_digest`. A backend that checks `find_by_key`'s
+    roles itself (P1's `NativeReads`) must take the separators too before it holds a 1.1 schema (a four-line change,
+    in the impl note).
 
 23. **C3 `khg-queue` 1.1.0 (P9's D5 a and c).** Two changes (§7, §8.1):
     - **The recorded reading of queue validity** (P9 D5 a). A C or S error on a rejected item's payload or entities,

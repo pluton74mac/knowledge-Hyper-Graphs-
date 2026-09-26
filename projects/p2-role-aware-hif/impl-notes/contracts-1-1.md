@@ -13,12 +13,14 @@ release after ruling 19: C4 0.2.0 and a `khg-scorers` minor release from P3a ([n
 P3a DESIGN §11, P3a rulings 2, 7, 11), P7's three C1 1.1 proposals (P7 DESIGN §7.2, §8 D4, D5; P7 rulings 4, 5) and
 P9's three proposals and its candidate table (P9 DESIGN §3.8, §4, §8, §10 D5, D6; P9 rulings 5, 6). Those designs are
 on the branches `claude/p3a-corpus`, `claude/p7-identity-memory` and `claude/p9-extraction-gate`, read on 2026-09-26
-(the links below resolve once they merge). This note is the builder's record: the precise design of each item, the tests written first, and what changed. DESIGN §14 holds the
-rulings (20 to 23).
+(the links below resolve once they merge). This note is the builder's record: the precise design of each item, the
+tests written first, and what changed. DESIGN §14 holds the rulings (20 to 23).
 
-- **Scope:** `src/khg_contracts` (schema generator, packaged data and manifest, layers V and I, the scorers), `tests/`,
-  P2's DESIGN, README, `upstream/RELEASE.md`, `design-examples/` and one builder script under `research/probes/`.
-- **Not edited:** other projects' folders (P3a, P7, P9, P10 and P1 get proposals, §7) and `kb/` (the director's).
+- **Scope:** `src/khg_contracts` (`record`, `schema` and its generator, `store`, `queue`, `validate` with layers V, I,
+  Q, C and S, the scorers, the packaged data, the registry and the manifest), `tests/`, P2's DESIGN, README,
+  `upstream/RELEASE.md`, `design-examples/`, and two scripts and their outputs under `research/probes/`.
+- **Not edited:** other projects' folders (P1, P3a, P7, P9 and P10 get proposals, §5; a patch for P9's tests) and the
+  shared files (the director's; §7).
 - **Rule kept throughout:** every change is backward compatible. A valid file of any earlier version stays valid,
   and C2 `khg-store/1.0.0` with its 114 scenarios does not change.
 
@@ -35,7 +37,7 @@ stay in the open `provenance`.
 | Question | Decision | Why |
 |---|---|---|
 | The shape of `mentions` | `[{entity: <C1 entity record>, source, spans?: [[start, end]], description?}]`, one entry per entity | P9's companion file has exactly this shape (`khg_extract.docs.load_candidate_tables`), so P9 reads the field without a converter. Embedding the record keeps the table apart from `entities` (the gold's), which is what makes it leak-free |
-| `source` values | `link`, `subject`, `match`, `distractor` (required) | P3a builds wiki tables from links, the subject and label matches, and rendered ones from matches plus distractors (P9 §3.1). P9's `table` (no reason) and `minted` (the pipeline's own) are not corpus sources. P9 must add `distractor` to its `SOURCES` (§7) |
+| `source` values | `link`, `subject`, `match`, `distractor` (required) | P3a builds wiki tables from links, the subject and label matches, and rendered ones from matches plus distractors (P9 §3.1). P9's `table` (no reason) and `minted` (the pipeline's own) are not corpus sources. P9 must add `distractor` to its `SOURCES` (§5) |
 | Spans | `[start, end]` pairs, half-open, code points of the NFC text; I002 when empty, reversed or outside the text | the convention of position selectors (§2.8), and of P9's candidates |
 | `source` fields | `{url, revision?, licence?, attribution?}`, all strings, closed | P3a's list. `revision` is a string (C1's evidence `source.version` is one too); a Wikipedia revision id is written `"1375387986"` |
 | `doc_kind` | an enum `wiki`, `rendered` | P3a's two kinds; a new kind is a minor release |
@@ -48,8 +50,8 @@ stay in the open `provenance`.
 | New codes | none: I002 and I003 cover the new checks | the registry's meanings of I002 ("item structure") and I003 ("embedded C1 ... invalid") fit them |
 
 **Not in 0.2.0.** C5's extraction scorer does not read `gold_scope`: P9 filters out-of-scope predictions before
-scoring (its DESIGN §5). A scope parameter for `extraction.score` would be a later minor version (D-note in the
-report).
+scoring (its DESIGN §5). A scope parameter for `extraction.score` would be a later minor version, if P9 or P8 asks
+for one.
 
 **The retrieval scorer.** A question's `answer_mode` comes before `RetrievalConfig.answer_mode`, which is now the
 mode of the questions that declare none, and gains `count`. `count` scores as `single` (the first answered value, by
@@ -287,11 +289,63 @@ all pass. **Existing tests changed:** the registry counts (`test_registry`, `tes
 
 | Project | Change | Needed when |
 |---|---|---|
-| P3a | may stamp its sets `khg-c4-items/0.2.0` and use the new fields (`inference` and the manifest fields replace its sidecar `.meta.json`; `mentions`, `gold_scope`, `doc_kind`, `source`, `answer_mode`, `corpus`); memory gold from `derive_memory_gold` now follows the 0.2 rules, so a memory set built with this release is stamped 0.2.0. `normalize` now does its items 1-3 (idempotent with its converter, which may keep them) | W7-W9 |
+| P3a | may stamp its sets `khg-c4-items/0.2.0` and use the new fields (`inference` and the manifest fields replace its sidecar `.meta.json`; `mentions`, `gold_scope`, `doc_kind`, `source`, `answer_mode`, `corpus`). **A memory set whose gold comes from `derive_memory_gold`'s defaults (the 0.2 rules) must be stamped `khg-c4-items/0.2.0`**: under the 0.1.0 stamp its W6 writer uses today, layer I replays by the 0.1 rules and reports I005 for every question with an `outranked` value or a value revised for one of the nine new reasons. `normalize` now does its items 1-3 (idempotent with its converter, which may keep them) | W7-W9; the stamp before W8 writes a memory set |
 | P9 | its tests follow rulings 21 and 23: [contracts-1-1-p9-tests.patch](contracts-1-1-p9-tests.patch) (five tests: the order effect's pooled value, the recorded reading, Q013 rejecting run-3's unlocatable quote at lint, `khg-queue` 1.1.0). With it, khg-extract's 22 tests pass against this branch. `khg_extract.docs.SOURCES` must add `distractor` to read C4 `mentions`; `c3_check`'s strict reading now equals the recorded one | before P9 merges the bundle |
 | P1 | `khg_bakeoff.native.NativeReads.find_by_key`: the four-line separator change of §3.6, before it holds a schema with separators. Nothing else: its HIF, SQLite, Oxigraph and PostgreSQL paths read keys through `record.key_digest` | P1's second half |
 | P7 | the non-monotone flag and separators are declared in schemas; `bound_conflict` is a dispute reason its planner may write (its D1); `outranked` is in the gold its comparison scores | its memory comparison |
 | P10 | may move `answer_mode` from `provenance` to the item field; the scorer reads the field, not `provenance` | its next question set |
 | P6 | nothing: khg-width reads schemas stamped 1.0.0 or 1.1.0 | |
+
+## 6. Verification (2026-09-26, the CI jobs of `.github/workflows/ci.yml`, run here with uv)
+
+| Job | How | Result |
+|---|---|---|
+| core-3.10 | fresh venv, Python 3.10.20, `.[dev]` (not editable), `pytest -q` | 5,763 passed, 22 skipped (ruling 19: 5,564 and 21) |
+| gate-3.11 | the dev venv, Python 3.11.15, `.[xgi,hnx,fast,dev]`, `pytest -q -m "not evidence"` | 6,155 passed, 2 skipped, 5 deselected (ruling 19: 5,956 and 1; +199 tests, and the Q013 coverage exception is the second skip) |
+| core-3.13 | fresh venv, Python 3.13.14, `.[dev]`, `pytest -q` | 5,763 passed, 22 skipped; 20 warnings, Python's `fork()` deprecation in multiprocessing, from tests this work does not touch |
+| wheel | `uv build`; the wheel in a clean 3.11 venv; `khg_contracts.data --check`; `khg-validate` on the packaged fixture; `khg-conformance --factory khg_contracts.store:memory_factory` | builds `1.0.0.dev2`; data check ok; valid (0 errors, the 2 designed warnings); 114 of 114 passed, EARL `hasVersion` 1.0.0.dev2, `record_format` `khg-record/1.1.0` |
+| examples | a clean 3.11 venv with `.`; `python -m khg_contracts.examples out/ --tests tests`; `diff -r` | byte-identical (152 files) |
+| evidence | a clean 3.11 venv with `.[xgi,hnx,dev]`; `pytest -q -m evidence` | 5 passed; `library-hif-evidence.json` unchanged |
+| khg-width | fresh venv, Python 3.10.20, `. ./projects/p6-schema-width/khg-width[dev]` | 88 passed, 20 skipped (the solver tests, as in CI), 339 s. A first run under a load average near 8 failed `test_schedule.py::test_undecided_k_moves_up`, whose fake solver has a 1 s attempt limit; that module then passed 3 runs of 3 and the whole job passed on the rerun: a timeout under load changed the solver's call order, not a result that comes from khg-contracts |
+| khg-bakeoff | fresh venv, Python 3.10.20, `. ./projects/p1-store-bakeoff/khg-bakeoff[oxigraph,postgres,dev]`; the import step; `pytest -q`, no server endpoint set | adapters import; 134 passed, 53 skipped (the server-backed tests; CI runs PostgreSQL on its `postgres:18.6` service) |
+
+**Compatibility probe** ([research/probes/contracts_1_1_compat.py](../research/probes/contracts_1_1_compat.py), outputs in
+[research/probes/out/contracts-1-1/](../research/probes/out/contracts-1-1/)). Every document of `main`'s package data
+(490287f) that `validate` takes, 21 of them (containers, the history, slices and HIF files, role-convention files,
+relation schemas, the smoke queue, the C4 items, the C5 outputs), was validated with the sources of `main` first on
+`PYTHONPATH` and with this build: **the two outputs are identical** (all valid; the same designed warnings). This
+build's own 22 documents are all valid; `main`'s code differs from this build on one of them only, the new
+`c4-items-0.2.0.jsonl`, which it refuses with V001 at `/lines/0/format`, as stamping intends.
+
+**Consumers' tests against this branch** (their packages copied read-only from their branches into the scratchpad,
+each in a fresh 3.11 venv with this branch's khg-contracts):
+
+| Package | Branch, commit | Result |
+|---|---|---|
+| P3a khg-corpus | `claude/p3a-corpus`, 85f3f17 | 12 passed |
+| P7 khg-identity | `claude/p7-identity-memory`, dcedea8 | 143 passed, 1 skipped (the copy lacks the relative path to P2's identity table) |
+| P9 khg-extract | `claude/p9-extraction-gate`, bdc70e1 | 5 failed, 17 passed; with [contracts-1-1-p9-tests.patch](contracts-1-1-p9-tests.patch), 22 passed |
+| P10 khg-walker | `claude/p10-walker`, 0819e45 | 44 passed |
+
+**Lint.** ruff 0.14.0 (F, E9, E501, W, B at 120 columns, py310) on the changed Python files finds two B008, both the
+existing `config=...Config()` defaults of `memory.score` and `retrieval.score`; nothing new.
+
+## 7. For the director's base update
+
+- **PLAN §9**, P2's row: "none (produces C1 khg-record/1.0.0, C2 khg-store/1.0.0, C3 khg-queue/1.0.0, C5
+  khg-scorers/1.0.0)" becomes "none (produces C1 khg-record/1.1.0, C2 khg-store/1.0.0, C3 khg-queue/1.1.0, C5
+  khg-scorers/1.1.0 and the C4 draft khg-c4-items/0.2.0; rulings 20-23, 2026-09-26)". P1's and P6's rows name the
+  versions they consumed and stay.
+- **Register [07.13]** (`kb/00-index/open-questions.md`): the deprecation reasons are settled. Proposed addition:
+  "Reasons settled 2026-09-26 (P2 ruling 21, with P3a and P7): P3a's nine 'incorrect' reasons and Q189203
+  'anachronism'; Q42727519 'less precision' is a generalisation, not an error. The rules are versioned with the C4
+  draft (0.2.0). A third stale kind, `outranked`, scores last year's value of a single-best-value series as stale.
+  The tolerance and `missing` defaults stay provisional."
+- **P9's new question** (its DESIGN §11: "C5's S-M7 is biased when same-run pairs share a seed") is answered by
+  ruling 21: `khg-scorers` 1.1.0 reports the paired decomposition, and its Δ_order compares pairs that differ in run
+  on both sides. If the director registers the question, it can be registered as closed with that pointer.
+- **P7's new questions** (its DESIGN §10: "the separator-key question (D4a) and non-monotone qualifiers (D4b) under
+  Theme 4") have their C1 answer in ruling 22; what remains open is empirical (how often Wikidata's separators and
+  epistemic qualifiers occur in the memory relations), which P3a's W8 and P7 measure.
 
 [p3a-note]: ../../p3a-clean-nary-corpus/notes/c4-change-proposal.md

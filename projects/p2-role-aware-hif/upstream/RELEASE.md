@@ -191,13 +191,14 @@ On a branch from `main`:
 
    The shared contracts of the knowledge-hypergraph programme, as one Python package:
 
-   - **C1** `khg-record/1.0.0`: n-ary facts as hyperedges with role bindings, typed literals, keys, valid and
+   - **C1** `khg-record/1.1.0`: n-ary facts as hyperedges with role bindings, typed literals, keys, valid and
      transaction time, lifecycle and evidence, in `.khg.json` and `.khg.jsonl` containers;
    - **role-aware HIF**: the `role-convention` 1.0.0 for incidence attributes and the `khg-hif/1.1.0` profile, with
      loaders for XGI and HyperNetX that keep every role;
    - **C2** `khg-store/1.0.0`: the store interface, a reference in-memory store and a 114-scenario conformance suite;
-   - **C3** `khg-queue/1.0.0`: candidate queues and action logs with replay;
-   - **C5** `khg-scorers/1.0.0`: extraction, stability, completion, retrieval and memory scorers;
+   - **C3** `khg-queue/1.1.0`: candidate queues and action logs with replay;
+   - **C5** `khg-scorers/1.1.0`: extraction, stability, completion, retrieval and memory scorers, and the C4
+     question-set draft `khg-c4-items/0.2.0`;
    - a layered validator with stable error codes, and four command-line tools: `khg-validate`, `khg-convert`,
      `khg-migrate` and `khg-conformance`.
 

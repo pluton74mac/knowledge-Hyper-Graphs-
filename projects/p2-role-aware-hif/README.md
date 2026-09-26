@@ -83,6 +83,13 @@ structural lint, store and export.
   XGI and HyperNetX, and G1 runs two more chains for it. `khg-hif` 1.1.0 for files that name entities or facts they do
   not hold; every other file is unchanged and stays 1.0.0. khg-contracts 1.0.0.dev1. Notes:
   [impl-notes/ruling-19.md](impl-notes/ruling-19.md).
+- 2026-09-26: rulings 20-23 (DESIGN §14), one minor release for the contract requests of P3a, P7 and P9: C4
+  `khg-c4-items` 0.2.0 (P3a's fields and P9's candidate table), `khg-scorers` 1.1.0 (the `outranked` stale kind, ten
+  "incorrect" deprecation reasons, the paired order effect), C1 `khg-record` and `khg-relation-schema` 1.1.0
+  (separator key roles, non-monotone qualifiers, `bound_conflict`, three of P3a's normalisations), C3 `khg-queue`
+  1.1.0 (the recorded reading of queue validity, the lint Q013) and `khg-codes` 1.1.0. Every change is opt-in or
+  widens what a reader accepts: no valid file of 1.0.0.dev1 changes its validity or its findings, and C2 with its 114
+  scenarios is unchanged. khg-contracts 1.0.0.dev2. Notes: [impl-notes/contracts-1-1.md](impl-notes/contracts-1-1.md).
 
 ## Results and findings
 
@@ -128,6 +135,6 @@ reference store passes all 114 conformance scenarios; `python -m khg_contracts.e
 - Will the HIF maintainers accept repeated (edge, node) incidence records? The formal model calls incidences a set;
   the convention needs readers to keep repeats (DESIGN §12.3).
 - Entity merges: v1 refuses a redirect while any record names the entity (ruling 10); rewriting is planned for 1.2.
-- P3a must confirm the C4 defaults: the memory tolerance rule, the `missing` outcome, and the deprecation reasons
-  that count as a revised value (rulings 3 and 8).
+- P3a must confirm the C4 defaults: the memory tolerance rule and the `missing` outcome (ruling 8). The deprecation
+  reasons that count as a revised value were settled with P3a and P7 by ruling 21 (2026-09-26).
 - P1 will measure what each backend loses; TypeDB 3.x can apply 70 of the 114 scenarios (DESIGN §14 ruling 1).
