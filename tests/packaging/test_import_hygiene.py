@@ -23,7 +23,7 @@ def test_import_loads_no_heavy_dependency_and_no_subpackage():
         "print(json.dumps({'heavy': heavy, 'subs': subs, 'version': khg_contracts.__version__}))\n")
     assert out["heavy"] == []
     assert out["subs"] == []
-    assert out["version"] == "1.0.0.dev0"
+    assert out["version"] == "1.0.0.dev1"
 
 
 def test_every_module_imports_without_a_heavy_dependency():

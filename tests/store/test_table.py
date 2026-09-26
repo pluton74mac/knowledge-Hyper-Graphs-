@@ -350,3 +350,16 @@ def test_load_prefetches_its_ids_before_reading_them(schema, fixture_doc):
     s.put(s.get("f:reg-1") | {"rank": "preferred"}, actor="t")  # only load prefetches
     assert all(c[0] != "prefetch" for c in s.table.calls)
     assert "prefetch" in OPTIONAL_MEMBERS and not hasattr(VersionTable(schema), "prefetch")
+
+
+def test_the_public_names_say_they_are_published_here(schema):
+    """P1 review 01, R-07 (deferred to P1's second half): ``Entry``, ``VersionTable`` and ``bound_nodes`` are defined in
+    the private ``_table`` and published by ``store.table``; their ``__module__`` is the public one. MemoryStore is
+    unchanged: only the name in reprs and docs moves."""
+    import pickle
+
+    from khg_contracts.store import table
+    for obj in (Entry, VersionTable, bound_nodes):
+        assert obj.__module__ == "khg_contracts.store.table" and getattr(table, obj.__name__) is obj
+    assert repr(VersionTable).startswith("<class 'khg_contracts.store.table.VersionTable'")
+    assert pickle.loads(pickle.dumps(bound_nodes)) is bound_nodes

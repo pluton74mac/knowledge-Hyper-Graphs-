@@ -1,0 +1,39 @@
+--- a/projects/p1-store-bakeoff/khg-bakeoff/tests/test_loads.py
++++ b/projects/p1-store-bakeoff/khg-bakeoff/tests/test_loads.py
+@@ -167,16 +167,28 @@
+         s.close()
+ 
+ 
+-def test_the_hif_store_cannot_load_a_container_that_is_not_complete(schema, fixture_doc):
+-    """A finding of the fixes, open for a ruling (IMPLEMENTATION-NOTES §8): ``to_hif`` writes an incidence on a node
+-    the file does not declare, ``from_hif`` refuses the file (KHG-D002), and the whole load fails; the store is left
+-    as it was."""
++def test_the_hif_store_loads_a_container_that_is_not_complete(schema, fixture_doc):
++    """P2 ruling 19 (Q5; khg-hif 1.1.0): ``to_hif`` names ``ex:Paris`` in its incidence without a node record and
++    ``from_hif`` reads it back as the entity, so the whole slice loads, nothing is skipped, and every record and read
++    equals the reference's. Before the ruling the load failed with KHG-D002."""
++    from khg_contracts import jsonio
++    from khg_contracts.store import Where
++
++    doc = incomplete(fixture_doc)
+     s = fresh("hif", schema)
+     try:
+-        with pytest.raises(ValidationError) as e:
+-            s.load(incomplete(fixture_doc), on_missing="skip")
+-        assert e.value.code == "KHG-D002" and "ex:Paris" in str(e.value)
+-        assert list(s.iter_records()) == [] and s.info()["header"] is None and not s.path.exists()
++        report = s.load(copy.deepcopy(doc), on_missing="skip")
++        assert report["skipped"] == [] and report["records"] == 39
++        md = jsonio.load(s.path)
++        assert md["metadata"]["khg-profile"] == "khg-hif/1.1.0" and md["metadata"]["khg-complete"] is False
++        assert "ex:Paris" not in {n["node"] for n in md["nodes"]}
++        assert "ex:Paris" in {i["node"] for i in md["incidences"]}
++        reference = MemoryStore(schema, clock=ScenarioClock(), capabilities=s.capabilities)
++        reference.load(copy.deepcopy(doc))
++        assert compare_containers(reference.export("khg-json"), s.export("khg-json")) == []
++        quoted = Where(status=frozenset({"asserted", "quoted"}))  # f:born-louis14-paris is quoted
++        assert [r["id"] for r in s.incident("ex:Paris", where=quoted)] == [
++            r["id"] for r in reference.incident("ex:Paris", where=quoted)] == ["f:born-louis14-paris"]
+     finally:
+         s.close()
+ 

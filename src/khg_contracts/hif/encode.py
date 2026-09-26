@@ -15,6 +15,11 @@
   stay. ``asc`` is never written.
 - **Weights** come only from ``extensions["hif:weight"]`` of entities, hyperedges and bindings; the other
   extensions go to ``khg-extensions``. A weight is never invented and never read as confidence.
+- **What the container does not hold** (§4.6; ruling 19). An entity it names but does not hold is the incidence's
+  node with no node record; a fact it names but does not hold is a ``_:ref:`` node with ``khg-external: true``.
+- **The stamp** is the lowest profile version whose features the file uses (§11.2): ``khg-hif/1.1.0`` when it has
+  an incidence on a node without a record, or an external fact reference outside a slice (which only a file that is
+  not complete may hold, ruling 19); ``khg-hif/1.0.0`` otherwise.
 """
 from __future__ import annotations
 
@@ -28,7 +33,7 @@ from ..record import binding_sort_key, normalize, read_container
 from ..schema import Schema, load_schema
 from .nodes import value_node
 from .profile import (DECLARATION_KEYS, EDGE_FIELDS, ENTITY_FIELDS, HIF_SCHEMA_SHA256, HIF_SCHEMA_URL,
-                      LITERAL_NODES, METADATA, PROFILE, ROLE_CONVENTION, WEIGHT, id_ok)
+                      LITERAL_NODES, METADATA, PROFILE, PROFILE_1_1, ROLE_CONVENTION, WEIGHT, id_ok)
 from .slices import select_slice
 
 __all__ = ["as_schema", "effective_direction", "to_hif"]
@@ -180,13 +185,23 @@ def _incidence(edge: str, node: str, binding: Mapping[str, Any], direction: str 
     return out
 
 
+def _stamp(nodes: Mapping[str, Mapping[str, Any]], incidences: list[dict[str, Any]], sliced: bool) -> str:
+    """The profile id of a file (§11.2): ``PROFILE_1_1`` when an incidence names a node without a record (an entity
+    the container does not hold) or, outside a slice, a fact reference is external (ruling 19); else ``PROFILE``."""
+    if any(i["node"] not in nodes for i in incidences):
+        return PROFILE_1_1
+    if not sliced and any(n["attrs"].get("khg-external") for n in nodes.values()):
+        return PROFILE_1_1
+    return PROFILE
+
+
 def _metadata(header: Mapping[str, Any], schema: Schema, relations: list[str] | None, literal_nodes: str,
-              schema_document: bool) -> dict[str, Any]:
+              schema_document: bool, profile: str) -> dict[str, Any]:
     md: dict[str, Any] = {
         "role-convention": ROLE_CONVENTION,
         "hif-schema": HIF_SCHEMA_URL,
         "hif-schema-sha256": HIF_SCHEMA_SHA256,
-        "khg-profile": PROFILE,
+        "khg-profile": profile,
         "khg-record": header.get("format"),
         "khg-schema": schema.ref,
         "khg-schema-sha256": schema.sha256,
@@ -211,12 +226,15 @@ def _metadata(header: Mapping[str, Any], schema: Schema, relations: list[str] | 
 
 def to_hif(container: Any, schema: Any, *, relations: Iterable[str] | None = None, literal_nodes: str = "shared",
            schema_document: bool = False) -> dict[str, Any]:
-    """The role-aware HIF file of a C1 container, under the ``khg-hif/1.0.0`` profile (§4.2).
+    """The role-aware HIF file of a C1 container, under the ``khg-hif`` profile (§4.2), stamped 1.0.0 or 1.1.0.
 
     ``container`` is a C1 container or a path to one; ``schema`` a ``Schema``, a schema document or a path.
     ``relations`` exports a closed slice of those relations (§4.6). ``literal_nodes`` is ``"shared"`` (one node per
     literal value) or ``"per_binding"`` (one per binding). ``schema_document=True`` inlines the schema as
-    ``khg-schema-document``, so ``from_hif`` can run without a schema argument.
+    ``khg-schema-document``, so ``from_hif`` can run without a schema argument. A container that is not complete
+    may name entities and facts it does not hold; the file then names them too, and ``from_hif`` reads them back
+    (ruling 19). A ``complete`` container that names one is invalid C1 (D002), and ``from_hif`` refuses its file
+    (D002 or P017).
 
     Raises ``ValidationError``: D009 when the header pins another schema, D001 for an id declared twice, S001 or
     S002 for an undeclared relation or role, C codes for a malformed record or value, P003 for an id outside the
@@ -253,5 +271,6 @@ def to_hif(container: Any, schema: Any, *, relations: Iterable[str] | None = Non
         if not id_ok(i):
             raise _fail("KHG-P003", "", f"the id {i[:40]!r} is outside the profile's id grammar")
     return {"network-type": "directed" if directed else "undirected",
-            "metadata": _metadata(header, sch, rels, literal_nodes, schema_document),
+            "metadata": _metadata(header, sch, rels, literal_nodes, schema_document,
+                                  _stamp(nodes, incidences, rels is not None)),
             "nodes": ordered, "edges": edge_items, "incidences": incidences}

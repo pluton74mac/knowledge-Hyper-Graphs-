@@ -1,9 +1,11 @@
-"""The ``role-convention`` 1.0.0 declaration and the ``khg-hif/1.0.0`` profile vocabulary (DESIGN §4.1-§4.5).
+"""The ``role-convention`` 1.0.0 declaration and the ``khg-hif`` profile vocabulary (DESIGN §4.1-§4.6).
 
 - The metadata declaration block of §4.5: which keys exist, which are required, and the pinned values.
 - How C1 fields map onto node and edge ``attrs`` (§4.2): flat dash-case ``khg-*`` keys plus the generic
   ``relation`` on edges and ``label`` on nodes.
 - The derived node kinds and their reserved ``_:`` prefixes, and the id grammar of the profile (P003).
+- The profile versions and the one rule 1.1.0 adds (§4.6, §14 ruling 19): a file that is not complete may name
+  entities and facts it does not hold (``external_allowed``).
 """
 from __future__ import annotations
 
@@ -26,18 +28,24 @@ __all__ = [
     "METADATA",
     "NODE_KINDS",
     "PROFILE",
+    "PROFILE_1_1",
     "REF_PREFIX",
     "REQUIRED_KEYS",
     "ROLE_CONVENTION",
     "WEIGHT",
+    "external_allowed",
     "id_ok",
     "id_key",
 ]
 
 #: The version of the upstream convention this package reads and writes (R003).
 ROLE_CONVENTION = "1.0.0"
-#: The profile id written to ``metadata["khg-profile"]``.
+#: The profile id written to ``metadata["khg-profile"]``. Writers stamp the lowest version whose features a file uses
+#: (§11.2): ``PROFILE`` (1.0.0), or ``PROFILE_1_1`` for a file that names an entity or fact it does not hold where
+#: 1.0.0 allowed none: an entity node without a node record, or an external fact reference outside a slice (§4.6;
+#: ruling 19). The reader accepts both; ``CONTRACTS["khg-hif"]`` is the newer.
 PROFILE = "khg-hif/1.0.0"
+PROFILE_1_1 = "khg-hif/1.1.0"
 #: The raw URL of the vendored HIF schema, pinned at commit b691a3d, and its digest (P009).
 HIF_SCHEMA_URL = data.HIF_SCHEMA_URL
 HIF_SCHEMA_SHA256 = data.HIF_SCHEMA_SHA256
@@ -93,6 +101,15 @@ def id_ok(i: Any) -> bool:
         return False
     limit = MAX_ID + len(REF_PREFIX) if i.startswith(REF_PREFIX) else MAX_ID
     return 1 <= len(i) <= limit and not _BAD_ID_CHAR.search(i)
+
+
+def external_allowed(metadata: Any) -> bool:
+    """True when a file may name entities and facts it does not hold (§4.6; ruling 19): it is not complete
+    (``khg-complete`` absent or false), or it is a slice (``khg-slice``; ``to_hif`` writes every slice with
+    ``khg-complete: false``). Such an entity is an incidence node without a node record; such a fact is a
+    ``khg-external`` fact reference. In any other file both are refused (D002, P017)."""
+    md = metadata if isinstance(metadata, Mapping) else {}
+    return md.get("khg-complete") is not True or "khg-slice" in md
 
 
 def id_key(i: Any) -> tuple[str, str]:

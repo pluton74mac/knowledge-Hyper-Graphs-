@@ -79,6 +79,10 @@ structural lint, store and export.
   §14.
 - 2026-09-24: **gate passed.** G1, G2 and G3 pass locally and in CI on GitHub (six jobs: Python 3.10, 3.11 gate,
   3.13, wheel, examples, evidence).
+- 2026-09-26: ruling 19 (DESIGN §14; P1's Q5): a valid C1 container that is not complete now round-trips through HIF,
+  XGI and HyperNetX, and G1 runs two more chains for it. `khg-hif` 1.1.0 for files that name entities or facts they do
+  not hold; every other file is unchanged and stays 1.0.0. khg-contracts 1.0.0.dev1. Notes:
+  [impl-notes/ruling-19.md](impl-notes/ruling-19.md).
 
 ## Results and findings
 

@@ -6,14 +6,15 @@ features a document uses). V001 otherwise, and a V finding stops the run:
 | Kind | Id | Accepted |
 |---|---|---|
 | container | ``header.format`` | ``khg-record/1.0.x`` |
-| hif | ``metadata["khg-profile"]`` and ``["khg-record"]``, when present | ``khg-hif/1.0.x``, ``khg-record/1.0.x`` |
+| hif | ``metadata["khg-profile"]`` and ``["khg-record"]`` | ``khg-hif/1.0.x`` and ``1.1.x``, ``khg-record/1.0.x`` |
 | schema | ``format`` | ``khg-relation-schema/1.0.x`` |
 | queue | ``format`` and ``record_format`` of a ``queue-header`` line 0 | ``khg-queue/1.0.x``, ``khg-record/1.0.x`` |
 | item | the ``format`` of a ``c4-header`` line 0 | ``khg-c4-items/0.0.x`` and ``0.1.x`` |
 
 A queue header without ``record_format`` passes V (the queue schema's Q008 reports it), and a HIF file without
-``khg-profile`` passes V (layer P reports P001). A single record and a role-convention file have no format id.
-``detect_kind`` picks the kind of an input for ``kind="auto"``; the runner reports V001 when it cannot tell.
+``khg-profile`` or ``khg-record`` passes V (layer P reports P001). ``khg-hif/1.1.0`` is ruling 19's minor version. A
+single record and a role-convention file have no format id. ``detect_kind`` picks the kind of an input for
+``kind="auto"``; the runner reports V001 when it cannot tell.
 """
 from __future__ import annotations
 
@@ -61,8 +62,8 @@ def run(ctx: Context) -> list[Finding]:
         md = doc.get("metadata") if isinstance(doc, Mapping) else None
         md = md if isinstance(md, Mapping) else {}
         out = []
-        if "khg-profile" in md and not gate(md["khg-profile"], "khg-hif", 1, 0):
-            out.append(_v001("/metadata/khg-profile", md["khg-profile"], "khg-hif/1.0.0"))
+        if "khg-profile" in md and not gate(md["khg-profile"], "khg-hif", 1, 1):  # 1.1: ruling 19
+            out.append(_v001("/metadata/khg-profile", md["khg-profile"], "khg-hif/1.1.0"))
         if "khg-record" in md and not gate(md["khg-record"], "khg-record", 1, 0):
             out.append(_v001("/metadata/khg-record", md["khg-record"], "khg-record/1.0.0"))
         return out
