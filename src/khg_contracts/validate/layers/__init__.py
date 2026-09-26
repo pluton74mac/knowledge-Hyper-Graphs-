@@ -47,7 +47,7 @@ LAYERS: tuple[LayerSpec, ...] = (
     LayerSpec("s", "S", "W4", "a record against its relation-type schema"),
     LayerSpec("m", "M", "W4", "the relation-schema meta-schema plus the Python checks (schema/)"),
     LayerSpec("q", "Q", "W9", "queue structure, the state fold, keys, entity resolution, base and replay"),
-    LayerSpec("i", "I", "W11a", "khg-c4-items-0.1.0.schema.json, embedded C1 and memory gold"),
+    LayerSpec("i", "I", "W11a", "khg-c4-items-0.2.0.schema.json, embedded C1 and memory gold"),
 )
 _BY_NAME = {s.name: s for s in LAYERS}
 

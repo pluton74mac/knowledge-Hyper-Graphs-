@@ -26,7 +26,7 @@ CONTRACTS: Mapping[str, str] = MappingProxyType({
     "khg-scenario": "1.0.0",
     "khg-scorers": "1.0.0",
     "khg-c5-io": "1.0.0",
-    "khg-c4-items": "0.1.0",
+    "khg-c4-items": "0.2.0",  # DESIGN §14 ruling 20
     "khg-render": "1",
     "khg-migration-report": "1.0.0",  # DESIGN §14 ruling 6
     "khg-codes": "1.0.0",

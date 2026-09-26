@@ -170,7 +170,7 @@ def test_breakdowns_bootstrap_and_report(build):
     rep = retrieval.score(qs, rs, config=retrieval.RetrievalConfig(ks=(1, 2), headline_k=2))
     by_hops = rep["breakdowns"]["by_hops"]
     assert by_hops["1"]["support_success@2"] == 1.0 and by_hops["2"]["mrr@2"] == 0.75 and by_hops["2"]["n"] == 2
-    assert set(rep["breakdowns"]) == {"by_hops", "by_type", "by_source_class"}
+    assert set(rep["breakdowns"]) == {"by_hops", "by_type", "by_source_class", "by_answer_mode"}
     boot = rep["bootstrap"]
     assert (boot["unit"], boot["n_units"]) == ("question", 3)
     lo, hi = boot["intervals"]["mrr@2"]

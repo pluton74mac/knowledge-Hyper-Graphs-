@@ -3,6 +3,7 @@
  "files": {
   "error-codes.json": "sha256:81c8ea3e5782c5c18b605685448da10fb8cf131748a1d4381ed24b2e11b93dde",
   "fixture/action-log.json": "sha256:1214194ae115f3462cafb4f2afa62aca4c56696fa7559df2d1c0d875d3ca4dda",
+  "fixture/c4-items-0.2.0.jsonl": "sha256:9c59ab5391c322816a8d6d4c8017155c242ab8dc319418bba3cdf4c63b1352f9",
   "fixture/c4-items.jsonl": "sha256:697b1d568d9ea7539fe81dca31263ee0254b9a763afb9d6e50968ad40fdb0666",
   "fixture/c5-outputs.jsonl": "sha256:adcb04000423c3556283cab90880f748733ca56014fd11838128ed58b7390ae9",
   "fixture/cyclic.relation-schema.json": "sha256:6eed5193ee81efa3885fefb6c09a201dc0c5226268c870991ec7615dc8a87300",
@@ -145,7 +146,7 @@
   "scenarios/index.json": "sha256:d5f3547a9f4ae58f32da5338ab0853c648e933353b628890dc966f229d854b50",
   "schemas/HIF-LICENSE.txt": "sha256:bfec44796db963653bcb367f176b8197ee0aca95b914ddcf638413ed431b2ddd",
   "schemas/hif_schema_v0.1.0.json": "sha256:639466b7a10de5a734d231d72422f54a5fce4084cb300869012510124c9b2196",
-  "schemas/khg-c4-items-0.1.0.schema.json": "sha256:ac57f477403716042ae6abae6e5e15c549dfd7abc9777c27277c125b188ae858",
+  "schemas/khg-c4-items-0.2.0.schema.json": "sha256:2a263cc50727ec059288e82faa1951809ee840d35e1b4c5f21c06a8dbdc485eb",
   "schemas/khg-c5-io-1.0.0.schema.json": "sha256:a51da48facfdf88dbf9f4043b409e37d89e545db33314c8c73e46ea641e9cd3d",
   "schemas/khg-hif-1.0.0.schema.json": "sha256:ad9b3074c1e9f2f61c6791ed8c5d24b17a1b6d02fff1973ca36097efc75183e4",
   "schemas/khg-queue-1.0.0.schema.json": "sha256:baac084558698b4d8210d8a6922ae659849819f4c3adcef66d6dd124a7d79eb9",

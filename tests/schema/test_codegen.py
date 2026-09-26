@@ -14,7 +14,7 @@ REGISTRY = {c["code"]: c for c in data.load_json("error-codes.json")["codes"]}
 
 
 def test_the_generator_covers_five_schemas():
-    assert GENERATED == ["khg-c4-items-0.1.0.schema.json", "khg-c5-io-1.0.0.schema.json", "khg-hif-1.0.0.schema.json",
+    assert GENERATED == ["khg-c4-items-0.2.0.schema.json", "khg-c5-io-1.0.0.schema.json", "khg-hif-1.0.0.schema.json",
                          "khg-record-1.0.0.schema.json", "khg-relation-schema-1.0.0.schema.json"]
 
 

@@ -23,7 +23,7 @@ from . import data
 
 __all__ = ["MIRRORED_SCHEMAS", "TEST_ONLY", "example_map", "write_examples", "main"]
 
-MIRRORED_SCHEMAS = ("khg-c4-items-0.1.0.schema.json", "khg-c5-io-1.0.0.schema.json", "khg-hif-1.0.0.schema.json",
+MIRRORED_SCHEMAS = ("khg-c4-items-0.2.0.schema.json", "khg-c5-io-1.0.0.schema.json", "khg-hif-1.0.0.schema.json",
                     "khg-record-1.0.0.schema.json")
 #: design-examples name -> path under ``tests/``
 TEST_ONLY = {

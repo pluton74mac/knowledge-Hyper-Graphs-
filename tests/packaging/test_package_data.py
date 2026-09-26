@@ -72,11 +72,11 @@ def test_the_layout_of_section_10_1():
     for f in FILES:
         by_dir.setdefault(f.split("/")[0] if "/" in f else "", []).append(f)
     assert sorted(by_dir[""]) == ["error-codes.json", "malformed-cases.json"]
-    assert len(by_dir["fixture"]) == 16 and len(by_dir["role-convention"]) == 5
+    assert len(by_dir["fixture"]) == 17 and len(by_dir["role-convention"]) == 5
     assert len(by_dir["sample"]) == 4 and len(by_dir["scenarios"]) == 115
     assert {"schemas/hif_schema_v0.1.0.json", "schemas/HIF-LICENSE.txt", "schemas/khg-record-1.0.0.schema.json",
             "schemas/khg-relation-schema-1.0.0.schema.json", "schemas/khg-hif-1.0.0.schema.json",
-            "schemas/khg-c4-items-0.1.0.schema.json", "schemas/khg-c5-io-1.0.0.schema.json"} <= set(by_dir["schemas"])
+            "schemas/khg-c4-items-0.2.0.schema.json", "schemas/khg-c5-io-1.0.0.schema.json"} <= set(by_dir["schemas"])
 
 
 def _refs(s):

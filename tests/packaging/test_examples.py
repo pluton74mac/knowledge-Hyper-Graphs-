@@ -12,9 +12,9 @@ def _tree(root):
     return {p.relative_to(root).as_posix(): p.read_bytes() for p in sorted(root.rglob("*")) if p.is_file()}
 
 
-def test_the_mirror_map_covers_146_packaged_files():
+def test_the_mirror_map_covers_147_packaged_files():
     m = examples.example_map()
-    assert len(m) == 146
+    assert len(m) == 147  # c4-items-0.2.0.jsonl: ruling 20
     assert set(m.values()) <= set(data.iter_files())
     assert "schemas/hif_schema_v0.1.0.json" not in m and "schemas/khg-relation-schema-1.0.0.schema.json" not in m
     assert m["conformance-scenarios/index.json"] == "scenarios/index.json"
@@ -24,7 +24,7 @@ def test_the_mirror_map_covers_146_packaged_files():
 def test_the_examples_equal_design_examples_byte_for_byte(tmp_path, examples_dir, repo_root):
     result = examples.write_examples(tmp_path / "out", tests_dir=repo_root / "tests")
     got, want = _tree(tmp_path / "out"), _tree(examples_dir)
-    assert len(want) == 151
+    assert len(want) == 152
     assert result["missing"] == []  # the five test-only files, the evidence file included (W7)
     assert set(got) == set(want)
     assert [k for k in got if got[k] != want[k]] == []

@@ -64,8 +64,8 @@ Every machine-readable part is in [design-examples/](design-examples/). The prot
   - The validator has 11 checking layers (J to I) plus lint (L) and migration (F) codes. It registers 134 codes
     (128 active, 6 reserved); 31 planned codes of later versions are not registered.
   - The G2 list has 180 malformed cases, each checked mechanically.
-  - C5 has one `score()` per ability, normative memory gold, the C4 draft `khg-c4-items/0.1.0` and the C5 output
-    schema `khg-c5-io/1.0.0`. All of it is in `khg-contracts` (F12).
+  - C5 has one `score()` per ability, normative memory gold, the C4 draft `khg-c4-items/0.2.0` (ruling 20) and the
+    C5 output schema `khg-c5-io/1.0.0`. All of it is in `khg-contracts` (F12).
 
 ### 1.2 The gate, clause by clause
 
@@ -1802,7 +1802,7 @@ names `base` `{"document_id": "p2-smoke-base", "sha256": "sha256:f7933d12…cb6a
 | S | a record against its relation-type schema (Python) | C1, payloads |
 | M | the relation-schema meta-schema plus Python checks | schemas |
 | Q | the queue structure, the state fold, keys, entity resolution, base and replay | queues |
-| I | `khg-c4-items-0.1.0.schema.json`, embedded C1, memory gold | C4 items |
+| I | `khg-c4-items-0.2.0.schema.json` (it reads 0.1.x files too), embedded C1, memory gold | C4 items |
 | L, F | lints, which never invalidate a file (v1 ships L008); migration report entries (v1 ships F006 and F015–F017) | |
 
 **Pipelines** (critique GL-02, SEM-03):
@@ -1993,7 +1993,7 @@ class RetrievalConfig:
     ks: tuple[int, ...] = (1, 3, 5, 10, 20)
     headline_k: int = 10
     ndcg_discount: Literal["log2", "longmemeval"] = "log2"
-    answer_mode: Literal["single", "set"] = "single"
+    answer_mode: Literal["single", "set", "count"] = "single"   # for questions without their own answer_mode
     bootstrap: Bootstrap = Bootstrap()
 
 @dataclass(frozen=True)
@@ -2036,7 +2036,7 @@ One `score()` per ability (graft [J-cons], [J-std]).
 | extraction | E-M1 strict (the headline); E-M2 core, which is `core_key` equality (critique C5-HANDCHECK); E-M4 Arg-I; E-M5 Arg-C; E-M6 role accuracy; E-M7 pooled with the grouping gap; E-M8 pairwise. Hungarian alignment (E-M3) on values, then bindings. Micro-doc, macro-relation and macro-arity averages | `hyperred_quintuplet`, `text2nkg` |
 | stability | S-M1 pairwise Jaccard on both keys; S-M2 core ratio; S-M3 support histogram; S-M4 churn; S-M5 gold partition; S-M7 Δ_order | |
 | completion | the `exact` filter, with `monotone` (⊑) and `time_aware` also reported; tie-exact expected ranks (C-M3); per task, per fact and macro-arity; hits@1, 3 and 10; top-1 ECE with 15 bins, equal-width and equal-mass, the reliability table and Brier, per arity bin on both arities | `hype`, `stare`, `hyper` |
-| retrieval | k ∈ {1, 3, 5, 10, 20}. Headlines `support_success@10` and `mrr@10`, then hit@k, support_recall@k, r_precision, nDCG@k with log2(i+1), `binding_coverage@k`. **Answers:** EM on value identity, then SQuAD-normalised text EM and token F1; set P, R and F1 in set mode; joint scores and gated EM; abstention precision and recall. **Cost:** mean, median, p90, p95 and total of every cost field, and answer EM against a cumulative-token budget (critique CONS-07) | |
+| retrieval | k ∈ {1, 3, 5, 10, 20}. Headlines `support_success@10` and `mrr@10`, then hit@k, support_recall@k, r_precision, nDCG@k with log2(i+1), `binding_coverage@k`. **Answers:** EM on value identity, then SQuAD-normalised text EM and token F1; set P, R and F1 in set mode (over the set-mode questions); a question's `answer_mode` (C4 0.2.0) comes before the configuration's, and `count` scores as `single`; joint scores and gated EM; abstention precision and recall. **Cost:** mean, median, p90, p95 and total of every cost field, and answer EM against a cumulative-token budget (critique CONS-07) | |
 | memory | strict accuracy (the headline) with lenient beside it; outcomes O1–O7 [R05 §5.2]; the stale rate split into `expired` and `revised`; anachronism, hedge and abstention rates; `support_success@k` against current support | `lenient` |
 
 **Presets.**
@@ -2116,34 +2116,55 @@ The first of them, as it is stored in `c4-items.jsonl`:
 {"answer":{"values":[{"entity":"ex:LouisXIV"}]},"answerable":true,"ask_after_step":2,"disputed_values":[],"future_values":[],"id":"c4:mq-king-1700","key":[{"role":"position","value":{"entity":"ex:KingOfFrance"}}],"kind":"c4-memory-question","qid":"mq:king-1700","qset":"p2-fixture-qset","relation":"position_held","split":"test","stale_values":[{"kind":"expired","value":{"entity":"ex:LouisXIII"}}],"subtype":"current_value","support":["f:king-14"],"target_role":"holder","text":"Who was King of France on 1 January 1700?","trace_id":"t:kings","where":{"as_of":"+1700-01-01T00:00:00Z","rank":["preferred","normal"],"status":["asserted"],"valid_mode":"definite"}}
 ```
 
-### 9.6 The C4 draft (`khg-c4-items/0.1.0`)
+### 9.6 The C4 draft (`khg-c4-items/0.2.0`)
 
 P3a owns C4 and fills it [DC §9.6]. The draft is written in C1 terms (critique CONS-02):
 - values, bindings, hyperedges and entities are `$ref`s into `khg-record` 1.0.0;
 - hashes are `sha256:`;
 - `where.as_of` is an instant (§2.1) or null.
 
-A file is JSONL: a `c4-header` line (`format`, `qset`, `record_format`, `schema {id, version, sha256}`), then
-items. Every item has `kind`, `id`, `qset` and `split` (`train`, `valid` or `test`).
+A file is JSONL: a `c4-header` line (`format`, `qset`, `record_format`, `schema {id, version, sha256}`, and
+optionally `corpus {id, version, tier?}`, the corpus and tier the set was built on), then items. Every item has
+`kind`, `id`, `qset` and `split` (`train`, `valid` or `test`). Version 0.2.0 (ruling 20) added the fields in bold, all
+optional.
 
-| `kind` | Required fields beyond the common four |
+| `kind` | Required fields beyond the common four; optional ones |
 |---|---|
-| `c4-extraction-doc` | `doc_id`, `text` (NFC), `text_sha256`, `annotation {guideline, annotators?, adjudicated?}`, `gold` (C1 hyperedges with position selectors); `entities?` |
-| `c4-completion-query` | `qid`, `fact_id`, `relation`, `arity`, `model_arity`, `target {bid, role, slot, value}`, `context` (bindings), `candidate_universe {kind: entities_of_type \| list, types?, ids?}` |
-| `c4-retrieval-question` | `qid`, `type` (`single_hop`, `multi_hop`, `temporal`, `comparison`, `aggregation`), `text`, **`anchors`**, `answer {values, text?}`, `support {sets}`, `hops`, `source_class`, `answerable`, **`where {as_of, valid_mode, rank, status}`**; `provenance?` |
+| `c4-extraction-doc` | `doc_id`, `text` (NFC), `text_sha256`, `annotation {guideline, annotators?, adjudicated?}`, `gold` (C1 hyperedges with position selectors); `entities?` (what the gold needs); **`doc_kind?`** (`wiki`, `rendered`); **`source? {url, revision?, licence?, attribution?}`**; **`gold_scope?`** (the relations whose gold was audited complete; without it the gold is complete for every relation); **`mentions?`** (below) |
+| `c4-completion-query` | `qid`, `fact_id`, `relation`, `arity`, `model_arity`, `target {bid, role, slot, value}`, `context` (bindings), `candidate_universe {kind: entities_of_type \| list, types?, ids?}`; **`manifest?`** (the id of the split manifest the query belongs to) |
+| `c4-retrieval-question` | `qid`, `type` (`single_hop`, `multi_hop`, `temporal`, `comparison`, `aggregation`), `text`, **`anchors`**, `answer {values, text?}`, `support {sets}`, `hops`, `source_class`, `answerable`, **`where {as_of, valid_mode, rank, status}`**; `provenance?` (open: P10's `template`, `pair_hops`, `nary_dependent`, `anchor_degree`); **`answer_mode?`** (`single`, `set`, `count`; a count is one quantity of unit `"1"`, I002 otherwise) |
 | `c4-memory-trace` | `trace_id`, `entities` (C1 entities), `events [{step, tx_time, put: [hyperedges] \| apply: event}]` |
 | `c4-memory-question` | `qid`, `trace_id`, `ask_after_step`, `subtype` (`current_value`, `past_value`, `future_value`, `abstention`), `text`, `relation`, `key [{role, value}]`, `target_role`, `where`, `answer`, `stale_values [{value, kind: expired \| revised}]` and `future_values` (both mandatory, D-C5-15), `disputed_values`, `support`, `answerable`; `tolerance?` |
-| `c4-split-manifest` | `splits {fact id: split}`, which `FilterIndex` reads (critique CONS-06) |
+| `c4-split-manifest` | `splits {fact id: split}`, which `FilterIndex` reads (critique CONS-06), with the splits `train`, `valid`, `test` and **`inference`** (the facts an inductive model sees at test time); **`scheme?`** (`transductive`, `leak_probe`, `semi_inductive`, `inductive`, `temporal`); **`seed?`**; **`container? {document_id, sha256}`** (the C1 container it splits; `sha256` is `record.container_sha256`); **`probe? {fact id: [leak kinds]}`** (`core_key`, `reversed_pair`, `same_pair_other_relation`, `group`; a probe fact is a test fact); **`lite?`** (the ids of the fixed lite test subset) |
+
+**`mentions`, the candidate table** (P9 DESIGN §3.1, D6): `[{entity, source, spans?, description?}]`, one entry per
+entity. `entity` is a C1 entity record. `source` says how it came into the table: `link` (a hyperlink of the text
+points to it), `subject` (the page's own subject), `match` (a label or alias occurs in the text) or `distractor` (an
+entity of a fitting type that the text does not name). `spans` are `[start, end]` pairs, half-open, in code points of
+the NFC text, as position selectors are (§2.8). The table is built from the text, never from the gold: a consumer
+offers `mentions` to an extractor, never `entities`, which lists what the gold needs and would leak it.
+
+**Reading and stamping.** Layer V takes `khg-c4-items/0.0.x` to `0.2.x`, and a header `record_format` of a
+`khg-record` version the reader takes (V001 otherwise; 0.1.0 required the constant `khg-record/1.0.0`). The 0.2.0
+draft schema checks every file the reader takes: 0.2.0 only adds optional fields and values, so a valid 0.1.0 file
+stays valid (the reader does not enforce the stamp, as for HIF in ruling 19). Writers stamp the lowest version whose
+features a file uses (§11.2): a file with any 0.2.0 field is stamped 0.2.0.
 
 `validate_item` runs J, V and I:
 - I001: an unknown kind;
-- I002: the draft schema;
-- I003: an embedded C1 record or value, with the C, S or D finding nested;
+- I002: the draft schema; and, on a line it accepts, a mention span that is empty, reversed or outside the text, an
+  entity offered twice in `mentions`, and a probe fact that `splits` does not list as `test`;
+- I003: an embedded C1 record or value, with the C, S or D finding nested; and a `gold_scope` relation that is not a
+  relation of the schema (S001 nested);
 - I004: a missing `stale_values` or `future_values`;
 - I005: the memory-gold replay.
 
 `design-examples/c4-items.jsonl` holds one item of each kind, built from the fixture: 10 lines, including two traces
-and three memory questions. It is valid under both engines, and its five I cases are in G2 (§8.2).
+and three memory questions. It is valid under both engines, and its five I cases are in G2 (§8.2). It stays a 0.1.0
+file. `c4-items-0.2.0.jsonl` shows the 0.2.0 fields on the fixture (built by `research/probes/c4_0_2_examples.py`): a
+header with its corpus; an extraction document with `doc_kind`, `gold_scope` and a candidate table of three matches
+and one distractor; a completion query with its manifest; one retrieval question per answer mode, with P10's
+provenance extras; and a semi-inductive and a leak-probe manifest.
 
 ### 9.7 Tests shipped (F14)
 
@@ -2203,11 +2224,12 @@ src/khg_contracts/
   cli.py                # the four console scripts (§10.4)
   data/                 # the single source of packaged files, read with importlib.resources (critique PACKAGE-DATA)
     schemas/            # khg-record-1.0.0, khg-relation-schema-1.0.0, khg-hif-1.0.0, khg-queue-1.0.0,
-                        #   khg-c4-items-0.1.0, khg-c5-io-1.0.0 (.schema.json); the vendored
+                        #   khg-c4-items-0.2.0, khg-c5-io-1.0.0 (.schema.json); the vendored
                         #   hif_schema_v0.1.0.json (sha256 639466b7…2196) and its HIF-LICENSE.txt
     error-codes.json, malformed-cases.json
     fixture/            # the fixture set (fixture.*), smoke-base.c1.json, smoke-queue.khg-queue.jsonl,
-                        #   queue-item.json, action-log.json, c4-items.jsonl, c5-outputs.jsonl,
+                        #   queue-item.json, action-log.json, c4-items.jsonl (0.1.0), c4-items-0.2.0.jsonl,
+                        #   c5-outputs.jsonl,
                         #   the cyclic and Wikidata-shaped relation schemas
     role-convention/    # the five fixture-PR files
     scenarios/          # index.json and the 114 scenario files
@@ -2320,7 +2342,7 @@ has one smoke test in `tests/cli/`.
 | upstream convention | `role-convention` 1.0.0 (four rules) | itself; minor versions only |
 | C3 | `khg-queue/1.0.0` | C1, in lockstep (PLAN §7) |
 | C2 and its scenarios | `khg-store/1.0.0` (`info().interface_version`), `khg-scenario/1.0.0` | their own semver |
-| C5, its outputs, the C4 draft | `khg-scorers/1.0.0`, `khg-c5-io/1.0.0`, `khg-c4-items/0.1.0` | C1; P3a owns C4 |
+| C5, its outputs, the C4 draft | `khg-scorers/1.0.0`, `khg-c5-io/1.0.0`, `khg-c4-items/0.2.0` (ruling 20) | C1; P3a owns C4 |
 | derived text | `khg-render/1` | a new number for any change |
 | migration report | `khg-migration-report/1.0.0` | `migrate/`; its own semver |
 | relation schemas | `<id>/<version>` (`typed_under`) | the author |
@@ -2676,6 +2698,39 @@ fixed them (`impl-notes/review-*.md`); these are the questions it left open.
     khg-contracts goes from 1.0.0.dev0 to **1.0.0.dev1**: 1.0.0 is not released, and its first release includes this.
     P1 can now run its HIF row on such slices. Its one test that pinned the refusal changes with this ruling (impl
     note).
+
+**Director's rulings on the contract requests of the phase-1 designs (2026-09-26).** The director accepted each
+request: P3a's (its DESIGN §11 and `notes/c4-change-proposal.md`; P3a rulings 2, 7 and 11), P7's (its DESIGN §7.2 and
+§8 D4, D5; P7 rulings 4 and 5) and P9's (its DESIGN §3.8, §8 and §10 D5, D6; P9 rulings 5 and 6), read on the
+branches `claude/p3a-corpus`, `claude/p7-identity-memory` and `claude/p9-extraction-gate` on 2026-09-26. They ship
+as one minor release of the contracts, khg-contracts 1.0.0.dev2
+([impl-notes/contracts-1-1.md](impl-notes/contracts-1-1.md)), built 2026-09-26. Every change is backward compatible: a valid file stays valid, and C2 `khg-store/1.0.0` with its 114
+scenarios is unchanged.
+20. **C4 `khg-c4-items` 0.2.0 (P3a's proposal, part A; P9's candidate table).** Every change is an optional field
+    or a new enum value (§9.6):
+    - the header names its corpus (`corpus {id, version, tier?}`), and its `record_format` is any `khg-record`
+      version the reader takes (V001), no longer the constant `khg-record/1.0.0`;
+    - split manifests admit the split `inference` and carry `scheme`, `seed`, `container {document_id, sha256}`,
+      `probe {fact id: [leak kinds]}` and `lite`. A probe fact is a test fact of its manifest (I002);
+    - extraction documents carry `doc_kind` (`wiki`, `rendered`), `source {url, revision?, licence?,
+      attribution?}` and `gold_scope` as fields (P9 had planned `annotation.gold_scope` and `annotation.kind`, since
+      `annotation` is open; the fields replace that), and `mentions`, P9's candidate table: C1 entity records, each
+      with how it came into the table (`link`, `subject`, `match`, `distractor`) and its spans. The table is built
+      from the text, not from the gold, so offering it does not leak the gold;
+    - retrieval questions carry `answer_mode` (`single`, `set`, `count`), which the scorer reads before
+      `RetrievalConfig.answer_mode` (which gains `count`); `provenance` stays open for P10's extras. P10's fixture
+      questions keep `answer_mode` in `provenance`, which the scorer does not read, until P10 moves it to the field;
+    - completion queries name their split manifest (`manifest`).
+
+    The new checks use existing codes: I002 for what one line's schema cannot state (a mention span outside the
+    text, an entity offered twice, a probe fact that is not a test fact) and I003 with S001 nested for a
+    `gold_scope` relation outside the schema. The reader takes 0.0.x to 0.2.x and checks them by the 0.2.0 schema.
+    `c4-items.jsonl` stays 0.1.0 and valid; `c4-items-0.2.0.jsonl` shows the new fields. Not in 0.2.0: C5's
+    extraction scorer does not read `gold_scope` (P9 filters before scoring, as its design says). The memory
+    changes are ruling 21.
+
+    **Versions.** `khg-c4-items` 0.1.0 → **0.2.0**; its schema file is `khg-c4-items-0.2.0.schema.json` (it replaces
+    the 0.1.0 file, which no other project names); `CONTRACTS["khg-c4-items"]` is 0.2.0.
 
 **Clarifications the review made normative.** Each is implemented and tested; the notes give the evidence.
 - §2.7 and D014: a history may go from `superseded` to `disputed` in one version (an undone supersession resolved

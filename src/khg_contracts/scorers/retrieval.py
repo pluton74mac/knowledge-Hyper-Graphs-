@@ -13,7 +13,10 @@ support is a list of alternative sets S_i):
   units point at (``bids``; a ``hyperedge`` unit without ``bids`` covers all its bindings).
 
 Answers: in ``single`` mode, EM on value identity (the first answer value), then SQuAD-normalised text EM and token
-F1; in ``set`` mode, set P, R, F1 (when the gold has values, or no text) and EM. A missing response, an abstention or
+F1; in ``set`` mode, set P, R, F1 (when the gold has values, or no text) and EM; ``count`` (a quantity of unit "1")
+scores as ``single``. A question's own ``answer_mode`` (``khg-c4-items`` 0.2.0) comes before
+``RetrievalConfig.answer_mode``, which is the mode of the questions that declare none; set metrics are averaged over
+the set-mode questions. A missing response, an abstention or
 an answer without text scores 0 against a gold text, as a missing value answer does. Claimed support gets P, R, F1
 and EM against its best set; joint scores multiply answer and support P and R; ``gated_em`` needs R-precision 1.
 Abstention precision and recall are over the unanswerable questions. Cost: mean, median, p90 and p95 (nearest rank)
@@ -38,7 +41,7 @@ from .bootstrap import Bootstrap, mean_interval
 __all__ = ["RetrievalConfig", "normalize_answer", "score", "token_f1"]
 
 DISCOUNTS = ("log2", "longmemeval")
-ANSWER_MODES = ("single", "set")
+ANSWER_MODES = ("single", "set", "count")
 COST_FIELDS = ("prompt_tokens", "completion_tokens", "llm_calls", "retrieval_calls", "hyperedges_visited",
                "retrieval_ms", "wall_ms", "usd")
 BUDGET_STEPS = 10
@@ -51,7 +54,7 @@ class RetrievalConfig:
     ks: tuple[int, ...] = (1, 3, 5, 10, 20)
     headline_k: int = 10
     ndcg_discount: Literal["log2", "longmemeval"] = "log2"
-    answer_mode: Literal["single", "set"] = "single"
+    answer_mode: Literal["single", "set", "count"] = "single"  # for questions without their own answer_mode
     bootstrap: Bootstrap = Bootstrap()
 
     def __post_init__(self) -> None:
@@ -212,7 +215,7 @@ def _answer(q: Mapping[str, Any], r: Mapping[str, Any] | None, mode: str,
     elif gold_text is not None:  # no response, an abstention or no text scores 0, as a missing value answer does
         zero = Fraction(0)
         out["text_em"] = out["token_f1"] = out["token_p"] = out["token_r"] = zero
-    if mode == "set":
+    if mode == "set":  # "count" scores as "single": one value
         s = None
         if gold_ids or gold_text is None:  # text-only gold has no value set to compare with
             tp = len(set(got) & set(gold_ids))
@@ -345,7 +348,9 @@ def score(questions: Iterable[Mapping[str, Any]], responses: Iterable[Mapping[st
         if ranking is not None:
             row.update(ranking)
         row["has_support"] = ranking is not None
-        ans = _answer(q, r, config.answer_mode, entities, f"/questions/{n}",
+        mode = q.get("answer_mode", config.answer_mode)
+        row["answer_mode"] = mode
+        ans = _answer(q, r, mode, entities, f"/questions/{n}",
                       f"/lines/{line_of[q['qid']]}" if r is not None else "")
         row.update(ans)
         sup = _support(q, r) if ranking is not None else None
@@ -370,7 +375,8 @@ def score(questions: Iterable[Mapping[str, Any]], responses: Iterable[Mapping[st
     if edges is not None:
         rank_keys += [f"binding_coverage@{c}" for c in config.cutoffs]
     answer_keys = ["em", "value_em", "text_em", "token_f1"] + (["set_p", "set_r", "set_f1"]
-                                                                if config.answer_mode == "set" else [])
+                                                                if "set" in {config.answer_mode}
+                                                                | {r["answer_mode"] for r in rows} else [])
     answerable = [r for r in rows if r["answerable"]]
     with_support = [r for r in rows if r["has_support"]]
     unanswerable = [r for r in rows if not r["answerable"]]
@@ -399,7 +405,7 @@ def score(questions: Iterable[Mapping[str, Any]], responses: Iterable[Mapping[st
     cost["budget_curve"] = _budget(rows)
     aggregate["cost"] = cost
     breakdowns = {}
-    for key in ("hops", "type", "source_class"):
+    for key in ("hops", "type", "source_class", "answer_mode"):
         groups: dict[str, list[dict[str, Any]]] = {}
         for r in rows:
             groups.setdefault(str(r[key]), []).append(r)

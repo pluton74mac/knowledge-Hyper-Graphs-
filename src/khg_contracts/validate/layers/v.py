@@ -9,12 +9,12 @@ features a document uses). V001 otherwise, and a V finding stops the run:
 | hif | ``metadata["khg-profile"]`` and ``["khg-record"]`` | ``khg-hif/1.0.x`` and ``1.1.x``, ``khg-record/1.0.x`` |
 | schema | ``format`` | ``khg-relation-schema/1.0.x`` |
 | queue | ``format`` and ``record_format`` of a ``queue-header`` line 0 | ``khg-queue/1.0.x``, ``khg-record/1.0.x`` |
-| item | the ``format`` of a ``c4-header`` line 0 | ``khg-c4-items/0.0.x`` and ``0.1.x`` |
+| item | ``format`` and ``record_format`` of line 0 | ``khg-c4-items/0.0.x`` to ``0.2.x``, ``khg-record/1.0.x`` |
 
 A queue header without ``record_format`` passes V (the queue schema's Q008 reports it), and a HIF file without
-``khg-profile`` or ``khg-record`` passes V (layer P reports P001). ``khg-hif/1.1.0`` is ruling 19's minor version. A
-single record and a role-convention file have no format id. ``detect_kind`` picks the kind of an input for
-``kind="auto"``; the runner reports V001 when it cannot tell.
+``khg-profile`` or ``khg-record`` passes V (layer P reports P001). ``khg-hif/1.1.0`` is ruling 19's minor version and
+``khg-c4-items/0.2.0`` ruling 20's. A single record and a role-convention file have no format id. ``detect_kind`` picks
+the kind of an input for ``kind="auto"``; the runner reports V001 when it cannot tell.
 """
 from __future__ import annotations
 
@@ -82,9 +82,15 @@ def run(ctx: Context) -> list[Finding]:
         return out
     if kind == "item":
         h = _line0(doc)
-        if h.get("kind") == "c4-header" and not gate(h.get("format"), "khg-c4-items", 0, 1):
-            return [_v001("/lines/0/format", h.get("format"), "khg-c4-items/0.1.0")]
-        return []
+        if h.get("kind") != "c4-header":
+            return []
+        out = []
+        if not gate(h.get("format"), "khg-c4-items", 0, 2):  # 0.2: ruling 20
+            out.append(_v001("/lines/0/format", h.get("format"), "khg-c4-items/0.2.0"))
+        # the stamp of the embedded C1 records (a missing one is the draft schema's I002)
+        if "record_format" in h and not gate(h["record_format"], "khg-record", 1, 0):
+            out.append(_v001("/lines/0/record_format", h["record_format"], "khg-record/1.0.0"))
+        return out
     return []
 
 

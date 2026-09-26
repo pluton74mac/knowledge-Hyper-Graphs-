@@ -242,10 +242,11 @@ def test_layer_v_gates_queue_and_c4_headers():
     assert [(f["code"], f["path"]) for f in validate_queue(queue, schema=SCHEMA)["findings"]] == \
         [("KHG-V001", "/lines/0/format")]
     items = data.load_jsonl("fixture/c4-items.jsonl")
-    items[0]["format"] = "khg-c4-items/0.2.0"
+    items[0]["format"] = "khg-c4-items/0.3.0"
     assert _codes(validate_item(items, schema=SCHEMA)) == ["KHG-V001"]
-    items[0]["format"] = "khg-c4-items/0.1.7"
-    assert validate_item(items, schema=SCHEMA)["ok"]
+    for stamp in ("khg-c4-items/0.1.7", "khg-c4-items/0.2.0"):  # 0.2: ruling 20
+        items[0]["format"] = stamp
+        assert validate_item(items, schema=SCHEMA)["ok"]
 
 
 @pytest.mark.parametrize("engine", ["jsonschema", "fastjsonschema"])
