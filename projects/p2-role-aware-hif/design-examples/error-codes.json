@@ -7,7 +7,7 @@
   "V": "version gate: reads format and profile ids and selects the schemas; a V finding stops later layers",
   "H": "the vendored HIF schema hif_schema_v0.1.0.json (blob e2105bb), unchanged; HIF inputs only",
   "R": "role-convention 1.0.0 (four rules), no khg requirements; HIF inputs, alone or inside the profile",
-  "P": "the khg-hif/1.0.0 profile of HIF: khg-hif-1.0.0.schema.json (allOf the vendored schema) plus Python checks",
+  "P": "the khg-hif profile of HIF, 1.0.0 and 1.1.0: khg-hif-1.0.0.schema.json (allOf the vendored schema) plus Python checks",
   "D": "decoding (HIF to C1), cross-record, container, history and store rules (Python)",
   "C": "the C1 record schema khg-record-1.0.0.schema.json (draft-07, x-khg-code annotations, if/then dispatch)",
   "S": "one record against its relation-type schema (Python)",
@@ -327,7 +327,7 @@
    "layer": "P",
    "severity": "error",
    "status": "active",
-   "meaning": "khg-external fact reference outside a slice, or an external reference to a fact the file holds",
+   "meaning": "khg-external fact reference in a complete file that is not a slice (khg-hif 1.1.0 allows one in any file that is not complete), or an external reference to a fact the file holds",
    "merges": "critique CONS-14"
   },
   {
@@ -343,7 +343,7 @@
    "layer": "D",
    "severity": "error",
    "status": "active",
-   "meaning": "unresolved reference: incidence to an undeclared node, entity absent from a complete document or from the store, fact reference to a missing hyperedge. Vocabulary ids (units, globes, rank reasons, schema units) are never references",
+   "meaning": "unresolved reference: incidence to an undeclared node (in a HIF file that is not complete, khg-hif 1.1.0 reads an undeclared node without the _: prefix as an entity the file does not hold), entity absent from a complete document or from the store, fact reference to a missing hyperedge. Vocabulary ids (units, globes, rank reasons, schema units) are never references",
    "merges": "B D002; A P012, S013; C C-ENTITY-REF"
   },
   {

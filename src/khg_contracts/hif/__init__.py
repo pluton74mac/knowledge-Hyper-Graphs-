@@ -9,6 +9,9 @@
   attrs, for the loaders), ``node_value`` and ``literal_label`` (the §4.2 literal labels).
 - ``convention_findings`` (the four rules, layer R) and ``profile_findings`` (the profile's Python checks, layer
   P); the validator runs them with the vendored and profile schemas (``validate``).
+- ``external_allowed`` (§4.6; ruling 19): whether a file may name entities and facts it does not hold, which a
+  container that is not complete does. ``to_hif`` stamps such a file ``PROFILE_1_1`` (``khg-hif/1.1.0``) and every
+  other file ``PROFILE`` (``khg-hif/1.0.0``); ``from_hif`` reads both.
 """
 from __future__ import annotations
 
@@ -20,8 +23,8 @@ from .encode import effective_direction, to_hif
 from .nodes import node_value, value_node
 from .order import canonical_order, incidence_sort_key, node_sort_key
 from .profile import (DECLARATION_KEYS, EDGE_FIELDS, ENTITY_FIELDS, HIF_SCHEMA_SHA256, HIF_SCHEMA_URL,
-                      KIND_PREFIXES, LITERAL_NODES, METADATA, NODE_KINDS, PROFILE, REQUIRED_KEYS, ROLE_CONVENTION,
-                      WEIGHT, id_ok)
+                      KIND_PREFIXES, LITERAL_NODES, METADATA, NODE_KINDS, PROFILE, PROFILE_1_1, REQUIRED_KEYS,
+                      ROLE_CONVENTION, WEIGHT, external_allowed, id_ok)
 from .slices import select_slice
 
 __all__ = [
@@ -35,6 +38,7 @@ __all__ = [
     "METADATA",
     "NODE_KINDS",
     "PROFILE",
+    "PROFILE_1_1",
     "PROFILE_STEPS",
     "REQUIRED_KEYS",
     "ROLE_CONVENTION",
@@ -43,6 +47,7 @@ __all__ = [
     "convention_findings",
     "decode",
     "effective_direction",
+    "external_allowed",
     "from_hif",
     "id_ok",
     "incidence_sort_key",

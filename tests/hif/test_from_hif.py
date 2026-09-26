@@ -374,3 +374,52 @@ def test_decoding_reports_every_problem_it_finds(full, schema):
     h["nodes"].append(copy.deepcopy(h["nodes"][3]))
     _incidence(h, "f:reg-1", "b2")["direction"] = "head"
     assert _decoding_codes(h, schema) == ["KHG-D001", "KHG-D009", "KHG-S016"]
+
+
+# ------------------------------------------------------------------------------------------------ ruling 19: the rules
+
+
+def test_to_hif_stamps_1_1_0_only_on_a_file_that_names_what_it_does_not_hold(c1, schema):
+    """§11.2: the lowest version whose features the file uses. Every file 1.0.0 could hold stays 1.0.0."""
+    assert hif.to_hif(c1, schema)["metadata"]["khg-profile"] == "khg-hif/1.0.0" == hif.PROFILE
+    claims = hif.to_hif(c1, schema, relations=["claims"])  # an external reference in a slice, as in 1.0.0
+    assert claims["metadata"]["khg-profile"] == "khg-hif/1.0.0"
+    assert hif.to_hif(_not_complete(c1, set(), False), schema)["metadata"]["khg-profile"] == "khg-hif/1.0.0"
+    for drop in ({"ex:Warszawa"}, {"f:born-louis14-paris"}):
+        assert hif.to_hif(_not_complete(c1, drop), schema)["metadata"]["khg-profile"] == hif.PROFILE_1_1
+    born = hif.to_hif(_not_complete(c1, {"ex:Paris"}, False), schema, relations=["born_in"])
+    assert born["metadata"]["khg-profile"] == "khg-hif/1.1.0"  # a slice that names an entity it does not hold
+    assert "ex:Paris" in {i["node"] for i in born["incidences"]} - {n["node"] for n in born["nodes"]}
+
+
+def test_what_a_file_may_name_without_holding_it(c1, schema):
+    assert hif.external_allowed({}) and hif.external_allowed({"khg-complete": False})
+    assert not hif.external_allowed({"khg-complete": True})
+    assert hif.external_allowed({"khg-complete": True, "khg-slice": {"relations": []}})  # a slice, as 1.0.0 read it
+    h = hif.to_hif(_not_complete(c1, {"ex:Warszawa"}), schema)
+    complete = copy.deepcopy(h)
+    complete["metadata"]["khg-complete"] = True  # a complete file declares every node it names (MC058)
+    assert _codes(hif.from_hif, complete, schema) == ("KHG-D002",)
+    derived = copy.deepcopy(h)
+    derived["nodes"] = [n for n in derived["nodes"] if n["attrs"]["khg-kind"] != "novalue"]
+    assert _decoding_codes(derived, schema) == ["KHG-D002"]  # an undeclared _: node is never an entity
+    ref = hif.to_hif(_not_complete(c1, {"f:born-louis14-paris"}), schema)
+    ref["metadata"]["khg-complete"] = True
+    assert _codes(hif.from_hif, ref, schema) == ("KHG-P017",)  # an external reference in a complete file
+    del ref["nodes"][[n["node"] for n in ref["nodes"]].index("_:ref:f:born-louis14-paris")]["attrs"]["khg-external"]
+    ref["metadata"]["khg-complete"] = False
+    assert _decoding_codes(ref, schema) == ["KHG-D002"]  # an unresolved reference must be marked external
+
+
+def test_the_reader_reads_any_1_x_stamp_by_the_1_1_rules(c1, schema):
+    """Stamps are for older readers (§11.2): a 1.0 reader refuses a 1.1.0 file with V001, not with D002. This reader
+    reads every 1.0.x and 1.1.x file by the 1.1 rules, so a file that an older ``to_hif`` stamped 1.0.0 for a
+    container that is not complete reads back too. A newer minor or major is V001."""
+    c = _not_complete(c1, {"ex:Warszawa", "f:born-louis14-paris"})
+    h = hif.to_hif(c, schema)
+    for stamp in ("khg-hif/1.0.0", "khg-hif/1.0.3", "khg-hif/1.1.0", "khg-hif/1.1.7"):
+        h["metadata"]["khg-profile"] = stamp
+        assert _same(hif.from_hif(h, schema), canonical_container(c))
+    for stamp in ("khg-hif/1.2.0", "khg-hif/2.0.0", "khg-hif/1.1"):
+        h["metadata"]["khg-profile"] = stamp
+        assert _codes(hif.from_hif, h, schema) == ("KHG-V001",)
