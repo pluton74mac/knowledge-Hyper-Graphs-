@@ -1,5 +1,10 @@
-"""The vocabulary of the C3 queue ``khg-queue/1.0.0`` (DESIGN §7): line kinds, states and moves, actions, verdict
+"""The vocabulary of the C3 queue ``khg-queue/1.1.0`` (DESIGN §7): line kinds, states and moves, actions, verdict
 labels and the queue-scoped ids ``q:``, ``l:`` and ``cand:<queue_id>.<seq>``.
+
+1.1 (ruling 23) changes no line of the format, so queue files keep the stamp ``khg-queue/1.0.0`` (``FORMAT``, the
+lowest version whose features they use, §11.2) and a 1.0 reader reads them. It changes how a queue is judged (the
+recorded reading, ``queue.recorded``) and what the linter checks: ``khg-lint`` 1.1.0 runs the structural rule set
+1.1.0, which adds Q013 (``queue.checks.quote_findings``).
 
 The fold's moves: ``pending`` goes to ``linted``, ``needs_review`` or ``rejected``; ``linted`` to ``accepted``,
 ``rejected`` or ``needs_review``; ``needs_review`` to ``accepted`` or ``rejected``; any open state to ``withdrawn``;
@@ -50,6 +55,7 @@ __all__ = [
 #: ``Linter.lint`` return).
 LogEntry = Dict[str, Any]
 
+#: The stamp queue files are written with (no 1.1 feature is a line of the file); the reader takes 1.0.x and 1.1.x.
 FORMAT = "khg-queue/1.0.0"
 RECORD_FORMAT = "khg-record/1.0.0"
 SCHEMA_ID = "tag:khg-contracts,2026:schema/khg-queue/1.0.0"
@@ -84,9 +90,9 @@ SEVERITIES = ("error", "warning", "info")
 LABELS = ("correct", "no_relation", "wrong_relation", "wrong_role", "wrong_filler", "span_boundary",
           "missing_participant", "extra_participant", "negated", "hypothesis", "other")
 
-#: The linter's actor and its v1 rule set (the gate's structural lint).
-LINTER: Mapping[str, str] = MappingProxyType({"type": "linter", "id": "khg-lint", "version": "1.0.0"})
-RULE_SET: Mapping[str, str] = MappingProxyType({"id": "structural", "version": "1.0.0"})
+#: The linter's actor and its rule set (the gate's structural lint); 1.1.0 adds Q013 (ruling 23).
+LINTER: Mapping[str, str] = MappingProxyType({"type": "linter", "id": "khg-lint", "version": "1.1.0"})
+RULE_SET: Mapping[str, str] = MappingProxyType({"id": "structural", "version": "1.1.0"})
 
 _QUEUE_ID = r"[0-9A-Za-z][0-9A-Za-z._:-]{0,127}"
 QUEUE_ID_PATTERN = rf"^{_QUEUE_ID}$"

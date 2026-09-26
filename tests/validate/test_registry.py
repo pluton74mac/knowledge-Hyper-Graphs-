@@ -1,4 +1,4 @@
-"""W4: the code registry ``khg-codes/1.0.0`` and the pipelines (DESIGN §8.1)."""
+"""W4: the code registry ``khg-codes/1.1.0`` (Q013 since 1.1.0, ruling 23) and the pipelines (DESIGN §8.1)."""
 from __future__ import annotations
 
 import pytest
@@ -12,8 +12,8 @@ RESERVED = ["KHG-D004", "KHG-D006", "KHG-S008", "KHG-S012", "KHG-P006", "KHG-P01
 
 def test_the_registry_counts_as_the_design_states():
     reg = registry()
-    assert reg.format == "khg-codes/1.0.0"
-    assert len(reg) == 134 and len(reg.active()) == 128
+    assert reg.format == "khg-codes/1.1.0"
+    assert len(reg) == 135 and len(reg.active()) == 129
     assert sorted(reg.reserved()) == sorted(RESERVED)
     assert len(reg.planned()) == 31
     assert all(not reg.is_planned(c) for c in reg) and all(p.code not in reg for p in reg.planned())
@@ -88,6 +88,8 @@ def test_the_hif_pipeline_decodes_before_c_and_s_and_checks_d_after():
 
 
 def test_a_registry_with_another_format_is_refused():
-    doc = dict(data.load_json("error-codes.json"), format="khg-codes/2.0.0")
-    with pytest.raises(ValueError):
-        Registry(doc)
+    for fmt in ("khg-codes/2.0.0", "khg-codes/1.2.0", "khg-codes/1.0", None):
+        doc = dict(data.load_json("error-codes.json"), format=fmt)
+        with pytest.raises(ValueError):
+            Registry(doc)
+    assert Registry(dict(data.load_json("error-codes.json"), format="khg-codes/1.0.3")).format == "khg-codes/1.0.3"

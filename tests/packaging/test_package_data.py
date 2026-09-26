@@ -114,10 +114,10 @@ def test_packaged_schemas_have_unique_ids_and_only_closed_absolute_refs():
 
 def test_the_registry_and_the_case_list_as_the_design_counts_them():
     reg = data.load_json("error-codes.json")
-    assert reg["format"] == "khg-codes/1.0.0"
+    assert reg["format"] == "khg-codes/1.1.0"  # Q013: ruling 23
     codes = {c["code"]: c for c in reg["codes"]}
-    assert len(codes) == 134
-    assert sum(c["status"] == "active" for c in codes.values()) == 128
+    assert len(codes) == 135
+    assert sum(c["status"] == "active" for c in codes.values()) == 129
     assert sorted(c for c, v in codes.items() if v["status"] == "reserved") == \
         ["KHG-D004", "KHG-D006", "KHG-P006", "KHG-P015", "KHG-S008", "KHG-S012"]
     assert len(reg["planned"]) == 31 and not {p["code"] for p in reg["planned"]} & set(codes)

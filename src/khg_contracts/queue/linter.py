@@ -1,19 +1,21 @@
 """``Linter``: the structural rule set (DESIGN §7), the gate's lint.
 
 ``Linter(schema, *, store=None, entities=None, doc_texts=None).lint(queue, qid, *, at=None)`` checks one item of a
-``Queue`` and logs a ``lint`` entry through it: actor ``khg-lint`` 1.0.0, mode ``automatic``, rule set
-``structural`` 1.0.0. The rule set is store-free:
+``Queue`` and logs a ``lint`` entry through it: actor ``khg-lint`` 1.1.0, mode ``automatic``, rule set
+``structural`` 1.1.0. The rule set is store-free:
 
 - the item line against the queue schema: Q001-Q003, Q008 and Q010 for its structure, C codes for its entities;
 - the C and S codes on the payload (layers C and S, S020 included), with S003 as a warning on candidates;
-- Q002 (a candidate id of another queue), Q009, Q010 and Q011 (``queue.checks``).
+- Q002 (a candidate id of another queue), Q009, Q010 and Q011 (``queue.checks``);
+- Q013 (1.1.0, ruling 23): with the document text, a quote selector without a position selector whose prefix,
+  exact text and suffix do not occur in it (S021 checks a quote with a position selector). Only the linter runs it.
 
 Entities resolve from ``item.entities`` first, then from the linter's ``entities`` (a container or a path to one,
 entity records, or a mapping id -> record) or the queue's base, then from the store. S005 runs only on resolved
 entities, and an unresolved one is Q011, an error. Fact values resolve from the base, then the store. The outcome is
 ``fail`` when a finding is an error (the item moves to ``rejected``), ``warn`` when one is a warning
 (``needs_review``), else ``pass`` (``linted``). ``doc_texts`` (as ``validate`` takes them) enable the span check
-S021.
+S021 and Q013.
 
 Nothing is logged when ``lint`` raises ``ValidationError``: D009 when the queue pins another schema; Q012 when the
 base lint loads first (a container given as ``entities`` under the header's base ``document_id``, else the queue's
@@ -31,7 +33,7 @@ from ..validate.layers import c as layer_c
 from ..validate.layers import s as layer_s
 from ..validate.layers.j import is_path
 from ..validate.runner import _texts_arg as texts_arg
-from .checks import base_findings, item_findings, pin_findings
+from .checks import base_findings, item_findings, pin_findings, quote_findings
 from .lines import line_findings, raise_errors
 from .model import LINT_STATES, LINTER, RULE_SET, LogEntry
 
@@ -136,6 +138,7 @@ class Linter:
         out += layer_s.record_findings(payload, self._schema, entities=entities, facts=self._facts(payload, base),
                                        doc_texts=self._texts, path="/payload", candidate=True)
         out += item_findings(item, queue_id=queue_id, schema=self._schema, entities=entities)
+        out += quote_findings(payload, self._texts)
         return out
 
     # ------------------------------------------------------------------------------------------ sources

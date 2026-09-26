@@ -8,7 +8,9 @@
 | queue | each ``queue-item`` payload against ``#/definitions/hyperedge``, at ``/lines/<n>/payload`` |
 
 Codes come from the ``x-khg-code`` annotations (C001-C012). jsonschema reports every violation, fastjsonschema the
-first one. ``record_findings`` is the entry point for one record, for the store, the queue linter and layer I.
+first one. In a queue, an error that a rejected item's lint entry recorded is reported as ``info`` (the recorded
+reading of ``khg-queue`` 1.1, ``Context.recorded``). ``record_findings`` is the entry point for one record, for the
+store, the queue linter and layer I.
 """
 from __future__ import annotations
 
@@ -51,5 +53,5 @@ def run(ctx: Context) -> list[Finding]:
             if isinstance(line, Mapping) and line.get("kind") == "queue-item":
                 out += record_findings(line.get("payload"), definition="hyperedge", engine=ctx.engine,
                                        path=f"/lines/{n}/payload")
-        return out
+        return ctx.recorded(out)
     return []

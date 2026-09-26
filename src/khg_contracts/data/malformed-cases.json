@@ -23,7 +23,8 @@
   }
  },
  "coverage_exceptions": {
-  "KHG-D019": "S-PUT-006 (expect is a store call argument, not document content)"
+  "KHG-D019": "S-PUT-006 (expect is a store call argument, not document content)",
+  "KHG-Q013": "a check of the linter's structural rule set (Linter.lint), which validate does not repeat, so no case of this list can show it; tests/queue/test_queue_1_1.py tests it"
  },
  "bases": [
   "c4-items.jsonl",

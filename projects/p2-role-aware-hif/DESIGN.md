@@ -62,8 +62,9 @@ Every machine-readable part is in [design-examples/](design-examples/). The prot
   - C2 has 9 core and 6 derived methods, 4 events and 10 capability flags. Header state is kept. The suite has
     114 executable scenarios.
   - C3 is one queue file per (run, order), with `Queue.accept` and `replay(base=…)`.
-  - The validator has 11 checking layers (J to I) plus lint (L) and migration (F) codes. It registers 134 codes
-    (128 active, 6 reserved); 31 planned codes of later versions are not registered.
+  - The validator has 11 checking layers (J to I) plus lint (L) and migration (F) codes. It registers 135 codes
+    (129 active, 6 reserved; Q013 since `khg-codes/1.1.0`, ruling 23); 31 planned codes of later versions are not
+    registered.
   - The G2 list has 180 malformed cases, each checked mechanically.
   - C5 has one `score()` per ability, normative memory gold, the C4 draft `khg-c4-items/0.2.0` (ruling 20) and the
     C5 output schema `khg-c5-io/1.0.0`. All of it is in `khg-contracts` (F12).
@@ -1690,7 +1691,11 @@ The suite absorbs [DA]'s scenarios C2-01…27, [DC]'s 18 and [DB]'s 4 (graft [J-
 P1's adapters since measured 114 of 114 on SQLite, PostgreSQL 18.6, Oxigraph and Neo4j, 70 on TypeDB and 107 on HIF
 ([P1 results](../p1-store-bakeoff/results/conformance/summary.md)).
 
-## 7. C3 candidate queue and action log (`khg-queue/1.0.0`)
+## 7. C3 candidate queue and action log (`khg-queue/1.1.0`)
+
+Version 1.1.0 (ruling 23, from P9) changes no line of the format, so queue files keep the stamp `khg-queue/1.0.0`
+and 1.0 readers read them. It changes how a queue is judged (the recorded reading, below) and what the linter checks
+(Q013); the reader takes `khg-queue/1.0.x` and `1.1.x`.
 
 A queue file is append-only JSONL, one per (run, order) (graft [J-cons], [J-std]). There is **one appender at a
 time**, and every actor appends through a `Queue` handle (critique CONS-23). An item's state is a fold over the
@@ -1753,9 +1758,27 @@ carry over to a re-extraction.
   - It re-runs every `accept` in log order at its `at`, and checks `after` and `decision_hash` (Q006).
 - `queue_items(paths) -> Iterator[dict]`: items with their folded state and verdicts, for the scorers.
 
-**The linter's v1 rule set is `structural`**, which is store-free and is the gate's lint:
+**The linter's rule set is `structural`** (1.1.0; the linter is `khg-lint` 1.1.0), which is store-free and is the
+gate's lint:
 - the C and S codes on the payload, with S003 as a warning on candidates;
-- Q001–Q003, Q009, Q010 and Q011.
+- Q001–Q003, Q009, Q010 and Q011;
+- since 1.1.0, **Q013**: with the document text (`Linter(doc_texts=...)`), an evidence record's quote selector
+  without a position selector, whose prefix, exact text and suffix do not occur in the text the evidence's
+  `doc_sha256` hashes (NFC, code points). S021 checks a quote that has a position selector; without one, a quote
+  escaped every check, so a candidate could cite a sentence its document lacks (P9 DESIGN §3.8, D5 c). Q013 is an
+  error, so the candidate is rejected. Only the linter runs it: the validator does not repeat it on queue files,
+  so no queue that was valid becomes invalid (§8.2 lists it as a coverage exception).
+
+**The recorded reading of queue validity** (1.1.0; P9 DESIGN §3.8, D5 a). A queue records wrong candidates on
+purpose and its items are never edited, so under 1.0 `validate_queue`, which runs layers C and S on every payload,
+failed any queue that had once rejected a malformed candidate at lint. Now a C or S error on the payload or the
+entities of an item is **recorded** when the item's folded state is `rejected` and one of its lint entries lists a
+finding with the same code at the same path (relative to the item line) as an error. A recorded finding is reported
+with severity `info` and a message naming the lint entry; it does not make the queue invalid. Every other finding
+keeps its severity: an error the lint did not record (for example one the validator finds with a document text the
+linter lacked), one on an item that is not rejected, and every J, V, Q and D finding. The fold never lets an item
+with a recorded lint error be accepted (Q005), so no recorded error reached a store. A queue valid under 1.0 is
+valid under 1.1 with the same findings.
 
 Entities resolve from `item.entities` first, then from `Linter(entities=...)` or the queue's base, then from the
 store. S005 runs only on resolved entities, and an unresolved entity is Q011, an error (critique CONS-10). The
@@ -1846,7 +1869,7 @@ names `base` `{"document_id": "p2-smoke-base", "sha256": "sha256:f7933d12…cb6a
 | HIF with the profile | J V H R P D C S. D first runs as decoding; the cross-record D checks run after S |
 | role-convention file | J H R |
 | relation-type schema | J V M |
-| queue | J V Q C S D (C and S run on the payloads) |
+| queue | J V Q C S D (C and S run on the payloads; since 1.1 a C or S error that a rejected item's lint recorded is `info`, §7) |
 | C4 items | J V I. Embedded C1 findings are reported nested under I003 |
 
 - A finding's **layer is the letter of its code.** A step may emit another layer's code: decoding emits S016, and
@@ -1882,9 +1905,9 @@ so on each malformed case it must return exactly one code at the first rejecting
 jsonschema's. G2 runs with jsonschema, which gives the full report. The prototype checked containment on all 180
 cases.
 
-**The registry** is `design-examples/error-codes.json` (`khg-codes/1.0.0`).
-- It registers 134 codes. 128 are active; 6 are reserved and never emitted (D004, D006, S008, S012, and P006 and
-  P015, which moved to R001 and R004 before 1.0).
+**The registry** is `design-examples/error-codes.json` (`khg-codes/1.1.0`).
+- It registers 135 codes. 129 are active; 6 are reserved and never emitted (D004, D006, S008, S012, and P006 and
+  P015, which moved to R001 and R004 before 1.0). Version 1.1.0 added Q013 (ruling 23); codes only grow.
 - Each code has a layer, a severity, a status, a meaning and the A, B and C codes it merges.
 - The file also lists the pipelines and the layer rule.
 - 31 **planned** codes of later versions are listed apart and **not registered**, so 1.0 does not freeze them
@@ -1921,7 +1944,7 @@ on all 180.
 | P | 24 | all 15 active | R01 V07, V12, V14, V20, V40; R02 cases 15–17, 21, 23; R03 D4, D7, D8, c04, c14, c20; §4.5; the 518 boundary (GL-16); CONS-14, CONS-15 |
 | D | 30 | 17 of 18 active (D019 is covered by S-PUT-006) | R01 V15–V18, V28, V37, V41, V42, D-09; R02 cases 28–29; R03 c19; SEM-18 cases 1–6; SEM-16; four history-container cases (D013 ×2, D014, D018) |
 | C / S | 20 / 34 | all active | R01 V14, V15, V21–V27, V29, V30, V32–V38, V47; R03 c13; F11 spans (`doc_text`); year 0 and the 1583 rule; SEM-18 case 7 |
-| M / Q / I | 19 / 17 / 5 | all active / all / all | R01 V43–V49; M015 now carries the old `violation` severity; M017; Q010 now carries the old event-hash case; Q011, Q012; the C4 items of `c4-items.jsonl` |
+| M / Q / I | 19 / 17 / 5 | all active / all but Q013 (the linter's own check, a coverage exception since 1.1) / all | R01 V43–V49; M015 now carries the old `violation` severity; M017; Q010 now carries the old event-hash case; Q011, Q012; the C4 items of `c4-items.jsonl` |
 
 Store-only rules are not in the list. They are scenarios (S-VER-003/004/005, S-EXP-008 and S-EXP-010), and the
 history-container cases cover their codes in files. The rule-relation case of the previous list moved to 1.1 with
@@ -2394,13 +2417,13 @@ has one smoke test in `tests/cli/`.
 | C1 | `khg-record/1.1.0` (ruling 22; containers that do not use 1.1 are stamped 1.0.0) | itself |
 | schema language, HIF profile | `khg-relation-schema/1.1.0` (ruling 22), `khg-hif/1.1.0` (ruling 19); files that do not use a 1.1 feature are stamped 1.0.0 | C1 |
 | upstream convention | `role-convention` 1.0.0 (four rules) | itself; minor versions only |
-| C3 | `khg-queue/1.0.0` | C1, in lockstep (PLAN §7) |
+| C3 | `khg-queue/1.1.0` (ruling 23; files keep the stamp 1.0.0, since 1.1 changes no line of the format) | C1, in lockstep (PLAN §7) |
 | C2 and its scenarios | `khg-store/1.0.0` (`info().interface_version`), `khg-scenario/1.0.0` | their own semver |
 | C5, its outputs, the C4 draft | `khg-scorers/1.1.0` (ruling 21), `khg-c5-io/1.0.0`, `khg-c4-items/0.2.0` (ruling 20) | C1; P3a owns C4 |
 | derived text | `khg-render/1` | a new number for any change |
 | migration report | `khg-migration-report/1.0.0` | `migrate/`; its own semver |
 | relation schemas | `<id>/<version>` (`typed_under`) | the author |
-| codes, cases, hash domains | `khg-codes/1.0.0`, `khg-malformed-cases/1.0.0`; `khg-content-key/1` and the other domains | codes only grow; domains change only with a C1 major |
+| codes, cases, hash domains | `khg-codes/1.1.0` (Q013, ruling 23), `khg-malformed-cases/1.0.0`; `khg-content-key/1` and the other domains | codes only grow; domains change only with a C1 major |
 
 `$id`s are `tag:khg-contracts,2026:schema/<name>/<version>` (RFC 4151). They are never fetched.
 
@@ -2857,6 +2880,33 @@ scenarios is unchanged.
     and its 114 scenarios are unchanged: no method changes its signature, and a store built on `StoreBase` or
     `TableStore` reads 1.1 keys through `record.key_digest`. A backend that checks `find_by_key`'s roles itself (P1's
     `NativeReads`) must take the separators too before it holds a 1.1 schema (a four-line change, in the impl note).
+
+23. **C3 `khg-queue` 1.1.0 (P9's D5 a and c).** Two changes (§7, §8.1):
+    - **The recorded reading of queue validity** (P9 D5 a). A C or S error on a rejected item's payload or entities,
+      which the item's lint entry recorded (same code, same path relative to the item, severity error), is reported
+      as `info` and does not make the queue invalid. Any other finding keeps its severity. This is P9's reading as
+      its DESIGN §3.8 defines it; a queue that correctly rejected a malformed candidate at lint is valid, and one
+      whose lint missed an error the validator finds is not.
+    - **Q013** (P9 D5 c), a new check of the linter's structural rule set: with the document text, a quote selector
+      without a position selector whose prefix, exact text and suffix do not occur in the text. It is an error, so
+      the candidate is rejected and P9's gate no longer has to catch an unlocatable quote itself. Only the linter
+      checks it: a validator check would turn queues that are valid under 1.0 into invalid ones, so the validator
+      does not repeat it, and §8.2 lists it as a coverage exception beside D019.
+
+    **Versions.** `khg-queue` 1.0.0 → **1.1.0**, in lockstep with C1 (PLAN §7). The queue format is unchanged, so
+    files keep the stamp `khg-queue/1.0.0` and 1.0 readers read them; the reader takes 1.0.x and 1.1.x. The linter is
+    `khg-lint` 1.1.0 and its rule set `structural` 1.1.0, which every new lint entry names, so the smoke queue's lint
+    line changes (G3's golden; its decision hash does not). The queue schema file is unchanged. `khg-codes` 1.0.0 →
+    **1.1.0**: Q013 is the first code added since 1.0 (135 registered, 129 active). `khg-malformed-cases` stays 1.0.0:
+    its 180 cases are unchanged, and only its map of coverage exceptions gains Q013.
+
+**The release** (2026-09-26). Rulings 20–23 ship together as khg-contracts **1.0.0.dev2**: 1.0.0 is not released, so
+its first release includes them, as it includes ruling 19. Unchanged: C2 `khg-store/1.0.0` and its 114 scenarios,
+`khg-scenario/1.0.0`, `khg-hif/1.1.0` and its profile schema, `role-convention` 1.0.0, `khg-c5-io/1.0.0`,
+`khg-render/1`, `khg-migration-report/1.0.0`, `khg-malformed-cases/1.0.0` (its 180 cases), every hash domain, the
+record schema file, G1's golden digests and the migrated sample. No existing valid file becomes invalid: the
+packaged 0.1.0 C4 file, the fixture, its history, slices and HIF files, the smoke queue of 1.0 and the scenarios all
+validate as before. What consumers must change is in [impl-notes/contracts-1-1.md](impl-notes/contracts-1-1.md) §5.
 
 **Clarifications the review made normative.** Each is implemented and tested; the notes give the evidence.
 - §2.7 and D014: a history may go from `superseded` to `disputed` in one version (an undone supersession resolved

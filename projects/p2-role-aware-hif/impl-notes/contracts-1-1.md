@@ -233,4 +233,65 @@ if not roles <= {p.get("role") for p in patterns} <= roles | separators:
 
 Its lookup is on the stored key digest, which `record.key_digest` computes, so nothing else changes.
 
+## 4. C3 `khg-queue` 1.1.0 (ruling 23)
+
+### 4.1 The recorded reading (P9 D5 a)
+
+As P9 DESIGN §3.8 defines it, and as the director's words put it ("a queue that correctly rejected a malformed
+candidate at lint is valid"): a C or S finding (by its code) on an item line is recorded when the item's folded
+state is `rejected` and one of the item's lint entries lists a finding with the same code, at the same path relative
+to the item line, as an error. `queue.recorded` builds the map from the fold; `Context.recorded` caches it per run;
+layers Q (its C codes on item entities), C and S apply it to their own findings before the runner decides whether
+to stop, so `stop="first"` does not stop at a recorded error.
+
+| Question | Decision | Why |
+|---|---|---|
+| Drop recorded findings, or keep them | keep them, as `info`, with a message naming the lint entry | a reader still sees what was rejected and why (P9 counts them); `info` never invalidates, and a warning would ask for attention a correct queue does not need. An emitting layer may lower a registered severity (the registry says so; S003 on candidates is the precedent) |
+| Which items | `rejected` only | the ruling's words; the fold already refuses to accept an item whose lint has an open error (Q005), so such an item ends rejected or withdrawn |
+| Which findings | C and S codes only; the lint must have recorded the same code at the same path as an error | P9's rule. An error the lint did not record (say, S021 found with a text the linter did not have) still fails; so does every J, V, Q and D finding |
+| Q codes on a rejected payload (Q009, Q011) | not covered | outside the ruling; P9's queues cannot produce them (minted entities travel in `item.entities`). A decision for the director if another producer needs it |
+| Queue stamp | files keep `khg-queue/1.0.0` | 1.1 changes no line of the format; an append-only file's header cannot know whether the file will ever hold a rejected malformed candidate, and "stamp the lowest version" (§11.2) then says 1.0.0. A 1.0 reader of such a file reports the payload errors, which is a stricter judgement of what is there, not a misreading |
+
+### 4.2 Q013 (P9 D5 c)
+
+`queue.checks.quote_findings`, called by `Linter._findings` after the other structural checks: for each evidence
+record with selectors and no position selector, when the linter has its text (`validate.layers.s.source_text`, the
+text S021 reads: the one its `doc_sha256` hashes, else its `doc_id`'s when that one hashes to it), each quote
+selector whose `prefix + exact + suffix` (absent parts empty; NFC of the whole) does not occur in the NFC text is
+Q013 at `/payload/evidence/<k>/selectors/<j>`, an error.
+
+| Question | Decision | Why |
+|---|---|---|
+| What to flag | an unlocatable quote, not every quote without a position | P9's defect is that an unlocatable quote passes. A quote alone is a valid W3C TextQuoteSelector and C1 allows it (C007); where it occurs in the text it is locatable |
+| Without the text | nothing, as S021 | the linter cannot judge; P9's pipeline passes the texts (`khg_extract.pipeline`, `Linter(schema, store=st, doc_texts=...)`) |
+| Error or warning | error | the same failure as S021 (the evidence does not select what it quotes); the candidate is rejected, which is what P9's gate did itself |
+| Which code | a new code, Q013 | the registry's rule: a new check gets a new code. Q: it is a check of queue items, beside Q009 (evidence against the item's doc), and the structural rule set's errors are C, S and Q codes. Not an L code: lints advise (info, warning) and the planned L numbers belong to the identity and quality rule sets. Not an S code: layer S runs in every validation with texts, where it would make files valid under 1.0 invalid |
+| The validator | does not repeat Q013 | "existing valid files stay valid": a queue linted under 1.0 whose accepted candidate cites an unlocatable quote stays valid. `malformed-cases.json` lists Q013 as a coverage exception, beside D019 |
+
+`khg-lint` 1.1.0 runs the structural rule set 1.1.0. Every new lint entry names both, so the G3 smoke queue's lint
+line changes (the packaged golden and its mirror are regenerated; G3 checks that the API writes it byte for byte);
+its decision hash is unchanged. `khg-codes` goes to 1.1.0 with Q013 (135 registered, 129 active); the `Registry`
+class reads 1.0.x and 1.1.x registries.
+
+### 4.3 Tests first
+
+`tests/queue/test_queue_1_1.py`, 31 tests, written before the change: **15 failed, 16 passed** (the 16 are guards:
+1.0 accepted and 1.2 refused, errors that must stay errors, locatable quotes and quotes without a text or with a
+position selector, a text of another revision, the validator not repeating Q013, the `Linter` call). After the change
+all pass. **Existing tests changed:** the registry counts (`test_registry`, `test_package_data`, `test_coverage`,
+`test_malformed`: 124 checked codes, the exceptions D019 and Q013), `CONTRACTS` (`test_api`), the linter's versions
+(`test_linter`), `khg-queue/1.1.0` is now read (`test_queue`: the stamp that is too new is 1.2.0), and
+`queue.FORMAT` stays the 1.0.0 stamp (`queue/test_api`).
+
+## 5. What consumers change
+
+| Project | Change | Needed when |
+|---|---|---|
+| P3a | may stamp its sets `khg-c4-items/0.2.0` and use the new fields (`inference` and the manifest fields replace its sidecar `.meta.json`; `mentions`, `gold_scope`, `doc_kind`, `source`, `answer_mode`, `corpus`); memory gold from `derive_memory_gold` now follows the 0.2 rules, so a memory set built with this release is stamped 0.2.0. `normalize` now does its items 1-3 (idempotent with its converter, which may keep them) | W7-W9 |
+| P9 | its tests follow rulings 21 and 23: [contracts-1-1-p9-tests.patch](contracts-1-1-p9-tests.patch) (five tests: the order effect's pooled value, the recorded reading, Q013 rejecting run-3's unlocatable quote at lint, `khg-queue` 1.1.0). With it, khg-extract's 22 tests pass against this branch. `khg_extract.docs.SOURCES` must add `distractor` to read C4 `mentions`; `c3_check`'s strict reading now equals the recorded one | before P9 merges the bundle |
+| P1 | `khg_bakeoff.native.NativeReads.find_by_key`: the four-line separator change of §3.6, before it holds a schema with separators. Nothing else: its HIF, SQLite, Oxigraph and PostgreSQL paths read keys through `record.key_digest` | P1's second half |
+| P7 | the non-monotone flag and separators are declared in schemas; `bound_conflict` is a dispute reason its planner may write (its D1); `outranked` is in the gold its comparison scores | its memory comparison |
+| P10 | may move `answer_mode` from `provenance` to the item field; the scorer reads the field, not `provenance` | its next question set |
+| P6 | nothing: khg-width reads schemas stamped 1.0.0 or 1.1.0 | |
+
 [p3a-note]: ../../p3a-clean-nary-corpus/notes/c4-change-proposal.md

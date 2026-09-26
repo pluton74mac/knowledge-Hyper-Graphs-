@@ -17,11 +17,12 @@ first rejecting step also have exactly the case's ``reported`` codes, which the 
 **Harness self-checks.** Every patch applies; the input differs from its base; every ``expect_target`` resolves and
 pins exactly the indexed paths of the patch; every unpatched base validates with no error finding.
 
-**Coverage and engines.** Every active code of layers J to I is listed by a case, except D019 (S-PUT-006 covers it),
-and each is detected; no case yields a reserved, planned or unregistered code. fastjsonschema rejects every case at
-the same step, with codes contained in jsonschema's: exactly one error finding at a schema step (H, P, C, I), the
-same codes at a Python step, and one code or the same codes at M and Q, which add Python checks to a schema. The
-fastjsonschema runs are checked to be fastjsonschema runs: they pass again while jsonschema refuses to run.
+**Coverage and engines.** Every active code of layers J to I is listed by a case, except D019 (S-PUT-006 covers it)
+and Q013 (the linter's own check, ruling 23), and each is detected; no case yields a reserved, planned or
+unregistered code. fastjsonschema rejects every case at the same step, with codes contained in jsonschema's: exactly
+one error finding at a schema step (H, P, C, I), the same codes at a Python step, and one code or the same codes at M
+and Q, which add Python checks to a schema. The fastjsonschema runs are checked to be fastjsonschema runs: they pass
+again while jsonschema refuses to run.
 """
 from __future__ import annotations
 
@@ -341,14 +342,15 @@ CHECKED = [c.code for c in REG.codes(status="active") if c.layer not in ("L", "F
 
 def test_every_active_code_of_layers_j_to_i_is_listed_except_d019():
     listed = {c["code"] for c in CASES}
-    assert len(CHECKED) == 123
-    assert set(CHECKED) - listed == set(LIST["coverage_exceptions"]) == {"KHG-D019"}
+    assert len(CHECKED) == 124
+    # D019: a store scenario; Q013: the linter's own check (ruling 23)
+    assert set(CHECKED) - listed == set(LIST["coverage_exceptions"]) == {"KHG-D019", "KHG-Q013"}
     assert listed <= set(CHECKED)
     assert all(c["code"][4] == c["layer"] and REG[c["code"]].layer == c["layer"] for c in CASES)
     assert set(REG.active()) - set(CHECKED) == {"KHG-L008", "KHG-F006", "KHG-F015", "KHG-F016", "KHG-F017"}
 
 
-@pytest.mark.parametrize("code", [c for c in CHECKED if c != "KHG-D019"])
+@pytest.mark.parametrize("code", [c for c in CHECKED if c not in LIST["coverage_exceptions"]])
 def test_every_listed_code_is_detected(code):
     ids = [c["id"] for c in CASES if c["code"] == code]
     assert ids and all(passes(BY_ID[i], report(i)) for i in ids), code

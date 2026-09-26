@@ -8,7 +8,9 @@ layers of the same run. The keys in use:
   layers through ``d_decode.note``; decoding runs only when all three passed;
 - ``"schema"``: the relation-type schema of the run, set by ``Context.relation_schema``;
 - ``"entities"``, ``"facts"``: the latest entity and hyperedge records of the container by id, set by layer S;
-- ``"queue_base"``: the verified base container of a queue, set by ``Context.queue_base``.
+- ``"queue_base"``: the verified base container of a queue, set by ``Context.queue_base``;
+- ``"queue_recorded"``: the payload errors each rejected item's lint recorded, set by ``Context.recorded``, which
+  layers Q, C and S read to report them as ``info`` (the recorded reading, ``khg-queue`` 1.1.0).
 """
 from __future__ import annotations
 
@@ -96,6 +98,17 @@ class Context:
             if isinstance(md, Mapping) and isinstance(md.get("khg-schema-document"), Mapping):
                 return md["khg-schema-document"], "/metadata/khg-schema-document"
         return None, ""
+
+    def recorded(self, findings: list[Finding]) -> list[Finding]:
+        """``findings`` under the recorded reading of a queue (``queue.recorded``): a C or S error on a rejected item
+        that the item's lint entry recorded is ``info``. Other kinds of input are returned as they are."""
+        if self.kind != "queue":
+            return findings
+        from ..queue.recorded import lower, recorded_map  # imported here: the queue package imports the layers
+
+        if "queue_recorded" not in self.state:
+            self.state["queue_recorded"] = recorded_map(self.doc if isinstance(self.doc, list) else [])
+        return lower(findings, self.state["queue_recorded"])
 
     def queue_base(self) -> Mapping[str, Any] | None:
         """The base container a queue header names, when ``bases`` supplies it under its ``document_id`` and its

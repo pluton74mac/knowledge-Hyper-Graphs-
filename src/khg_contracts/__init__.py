@@ -21,7 +21,7 @@ CONTRACTS: Mapping[str, str] = MappingProxyType({
     "khg-relation-schema": "1.1.0",  # ruling 22
     "khg-hif": "1.1.0",  # DESIGN §14 ruling 19
     "role-convention": "1.0.0",
-    "khg-queue": "1.0.0",
+    "khg-queue": "1.1.0",  # ruling 23
     "khg-store": "1.0.0",
     "khg-scenario": "1.0.0",
     "khg-scorers": "1.1.0",  # DESIGN §14 ruling 21
@@ -29,7 +29,7 @@ CONTRACTS: Mapping[str, str] = MappingProxyType({
     "khg-c4-items": "0.2.0",  # DESIGN §14 ruling 20
     "khg-render": "1",
     "khg-migration-report": "1.0.0",  # DESIGN §14 ruling 6
-    "khg-codes": "1.0.0",
+    "khg-codes": "1.1.0",  # ruling 23: Q013
     "khg-malformed-cases": "1.0.0",
     "khg-content-key": "1",
     "khg-core-key": "1",

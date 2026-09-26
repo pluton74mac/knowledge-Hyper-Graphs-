@@ -1,7 +1,7 @@
 {
  "algorithm": "sha256",
  "files": {
-  "error-codes.json": "sha256:602bba9577218593787acf03a904b964c5d6ace0a75e10a5b04c280e818b1ca1",
+  "error-codes.json": "sha256:79b0e32454d611e6f080f2bd4337aa6ca544bb14f1bc20783908b6bde5904c96",
   "fixture/action-log.json": "sha256:1214194ae115f3462cafb4f2afa62aca4c56696fa7559df2d1c0d875d3ca4dda",
   "fixture/c4-items-0.2.0.jsonl": "sha256:7b763dcf8abc54b5ceee07d77d4cdf5e27a158d41327777b285a4b78df43241c",
   "fixture/c4-items.jsonl": "sha256:697b1d568d9ea7539fe81dca31263ee0254b9a763afb9d6e50968ad40fdb0666",
@@ -17,9 +17,9 @@
   "fixture/fixture.with-derived.c1.json": "sha256:af086b161eb4d645c2ef485f0e88369780560ab51589dbe3271783d2c5d66367",
   "fixture/queue-item.json": "sha256:61a00e2b206712d1d7ca8167fb5ed621e25a6e59a8ad8efef7a3c93cadffc0a3",
   "fixture/smoke-base.c1.json": "sha256:3f9833441bd821f66705c6eec48e109ecb160c681dd8d6bbd274c7cbcd77b4a5",
-  "fixture/smoke-queue.khg-queue.jsonl": "sha256:b38ca071188dfdf7d37393c55287508b040910dd285d242c9519bbbd12bd1795",
+  "fixture/smoke-queue.khg-queue.jsonl": "sha256:6b001f788dff202e9e24d66c7b886e6d2b6dc2242692148603188b2eba73f597",
   "fixture/wikidata-shaped.relation-schema.json": "sha256:d287ed08822cde29888b3870d2998f4249ab891504606abcb14bd58666a61c3d",
-  "malformed-cases.json": "sha256:d2cda760c196559e42fe70c92e5170fadc35d100457b8d0526ac4078a9e3ecf4",
+  "malformed-cases.json": "sha256:bbbc1412b5a98a6bd6cce8c184508b18edb6db53576a5c1ee4b40a06ab3fd277",
   "role-convention/basic.hif.json": "sha256:7b3dae4b0c93151029e47351bc27407c5e0a637e58f84aa1e985059edb561ba4",
   "role-convention/ordered.hif.json": "sha256:1b7f8e306595e98c435211e3c47bf3d608d66ea96a1fab9d42dafbb9a477ea9a",
   "role-convention/tail-head.hif.json": "sha256:a2b222f2ed89328b2b625bf7344ae27a39c2b92d5ab4242dbcf1016333961d89",

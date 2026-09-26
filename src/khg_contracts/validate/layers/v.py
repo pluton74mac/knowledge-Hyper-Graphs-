@@ -8,14 +8,14 @@ features a document uses). V001 otherwise, and a V finding stops the run:
 | container | ``header.format`` | ``khg-record/1.0.x``, ``1.1.x`` |
 | hif | metadata ``khg-profile``, ``khg-record`` | ``khg-hif/1.0.x``, ``1.1.x``; ``khg-record/1.0.x``, ``1.1.x`` |
 | schema | ``format`` | ``khg-relation-schema/1.0.x``, ``1.1.x`` |
-| queue | line 0: ``format``, ``record_format`` | ``khg-queue/1.0.x``; ``khg-record/1.0.x``, ``1.1.x`` |
+| queue | line 0: ``format``, ``record_format`` | ``khg-queue/1.0.x``, ``1.1.x``; ``khg-record/1.0.x``, ``1.1.x`` |
 | item | line 0: ``format``, ``record_format`` | ``khg-c4-items/0.0.x`` to ``0.2.x``; ``khg-record/1.0.x``, ``1.1.x`` |
 
 A queue header without ``record_format`` passes V (the queue schema's Q008 reports it), and a HIF file without
 ``khg-profile`` or ``khg-record`` passes V (layer P reports P001). ``khg-hif/1.1.0`` is ruling 19's minor version and
-``khg-c4-items/0.2.0`` ruling 20's; ``khg-record/1.1.0`` and ``khg-relation-schema/1.1.0`` are ruling 22's. A single
-record and a role-convention file have no format id. ``detect_kind`` picks the kind of an input for ``kind="auto"``;
-the runner reports V001 when it cannot tell.
+``khg-c4-items/0.2.0`` ruling 20's; ``khg-record/1.1.0`` and ``khg-relation-schema/1.1.0`` are ruling 22's, and
+``khg-queue/1.1.0`` ruling 23's. A single record and a role-convention file have no format id. ``detect_kind`` picks
+the kind of an input for ``kind="auto"``; the runner reports V001 when it cannot tell.
 """
 from __future__ import annotations
 
@@ -75,8 +75,8 @@ def run(ctx: Context) -> list[Finding]:
         if h.get("kind") != "queue-header":
             return []
         out = []
-        if not gate(h.get("format"), "khg-queue", 1, 0):
-            out.append(_v001("/lines/0/format", h.get("format"), "khg-queue/1.0.0"))
+        if not gate(h.get("format"), "khg-queue", 1, 1):  # 1.1: ruling 23
+            out.append(_v001("/lines/0/format", h.get("format"), "khg-queue/1.1.0"))
         # the stamp of the payloads, when the header has one (a missing one is the queue schema's Q008)
         if "record_format" in h and not gate(h["record_format"], "khg-record", 1, 1):
             out.append(_v001("/lines/0/record_format", h["record_format"], "khg-record/1.1.0"))

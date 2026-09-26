@@ -36,7 +36,7 @@ def test_the_smoke_item_passes(smoke, smoke_lines):
     entry = smoke.lint(q, qid)
     assert entry == smoke_lines[2] and q.state(qid) == "linted"
     assert (entry["actor"], entry["mode"], entry["rule_set"]) == (
-        {"type": "linter", "id": "khg-lint", "version": "1.0.0"}, "automatic", {"id": "structural", "version": "1.0.0"})
+        {"type": "linter", "id": "khg-lint", "version": "1.1.0"}, "automatic", {"id": "structural", "version": "1.1.0"})
 
 
 def test_without_a_source_every_entity_is_q011_and_the_item_is_rejected(smoke):

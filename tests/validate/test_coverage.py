@@ -1,6 +1,7 @@
 """W4: code coverage over the registry (DESIGN §8.1, §8.2).
 
-- Every active code of layers J to I is listed by a case, except the coverage exception D019 (a store scenario).
+- Every active code of layers J to I is listed by a case, except the coverage exceptions D019 (a store scenario) and
+  Q013 (a check of the linter only, ruling 23).
 - Every such code is detected: at least one of its cases passes the G2 rule (its first rejecting layer is the listed
   layer and its code is among the error codes). Reserved codes are skipped (never emitted), and so are the lint and
   migration layers L and F, which the store receipts and the migration test cover.
@@ -38,14 +39,14 @@ def _passes(case, report):
     return report.first_layer == case["layer"] and case["code"] in {f["code"] for f in report.errors}
 
 
-def test_there_are_123_active_codes_in_layers_j_to_i():
-    assert len(CHECKED) == 123 and not set(CHECKED) & set(REG.reserved())
+def test_there_are_124_active_codes_in_layers_j_to_i():
+    assert len(CHECKED) == 124 and not set(CHECKED) & set(REG.reserved())
     assert set(REG.active()) - set(CHECKED) == {"KHG-L008", "KHG-F006", "KHG-F015", "KHG-F016", "KHG-F017"}
 
 
 def test_every_active_code_of_layers_j_to_i_is_listed_by_a_case():
     listed = {c["code"] for c in CASES}
-    assert set(CHECKED) - listed == set(EXCEPTIONS) == {"KHG-D019"}
+    assert set(CHECKED) - listed == set(EXCEPTIONS) == {"KHG-D019", "KHG-Q013"}
     assert listed <= set(CHECKED)
 
 

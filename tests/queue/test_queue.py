@@ -133,7 +133,7 @@ def _write(tmp_path, lines, *, raw=None):
     (lambda ls: [ls[0], ls[1], dict(ls[2], state_before="linted"), ls[3]], {"KHG-Q005"}),
     (lambda ls: [ls[0], ls[1], ls[3]], {"KHG-Q007"}),
     (lambda ls: [ls[0], dict(ls[1], item_kind="merge_proposal")] + ls[2:], {"KHG-Q003", "KHG-Q007"}),
-    (lambda ls: [dict(ls[0], format="khg-queue/1.1.0")] + ls[1:], {"KHG-V001"}),
+    (lambda ls: [dict(ls[0], format="khg-queue/1.2.0")] + ls[1:], {"KHG-V001"}),  # 1.1 is read (ruling 23)
 ])
 def test_open_refuses_a_file_with_structural_errors(tmp_path, schema, smoke_lines, change, codes):
     with pytest.raises(ValidationError) as exc:
