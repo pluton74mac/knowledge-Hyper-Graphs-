@@ -1,8 +1,9 @@
 {
  "algorithm": "sha256",
  "files": {
-  "error-codes.json": "sha256:81c8ea3e5782c5c18b605685448da10fb8cf131748a1d4381ed24b2e11b93dde",
+  "error-codes.json": "sha256:79b0e32454d611e6f080f2bd4337aa6ca544bb14f1bc20783908b6bde5904c96",
   "fixture/action-log.json": "sha256:1214194ae115f3462cafb4f2afa62aca4c56696fa7559df2d1c0d875d3ca4dda",
+  "fixture/c4-items-0.2.0.jsonl": "sha256:7b763dcf8abc54b5ceee07d77d4cdf5e27a158d41327777b285a4b78df43241c",
   "fixture/c4-items.jsonl": "sha256:697b1d568d9ea7539fe81dca31263ee0254b9a763afb9d6e50968ad40fdb0666",
   "fixture/c5-outputs.jsonl": "sha256:adcb04000423c3556283cab90880f748733ca56014fd11838128ed58b7390ae9",
   "fixture/cyclic.relation-schema.json": "sha256:6eed5193ee81efa3885fefb6c09a201dc0c5226268c870991ec7615dc8a87300",
@@ -16,9 +17,9 @@
   "fixture/fixture.with-derived.c1.json": "sha256:af086b161eb4d645c2ef485f0e88369780560ab51589dbe3271783d2c5d66367",
   "fixture/queue-item.json": "sha256:61a00e2b206712d1d7ca8167fb5ed621e25a6e59a8ad8efef7a3c93cadffc0a3",
   "fixture/smoke-base.c1.json": "sha256:3f9833441bd821f66705c6eec48e109ecb160c681dd8d6bbd274c7cbcd77b4a5",
-  "fixture/smoke-queue.khg-queue.jsonl": "sha256:b38ca071188dfdf7d37393c55287508b040910dd285d242c9519bbbd12bd1795",
+  "fixture/smoke-queue.khg-queue.jsonl": "sha256:6b001f788dff202e9e24d66c7b886e6d2b6dc2242692148603188b2eba73f597",
   "fixture/wikidata-shaped.relation-schema.json": "sha256:d287ed08822cde29888b3870d2998f4249ab891504606abcb14bd58666a61c3d",
-  "malformed-cases.json": "sha256:d2cda760c196559e42fe70c92e5170fadc35d100457b8d0526ac4078a9e3ecf4",
+  "malformed-cases.json": "sha256:bbbc1412b5a98a6bd6cce8c184508b18edb6db53576a5c1ee4b40a06ab3fd277",
   "role-convention/basic.hif.json": "sha256:7b3dae4b0c93151029e47351bc27407c5e0a637e58f84aa1e985059edb561ba4",
   "role-convention/ordered.hif.json": "sha256:1b7f8e306595e98c435211e3c47bf3d608d66ea96a1fab9d42dafbb9a477ea9a",
   "role-convention/tail-head.hif.json": "sha256:a2b222f2ed89328b2b625bf7344ae27a39c2b92d5ab4242dbcf1016333961d89",
@@ -145,11 +146,11 @@
   "scenarios/index.json": "sha256:d5f3547a9f4ae58f32da5338ab0853c648e933353b628890dc966f229d854b50",
   "schemas/HIF-LICENSE.txt": "sha256:bfec44796db963653bcb367f176b8197ee0aca95b914ddcf638413ed431b2ddd",
   "schemas/hif_schema_v0.1.0.json": "sha256:639466b7a10de5a734d231d72422f54a5fce4084cb300869012510124c9b2196",
-  "schemas/khg-c4-items-0.1.0.schema.json": "sha256:ac57f477403716042ae6abae6e5e15c549dfd7abc9777c27277c125b188ae858",
+  "schemas/khg-c4-items-0.2.0.schema.json": "sha256:9c796d2bf299347b5afa10b3609851498904d24f0122c01fda4eb21f4ff3a3f8",
   "schemas/khg-c5-io-1.0.0.schema.json": "sha256:a51da48facfdf88dbf9f4043b409e37d89e545db33314c8c73e46ea641e9cd3d",
   "schemas/khg-hif-1.0.0.schema.json": "sha256:ad9b3074c1e9f2f61c6791ed8c5d24b17a1b6d02fff1973ca36097efc75183e4",
   "schemas/khg-queue-1.0.0.schema.json": "sha256:baac084558698b4d8210d8a6922ae659849819f4c3adcef66d6dd124a7d79eb9",
   "schemas/khg-record-1.0.0.schema.json": "sha256:965990c518fa887deeb24c0b2b775029ac3779651abf49619827207a4b65c11a",
-  "schemas/khg-relation-schema-1.0.0.schema.json": "sha256:bd321ee2318ea553d5b079e3800bc6f4f9dbcd50acab4b02dcf78034496ee36e"
+  "schemas/khg-relation-schema-1.1.0.schema.json": "sha256:441e3a660de10e959391aed94f3f3e3666f431941c83f919b7624c7d37e400b3"
  }
 }

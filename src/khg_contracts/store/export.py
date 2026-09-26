@@ -3,7 +3,10 @@
 - **Header.** The kept document header (``load`` keeps the container's, minus ``content`` and ``as_at``), else the
   one ``export(header=...)`` passes, else a computed one: ``document_id`` ``"store:<store_id>"``, the schema's
   ``{id, version, sha256}`` and ``complete`` by the D002 rule (every entity and fact value resolves among the
-  exported records; S-EXP-009). ``content`` and ``as_at`` are always the export's own.
+  exported records; S-EXP-009). ``content`` and ``as_at`` are always the export's own. The ``format`` is the lowest
+  stamp the records need (``record.required_format``): a header that says ``khg-record/1.0.x`` is raised to
+  ``khg-record/1.1.0`` when an exported record uses a 1.1 feature (ruling 22), so a 1.0 reader refuses the file with
+  V001 rather than misreading it.
 - **Formats.** ``khg-json`` is the canonical container (a dict); ``khg-jsonl`` its canonical text, one JSON text
   per line; ``hif`` the role-aware HIF file of ``hif.to_hif``. ``relations`` exports the closed slice of those
   relations (§4.6) in every format. HIF holds snapshots only.
@@ -17,10 +20,9 @@ from typing import Any, Collection, Iterable, Mapping, Sequence
 
 from ..errors import ValidationError, make_finding
 from ..hif import select_slice, to_hif
-from ..record import canonical_container, serialize
+from ..record import FORMAT_1_1, canonical_container, required_format, serialize
 from ..schema import Schema
 from ._table import bound_nodes
-from .protocol import RECORD_FORMAT
 
 __all__ = ["CONTENTS", "FORMATS", "LITERAL_NODES", "check_relations", "complete", "default_header", "export_header",
            "render"]
@@ -42,8 +44,9 @@ def complete(records: Iterable[Mapping[str, Any]]) -> bool:
 
 def default_header(store_id: str, schema: Schema, records: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
     """The header of a store without a kept header."""
-    return {"kind": "header", "format": RECORD_FORMAT, "document_id": f"store:{store_id}", "schema": schema.header,
-            "complete": complete(records)}
+    records = list(records)
+    return {"kind": "header", "format": required_format(records), "document_id": f"store:{store_id}",
+            "schema": schema.header, "complete": complete(records)}
 
 
 def export_header(kept: Mapping[str, Any] | None, records: Sequence[Mapping[str, Any]], *, schema: Schema,
@@ -55,6 +58,8 @@ def export_header(kept: Mapping[str, Any] | None, records: Sequence[Mapping[str,
     base["content"] = content
     if as_at is not None:
         base["as_at"] = as_at
+    if required_format(records) == FORMAT_1_1 and str(base.get("format", "")).startswith("khg-record/1.0."):
+        base["format"] = FORMAT_1_1
     first = {k: base[k] for k in _HEADER_ORDER if k in base}
     return {**first, **{k: v for k, v in base.items() if k not in first}}
 

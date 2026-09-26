@@ -1,4 +1,6 @@
-"""The C1 record format ``khg-record/1.0.0`` (DESIGN §2).
+"""The C1 record format ``khg-record/1.1.0`` (DESIGN §2; 1.1 is ruling 22). The reader takes 1.0.x and 1.1.x; a
+writer stamps the lowest version whose features a container uses (``required_format``: 1.1.0 only for a
+``khg:disputes`` record whose reason is ``bound_conflict``).
 
 Values and literals (``windows``, ``values``), refinement (``refine``), the canonical form (``canonical``), valid
 time (``validity``), the derived block and the three keys (``derive``), evidence (``evidence``), redirects
@@ -17,6 +19,8 @@ the ``KeyCollision`` info).
 """
 from __future__ import annotations
 
+from typing import Any, Iterable, Mapping
+
 from . import keys, lifecycle, project
 from ._common import SPECIALS, VALUE_KINDS, value_kind
 from .canonical import (KIND_ORDER, STORE_FIELDS, binding_sort_key, canonical_container, carried_supports,
@@ -32,12 +36,28 @@ from .nodes import NONE_ID, literal_binding_node_id, literal_node_id, ref_node_i
 from .refine import fact_refines, injective_match, value_refines
 from .render import RENDER_FORMAT, render_text, render_value
 from .validity import VALID_MODES, Bounds, bounds, definite_overlap, possible_overlap, valid_time
-from .values import (DATATYPES, canonical_literal, canonical_value, decimal, identity_key, literal_identity,
-                     literal_label, value_identity, values_equal)
+from .values import (DATATYPES, canonical_decimal, canonical_literal, canonical_value, decimal, identity_key,
+                     literal_identity, literal_label, value_identity, values_equal)
 from .windows import (CALENDARS, NEG_INF, POS_INF, TimeParts, astronomical_year, format_instant, gregorian_from_jdn,
                       julian_day_number, parse_instant, parse_time, window, window_seconds)
 
+#: The stamp of a container without 1.1 features, and the stamp of one with them (§11.2: the lowest that fits).
 FORMAT = "khg-record/1.0.0"
+FORMAT_1_1 = "khg-record/1.1.0"
+
+
+def required_format(records_or_container: Any) -> str:
+    """The lowest ``khg-record`` stamp a writer puts on a container of these records (a container or an iterable of
+    records): ``FORMAT_1_1`` when a ``khg:disputes`` record gives the 1.1 reason ``bound_conflict`` (a 1.0 reader
+    would refuse it, S026), else ``FORMAT``. The 1.1 schema features (``separators``, ``monotone``) are stamped on the
+    schema document (``schema.required_format``)."""
+    records = records_or_container.get("records") if isinstance(records_or_container, Mapping) else \
+        records_or_container
+    for r in records if isinstance(records, Iterable) else ():
+        if isinstance(r, Mapping) and r.get("relation") == "khg:disputes" and r.get("reason") == "bound_conflict":
+            return FORMAT_1_1
+    return FORMAT
+
 
 __all__ = [
     "ACTIVITY_FIELDS",
@@ -47,6 +67,7 @@ __all__ = [
     "DATATYPES",
     "EVENT_TYPES",
     "FORMAT",
+    "FORMAT_1_1",
     "FORMATS",
     "KIND_ORDER",
     "NEG_INF",
@@ -64,6 +85,7 @@ __all__ = [
     "binding_sort_key",
     "bounds",
     "canonical_container",
+    "canonical_decimal",
     "canonical_literal",
     "canonical_value",
     "carried_supports",
@@ -101,6 +123,7 @@ __all__ = [
     "ref_node_id",
     "render_text",
     "render_value",
+    "required_format",
     "resolve_redirects",
     "resolve_supports",
     "selected_text",

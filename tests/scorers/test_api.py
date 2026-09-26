@@ -19,7 +19,7 @@ def _defaults(cls):
 
 
 def test_format_and_package():
-    assert scorers.FORMAT == "khg-scorers/1.0.0" == "khg-scorers/" + khg_contracts.CONTRACTS["khg-scorers"]
+    assert scorers.FORMAT == "khg-scorers/1.1.0" == "khg-scorers/" + khg_contracts.CONTRACTS["khg-scorers"]
     assert khg_contracts.scorers.completion is completion and khg_contracts.scorers.memory is memory
     assert {"completion", "extraction", "memory", "retrieval", "stability", "bootstrap"} <= set(
         dir(khg_contracts.scorers))

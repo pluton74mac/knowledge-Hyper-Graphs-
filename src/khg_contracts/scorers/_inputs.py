@@ -1,7 +1,8 @@
 """Input checks of the scorers (DESIGN §9.2, §9.4, §9.6): a malformed input raises ``ValidationError``.
 
-- **C4 items** run the draft schema ``khg-c4-items-0.1.0`` (layer I): I001 an unknown kind, I002 the item structure,
-  I004 a memory question without ``stale_values`` or ``future_values``. A C1 value or record embedded in an item
+- **C4 items** run the draft schema ``khg-c4-items-0.2.0`` (layer I, which reads 0.1.x items by it too): I001 an
+  unknown kind, I002 the item structure, I004 a memory question without ``stale_values`` or ``future_values``. A C1
+  value or record embedded in an item
   that fails its ``khg-record`` definition is reported as I003, with the C finding nested (§8.1). The S checks of
   embedded records run where the scorers read them (``embedded_error``).
 - **System outputs** run ``khg-c5-io-1.0.0``; their codes are the schema's (C010, and the C codes of embedded
@@ -26,7 +27,7 @@ from ..errors import ValidationError, make_finding
 __all__ = ["C4_SCHEMA_ID", "C5_SCHEMA_ID", "Prediction", "c4_findings", "c5_findings", "check_items",
            "check_outputs", "embedded_error", "located", "predictions"]
 
-C4_SCHEMA_ID = "tag:khg-contracts,2026:schema/khg-c4-items/0.1.0"
+C4_SCHEMA_ID = "tag:khg-contracts,2026:schema/khg-c4-items/0.2.0"
 C5_SCHEMA_ID = "tag:khg-contracts,2026:schema/khg-c5-io/1.0.0"
 
 Finding = dict[str, Any]

@@ -158,7 +158,7 @@ def test_the_report_is_earl_shaped():
     assert report["assertor"]["@type"] == ["Assertor", "Software"]
     assert report["subject"] == {
         "@id": "store:memory", "@type": "TestSubject", "title": "memory", "interface_version": "khg-store/1.0.0",
-        "record_format": "khg-record/1.0.0", "capabilities": sorted(ALL_FLAGS),
+        "record_format": "khg-record/1.1.0", "capabilities": sorted(ALL_FLAGS),
         "tested_capabilities": sorted(ALL_FLAGS), "contracts": report["subject"]["contracts"]}
     assert report["subject"]["contracts"]["khg-store"] == "1.0.0"
     first = report["@graph"][0]

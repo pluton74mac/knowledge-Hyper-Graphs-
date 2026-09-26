@@ -11,7 +11,9 @@
 
 ``fact_refines(a, b, schema)``: the same relation, and every core, qualifier and time binding of ``b`` has its own
 refining binding in ``a`` (same role, same position for an ordered role; the matching is injective). Meta
-bindings are ignored and ``complete`` roles keep their size. Mutual refinement is equal ``content_key``.
+bindings are ignored; ``complete`` roles, and qualifier roles declared ``monotone: false`` (1.1, ruling 22: epistemic
+qualifiers such as Wikidata P1480 and P5102, whose addition weakens a claim), keep their size. Mutual refinement is
+equal ``content_key``.
 """
 from __future__ import annotations
 
@@ -124,7 +126,7 @@ def fact_refines(a: Mapping[str, Any], b: Mapping[str, Any], schema: SchemaLike)
         nv_b = any(is_special(x["value"], "novalue") for x in bb)
         if nv_a != nv_b and bb:  # novalue refines only novalue; a role b leaves unbound may gain one
             return False
-        if u.get("complete") and len(ba) != len(bb):
+        if (u.get("complete") or u.get("monotone") is False) and len(ba) != len(bb):
             return False
         if not _fillers_refine(ba, bb, bool(u.get("ordered"))):
             return False

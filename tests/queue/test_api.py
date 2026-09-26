@@ -20,7 +20,8 @@ KW, POS = "KEYWORD_ONLY", "POSITIONAL_OR_KEYWORD"
 
 def test_the_names_of_section_10_2():
     assert set(queue.__all__) == {"FORMAT", "Linter", "Queue", "make_candidate", "queue_items", "replay"}
-    assert queue.FORMAT == "khg-queue/1.0.0" == "khg-queue/" + khg_contracts.CONTRACTS["khg-queue"]
+    # files keep the 1.0.0 stamp: 1.1 changes no line of the format (ruling 23)
+    assert queue.FORMAT == "khg-queue/1.0.0" and khg_contracts.CONTRACTS["khg-queue"] == "1.1.0"
     assert khg_contracts.queue is queue
 
 

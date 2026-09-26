@@ -9,13 +9,13 @@ from khg_contracts import data
 from khg_contracts.schema import codegen
 
 GENERATED = sorted(codegen.build_all())
-META = data.load_json("schemas/khg-relation-schema-1.0.0.schema.json")
+META = data.load_json("schemas/khg-relation-schema-1.1.0.schema.json")  # 1.1: ruling 22
 REGISTRY = {c["code"]: c for c in data.load_json("error-codes.json")["codes"]}
 
 
 def test_the_generator_covers_five_schemas():
-    assert GENERATED == ["khg-c4-items-0.1.0.schema.json", "khg-c5-io-1.0.0.schema.json", "khg-hif-1.0.0.schema.json",
-                         "khg-record-1.0.0.schema.json", "khg-relation-schema-1.0.0.schema.json"]
+    assert GENERATED == ["khg-c4-items-0.2.0.schema.json", "khg-c5-io-1.0.0.schema.json", "khg-hif-1.0.0.schema.json",
+                         "khg-record-1.0.0.schema.json", "khg-relation-schema-1.1.0.schema.json"]
 
 
 @pytest.mark.parametrize("name", GENERATED)
@@ -50,7 +50,7 @@ def _walk(s, path="#"):
 
 
 def test_meta_schema_identity():
-    assert META["$id"] == "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0"
+    assert META["$id"] == "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0"
     assert META["$schema"] == "http://json-schema.org/draft-07/schema#"
 
 

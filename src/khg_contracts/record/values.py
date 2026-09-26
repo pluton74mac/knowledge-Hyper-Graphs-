@@ -1,7 +1,10 @@
 """Values and typed literals: canonical forms, value identity and literal labels (DESIGN §2.3, §4.2).
 
 - The **canonical form** of a literal keeps it as written: the calendar defaults to ``gregorian`` (the Julian
-  calendar stays Julian), strings are NFC and a language tag is lower case.
+  calendar stays Julian), strings are NFC and a language tag is lower case. Without the checks (``strict=False``, as
+  ``normalize`` writes a record; 1.1, ruling 22) it also writes a decimal given in another writing (``1.50``, ``-0``,
+  ``1.5e3``, a JSON number) in C1's form (``canonical_decimal``), and zeroes the components of a time literal below
+  its precision, which its window does not read. The checks still refuse those writings (C004, S006).
 - **Value identity** is what equality, hashing, keys and refinement compare. A time literal's identity is
   ``{datatype: "time", window: [lo, hi), precision}`` on the proleptic Gregorian line, so the Julian and the
   Gregorian writing of one day are one value; every other literal is its canonical form; an entity or fact is its
@@ -11,8 +14,9 @@
 """
 from __future__ import annotations
 
+import math
 import re
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from typing import Any, Mapping
 
 from .. import jsonio
@@ -21,6 +25,7 @@ from .windows import CALENDARS, JULIAN_BEFORE, YEAR_DIGITS, format_instant, pars
 
 __all__ = [
     "DATATYPES",
+    "canonical_decimal",
     "canonical_literal",
     "canonical_value",
     "decimal",
@@ -33,6 +38,15 @@ __all__ = [
 
 DATATYPES = ("time", "quantity", "string", "lang_string", "boolean", "iri", "geo")
 _DECIMAL = re.compile(r"\+0|[+-](0\.[0-9]*[1-9]|[1-9][0-9]*(\.[0-9]*[1-9])?)")
+#: A decimal in a looser writing: an optional sign, digits with an optional fraction, an optional exponent.
+_LOOSE_DECIMAL = re.compile(r"[+-]?([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][+-]?[0-9]+)?")
+#: The longest canonical decimal ``canonical_decimal`` writes; a writing that would give more is left as it is.
+MAX_DECIMAL_CHARS = 1000
+#: The fields of each datatype that hold C1 decimals.
+DECIMAL_FIELDS = {"quantity": ("amount", "lower", "upper"), "geo": ("lat", "lon", "precision")}
+#: A time in Wikibase form, and the precision from which each of month, day, hour, minute and second is written.
+_TIME_FORM = re.compile(r"([+-][0-9]{4,%d})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})Z" % YEAR_DIGITS)
+_WRITTEN_FROM = (10, 11, 12, 13, 14)
 _YEAR = re.compile(r"([+-])([0-9]{4,%d})-" % YEAR_DIGITS)  # a longer year is C004 (parse_time)
 
 
@@ -41,6 +55,54 @@ def decimal(text: Any) -> Decimal:
     if not isinstance(text, str) or not _DECIMAL.fullmatch(text):
         raise fail("KHG-C004", f"decimal {text!r} is not a signed decimal string such as +3.5")
     return Decimal(text)
+
+
+def canonical_decimal(x: Any) -> Any:
+    """``x`` in C1's decimal form (``+1.5``, ``-0.25``, ``+0``: a sign, no redundant zeros, no exponent) when it is a
+    decimal string in another writing (``1.50``, ``-0``, ``.5``, ``1.5e3``) or a finite JSON number (an int, or a float
+    by its shortest decimal writing, ``repr``); anything else, and a writing whose canonical form would exceed
+    ``MAX_DECIMAL_CHARS`` characters, is returned as it is. The canonical form of a canonical decimal is itself."""
+    if isinstance(x, bool):
+        return x
+    try:
+        if isinstance(x, int):
+            d = Decimal(x)
+        elif isinstance(x, float):
+            if not math.isfinite(x):
+                return x
+            d = Decimal(repr(x))
+        elif isinstance(x, str) and _LOOSE_DECIMAL.fullmatch(x):
+            d = Decimal(x)
+        else:
+            return x
+    except (InvalidOperation, ValueError):  # pragma: no cover - the pattern admits only what Decimal reads
+        return x
+    sign, digits, exponent = d.as_tuple()
+    text = "".join(map(str, digits)).lstrip("0")
+    if not text:
+        return "+0"
+    exp = int(exponent)
+    size = len(text) + max(exp, 0) if exp >= 0 else max(len(text), -exp) + 1
+    if size > MAX_DECIMAL_CHARS:
+        return x
+    if exp >= 0:
+        whole, frac = text + "0" * exp, ""
+    elif len(text) > -exp:
+        whole, frac = text[:exp], text[exp:]
+    else:
+        whole, frac = "0", "0" * (-exp - len(text)) + text
+    frac = frac.rstrip("0")
+    return ("-" if sign else "+") + whole + ("." + frac if frac else "")
+
+
+def _zero_below_precision(time: Any, precision: Any) -> Any:
+    """A Wikibase time with its components below ``precision`` (an int 0-14) set to zero; anything else as it is."""
+    m = _TIME_FORM.fullmatch(time) if isinstance(time, str) else None
+    if m is None or isinstance(precision, bool) or not isinstance(precision, int) or not 0 <= precision <= 14:
+        return time
+    year, *parts = m.groups()
+    mo, d, hh, mi, ss = (p if precision >= needed else "00" for p, needed in zip(parts, _WRITTEN_FROM, strict=True))
+    return f"{year}-{mo}-{d}T{hh}:{mi}:{ss}Z"
 
 
 def _gregorian_by_default(time: Any) -> bool:
@@ -88,8 +150,9 @@ def canonical_literal(literal: Mapping[str, Any], *, strict: bool = True) -> dic
     """The canonical written form of a literal (a new dict).
 
     With ``strict`` (the default) the literal is checked: C002 for an unknown datatype, C004 for its structure, S006
-    for a time literal out of range. With ``strict=False`` nothing is checked and whatever cannot be normalised is
-    kept as written (``normalize`` uses this).
+    for a time literal out of range. With ``strict=False`` nothing is checked, a decimal is written in C1's form
+    (``canonical_decimal``), the components of a time below its precision are zeroed, and whatever cannot be
+    normalised is kept as written (``normalize`` uses this).
     """
     if not isinstance(literal, Mapping):
         if strict:
@@ -107,6 +170,13 @@ def canonical_literal(literal: Mapping[str, Any], *, strict: bool = True) -> dic
             out["calendar"] = "gregorian"
     if strict:
         _check(out)
+        return out
+    # normalize's lexical canonical forms (1.1, ruling 22): what the checks above would refuse is written in C1's form
+    if dt == "time":
+        out["time"] = _zero_below_precision(out.get("time"), out.get("precision"))
+    for name in DECIMAL_FIELDS.get(dt, ()):
+        if name in out:
+            out[name] = canonical_decimal(out[name])
     return out
 
 

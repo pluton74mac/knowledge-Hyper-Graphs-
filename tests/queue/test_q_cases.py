@@ -252,7 +252,7 @@ def test_layer_q_asks_only_for_string_targets(monkeypatch):
                                                               ("KHG-Q007", "/lines/4/target")]
 
 
-@pytest.mark.parametrize("stamp", ["khg-record/1.1.0", "khg-record/2.0.0", "khg-record/1.0", "khg-queue/1.0.0", 7])
+@pytest.mark.parametrize("stamp", ["khg-record/1.2.0", "khg-record/2.0.0", "khg-record/1.0", "khg-queue/1.0.0", 7])
 def test_a_record_format_this_reader_does_not_take_is_v001(tmp_path, stamp):
     """§11.2: a reader rejects a newer stamp with V001, the header's ``record_format`` as its ``format`` (it was the
     queue schema's Q008). The validator, ``Queue.open``, ``replay`` and ``queue_items`` read no further."""

@@ -19,7 +19,9 @@ digest. A text of another revision of the document is not the evidence's text, s
 no text is given. Evidence without a ``doc_sha256`` is read against its ``doc_id``'s text.
 
 ``nfc_findings`` reports S020 for every string and key not in NFC. Findings on a structure that layer C rejects are
-not repeated: S skips what it cannot read. Without a schema the step reports D009, once per run.
+not repeated: S skips what it cannot read. Without a schema the step reports D009, once per run. In a queue, an error
+that a rejected item's lint entry recorded is reported as ``info`` (the recorded reading of ``khg-queue`` 1.1,
+``Context.recorded``).
 """
 from __future__ import annotations
 
@@ -35,7 +37,7 @@ from ..context import Context
 from ..engines import pointer
 
 __all__ = ["IMPLEMENTED", "LETTER", "OWNER", "container_findings", "latest_records", "nfc_findings",
-           "record_findings", "run"]
+           "record_findings", "run", "source_text"]
 
 LETTER = "S"
 OWNER = "W4"
@@ -335,8 +337,9 @@ def _text_digest(text: str) -> str:
     return text_sha256(text)
 
 
-def _source_text(source: Any, texts: Mapping[str, str]) -> str | None:
-    """The text an evidence's selectors are read against (see the module docstring), or None."""
+def source_text(source: Any, texts: Mapping[str, str]) -> str | None:
+    """The text an evidence's selectors are read against (see the module docstring), or None. The linter's Q013 reads
+    the same text (``queue.checks.quote_findings``)."""
     if not isinstance(source, Mapping):
         return None
     doc_id, want = source.get("doc_id"), source.get("doc_sha256")
@@ -353,7 +356,7 @@ def _source_text(source: Any, texts: Mapping[str, str]) -> str | None:
 def _span_findings(e: Mapping[str, Any], texts: Mapping[str, str], p: str) -> list[Finding]:
     listed = e.get("selectors")
     selectors = [s for s in listed if isinstance(s, Mapping)] if isinstance(listed, list) else []
-    text = _source_text(e.get("source"), texts) if selectors and texts else None
+    text = source_text(e.get("source"), texts) if selectors and texts else None
     if text is None:
         return []
     t = jsonio.nfc(text)
@@ -467,4 +470,4 @@ def run(ctx: Context) -> list[Finding]:
         if schema is not None:
             out += record_findings(ctx.doc, schema, doc_texts=ctx.doc_texts)
         return out
-    return out + _queue_findings(ctx, schema)
+    return out + ctx.recorded(_queue_findings(ctx, schema))

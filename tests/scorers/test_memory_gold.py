@@ -178,7 +178,7 @@ def test_a_deprecated_fact_with_an_incorrect_reason_is_revised(fixture_schema):
     tr = trace("t:pop", entities("ex:Łódź"), ("put", [rec("f:pop-łódź-2019"), rec("f:pop-łódź-2019-dep")]))
     q = ask(tr, 1, "population", LODZ, "quantity", None)
     assert sets(gold(tr, q, fixture_schema)) == ([qty("+679941")], [("revised", qty("+685285"))], [], [], True)
-    assert memory.INCORRECT_REASONS == frozenset({"wd:Q41755623"})
+    assert "wd:Q41755623" in memory.INCORRECT_REASONS  # the 0.2 rules have nine more (ruling 21)
     # the reasons are a parameter (ruling 3): without that reason the deprecated value is no stale value
     assert sets(gold(tr, q, fixture_schema, incorrect_reasons=frozenset())) == ([qty("+679941")], [], [], [], True)
     assert sets(gold(tr, q, fixture_schema, incorrect_reasons=["wd:Q1", "wd:Q41755623"]))[1] == \
@@ -193,6 +193,8 @@ def test_only_the_preferred_facts_count_when_one_of_them_is_preferred(fixture_sc
     other.pop("rank_reason")
     tr = trace("t:pref", entities("ex:Łódź"), ("put", [rec("f:pop-łódź-2019", rank="preferred"), other]))
     assert sets(gold(tr, ask(tr, 1, "population", LODZ, "quantity", None), fixture_schema)) == \
+        ([qty("+679941")], [("outranked", qty("+685285"))], [], [], True)  # outranked: ruling 21
+    assert sets(gold(tr, ask(tr, 1, "population", LODZ, "quantity", None), fixture_schema, outranked=False)) == \
         ([qty("+679941")], [], [], [], True)
     tr = trace("t:pref", entities("ex:Łódź"), ("put", [rec("f:pop-łódź-2019"), rec("f:pop-łódź-2019-dep")]))
     q = ask(tr, 1, "population", LODZ, "quantity", None, rank=("normal", "deprecated"))

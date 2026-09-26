@@ -14,7 +14,9 @@ In order, on the lines of a queue file:
 - Q006, when nothing above is an error: every ``accept`` re-run on a fresh reference store loaded with the base
   (``queue.replay.replay_accepts``), checking ``after`` and ``decision_hash``.
 
-The schema pin is layer D's (``d_container`` reports D009), so this layer never reports it. It uses the caller's
+A C code this layer reports for an item's entities follows the recorded reading (``Context.recorded``, ``khg-queue``
+1.1): an error that a rejected item's lint recorded is ``info``. The schema pin is layer D's (``d_container`` reports
+D009), so this layer never reports it. It uses the caller's
 schema without resolving it (the D009 of a missing schema is reported by the next step that asks), and it skips the
 key checks and the replay when the header pins another schema, which D009 then explains. Layers C and S check the
 payloads after this layer.
@@ -70,6 +72,7 @@ def run(ctx: Context) -> list[Finding]:
         return []
     lines = ctx.doc if isinstance(ctx.doc, list) else []
     fold, out = check(lines, engine=ctx.engine)
+    out = ctx.recorded(out)
     if fold.header is None:
         return out
     schema = ctx.schema

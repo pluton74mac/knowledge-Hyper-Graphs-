@@ -121,7 +121,8 @@ def test_m3_hedged(fixture_schema):
     assert outcome(rep, "mq:king-1700") == ("hedged", 0, 1)
     item = rep["items"]["mq:king-1700"]
     assert (item["set_p"], item["set_r"], item["set_f1"]) == (0.5, 1.0, pytest.approx(2 / 3))
-    assert item["hits"] == {"current": 1, "expired": 1, "revised": 0, "future": 0, "disputed": 0, "other": 0}
+    assert item["hits"] == {"current": 1, "expired": 1, "revised": 0, "outranked": 0, "future": 0, "disputed": 0,
+                            "other": 0}
 
 
 def test_m4_abstention_on_an_unanswerable_question(fixture_schema):
@@ -212,8 +213,8 @@ def test_m8_a_tolerance_never_blurs_an_exact_answer(fixture_schema):
         assert outcome(rep, "mq:pop") == want, (amount, "tolerance" in item)
     rep = one([tolerant], [response("mq:pop", quantity("+19"))], [tr], fixture_schema)
     assert rep["items"]["mq:pop"]["stale_kind"] == "revised"
-    assert rep["items"]["mq:pop"]["hits"] == {"current": 0, "expired": 0, "revised": 1, "future": 0, "disputed": 0,
-                                              "other": 0}
+    assert rep["items"]["mq:pop"]["hits"] == {"current": 0, "expired": 0, "revised": 1, "outranked": 0, "future": 0,
+                                              "disputed": 0, "other": 0}
 
 
 def test_a_disputed_value_still_never_changes_the_outcome_under_a_tolerance():

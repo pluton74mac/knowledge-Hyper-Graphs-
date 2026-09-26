@@ -3,9 +3,9 @@
 ``python -m khg_contracts.schema.codegen OUTDIR`` writes:
 
 - ``khg-record-1.0.0.schema.json``          C1 containers, records and JSONL lines (layer C)
-- ``khg-relation-schema-1.0.0.schema.json`` relation-type schema documents (layer M, structural part)
+- ``khg-relation-schema-1.1.0.schema.json`` relation-type schema documents (layer M, structural part)
 - ``khg-hif-1.0.0.schema.json``             the HIF profile: ``allOf`` the vendored HIF schema plus the P rules
-- ``khg-c4-items-0.1.0.schema.json``        C4 item lines (layer I); ``$ref``s into khg-record by ``tag:`` URI
+- ``khg-c4-items-0.2.0.schema.json``        C4 item lines (layer I); ``$ref``s into khg-record by ``tag:`` URI
 - ``khg-c5-io-1.0.0.schema.json``           C5 system outputs
 
 Every subschema that carries a constraint also carries ``x-khg-code``: a code, or a map from keyword to code with an
@@ -382,8 +382,9 @@ def _record() -> dict[str, Any]:
 
 
 def _relation_schema() -> dict[str, Any]:
-    """The meta-schema of ``khg-relation-schema/1.0.0`` (§3). Structural checks only; M002, M003, M005, M007 (naming),
-    M008-M013, M016 and M017 need the whole document and run in Python (``khg_contracts.schema.checks``)."""
+    """The meta-schema of ``khg-relation-schema/1.1.0`` (§3; it checks 1.0.x documents too). Structural checks only;
+    M002, M003, M005, M007 (naming), M008-M013, M016 and M017 need the whole document and run in Python
+    (``khg_contracts.schema.checks``)."""
     def string() -> dict[str, str]:
         return {"type": "string"}
 
@@ -433,9 +434,12 @@ def _relation_schema() -> dict[str, Any]:
                            "max": {"type": ["integer", "null"], "minimum": 1},
                            "ordered": {"type": "boolean"}, "complete": {"type": "boolean"},
                            "direction": {"enum": ["tail", "head"]},
-                           "somevalue": {"type": "boolean"}, "novalue": {"type": "boolean"}, "label": string()},
+                           "somevalue": {"type": "boolean"}, "novalue": {"type": "boolean"}, "label": string(),
+                           "monotone": {"type": "boolean"}},  # 1.1 (ruling 22): false only on a qualifier usage
             "allOf": [iff({"complete": {"const": True}}, ["complete"],
                           X("KHG-M014", {"properties": {"min": {"minimum": 1}}})),
+                      iff({"monotone": {"const": False}}, ["monotone"],
+                          X("KHG-M015", {"properties": {"slot": {"const": "qualifier"}}})),
                       iff({"slot": {"const": "time"}}, ["slot"],
                           X("KHG-M007", {"properties": {"max": {"const": 1},
                                                         "fillers": {"maxItems": 1, "items": {
@@ -449,6 +453,9 @@ def _relation_schema() -> dict[str, Any]:
         "key": {"type": "object", "required": ["roles"], "additionalProperties": False,
                 "properties": {"roles": {"type": "array", "items": LOCAL("vocab_id"), "minItems": 1,
                                          "uniqueItems": True},
+                               # 1.1 (ruling 22): roles whose absence hashes as its own value
+                               "separators": {"type": "array", "items": LOCAL("vocab_id"), "minItems": 1,
+                                              "uniqueItems": True},
                                "temporal": {"type": "boolean"}, "on_collision": {"enum": POLICIES}}},
         "primary": X("KHG-M012", {"type": "object", "required": ["subject", "object"], "additionalProperties": False,
                                   "properties": {"subject": {"type": "string", "minLength": 1},
@@ -463,8 +470,8 @@ def _relation_schema() -> dict[str, Any]:
             "allOf": [X("KHG-M001", {"required": ["roles"]})]},
     }
     return X("KHG-M015", {
-        "$schema": "http://json-schema.org/draft-07/schema#", "$id": TAG + "khg-relation-schema/1.0.0",
-        "title": "Relation-type schema document khg-relation-schema/1.0.0 (layer M, structural part; the M checks "
+        "$schema": "http://json-schema.org/draft-07/schema#", "$id": TAG + "khg-relation-schema/1.1.0",
+        "title": "Relation-type schema document khg-relation-schema/1.1.0 (layer M, structural part; the M checks "
                  "that need the whole document run in Python)",
         "type": "object", "required": ["kind", "format", "id", "version", "roles", "relations"],
         "additionalProperties": False,
@@ -576,11 +583,22 @@ def _profile() -> dict[str, Any]:
                 }})}})
 
 
-# ------------------------------------------------------------------------------------------------ khg-c4-items/0.1.0
+# ------------------------------------------------------------------------------------------------ khg-c4-items/0.2.0
 
 
 C4_KINDS = ["c4-header", "c4-extraction-doc", "c4-completion-query", "c4-retrieval-question", "c4-memory-trace",
             "c4-memory-question", "c4-split-manifest"]
+#: The split values of a ``c4-split-manifest`` (0.2.0 adds ``inference``, the facts an inductive model sees at test
+#: time); items keep ``train``, ``valid`` and ``test``.
+C4_SPLITS = ["train", "valid", "test", "inference"]
+#: The split schemes of a manifest and the leak kinds of a leak-probe fact (P3a DESIGN §6).
+C4_SCHEMES = ["transductive", "leak_probe", "semi_inductive", "inductive", "temporal"]
+C4_LEAK_KINDS = ["core_key", "reversed_pair", "same_pair_other_relation", "group"]
+#: The kinds of an extraction document (P3a DESIGN §7.4) and how a candidate entity came into its table (P9 §3.1).
+C4_DOC_KINDS = ["wiki", "rendered"]
+C4_MENTION_SOURCES = ["link", "subject", "match", "distractor"]
+#: How a retrieval question's answer is scored (``count``: one quantity of unit "1").
+C4_ANSWER_MODES = ["single", "set", "count"]
 
 
 def _c4() -> dict[str, Any]:
@@ -604,9 +622,50 @@ def _c4() -> dict[str, Any]:
         p.update(props)
         return {"type": "object", "required": common + required, "additionalProperties": False, "properties": p}
 
+    text = {"type": "string", "minLength": 1}
+    corpus = {"type": "object", "required": ["id", "version"], "additionalProperties": False,
+              "properties": {"id": text, "version": text, "tier": text}}
+    source = {"type": "object", "required": ["url"], "additionalProperties": False,
+              "properties": {"url": text, "revision": text, "licence": text, "attribution": text}}
+    mention = {"type": "object", "required": ["entity", "source"], "additionalProperties": False,
+               "properties": {"entity": ref("entity"), "source": {"enum": C4_MENTION_SOURCES},
+                              "spans": {"type": "array", "uniqueItems": True,
+                                        "items": {"type": "array", "minItems": 2, "maxItems": 2,
+                                                  "items": {"type": "integer", "minimum": 0}}},
+                              "description": {"type": "string"}}}
+    # a count is one quantity of unit "1" (or none, for an unanswerable question)
+    count = iff({"answer_mode": {"const": "count"}}, ["answer_mode"], {"properties": {"answer": {"properties": {
+        "values": {"maxItems": 1, "items": {"required": ["literal"], "properties": {"literal": {
+            "required": ["datatype", "unit"], "properties": {"datatype": {"const": "quantity"},
+                                                             "unit": {"const": "1"}}}}}}}}}})
+    manifest = {"required": ["kind", "id", "qset", "splits"], "additionalProperties": False,
+                "properties": {"kind": {}, "id": ref("id"), "qset": {"type": "string"},
+                               "splits": {"type": "object", "additionalProperties": {"enum": C4_SPLITS}},
+                               "scheme": {"enum": C4_SCHEMES}, "seed": text,
+                               "container": {"type": "object", "required": ["document_id", "sha256"],
+                                             "additionalProperties": False,
+                                             "properties": {"document_id": ref("id"), "sha256": ref("sha256")}},
+                               "probe": {"type": "object", "additionalProperties": {
+                                   "type": "array", "minItems": 1, "uniqueItems": True,
+                                   "items": {"enum": C4_LEAK_KINDS}}},
+                               "lite": {"type": "array", "items": ref("id"), "uniqueItems": True}}}
+    retrieval = item(
+        ["qid", "type", "text", "anchors", "answer", "support", "hops", "source_class", "answerable", "where"],
+        {"qid": ref("id"),
+         "type": {"enum": ["single_hop", "multi_hop", "temporal", "comparison", "aggregation"]},
+         "text": {"type": "string", "minLength": 1},
+         "anchors": {"type": "array", "items": ref("id"), "minItems": 1},
+         "answer": answer,
+         "support": {"type": "object", "required": ["sets"],
+                     "properties": {"sets": {"type": "array", "items": {"type": "array", "items": ref("id")}}}},
+         "hops": {"type": "integer", "minimum": 1}, "source_class": {"type": "string"},
+         "answerable": {"type": "boolean"}, "where": where, "answer_mode": {"enum": C4_ANSWER_MODES},
+         "provenance": {"type": "object"}})
+    retrieval["allOf"] = [count]
+
     c4 = X({"default": "KHG-I002"}, {
-        "$schema": "http://json-schema.org/draft-07/schema#", "$id": TAG + "khg-c4-items/0.1.0",
-        "title": "C4 question-set lines khg-c4-items/0.1.0 (layer I, draft); C1 values and records by $ref to "
+        "$schema": "http://json-schema.org/draft-07/schema#", "$id": TAG + "khg-c4-items/0.2.0",
+        "title": "C4 question-set lines khg-c4-items/0.2.0 (layer I, draft); C1 values and records by $ref to "
                  "khg-record",
         "type": "object", "required": ["kind"],
         "properties": {"kind": X("KHG-I001", {"enum": C4_KINDS})},
@@ -615,9 +674,11 @@ def _c4() -> dict[str, Any]:
                 "required": ["kind", "format", "qset", "record_format", "schema"], "additionalProperties": False,
                 "properties": {"kind": {}, "format": {"type": "string",
                                                       "pattern": "^khg-c4-items/[0-9]+\\.[0-9]+\\.[0-9]+$"},
-                               "qset": {"type": "string"}, "record_format": {"const": "khg-record/1.0.0"},
+                               "qset": {"type": "string"},
+                               "record_format": {"type": "string", "pattern": "^khg-record/" + SEMVER[1:]},
                                "schema": {"type": "object", "required": ["id", "version", "sha256"]},
-                               "created_by": {"type": "string"}, "created_at": ref("timestamp")}}),
+                               "corpus": corpus, "created_by": {"type": "string"},
+                               "created_at": ref("timestamp")}}),
             iff({"kind": {"const": "c4-extraction-doc"}}, ["kind"], item(
                 ["doc_id", "text", "text_sha256", "annotation", "gold"],
                 {"doc_id": {"type": "string"}, "text": {"type": "string"}, "text_sha256": ref("sha256"),
@@ -625,7 +686,10 @@ def _c4() -> dict[str, Any]:
                                 "properties": {"guideline": {"type": "string"}, "annotators": {"type": "integer"},
                                                "adjudicated": {"type": "boolean"}}},
                  "gold": {"type": "array", "items": ref("hyperedge")},
-                 "entities": {"type": "array", "items": ref("entity")}})),
+                 "entities": {"type": "array", "items": ref("entity")},
+                 "doc_kind": {"enum": C4_DOC_KINDS}, "source": source,
+                 "gold_scope": {"type": "array", "items": ref("vocab_id"), "uniqueItems": True},
+                 "mentions": {"type": "array", "items": mention}})),
             iff({"kind": {"const": "c4-completion-query"}}, ["kind"], item(
                 ["qid", "fact_id", "relation", "arity", "model_arity", "target", "context", "candidate_universe"],
                 {"qid": ref("id"), "fact_id": ref("id"), "relation": ref("vocab_id"),
@@ -638,19 +702,9 @@ def _c4() -> dict[str, Any]:
                  "candidate_universe": {"type": "object", "required": ["kind"],
                                         "properties": {"kind": {"enum": ["entities_of_type", "list"]},
                                                        "types": {"type": "array", "items": ref("vocab_id")},
-                                                       "ids": {"type": "array", "items": ref("id")}}}})),
-            iff({"kind": {"const": "c4-retrieval-question"}}, ["kind"], item(
-                ["qid", "type", "text", "anchors", "answer", "support", "hops", "source_class", "answerable", "where"],
-                {"qid": ref("id"),
-                 "type": {"enum": ["single_hop", "multi_hop", "temporal", "comparison", "aggregation"]},
-                 "text": {"type": "string", "minLength": 1},
-                 "anchors": {"type": "array", "items": ref("id"), "minItems": 1},
-                 "answer": answer,
-                 "support": {"type": "object", "required": ["sets"],
-                             "properties": {"sets": {"type": "array", "items": {"type": "array",
-                                                                                "items": ref("id")}}}},
-                 "hops": {"type": "integer", "minimum": 1}, "source_class": {"type": "string"},
-                 "answerable": {"type": "boolean"}, "where": where, "provenance": {"type": "object"}})),
+                                                       "ids": {"type": "array", "items": ref("id")}}},
+                 "manifest": ref("id")})),
+            iff({"kind": {"const": "c4-retrieval-question"}}, ["kind"], retrieval),
             iff({"kind": {"const": "c4-memory-trace"}}, ["kind"], item(
                 ["trace_id", "entities", "events"],
                 {"trace_id": ref("id"), "entities": {"type": "array", "items": ref("entity")},
@@ -669,16 +723,13 @@ def _c4() -> dict[str, Any]:
                  "target_role": ref("vocab_id"), "where": where, "answer": answer,
                  "stale_values": {"type": "array", "items": {
                      "type": "object", "required": ["value", "kind"], "additionalProperties": False,
-                     "properties": {"value": ref("value"), "kind": {"enum": ["expired", "revised"]}}}},
+                     "properties": {"value": ref("value"),
+                                    "kind": {"enum": ["expired", "revised", "outranked"]}}}},  # outranked: ruling 21
                  "future_values": {"type": "array", "items": ref("value")},
                  "disputed_values": {"type": "array", "items": ref("value")},
                  "support": {"type": "array", "items": ref("id")}, "answerable": {"type": "boolean"},
                  "tolerance": {"type": "object"}})),
-            iff({"kind": {"const": "c4-split-manifest"}}, ["kind"], {
-                "required": ["kind", "id", "qset", "splits"], "additionalProperties": False,
-                "properties": {"kind": {}, "id": ref("id"), "qset": {"type": "string"},
-                               "splits": {"type": "object",
-                                          "additionalProperties": {"enum": ["train", "valid", "test"]}}}}),
+            iff({"kind": {"const": "c4-split-manifest"}}, ["kind"], manifest),
         ]})
     # a memory question missing stale_values or future_values is I004 (the registry's meaning, ruling 7 of §14); any
     # other missing field, and a malformed stale_values or future_values, is the item structure's I002
@@ -755,9 +806,9 @@ def _c5io() -> dict[str, Any]:
 
 BUILDERS: dict[str, Callable[[], dict[str, Any]]] = {
     "khg-record-1.0.0": _record,
-    "khg-relation-schema-1.0.0": _relation_schema,
+    "khg-relation-schema-1.1.0": _relation_schema,
     "khg-hif-1.0.0": _profile,
-    "khg-c4-items-0.1.0": _c4,
+    "khg-c4-items-0.2.0": _c4,
     "khg-c5-io-1.0.0": _c5io,
 }
 

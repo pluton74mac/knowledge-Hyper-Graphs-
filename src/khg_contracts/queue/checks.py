@@ -12,6 +12,11 @@ On a verdict entry: Q008 an ``evidence_id`` the payload lacks or whose evidence 
 tuple (role, position, value identity) that is not a binding of the payload; Q010 a ``core_key`` or ``event_hash``
 other than the item's. The header checks D009 (the schema pin) and Q012 (the base against the header's pin) serve
 ``Queue.open``, the linter and ``replay``. What a payload cannot be read for is left to layers C and S.
+
+``quote_findings`` (Q013) is the linter's only (its structural rule set 1.1.0; ruling 23): an evidence record's quote
+selector without a position selector, whose prefix, exact text and suffix do not occur in the document text. S021
+checks a quote that has a position selector; without one, the quote escaped every check. Layer Q does not repeat
+it, so no queue file that was valid under 1.0 becomes invalid.
 """
 from __future__ import annotations
 
@@ -20,12 +25,13 @@ from typing import Any, Iterable, Mapping
 
 from .. import jsonio
 from ..errors import KHGError, make_finding
+from ..validate.layers.s import source_text
 from ..record import EVENT_TYPES, container_sha256, content_key, core_key, event_hash, key_digest, value_identity
 from ..schema import Schema
 from .model import CAND_PATTERN, SHA256_PATTERN, seq_of
 
 __all__ = ["KEY_FIELDS", "base_findings", "cand_findings", "item_core_key", "item_findings", "item_keys",
-           "keys_or_none", "pin_findings", "verdict_findings"]
+           "keys_or_none", "pin_findings", "quote_findings", "verdict_findings"]
 
 KEY_FIELDS = ("content_key", "core_key", "key_digest")
 _UNREADABLE = (KHGError, ValueError, TypeError, KeyError, AttributeError)
@@ -86,6 +92,34 @@ def item_findings(item: Mapping[str, Any], *, queue_id: str | None, schema: Sche
     out += _doc_findings(item.get("doc"), payload, path)
     out += _key_findings(item, payload, schema, path)
     out += _entity_findings(item, payload, entities, path)
+    return out
+
+
+def quote_findings(payload: Any, texts: Mapping[str, str], path: str = "") -> list[Finding]:
+    """Q013 for each quote selector of an evidence record without a position selector, when the evidence's text is
+    known (the text S021 reads: the one its ``doc_sha256`` hashes, else its ``doc_id``'s) and holds no ``prefix +
+    exact + suffix`` (NFC, code points; an absent prefix or suffix is empty). ``path`` is the item's."""
+    if not isinstance(payload, Mapping) or not texts:
+        return []
+    out: list[Finding] = []
+    for k, e in enumerate(_list(payload.get("evidence"))):
+        selectors = _list(e.get("selectors")) if isinstance(e, Mapping) else []
+        if not selectors or any(isinstance(s, Mapping) and s.get("type") == "position" for s in selectors):
+            continue  # nothing to locate, or S021's
+        text = source_text(e.get("source"), texts)
+        if text is None:
+            continue
+        haystack = jsonio.nfc(text)
+        for j, s in enumerate(selectors):
+            if not isinstance(s, Mapping) or s.get("type") != "quote":
+                continue
+            parts = [s.get("prefix", ""), s.get("exact"), s.get("suffix", "")]
+            if not all(isinstance(x, str) for x in parts):
+                continue  # layer C reports a malformed selector
+            if jsonio.nfc("".join(parts)) not in haystack:
+                out.append(_f("KHG-Q013", f"{path}/payload/evidence/{k}/selectors/{j}",
+                              f"the quote {s['exact'][:60]!r} (with its prefix and suffix) does not occur in the text "
+                              f"of {e['source'].get('doc_id')!r}, and no position selector locates it"))
     return out
 
 

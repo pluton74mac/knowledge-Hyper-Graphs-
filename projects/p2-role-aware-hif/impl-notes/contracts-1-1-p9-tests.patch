@@ -1,0 +1,72 @@
+--- a/projects/p9-extraction-gate/khg-extract/tests/test_experiment.py	2026-09-26 16:18:22
++++ b/projects/p9-extraction-gate/khg-extract/tests/test_experiment.py	2026-09-26 16:18:22
+@@ -9,6 +9,7 @@
+ import pytest
+ 
+ from khg_contracts import queue, store
++from khg_contracts.validate import validate_queue
+ 
+ from khg_extract import fixture
+ from khg_extract.check import c3_check
+@@ -47,9 +48,11 @@
+     for p in paths:
+         check = c3_check(p, schema=s, base=base)
+         assert check["ok_recorded"], check["unrecorded_errors"]
+-        # only run-3 holds a lint-rejected candidate (the role swap, two S005 errors), which fails the strict reading
+-        assert check["ok_strict"] == ("run-3" not in p)
+-        assert check["recorded_errors"] == (2 if "run-3" in p else 0)
++        # khg-queue 1.1 (P2 ruling 23) reads queues as P9's recorded reading does: run-3's lint-rejected candidate
++        # (the role swap, two S005 errors) no longer fails validate_queue, which reports the two errors as info
++        assert check["ok_strict"] and check["recorded_errors"] == 0
++        infos = [f for f in validate_queue(p, schema=s, bases=[base])["findings"] if f["severity"] == "info"]
++        assert [f["code"] for f in infos] == (["KHG-S005", "KHG-S005"] if "run-3" in p else [])
+         queue.replay(p, schema=s, factory=store.memory_factory, base=base)
+ 
+ 
+@@ -67,7 +70,7 @@
+     assert run2["route-note"] == ("needs_review", "minted_entity")
+     run3 = dict((d, (s, r)) for d, s, r in _decisions(manifest, "run-3.o1"))
+     assert run3["coadmin-note"] == ("rejected", "")             # the lint rejected it (S005 twice)
+-    assert run3["curie-wrong"] == ("rejected", "evidence_not_located")
++    assert run3["curie-wrong"] == ("rejected", "")              # the lint rejected it (Q013, khg-lint 1.1.0)
+     assert run3["curie-right"] == ("accepted", "passed lint and gate")  # nothing to collide with in this run
+     assert manifest["queues"][2]["minted"] == ["new:Airport:montreal"]
+ 
+@@ -81,19 +84,24 @@
+     assert r["raw"]["extraction"]["role_accuracy"] == pytest.approx(25 / 26)  # run-3's swap costs 2 of 3 roles
+     assert r["gate_buckets"]["accepted"] == {"n": 20, "correct": 19, "precision": 0.95}
+     assert r["gate_buckets"]["needs_review"]["correct"] == 9 and r["gate_buckets"]["needs_review"]["n"] == 12
++    # the unlocatable quote is rejected at lint (Q013, P2 ruling 23) before the gate's evidence rule sees it
+     assert r["reasons"] == {"passed lint and gate": 20, "key_collision": 4, "generalises": 3, "refines": 3,
+-                            "minted_entity": 2, "evidence_not_located": 2}
+-    assert r["lint_codes"] == {"KHG-S005": 4}
++                            "minted_entity": 2}
++    assert r["lint_codes"] == {"KHG-S005": 4, "KHG-Q013": 2}
+ 
+ 
+ def test_instability_raw_versus_gated(exp):
+     _, _, _, r = exp
+     raw, gated = r["raw"], r["gated"]
+-    # C5 S-M7 on raw output: the stub ignores the order, yet Delta_order is negative (the pooling artefact)
++    # C5 S-M7 on raw output: the stub ignores the order, and khg-scorers 1.1's paired Delta_order says so (0); the
++    # 1.0 number, which pooled same-run and cross-run pairs, stays as pooled_delta_order (P2 ruling 21)
+     om = raw["stability"]["content_key"]["order_effect"]
+     assert om["J_within"] == pytest.approx(float(Fraction(65, 126)))
+     assert om["J_between"] == pytest.approx(float(Fraction(128, 189)))
+-    assert om["delta_order"] == pytest.approx(float(Fraction(-61, 378)))
++    assert om["pooled_delta_order"] == pytest.approx(float(Fraction(-61, 378)))
++    assert om["delta_order"] == 0.0
++    assert om["same_run_diff_order"] == raw["paired_order_effect"]["content_key"]["same_run_diff_order"]
++    assert gated["stability"]["content_key"]["order_effect"]["delta_order"] == pytest.approx(float(Fraction(17, 60)))
+     # P9's paired decomposition shows it: the same run in two orders gives identical raw output ...
+     assert raw["paired_order_effect"]["content_key"]["same_run_diff_order"]["mean_jaccard"] == 1.0
+     # ... while the gated graph differs by order
+@@ -106,7 +114,7 @@
+ 
+ def test_responses_and_manifest(exp):
+     out, manifest, _, _ = exp
+-    assert manifest["spec"]["skill_id"].startswith("sha256:") and manifest["contracts"]["khg-queue"] == "1.0.0"
++    assert manifest["spec"]["skill_id"].startswith("sha256:") and manifest["contracts"]["khg-queue"] == "1.1.0"
+     assert manifest["orders"]["o2"]["doc_ids"] == list(reversed(manifest["orders"]["o1"]["doc_ids"]))
+     lines = [json.loads(x) for x in open(out / "responses" / "run-2.o1.jsonl", encoding="utf-8")]
+     assert [x["doc_id"] for x in lines] == fixture.ORDERS["o1"]

@@ -6,8 +6,10 @@
   ``n_bound`` and ``n_unbound`` instead. Bins are ``0-1``, ``2``, ``3``, ``4`` and ``5+``.
 - **content_key** is ``digest("khg-content-key/1", {relation, bindings})`` over the core, qualifier and time bindings
   as ``[role, position, value identity]``, sorted by their canonical JSON; **core_key** is the same over the core
-  bindings (``khg-core-key/1``); **key_digest** (``khg-key-digest/1``) covers the relation's key roles, and is None
-  without a key, when a key role is absent, or when a key role holds a special or unbound value.
+  bindings (``khg-core-key/1``); **key_digest** (``khg-key-digest/1``) covers the relation's key roles and its
+  separators (1.1, ruling 22), and is None without a key, when a key role is absent, or when a key role or a
+  separator holds a special or unbound value. An absent separator hashes as ``[role, null, {"absent": true}]``, which
+  no value's identity equals; a key without separators hashes exactly as in 1.0.
 - Bids, evidence, derived fields, rank, visibility, confidence and text never enter a key; meta bindings never do.
 
 Lifecycle records have no derived block (they are excluded from arity and keys, §2.7).
@@ -24,6 +26,7 @@ from .validity import valid_time
 from .values import identity_key, value_identity
 
 __all__ = [
+    "ABSENT",
     "CONTENT_SLOTS",
     "arity",
     "arity_bin",
@@ -54,8 +57,12 @@ def _tuple(b: Mapping[str, Any]) -> list[Any]:
     return [b["role"], b.get("position"), value_identity(b["value"])]
 
 
-def _key(domain: str, relation: str, bs: list[Mapping[str, Any]]) -> str:
-    tuples = sorted((_tuple(b) for b in bs), key=jsonio.canonical)
+#: What an absent separator hashes as (1.1): no value identity is this object.
+ABSENT = {"absent": True}
+
+
+def _key(domain: str, relation: str, bs: list[Mapping[str, Any]], extra: list[list[Any]] = ()) -> str:
+    tuples = sorted([*(_tuple(b) for b in bs), *extra], key=jsonio.canonical)
     return jsonio.digest(domain, {"relation": relation, "bindings": tuples})
 
 
@@ -72,20 +79,23 @@ def core_key(record: Mapping[str, Any], schema: SchemaLike) -> str:
 
 
 def key_digest(record: Mapping[str, Any], schema: SchemaLike) -> str | None:
-    """``khg-key-digest/1`` over the relation's key roles, or None (no key, a key role absent, or a key role holding
-    a special or unbound value: the fact is then exempt from collisions)."""
+    """``khg-key-digest/1`` over the relation's key roles and separators, or None (no key, a key role absent, or a key
+    role or separator holding a special or unbound value: the fact is then exempt from collisions). An absent
+    separator hashes as ``[role, null, ABSENT]`` (1.1, ruling 22)."""
     hyperedge(record)
     s = as_schema(schema)
     key = s.key(record.get("relation"))
     if not key:
         return None
-    roles = set(key["roles"])
-    kb = [b for b in bindings(record) if b.get("role") in roles]
-    if {b["role"] for b in kb} != roles:
+    roles, separators = set(key["roles"]), key.get("separators", [])
+    kb = [b for b in bindings(record) if b.get("role") in roles or b.get("role") in separators]
+    held = {b["role"] for b in kb}
+    if not roles <= held:
         return None
     if any(value_kind(b.get("value")) not in _COUNTED for b in kb):
         return None
-    return _key("khg-key-digest/1", record["relation"], kb)
+    absent = [[role, None, dict(ABSENT)] for role in separators if role not in held]
+    return _key("khg-key-digest/1", record["relation"], kb, absent)
 
 
 def _goal_counts(record: Mapping[str, Any]) -> dict[str, int]:

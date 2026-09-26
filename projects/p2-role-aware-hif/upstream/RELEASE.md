@@ -170,14 +170,14 @@ Optional hardening: pin each action to a commit SHA instead of a tag.
 
 On a branch from `main`:
 
-1. **The version, 1.0.0.dev1 → 1.0.0.** The version lives in `src/khg_contracts/__init__.py` (hatchling reads it,
+1. **The version, 1.0.0.dev2 → 1.0.0.** The version lives in `src/khg_contracts/__init__.py` (hatchling reads it,
    `[tool.hatch.version]`), and two W0 tests pin it:
 
    ```sh
-   sed -i 's/__version__ = "1.0.0.dev1"/__version__ = "1.0.0"/' src/khg_contracts/__init__.py
-   sed -i 's/__version__ == "1.0.0.dev1"/__version__ == "1.0.0"/' tests/packaging/test_api.py
-   sed -i 's/out\["version"\] == "1.0.0.dev1"/out["version"] == "1.0.0"/' tests/packaging/test_import_hygiene.py
-   git grep -n "1.0.0.dev1" -- src tests pyproject.toml      # nothing left
+   sed -i 's/__version__ = "1.0.0.dev2"/__version__ = "1.0.0"/' src/khg_contracts/__init__.py
+   sed -i 's/__version__ == "1.0.0.dev2"/__version__ == "1.0.0"/' tests/packaging/test_api.py
+   sed -i 's/out\["version"\] == "1.0.0.dev2"/out["version"] == "1.0.0"/' tests/packaging/test_import_hygiene.py
+   git grep -n "1.0.0.dev2" -- src tests pyproject.toml      # nothing left
    ```
 
 2. **The classifier (optional).** `pyproject.toml` says `Development Status :: 3 - Alpha`. For a 1.0.0 that consumers
@@ -191,13 +191,14 @@ On a branch from `main`:
 
    The shared contracts of the knowledge-hypergraph programme, as one Python package:
 
-   - **C1** `khg-record/1.0.0`: n-ary facts as hyperedges with role bindings, typed literals, keys, valid and
+   - **C1** `khg-record/1.1.0`: n-ary facts as hyperedges with role bindings, typed literals, keys, valid and
      transaction time, lifecycle and evidence, in `.khg.json` and `.khg.jsonl` containers;
    - **role-aware HIF**: the `role-convention` 1.0.0 for incidence attributes and the `khg-hif/1.1.0` profile, with
      loaders for XGI and HyperNetX that keep every role;
    - **C2** `khg-store/1.0.0`: the store interface, a reference in-memory store and a 114-scenario conformance suite;
-   - **C3** `khg-queue/1.0.0`: candidate queues and action logs with replay;
-   - **C5** `khg-scorers/1.0.0`: extraction, stability, completion, retrieval and memory scorers;
+   - **C3** `khg-queue/1.1.0`: candidate queues and action logs with replay;
+   - **C5** `khg-scorers/1.1.0`: extraction, stability, completion, retrieval and memory scorers, and the C4
+     question-set draft `khg-c4-items/0.2.0`;
    - a layered validator with stable error codes, and four command-line tools: `khg-validate`, `khg-convert`,
      `khg-migrate` and `khg-conformance`.
 

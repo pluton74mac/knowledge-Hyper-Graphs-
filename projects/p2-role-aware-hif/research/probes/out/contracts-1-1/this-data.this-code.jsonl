@@ -1,0 +1,22 @@
+{"file": "fixture/c4-items-0.2.0.jsonl", "findings": [], "kind": "item", "ok": true}
+{"file": "fixture/c4-items.jsonl", "findings": [], "kind": "item", "ok": true}
+{"file": "fixture/c5-outputs.jsonl", "findings": [], "kind": "c5", "ok": true}
+{"file": "fixture/cyclic.relation-schema.json", "findings": [], "kind": "schema", "ok": true}
+{"file": "fixture/fixture.c1.json", "findings": [["KHG-L008", "warning", "/records/29"], ["KHG-S024", "warning", "/records/31"]], "kind": "container", "ok": true}
+{"file": "fixture/fixture.c1.jsonl", "findings": [["KHG-L008", "warning", "/records/29"], ["KHG-S024", "warning", "/records/31"]], "kind": "container", "ok": true}
+{"file": "fixture/fixture.directed-slice.hif.json", "findings": [["KHG-L008", "warning", "/records/27"]], "kind": "hif", "ok": true}
+{"file": "fixture/fixture.hif.json", "findings": [["KHG-L008", "warning", "/records/29"], ["KHG-S024", "warning", "/records/31"]], "kind": "hif", "ok": true}
+{"file": "fixture/fixture.history.c1.json", "findings": [], "kind": "container", "ok": true}
+{"file": "fixture/fixture.relation-schema.json", "findings": [], "kind": "schema", "ok": true}
+{"file": "fixture/fixture.with-derived.c1.json", "findings": [["KHG-L008", "warning", "/records/29"], ["KHG-S024", "warning", "/records/31"]], "kind": "container", "ok": true}
+{"file": "fixture/smoke-base.c1.json", "findings": [], "kind": "container", "ok": true}
+{"file": "fixture/smoke-queue.khg-queue.jsonl", "findings": [], "kind": "queue", "ok": true}
+{"file": "fixture/wikidata-shaped.relation-schema.json", "findings": [], "kind": "schema", "ok": true}
+{"file": "role-convention/basic.hif.json", "findings": [], "kind": "role-convention", "ok": true}
+{"file": "role-convention/ordered.hif.json", "findings": [], "kind": "role-convention", "ok": true}
+{"file": "role-convention/tail-head.hif.json", "findings": [], "kind": "role-convention", "ok": true}
+{"file": "role-convention/two-roles.hif.json", "findings": [], "kind": "role-convention", "ok": true}
+{"file": "role-convention/undirected.hif.json", "findings": [], "kind": "role-convention", "ok": true}
+{"file": "sample/sample.khg.hif.json", "findings": [], "kind": "hif", "ok": true}
+{"file": "sample/sample.khg.json", "findings": [], "kind": "container", "ok": true}
+{"file": "sample/sample.relation-schema.json", "findings": [], "kind": "schema", "ok": true}

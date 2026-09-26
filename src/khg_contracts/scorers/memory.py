@@ -1,6 +1,6 @@
 """The memory gold (normative) and the memory scorer (DESIGN §9.2, §9.3, §9.5; R05 §5.2).
 
-**Memory gold.** ``derive_memory_gold(trace, question, *, schema, incorrect_reasons)`` replays a
+**Memory gold.** ``derive_memory_gold(trace, question, *, schema, incorrect_reasons, outranked)`` replays a
 ``c4-memory-trace`` into a fresh ``MemoryStore``: the trace's entities one second before its first step, then each
 event at its ``tx_time`` with actor ``trace:<trace_id>`` (a ``put`` of C1 hyperedges, or an ``apply`` event), in
 step order, up to the question's ``ask_after_step``. With τ that step's ``tx_time`` and t the question's
@@ -10,24 +10,33 @@ step order, up to the question's ``ask_after_step``. With τ that step's ``tx_ti
   those facts is preferred, only the preferred ones;
 - ``expired``: asserted, not deprecated, and the possible validity ends at or before t (e_hi <= t);
 - ``revised``: superseded or retracted at τ after being asserted at some τ′ < τ; and deprecated facts whose
-  ``rank_reason`` names an incorrect reason (default ``wd:Q41755623``);
+  ``rank_reason`` names an incorrect reason (``INCORRECT_REASONS``);
+- ``outranked``: asserted, of rank ``normal``, and holding at t under the question's ``valid_mode`` (every fact holds
+  when ``as_of`` is null), while an asserted ``preferred`` fact on the key holds at t (ruling 21);
 - V_fut (``future_values``): asserted, not deprecated, and the possible validity starts after t (s_lo > t);
 - ``disputed_values``: disputed at τ.
 
-V_cur is subtracted from the other sets; a value both expired and revised is ``expired``; ``answerable`` is false
-when V_cur is empty and something is disputed. With ``as_of`` null there is no valid-time filter, so ``expired`` and
-V_fut are empty. Values are written in canonical form and sorted by their identity (§2.3). ``check_question``
-compares an item's stored gold with the replay, value sets by identity (I005); layer I and ``score`` use it.
+V_cur is subtracted from the other sets; a stale value is listed once, with the first kind of ``expired``,
+``revised``, ``outranked``; ``answerable`` is false when V_cur is empty and something is disputed. With ``as_of``
+null there is no valid-time filter, so ``expired`` and V_fut are empty. Values are written in canonical form and
+sorted by their identity (§2.3). ``check_question`` compares an item's stored gold with the replay, value sets by
+identity (I005); layer I and ``score`` use it.
+
+**The rules are versioned with the C4 draft** (ruling 3: a change of the reasons is a minor release of the draft).
+The 0.2 rules (``INCORRECT_REASONS``, ``outranked``; ruling 21) are the defaults; the 0.1 rules
+(``INCORRECT_REASONS_0_1``, no ``outranked``) replay a ``khg-c4-items/0.1.x`` file, so its gold stays valid.
+``gold_rules(stamp)`` gives the rules of a stamp as keyword arguments of ``derive_memory_gold`` and ``MemoryConfig``;
+layer I replays each file by its own stamp, and ``score`` by its configuration.
 
 **The scorer.** ``score(questions, responses, *, traces, schema, config)`` checks the ``c4-memory-question`` and
-``c4-memory-trace`` items (the draft schema, the trace replays, the stored gold against the replay under
-``config.incorrect_reasons``) and the ``memory-response`` records, then gives each question one outcome (R05 §5.2):
+``c4-memory-trace`` items (the draft schema, the trace replays, the stored gold against the replay under the
+configuration's rules) and the ``memory-response`` records, then gives each question one outcome (R05 §5.2):
 
 | Outcome | When (Â: the answered values, after redirects) | strict, lenient |
 |---|---|---|
 | ``current`` (O1) | Â meets V_cur and nothing stale or future; or V_cur is empty and Â is empty, not abstained | 1, 1 |
 | ``hedged`` (O2) | Â meets V_cur and a stale or future value | 0, 1 |
-| ``stale`` (O3) | Â misses V_cur and meets a stale value (``stale_kind`` expired before revised) | 0, 0 |
+| ``stale`` (O3) | Â misses V_cur and meets a stale value (``stale_kind``: the first of ``STALE_KINDS``) | 0, 0 |
 | ``anachronistic`` (O4) | Â misses V_cur and the stale values and meets V_fut | 0, 0 |
 | ``wrong`` (O5) | anything else | 0, 0 |
 | ``abstained`` (O6) | the abstain flag, or Â empty while V_cur is not | 0, 0 |
@@ -36,15 +45,16 @@ compares an item's stored gold with the replay, value sets by identity (I005); l
 
 A question without a response is ``missing`` (0, 0). Accuracy pools the correct abstentions (``acc_strict``, the
 headline, and ``acc_lenient``, the ``lenient`` preset's headline); the rates of O2-O6 are over the answerable
-questions, the stale rate split into ``expired`` and ``revised``; abstention precision and recall are over the
-unanswerable ones. Also reported: set P/R/F1 against V_cur, ranked efficacy (CounterFact's ES on ``value_scores``)
-and ``support_success@k`` against the current support. A question's ``tolerance {"amount": d}`` lets a quantity
-answer within ``d`` of a gold quantity of the same unit match it (R05 M-M8), unless the answer equals a gold value of
-V_cur, V_old or V_fut, which it then matches alone.
+questions, the stale rate split into ``expired``, ``revised`` and ``outranked``; abstention precision and recall are
+over the unanswerable ones. Also reported: set P/R/F1 against V_cur, ranked efficacy (CounterFact's ES on
+``value_scores``) and ``support_success@k`` against the current support. A question's ``tolerance {"amount": d}``
+lets a quantity answer within ``d`` of a gold quantity of the same unit match it (R05 M-M8), unless the answer equals
+a gold value of V_cur, V_old or V_fut, which it then matches alone.
 """
 from __future__ import annotations
 
 import copy
+import re
 from dataclasses import dataclass
 from decimal import Decimal
 from fractions import Fraction
@@ -62,24 +72,45 @@ from .bootstrap import Bootstrap, mean_interval
 __all__ = [
     "GOLD_FIELDS",
     "INCORRECT_REASONS",
+    "INCORRECT_REASONS_0_1",
     "KS",
     "MISSING",
     "MODES",
     "OUTCOMES",
+    "STALE_KINDS",
     "MemoryConfig",
     "Replay",
     "check_question",
     "classify",
     "derive_memory_gold",
     "gold_findings",
+    "gold_rules",
     "read_gold",
     "replay_findings",
     "replay_trace",
     "score",
 ]
 
-#: Wikidata's "incorrect value", the default deprecation reason that marks a revised value (§9.5; ruling 3)
-INCORRECT_REASONS = frozenset({"wd:Q41755623"})
+#: The deprecation reasons that mark a revised value (§9.5; ruling 21): P3a's nine "incorrect" reasons (P3a DESIGN
+#: §7.3) and Q189203 "anachronism" (P7 DESIGN §7.2), without Q42727519 "less precision" (a generalisation). The
+#: default of ``MemoryConfig`` and of the replay: the 0.2 rules.
+INCORRECT_REASONS = frozenset({
+    "wd:Q41755623",   # incorrect value
+    "wd:Q29998666",   # error in referenced source or sources
+    "wd:Q25895909",   # cannot be confirmed by other sources
+    "wd:Q21655367",   # not been able to confirm this claim
+    "wd:Q14946528",   # conflation
+    "wd:Q28091153",   # refers to different subject
+    "wd:Q35773207",   # refers to different person
+    "wd:Q22979588",   # source known to be unreliable
+    "wd:Q110646418",  # wrong property
+    "wd:Q189203",     # anachronism
+})
+#: The reasons of the 0.1 rules (ruling 3): Wikidata's "incorrect value" only.
+INCORRECT_REASONS_0_1 = frozenset({"wd:Q41755623"})
+#: The stale kinds, in the order that decides a value's kind and an answer's ``stale_kind``.
+STALE_KINDS = ("expired", "revised", "outranked")
+_C4_STAMP = re.compile(r"khg-c4-items/0\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)")
 MODES = ("strict", "lenient")
 #: The outcomes O1-O7 of R05 §5.2 (O7 is two outcomes); ``MISSING`` marks a question without a response.
 OUTCOMES = ("current", "hedged", "stale", "anachronistic", "wrong", "abstained", "correct_abstention",
@@ -104,19 +135,37 @@ def _reasons(reasons: Any) -> frozenset[str]:
     return out
 
 
+def gold_rules(stamp: str | None = None) -> dict[str, Any]:
+    """The memory-gold rules of a ``khg-c4-items`` stamp, as keyword arguments of ``derive_memory_gold``,
+    ``check_question`` and ``MemoryConfig``: ``{"incorrect_reasons", "outranked"}``. The 0.1 rules
+    (``INCORRECT_REASONS_0_1``, no ``outranked``; ruling 3) for 0.0.x and 0.1.x; the 0.2 rules (``INCORRECT_REASONS``,
+    ``outranked``; ruling 21) for 0.2.x and for items without a stamp (None). ``ValueError`` for another stamp."""
+    m = _C4_STAMP.fullmatch(stamp) if isinstance(stamp, str) else None
+    if stamp is not None and (m is None or int(m.group(1)) > 2):
+        raise ValueError(f"{stamp!r} is not a khg-c4-items stamp this reader takes (0.0.x to 0.2.x)")
+    if m is not None and int(m.group(1)) < 2:
+        return {"incorrect_reasons": INCORRECT_REASONS_0_1, "outranked": False}
+    return {"incorrect_reasons": INCORRECT_REASONS, "outranked": True}
+
+
 @dataclass(frozen=True)
 class MemoryConfig:
-    """The memory scorer's settings (DESIGN §9.2): the headline (``strict``, or ``lenient`` for the preset), the
-    deprecation reasons that make a value ``revised``, and the bootstrap."""
+    """The memory scorer's settings (DESIGN §9.2): the headline (``strict``, or ``lenient`` for the preset), the gold
+    rules (the deprecation reasons that make a value ``revised``, and whether ``outranked`` values are stale), and the
+    bootstrap. The defaults are the 0.2 rules; ``MemoryConfig(**gold_rules("khg-c4-items/0.1.0"))`` scores a 0.1
+    question set by its own rules."""
 
     mode: Literal["strict", "lenient"] = "strict"
     incorrect_reasons: frozenset[str] = INCORRECT_REASONS
+    outranked: bool = True
     bootstrap: Bootstrap = Bootstrap()
 
     def __post_init__(self) -> None:
         if self.mode not in MODES:
             raise ValueError(f"mode must be one of {MODES}, not {self.mode!r}")
         object.__setattr__(self, "incorrect_reasons", _reasons(self.incorrect_reasons))
+        if not isinstance(self.outranked, bool):
+            raise ValueError(f"outranked is true or false, not {self.outranked!r}")
         if not isinstance(self.bootstrap, Bootstrap):
             raise ValueError("bootstrap must be a Bootstrap")
 
@@ -203,15 +252,18 @@ def _sorted(values: Mapping[str, dict[str, Any]]) -> list[dict[str, Any]]:
     return [values[k] for k in sorted(values)]
 
 
-def read_gold(replay: Replay, question: Mapping[str, Any], *,
-              incorrect_reasons: Iterable[str] = INCORRECT_REASONS) -> dict[str, Any]:
+def read_gold(replay: Replay, question: Mapping[str, Any], *, incorrect_reasons: Iterable[str] = INCORRECT_REASONS,
+              outranked: bool = True) -> dict[str, Any]:
     """The memory gold of ``question`` read from a replay at τ, the ``tx_time`` of its ``ask_after_step`` (the table
-    of §9.5): ``{answer: {values}, stale_values, future_values, disputed_values, answerable, as_at}``.
+    of §9.5): ``{answer: {values}, stale_values, future_values, disputed_values, answerable, as_at}``. The rules are
+    ``incorrect_reasons`` and ``outranked`` (the 0.2 rules by default; ``gold_rules``).
 
     Raises ``ValidationError`` S001 or S002 when the question's relation, key roles or target role are not in the
     schema, and ``ValueError`` when the replay has no such step, the relation declares no key, or the key does not
     bind exactly the key roles."""
     reasons = _reasons(incorrect_reasons)
+    if not isinstance(outranked, bool):
+        raise TypeError(f"outranked is true or false, not {outranked!r}")
     schema, store = replay.schema, replay.store
     tau = replay.tau(_field(question, "ask_after_step", "c4-memory-question"))
     rel = _field(question, "relation", "c4-memory-question")
@@ -252,18 +304,28 @@ def read_gold(replay: Replay, question: Mapping[str, Any], *,
             _collect([r], role, revised)
         if status == "disputed":
             _collect([r], role, disputed)
-    for d in (expired, revised, future, disputed):
+    outranking: dict[str, dict[str, Any]] = {}
+    if outranked:  # the facts that hold at t, under the question's valid_mode (all of them when t is null)
+        holding = store.find_by_key(rel, key, where=Where(
+            status=frozenset({"asserted"}), rank=frozenset({"preferred", "normal"}), visibility=_ALL_VISIBILITIES,
+            as_of=w["as_of"], valid_mode=w["valid_mode"], as_at=tau))
+        if any(r.get("rank") == "preferred" for r in holding):
+            _collect([r for r in holding if r.get("rank", "normal") == "normal"], role, outranking)
+    for d in (expired, revised, outranking, future, disputed):
         for k in v_cur:
             d.pop(k, None)
     stale = [{"value": v, "kind": "expired"} for v in _sorted(expired)] + \
-            [{"value": revised[k], "kind": "revised"} for k in sorted(revised) if k not in expired]
+            [{"value": revised[k], "kind": "revised"} for k in sorted(revised) if k not in expired] + \
+            [{"value": outranking[k], "kind": "outranked"} for k in sorted(outranking)
+             if k not in expired and k not in revised]
     return {"answer": {"values": _sorted(v_cur)}, "stale_values": stale, "future_values": _sorted(future),
             "disputed_values": _sorted(disputed), "answerable": bool(v_cur) or not disputed, "as_at": tau}
 
 
 def derive_memory_gold(trace: Mapping[str, Any], question: Mapping[str, Any], *, schema: Any,
-                       incorrect_reasons: frozenset[str] = INCORRECT_REASONS) -> dict[str, Any]:
-    """The memory gold of ``question`` replayed from ``trace`` (DESIGN §9.5, normative).
+                       incorrect_reasons: frozenset[str] = INCORRECT_REASONS, outranked: bool = True) -> dict[str, Any]:
+    """The memory gold of ``question`` replayed from ``trace`` (DESIGN §9.5, normative), under the 0.2 rules unless
+    ``incorrect_reasons`` and ``outranked`` say otherwise (``gold_rules`` gives the rules of a C4 stamp).
 
     Replays the trace into a fresh ``MemoryStore`` up to the question's ``ask_after_step`` and reads the table at
     its ``tx_time`` τ. Returns ``{answer: {values}, stale_values: [{value, kind}], future_values, disputed_values,
@@ -276,7 +338,8 @@ def derive_memory_gold(trace: Mapping[str, Any], question: Mapping[str, Any], *,
     step = _field(question, "ask_after_step", "c4-memory-question")
     if isinstance(step, bool) or not isinstance(step, int):
         raise ValueError(f"ask_after_step is a step number, not {step!r}")
-    return read_gold(replay_trace(trace, schema, upto_step=step), question, incorrect_reasons=incorrect_reasons)
+    return read_gold(replay_trace(trace, schema, upto_step=step), question, incorrect_reasons=incorrect_reasons,
+                     outranked=outranked)
 
 
 # ------------------------------------------------------------------------------------------------ gold checks
@@ -347,14 +410,14 @@ def gold_findings(question: Mapping[str, Any], gold: Mapping[str, Any], *, path:
 
 
 def check_question(replay: Replay, question: Mapping[str, Any], *, path: str = "",
-                   incorrect_reasons: Iterable[str] = INCORRECT_REASONS) -> tuple[dict[str, Any] | None,
-                                                                                   list[Finding]]:
+                   incorrect_reasons: Iterable[str] = INCORRECT_REASONS,
+                   outranked: bool = True) -> tuple[dict[str, Any] | None, list[Finding]]:
     """``(gold, findings)`` for a ``c4-memory-question`` against its replayed trace: the gold read at τ and the
     I005 findings of ``gold_findings``. A question the replay cannot answer gives no gold: I003 (the S finding
     nested) for a relation, key role or target role outside the schema, I005 for a step the trace lacks, a relation
     without a key or a key that does not bind exactly the key roles."""
     try:
-        gold = read_gold(replay, question, incorrect_reasons=incorrect_reasons)
+        gold = read_gold(replay, question, incorrect_reasons=incorrect_reasons, outranked=outranked)
     except KHGError as e:
         inner = [f for f in e.info.get("findings") or []] or [make_finding(c, "", e.message) for c in e.codes]
         return None, [_nested("KHG-I003", path, f"the question's relation, roles or values are refused: "
@@ -375,7 +438,7 @@ def _quantity(value: Mapping[str, Any]) -> tuple[Decimal, str] | None:
 
 
 #: The gold sets that decide an outcome; a disputed value is counted in ``hits`` but never changes the outcome.
-_OUTCOME_SETS = ("current", "expired", "revised", "future")
+_OUTCOME_SETS = ("current", *STALE_KINDS, "future")
 
 
 def _hits(key: str, value: Mapping[str, Any], gold: Mapping[str, Mapping[str, Any]],
@@ -405,15 +468,15 @@ def classify(answered: Sequence[tuple[str, Mapping[str, Any]]], abstained: bool,
     ``answered`` is Â as ``[(identity key, canonical value)]`` (redirects resolved), ``abstained`` the response's
     flag, ``gold`` a ``read_gold`` dict and ``tolerance`` a quantity tolerance. Returns ``{outcome, strict, lenient,
     stale_kind, hits, set}``: ``hits`` counts the gold values met per set (``current``, ``expired``, ``revised``,
-    ``future``, ``disputed``) and the answered values that meet none (``other``); ``set`` is P/R/F1 of Â against
-    V_cur (None for an abstention or an unanswerable question). A disputed value never changes the outcome.
+    ``outranked``, ``future``, ``disputed``) and the answered values that meet none (``other``); ``set`` is P/R/F1
+    of Â against V_cur (None for an abstention or an unanswerable question). A disputed value never changes the
+    outcome.
 
     Identity comes first: an answered value equal to a value of V_cur, V_old or V_fut matches by identity only, and
     the tolerance reaches only the answered values that equal none of them. So a tolerance never makes an exact
     current answer hedged, nor gives an exact stale answer lenient credit."""
     sets = {"current": _index(gold["answer"]["values"]),
-            "expired": _index(s["value"] for s in gold["stale_values"] if s["kind"] == "expired"),
-            "revised": _index(s["value"] for s in gold["stale_values"] if s["kind"] == "revised"),
+            **{kind: _index(s["value"] for s in gold["stale_values"] if s["kind"] == kind) for kind in STALE_KINDS},
             "future": _index(gold["future_values"]), "disputed": _index(gold["disputed_values"])}
     distinct = dict(answered)
     hit: dict[str, set[str]] = {name: set() for name in sets}
@@ -425,7 +488,7 @@ def classify(answered: Sequence[tuple[str, Mapping[str, Any]]], abstained: bool,
             hit[name].update(found)
         matched += bool(got["current"])
         other += not any(got.values())
-    cur, old, fut = bool(hit["current"]), bool(hit["expired"] or hit["revised"]), bool(hit["future"])
+    cur, old, fut = bool(hit["current"]), any(hit[kind] for kind in STALE_KINDS), bool(hit["future"])
     stale_kind = None
     if not gold["answerable"]:
         outcome = "correct_abstention" if abstained or not distinct else "hallucinated"
@@ -436,7 +499,7 @@ def classify(answered: Sequence[tuple[str, Mapping[str, Any]]], abstained: bool,
     elif cur:
         outcome = "hedged"
     elif old:
-        outcome, stale_kind = "stale", "expired" if hit["expired"] else "revised"
+        outcome, stale_kind = "stale", next(kind for kind in STALE_KINDS if hit[kind])
     elif fut:
         outcome = "anachronistic"
     else:
@@ -499,8 +562,8 @@ class _Question:
     tolerance: Decimal | None
 
 
-def _checked(qs: list[dict[str, Any]], ts: list[dict[str, Any]], schema: Schema,
-             reasons: frozenset[str]) -> tuple[list[_Question], list[Finding]]:
+def _checked(qs: list[dict[str, Any]], ts: list[dict[str, Any]], schema: Schema, reasons: frozenset[str],
+             outranked: bool) -> tuple[list[_Question], list[Finding]]:
     """Replay the traces the questions name and check each question's stored gold (I002, I003, I005)."""
     findings: list[Finding] = []
     seen: set[str] = set()
@@ -534,7 +597,8 @@ def _checked(qs: list[dict[str, Any]], ts: list[dict[str, Any]], schema: Schema,
         done = replays[q["trace_id"]]
         if done is None:
             continue
-        gold, found = check_question(done[0], q, path=f"/questions/{n}", incorrect_reasons=reasons)
+        gold, found = check_question(done[0], q, path=f"/questions/{n}", incorrect_reasons=reasons,
+                                     outranked=outranked)
         findings += found
         tolerance = _tolerance(q, f"/questions/{n}", findings)
         if gold is not None:
@@ -607,7 +671,8 @@ def _aggregate(rows: list[dict[str, Any]], n_responses: int, n_unmatched: int, m
     answerable = [r for r in rows if r["answerable"]]
     count = _block(rows)["outcomes"]
     n_a, n_u = len(answerable), len(rows) - len(answerable)
-    expired = sum(1 for r in rows if r["outcome"] == "stale" and r.get("stale_kind") == "expired")
+    kinds = {kind: sum(1 for r in rows if r["outcome"] == "stale" and r.get("stale_kind") == kind)
+             for kind in STALE_KINDS}
     abstaining = count["abstained"] + count["correct_abstention"]
     acc = {"acc_strict": _mean(r["strict"] for r in rows), "acc_lenient": _mean(r["lenient"] for r in rows)}
     headline = "acc_strict" if mode == "strict" else "acc_lenient"
@@ -618,8 +683,8 @@ def _aggregate(rows: list[dict[str, Any]], n_responses: int, n_unmatched: int, m
         "n_unmatched_responses": n_unmatched, "n_answerable": n_a, "n_unanswerable": n_u,
         "headline": {"metric": headline, "value": acc[headline]}, **acc, "pooled_abstention": True,
         "answerable": _block(answerable), "outcomes": count,
-        "stale_rate": _rate(count["stale"], n_a), "stale_expired_rate": _rate(expired, n_a),
-        "stale_revised_rate": _rate(count["stale"] - expired, n_a),
+        "stale_rate": _rate(count["stale"], n_a),
+        **{f"stale_{kind}_rate": _rate(kinds[kind], n_a) for kind in STALE_KINDS},
         "stale_share_of_errors": _rate(count["stale"], sum(1 for r in answerable if not r["strict"])),
         "anachronism_rate": _rate(count["anachronistic"], n_a), "hedge_rate": _rate(count["hedged"], n_a),
         "abstention_rate": _rate(count["abstained"], n_a), "wrong_rate": _rate(count["wrong"], n_a),
@@ -649,7 +714,7 @@ def score(questions: Iterable[Mapping[str, Any]], responses: Iterable[Mapping[st
     qs, q_headers = _inputs.check_items(questions, kinds=("c4-memory-question",))
     ts, t_headers = _inputs.check_items(traces, kinds=("c4-memory-trace",))
     recs = _inputs.check_outputs(responses, kind="memory-response")
-    checked, findings = _checked(qs, ts, s, config.incorrect_reasons)
+    checked, findings = _checked(qs, ts, s, config.incorrect_reasons, config.outranked)
     by_qid: dict[str, tuple[int, dict[str, Any]]] = {}
     for n, output in enumerate(recs):
         if output["qid"] in by_qid:

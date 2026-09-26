@@ -58,8 +58,11 @@ def test_s3_order_effect(build, r05_schema):
         items += run_items(build, f"s{s}", "O2", "ac")
     rep = stability.score(items, schema=r05_schema, keys=("content_key",))
     effect = rep["aggregate"]["content_key"]["order_effect"]
-    assert effect == {"n_within_pairs": 6, "n_between_pairs": 9, "J_within": 1.0, "J_between": float(F(1, 3)),
-                      "delta_order": float(F(2, 3))}
+    assert effect == {"same_order_diff_run": {"n_pairs": 6, "mean_jaccard": 1.0},
+                      "same_run_diff_order": {"n_pairs": 3, "mean_jaccard": float(F(1, 3))},
+                      "diff_run_diff_order": {"n_pairs": 6, "mean_jaccard": float(F(1, 3))},
+                      "delta_order": float(F(2, 3)), "n_within_pairs": 6, "n_between_pairs": 9, "J_within": 1.0,
+                      "J_between": float(F(1, 3)), "pooled_delta_order": float(F(2, 3))}  # S-M7 paired: ruling 21
     assert "core_key" not in rep["aggregate"]
     # pooling the orders of a run: three units, identical sets; the order effect still reads (run_id, order_id)
     pooled = stability.score(items, schema=r05_schema, unit="run_id", keys=("content_key",))

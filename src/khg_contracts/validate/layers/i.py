@@ -1,22 +1,30 @@
-"""Layer I: C4 items ``khg-c4-items/0.1.0`` (DESIGN §9.5, §9.6, §8.1).
+"""Layer I: C4 items ``khg-c4-items/0.2.0`` (DESIGN §9.5, §9.6, §8.1; 0.2.0 is ruling 20).
 
-On the lines of a C4 file, in order:
+The reader takes files stamped 0.0.x to 0.2.x (layer V) and checks them all against the 0.2.0 draft schema, which
+only adds optional fields and values to 0.1.0, so a valid 0.1.0 file stays valid. On the lines of a C4 file, in
+order:
 
 - each line against the draft schema, through the run's engine (``item_findings``): I001 an unknown kind, I002 the
   item structure, I004 a memory question without ``stale_values`` or ``future_values``. A finding of a C1 value,
   record or lexical form that the draft takes from ``khg-record`` (a C code) becomes I003, with the C finding under
   ``nested``;
+- on a line the schema accepts (``line_findings``), I002 for what one line's schema cannot state: a mention span of
+  an extraction document that is empty, reversed or outside the NFC text (code points, as position selectors are,
+  §2.8), an entity offered twice in ``mentions``, and a ``probe`` fact of a split manifest that its ``splits`` do not
+  list as ``test`` (P3a DESIGN §6.2);
 - I002 when line 1 is not the ``c4-header``, for a second header, and for an ``id``, ``qid``, trace ``trace_id`` or
   ``doc_id`` used twice;
 - the relation-type schema: the caller's (D009 at ``/lines/0/schema`` without one), which must be the schema the
   header pins (D009 otherwise; the checks below then do not run);
-- the embedded C1 records (an extraction document's gold and entities, a trace's entities and ``put`` records):
-  layer S with S020, each error nested under I003. The gold's spans are read against the item's own text;
+- the embedded C1 records (an extraction document's gold, entities and mention entities, a trace's entities and
+  ``put`` records): layer S with S020, each error nested under I003. The gold's spans are read against the item's own
+  text. A ``gold_scope`` relation that is not a relation of the schema is I003 with S001 nested;
 - every trace without an error is replayed into a fresh ``MemoryStore`` (``scorers.memory.Replay``). A write the
   store refuses is I003 at the entities or at the event, with the store's C, S or D findings nested;
 - every memory question without an error: its stored gold against ``derive_memory_gold`` from its replayed trace,
-  with the default deprecation reasons (I005; ``scorers.memory.check_question``). A question whose trace is not in
-  the file is I003.
+  under the gold rules of the file's stamp (I005; ``scorers.memory.check_question`` and ``gold_rules``): a 0.1.x file
+  by the 0.1 rules (Wikidata's "incorrect value" only, no ``outranked``), so that its gold stays valid; a 0.2.x file
+  by the 0.2 rules, the scorer's defaults (ruling 21). A question whose trace is not in the file is I003.
 
 Warnings of the embedded records (a warning constraint, S024) are not reported: they do not make the item invalid.
 """
@@ -24,6 +32,7 @@ from __future__ import annotations
 
 from typing import Any, Mapping
 
+from ... import jsonio
 from ...errors import KHGError, make_finding
 from ...schema import Schema
 from ...scorers import memory
@@ -31,7 +40,8 @@ from .. import engines
 from ..context import Context
 from . import s as layer_s
 
-__all__ = ["HEADER", "IMPLEMENTED", "LETTER", "OWNER", "embedded_findings", "item_findings", "run"]
+__all__ = ["HEADER", "IMPLEMENTED", "LETTER", "OWNER", "embedded_findings", "item_findings", "line_findings",
+           "pointer_token", "run"]
 
 LETTER = "I"
 OWNER = "W11a"
@@ -47,6 +57,11 @@ UNIQUE = (("id", None), ("qid", None), ("trace_id", TRACE), ("doc_id", EXTRACTIO
 Finding = dict[str, Any]
 
 
+def pointer_token(key: str) -> str:
+    """A key as one JSON Pointer token (RFC 6901: ``~`` as ``~0``, ``/`` as ``~1``)."""
+    return key.replace("~", "~0").replace("/", "~1")
+
+
 def _nest(f: Finding, what: str) -> Finding:
     out: Finding = {**make_finding("KHG-I003", f["path"], f"{what}: {f['code']}: {f['message']}")}
     out["nested"] = dict(f)
@@ -59,6 +74,47 @@ def item_findings(line: Any, *, engine: str = "jsonschema", path: str = "") -> l
     out = []
     for f in engines.findings(engines.C4_SCHEMA_ID, line, engine=engine, path=path):
         out.append(f if f["layer"] == LETTER else _nest(f, "embedded C1 content"))
+    return out
+
+
+def line_findings(line: Any, *, path: str = "") -> list[Finding]:
+    """I002 for what the draft schema cannot state on one line it accepts: an extraction document's mention spans
+    (half-open, in code points of the NFC text) and repeated mention entities; a split manifest's probe facts that
+    its ``splits`` do not list as ``test``."""
+    if not isinstance(line, Mapping):
+        return []
+    out: list[Finding] = []
+    if line.get("kind") == EXTRACTION:
+        size = len(jsonio.nfc(line["text"]))
+        seen: dict[str, int] = {}
+        for k, m in enumerate(line.get("mentions") or []):
+            eid = m["entity"]["id"]
+            if eid in seen:
+                out.append(make_finding("KHG-I002", f"{path}/mentions/{k}/entity/id",
+                                        f"entity {eid!r} is offered twice (also at /mentions/{seen[eid]})"))
+            seen.setdefault(eid, k)
+            for j, (start, end) in enumerate(m.get("spans") or []):
+                if not 0 <= start < end <= size:
+                    out.append(make_finding("KHG-I002", f"{path}/mentions/{k}/spans/{j}",
+                                            f"span [{start}, {end}) is empty, reversed or outside a text of {size} "
+                                            f"code points"))
+    elif line.get("kind") == "c4-split-manifest":
+        splits = line["splits"]
+        for fid in line.get("probe") or {}:
+            if splits.get(fid) != "test":
+                out.append(make_finding("KHG-I002", f"{path}/probe/{pointer_token(fid)}",
+                                        f"probe fact {fid!r} is {splits.get(fid) or 'not listed'} in splits, not test"))
+    return out
+
+
+def _scope_findings(line: Mapping[str, Any], schema: Schema, path: str) -> list[Finding]:
+    """I003 with S001 nested for a ``gold_scope`` relation that is not a (fact) relation of the schema."""
+    out = []
+    declared = set(schema.relation_ids())
+    for k, rel in enumerate(line.get("gold_scope") or []):
+        if rel not in declared:
+            inner = make_finding("KHG-S001", "", f"relation {rel!r} is not a relation of {schema.ref}")
+            out.append(_nest(inner | {"path": f"{path}/gold_scope/{k}"}, "gold_scope"))
     return out
 
 
@@ -81,6 +137,8 @@ def embedded_findings(line: Mapping[str, Any], schema: Schema, *, doc_texts: Map
         texts[line["doc_id"]] = line["text"]
         records = [(f"{path}/gold/{i}", r) for i, r in enumerate(line["gold"])]
         facts = _by_id(line["gold"])
+        for k, m in enumerate(line.get("mentions") or []):
+            found += layer_s.nfc_findings(m, f"{path}/mentions/{k}")
     elif kind == TRACE:
         for k, ev in enumerate(line["events"]):
             records += [(f"{path}/events/{k}/put/{j}", r) for j, r in enumerate(ev.get("put") or [])]
@@ -95,7 +153,8 @@ def embedded_findings(line: Mapping[str, Any], schema: Schema, *, doc_texts: Map
     for p, r in records:
         found += layer_s.nfc_findings(r, p)
         found += layer_s.record_findings(r, schema, entities=_by_id(entities), facts=facts, doc_texts=texts, path=p)
-    return [_nest(f, "embedded C1 record") for f in found if f["severity"] == "error"]
+    out = [_nest(f, "embedded C1 record") for f in found if f["severity"] == "error"]
+    return out + (_scope_findings(line, schema, path) if kind == EXTRACTION else [])
 
 
 # ------------------------------------------------------------------------------------------------ the file
@@ -138,6 +197,16 @@ def _pin_findings(lines: list[Any], bad: set[int], schema: Schema) -> list[Findi
                                                         f"({pin.get('sha256')}), not {schema.ref} ({schema.sha256})")]
 
 
+def _gold_rules(lines: list[Any], bad: set[int]) -> dict[str, Any]:
+    """The memory-gold rules of the file's stamp (the 0.2 rules when line 0 is no usable header; layer V has refused
+    a stamp the reader does not take)."""
+    head = lines[0] if 0 not in bad and isinstance(lines[0], Mapping) and lines[0].get("kind") == HEADER else None
+    try:
+        return memory.gold_rules(head.get("format") if head is not None else None)
+    except ValueError:
+        return memory.gold_rules()
+
+
 def _replay(n: int, line: Mapping[str, Any], schema: Schema) -> tuple[memory.Replay | None, list[Finding]]:
     """Replay one trace; I003 at the write the store refuses."""
     rp: memory.Replay | None = None
@@ -160,6 +229,8 @@ def run(ctx: Context) -> list[Finding]:
     bad: set[int] = set()
     for n, line in enumerate(lines):
         found = item_findings(line, engine=ctx.engine, path=f"/lines/{n}")
+        if not any(f["severity"] == "error" for f in found):
+            found += line_findings(line, path=f"/lines/{n}")
         if any(f["severity"] == "error" for f in found):
             bad.add(n)
         out += found
@@ -180,6 +251,7 @@ def run(ctx: Context) -> list[Finding]:
                 out += found
     traces: dict[str, int] = {}
     replays: dict[str, memory.Replay | None] = {}
+    rules = _gold_rules(lines, bad)
     for n, line in enumerate(lines):
         if isinstance(line, Mapping) and line.get("kind") == TRACE and isinstance(line.get("trace_id"), str):
             tid = line["trace_id"]
@@ -198,5 +270,5 @@ def run(ctx: Context) -> list[Finding]:
             continue
         replayed = replays.get(line["trace_id"])
         if replayed is not None:
-            out += memory.check_question(replayed, line, path=f"/lines/{n}")[1]
+            out += memory.check_question(replayed, line, path=f"/lines/{n}", **rules)[1]
     return out

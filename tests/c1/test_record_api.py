@@ -26,7 +26,8 @@ def test_the_section_10_2_names_exist():
     assert all(hasattr(record, n) for n in record.__all__)
     assert khg_contracts.record is record
     assert record.FORMAT == "khg-record/1.0.0" and record.RENDER_FORMAT == "khg-render/1"
-    assert record.FORMAT.split("/")[1] == khg_contracts.CONTRACTS["khg-record"]
+    # FORMAT is the stamp of a container without 1.1 features; the contract is 1.1.0 (ruling 22)
+    assert record.FORMAT_1_1.split("/")[1] == khg_contracts.CONTRACTS["khg-record"]
     assert record.RENDER_FORMAT.split("/")[1] == khg_contracts.CONTRACTS["khg-render"]
 
 

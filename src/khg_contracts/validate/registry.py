@@ -1,6 +1,7 @@
-"""The code registry ``khg-codes/1.0.0`` (DESIGN §8.1), read from the packaged ``data/error-codes.json``.
+"""The code registry ``khg-codes/1.1.0`` (DESIGN §8.1), read from the packaged ``data/error-codes.json``.
 
-- It registers 134 codes: 128 are active and 6 are reserved, which are never emitted.
+- It registers 135 codes: 129 are active and 6 are reserved, which are never emitted. 1.1.0 added Q013 (ruling 23);
+  codes only grow.
 - Each code has a layer (the letter of the code), a severity, a status, a meaning and the codes of designs A, B and
   C that it merges.
 - The file also lists the layers, the pipelines per input kind and the layer rule.
@@ -21,7 +22,7 @@ from .. import data
 __all__ = ["CODE_PATTERN", "FILE", "FORMAT", "Code", "Registry", "layer_of", "registry"]
 
 FILE = "error-codes.json"
-FORMAT = "khg-codes/1.0.0"
+FORMAT = "khg-codes/1.1.0"
 CODE_PATTERN = re.compile(r"KHG-([A-Z])([0-9]{3})")
 
 
@@ -61,8 +62,10 @@ class Registry:
     never for planned ones."""
 
     def __init__(self, doc: Mapping[str, Any]):
-        if doc.get("format") != FORMAT:
-            raise ValueError(f"not a {FORMAT} registry: format {doc.get('format')!r}")
+        fmt = doc.get("format")
+        m = re.fullmatch(r"khg-codes/1\.([01])\.(0|[1-9][0-9]*)", fmt) if isinstance(fmt, str) else None
+        if m is None:  # a reader takes its own major, minors 0 and 1 (codes only grow)
+            raise ValueError(f"not a {FORMAT} registry (or an earlier minor): format {fmt!r}")
         self.format: str = doc["format"]
         self.rule: str = doc.get("rule", "")
         self.layer_rule: str = doc.get("layer_rule", "")

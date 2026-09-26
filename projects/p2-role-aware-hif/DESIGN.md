@@ -3,7 +3,7 @@ title: "P2 design: role-aware HIF and the shared contracts C1, C2, C3 and C5"
 type: project
 status: draft
 created: 2026-09-23
-updated: 2026-09-23
+updated: 2026-09-26
 ---
 
 # P2 design: role-aware HIF and the shared contracts
@@ -32,7 +32,8 @@ Every machine-readable part is in [design-examples/](design-examples/). The prot
 
 ### 1.1 The design in brief
 
-- **C1 `khg-record/1.0.0`.** A `.khg.json` or `.khg.jsonl` container holds `entity` and `hyperedge` records.
+- **C1 `khg-record/1.1.0`** (ruling 22; a container without its features stays 1.0.0). A `.khg.json` or
+  `.khg.jsonl` container holds `entity` and `hyperedge` records.
   - A hyperedge is a relation plus bindings `{bid, role, value, position?, direction?, extensions?}`.
   - Slot classes (core, qualifier, time, meta) come from the relation-type schema.
   - Values: entity, typed literal, fact reference, `somevalue`, `novalue`, and `unbound` in goals.
@@ -61,11 +62,12 @@ Every machine-readable part is in [design-examples/](design-examples/). The prot
   - C2 has 9 core and 6 derived methods, 4 events and 10 capability flags. Header state is kept. The suite has
     114 executable scenarios.
   - C3 is one queue file per (run, order), with `Queue.accept` and `replay(base=…)`.
-  - The validator has 11 checking layers (J to I) plus lint (L) and migration (F) codes. It registers 134 codes
-    (128 active, 6 reserved); 31 planned codes of later versions are not registered.
+  - The validator has 11 checking layers (J to I) plus lint (L) and migration (F) codes. It registers 135 codes
+    (129 active, 6 reserved; Q013 since `khg-codes/1.1.0`, ruling 23); 31 planned codes of later versions are not
+    registered.
   - The G2 list has 180 malformed cases, each checked mechanically.
-  - C5 has one `score()` per ability, normative memory gold, the C4 draft `khg-c4-items/0.1.0` and the C5 output
-    schema `khg-c5-io/1.0.0`. All of it is in `khg-contracts` (F12).
+  - C5 has one `score()` per ability, normative memory gold, the C4 draft `khg-c4-items/0.2.0` (ruling 20) and the
+    C5 output schema `khg-c5-io/1.0.0`. All of it is in `khg-contracts` (F12).
 
 ### 1.2 The gate, clause by clause
 
@@ -254,7 +256,11 @@ Every check passes. It found:
 
 The prototypes are research code, not the package (see Prototype reuse).
 
-## 2. C1 record format (`khg-record/1.0.0`)
+## 2. C1 record format (`khg-record/1.1.0`)
+
+Version 1.1.0 (ruling 22, from P7 and P3a) adds, all opt-in: separator key roles (§2.5), the `monotone: false` flag
+of epistemic qualifiers (§2.4, §2.9), the `bound_conflict` reason of `khg:disputes` (§2.7), and the canonical
+lexical forms that `normalize` writes (§2.3). Every 1.0.0 file keeps its meaning, its keys and its digests.
 
 ### 2.1 Container, canonical JSON and names
 
@@ -274,7 +280,7 @@ structural (F10).
 
 | Header field | Req. | Meaning |
 |---|---|---|
-| `kind`, `format` | yes | `"header"`, `"khg-record/1.0.0"` (V001, §11) |
+| `kind`, `format` | yes | `"header"`, and `"khg-record/1.0.0"`, or `"khg-record/1.1.0"` for a container that uses a 1.1 feature: a `bound_conflict` dispute (`record.required_format`; V001, §11) |
 | `document_id` | yes | an id |
 | `schema` | yes | `{id, version, sha256}`, where `sha256 = digest("khg-schema/1", schema document)` (D009) |
 | `content` | yes | `snapshot`, or `history` (every version of every id) |
@@ -366,6 +372,19 @@ Gregorian line. Every other literal is its canonical form. The canonical form ke
 Julian calendar stays Julian), so the written date is never lost. Julian `1582-10-05` and Gregorian `1582-10-15`
 therefore have one identity, and keys, dedup and scoring treat them as one value.
 
+**Canonical lexical forms** (ruling 22, from P3a's converter). A decimal is written as C004's pattern says: a sign,
+no leading or trailing zeros, no exponent, and zero as `+0`. A time literal's components below its precision are
+zero (S006). `record.normalize` writes both, since every producer that reads decimals or dates from another format
+meets them: a decimal given as `1.50`, `-0`, `.5`, `1.5e3` or a JSON number (a float by its shortest decimal
+writing) becomes `+1.5`, `+0`, `+0.5`, `+1500` or the number's decimal string, in quantity amounts and bounds and in
+geo coordinates and precisions; and `+1990-01-01T00:00:00Z` at year precision becomes `+1990-00-00T00:00:00Z`, which
+has the same window. Anything else is kept as written. Validation reads what was written, so it still refuses those
+writings (C004, S006; MC094 is unchanged); `put` and `load` normalise first, as they already did for NFC, the case
+of a language tag and the default calendar, and store the canonical form. P3a's two other normalisations stay in
+its Wikidata importer: rewriting entity, unit and globe URIs as `wd:` ids is a naming convention of that source (C1
+ids are opaque, so it cannot know that two ids name one thing), and dropping a repeated filler deletes a binding,
+which evidence may name by its bid, so the validator's S014 stays the signal for every other producer.
+
 **Precision windows** (normative; critique CONS-01). A time literal with written year y denotes the instants
 [lo, hi). The window is computed in the literal's calendar and mapped to the proleptic Gregorian line through the
 Julian day number. y is a historical year, and its astronomical year is a = y for y > 0 and a = y + 1 for y < 0.
@@ -406,7 +425,10 @@ them.
 
 `meta` is only for bindings that do not change what the fact says (critique CONS-16). Epistemic modifiers such as
 Wikidata's P5102 (nature of statement) and P1480 (sourcing circumstances) are qualifiers. So "born c. 1643
-(presumably)" keeps a different `content_key` from the plain statement.
+(presumably)" keeps a different `content_key` from the plain statement. Since 1.1 a schema may declare such a usage
+`monotone: false` (§3; ruling 22, P7's D4 b): adding or dropping one of its fillers weakens or strengthens the claim
+rather than refining it, so refinement keeps the role's size (§2.9) and "c. 1140" neither refines nor generalises
+"1140".
 
 **Arity** follows B's rule (a ruling). It counts the core and qualifier bindings whose value is an entity, a
 literal, a fact or `somevalue`, and a repeated filler counts once per binding. Reported beside it:
@@ -444,8 +466,14 @@ confidence.
 
 ### 2.5 Keys and the key invariant
 
-A relation may declare `key: {roles, temporal, on_collision}`.
+A relation may declare `key: {roles, separators?, temporal, on_collision}`.
 - The roles must be core or qualifier roles (M003).
+- **Separators** (1.1; ruling 22, P7's D4 a) are further core or qualifier roles (M003; never a key role too) that
+  work as Wikidata's separators (P4155) do: a fact without a separator is keyed by its absence, which hashes as its
+  own value (§2.9), instead of making the digest null. So `{roles: [subject], separators: [P518]}` makes two facts
+  without P518 collide, and a fact with P518 = X another key. A present separator hashes as a key role, and a key
+  without separators hashes exactly as in 1.0. A special or unbound separator value makes the digest null, as for
+  a key role.
 - `temporal` needs an interval time model (M011).
 - `on_collision` is one of `close_older`, `supersede`, `dispute` (the default) or `reject`. `supersede` on a
   temporal key is M017, because a succession is a world change, not a belief revision (F7).
@@ -611,7 +639,7 @@ There are four axes:
 |---|---|---|---|
 | `khg:supersedes` | `khg:superseding` (tail, 1..n), `khg:superseded` (head, 1..n) | `correction`, `duplicate`, `refinement`, `conflation`, `schema_migration`, `other` | `correction` keeps the relation and the key digest; `duplicate` needs equal `content_key`; `refinement` needs the superseding fact to refine the superseded one (D011); acyclic (D012) |
 | `khg:retracts` | `khg:retracted` (head, 1..n) | `withdrawn`, `unsupported`, `other` | |
-| `khg:disputes` | `khg:disputed` (head, 2..n) | `key_conflict`, `negation_conflict`, `curator`, `other` | |
+| `khg:disputes` | `khg:disputed` (head, 2..n) | `key_conflict`, `negation_conflict`, `curator`, `other`, and since 1.1 `bound_conflict` (the same fact restated with other dates; P7's D1 and D4 c) | |
 
 **Where D011 is checked** (critique SEM-11). There are three places:
 - **The `supersede` event.** Its superseding facts must be asserted when the event runs (S-LIFE-004). Events
@@ -681,7 +709,7 @@ form writes:
 | `id` | opaque, chosen by the writer | references, versions |
 | `content_key` | `khg-content-key/1` over `{relation, bindings}`: the core, qualifier and time bindings as `[role, position, value identity]`, sorted | dedup (P3a), stability (P9) |
 | `core_key` | the same over the core bindings (`khg-core-key/1`) | leak check, verdict key |
-| `key_digest` | `khg-key-digest/1` over `{relation, key bindings}`. It is `null` without a key, when a key role is absent, or when a key role holds a special or unbound value | key index, collisions |
+| `key_digest` | `khg-key-digest/1` over `{relation, key bindings}`, the bindings of the key roles and of the separators, with `[role, null, {"absent": true}]` for each absent separator (1.1). It is `null` without a key, when a key role is absent, or when a key role or a separator holds a special or unbound value | key index, collisions |
 | `event_hash` | `khg-event/1` over `{content_key, doc (doc_sha256, else doc_id), selectors (sorted), activity {agent, agent_version, model, model_version, prompt_id, skill_id}, reference? (sorted), inference?}` | verdicts; the 1.1 lint L009 |
 
 `event_hash` (critique SEM-12, CONS-17):
@@ -707,7 +735,8 @@ The other domains are `khg-literal-node/1`, `khg-literal-binding/1`, `khg-specia
   entity, literal or fact, or by §2.3. `novalue` refines only `novalue`.
 - For facts, f′ ⊑ f holds when both have the same relation and every core, qualifier and time binding of f has a
   refining binding in f′. The binding must have the same role, and the same position for an ordered role, and the
-  matching is injective. **Meta bindings are ignored** (critique SEM-20). `complete` roles keep their size.
+  matching is injective. **Meta bindings are ignored** (critique SEM-20). `complete` roles, and since 1.1 roles
+  declared `monotone: false`, keep their size.
 - Mutual refinement means equal `content_key`, that is, a duplicate.
 - `identity.relate(a, b, *, schema)` (non-normative, for P7) returns one of the seven labels of [DB §2.19]:
   `duplicate`, `refines`, `generalises`, `distinct`, `key_conflict`, `key_timeline` or `negation_conflict`. Its
@@ -717,7 +746,7 @@ The other domains are `khg-literal-node/1`, `khg-literal-binding/1`, `khg-specia
 - keep the relation;
 - keep every binding **by bid**, with the same role and position and a refining value. The only non-refining
   change is `end_validity` replacing a `novalue` end;
-- add bindings only where the role is not `complete`;
+- add bindings only where the role is not `complete` and, since 1.1, not `monotone: false`;
 - keep every earlier evidence record unchanged, `event_hash` included, and may append new ones;
 - change only `rank`, `rank_reason`, `visibility`, `confidence`, `source_text` and `extensions` among the other
   fields, plus `goal` while the status is `goal`.
@@ -835,7 +864,7 @@ These are functions of `khg_contracts.record`. Their output formats are part of 
 }
 ```
 
-## 3. Relation-type schema language (`khg-relation-schema/1.0.0`)
+## 3. Relation-type schema language (`khg-relation-schema/1.1.0`)
 
 The schema language is our own JSON, shaped like LinkML [R04 O10, O11] (ruling). The M layer checks it with a
 meta-schema and Python checks (M001–M017). A schema can be embedded in a C1 container as a `relation-schema`
@@ -843,7 +872,7 @@ record, or inlined in HIF as `khg-schema-document`. HIF references it by id and 
 
 | Field | Meaning |
 |---|---|
-| `kind`, `format`, `id`, `version`, `label` | `"relation-schema"`, `"khg-relation-schema/1.0.0"`. The schema is referenced as `"<id>/<version>"`, and the version is semver (M004) |
+| `kind`, `format`, `id`, `version`, `label` | `"relation-schema"`, and `"khg-relation-schema/1.0.0"`, or `"khg-relation-schema/1.1.0"` for a document that uses `separators` or `monotone` (`schema.required_format`; ruling 22). The schema is referenced as `"<id>/<version>"`, and the version is semver (M004) |
 | `entity_types` | `[{id, parents?}]`, a DAG (M016) |
 | `roles` | the **global** role vocabulary (F4): `[{id, label?, aliases?, mappings?}]`. The `khg:` namespace is reserved (M008) |
 | `relations` | `[{id, kind?, label?, mappings?, primary?, time?, key?, constraints?, roles}]`. `kind` is `fact` in v1; `rule` comes in 1.1 (M015 before then). `primary {subject, object}` names two core usages with max 1 (M012) |
@@ -853,7 +882,8 @@ record, or inlined in HIF as `khg-schema-document`. HIF references it by id and 
 | usage `fillers` | a disjunction of `{entity: [types]}`, `{literal: datatype, units?, precision_min?}` and `{fact: [relations]}`. A `fact` filler makes the relation nestable |
 | usage `min`, `max`, `ordered`, `complete` | cardinality (`max: null` is unbounded; M010); positions 1..n; a closed filler set (needs min > 0; M014) |
 | usage `direction`, `somevalue`, `novalue`, `label` | the default direction; whether the special values are allowed (default true); a local name |
-| `key` | `{roles, temporal, on_collision}` (§2.5; M003, M011, M017) |
+| usage `monotone` (1.1) | default true; `false` only on a qualifier usage (M015): an epistemic qualifier such as Wikidata P1480 or P5102, whose fillers refinement and new versions keep in number (§2.4, §2.9) |
+| `key` | `{roles, separators?, temporal, on_collision}` (§2.5; M003, M011, M017; `separators` since 1.1) |
 | `constraints` | `{type ∈ requires, excludes, at_least_one_of, must_differ, must_agree; roles; severity ∈ error, warning}` (S024). Any other severity is M015 |
 
 - A **symmetric** role is one usage with `max > 1` that is not `ordered`, such as `married.spouse`.
@@ -1076,7 +1106,7 @@ codes F001–F005 and F007–F014 are planned, not registered (§8.1; critique S
 | `role-convention` | `"1.0.0"` | yes (R003) |
 | `role-vocabulary` | `{role: {label?, ...}}` | no |
 | `hif-schema`, `hif-schema-sha256` | the raw URL pinned at commit `b691a3d…`; `"sha256:639466b7…2196"` | yes (P001; P009 when not the pinned value) |
-| `khg-profile`, `khg-record` | `"khg-hif/1.0.0"`, or `"khg-hif/1.1.0"` for a file that names what it does not hold (§4.6); `"khg-record/1.0.0"` | yes (P001; V001 for an unknown version) |
+| `khg-profile`, `khg-record` | `"khg-hif/1.0.0"`, or `"khg-hif/1.1.0"` for a file that names what it does not hold (§4.6); `"khg-record/1.0.0"`, or `"khg-record/1.1.0"` as the container's header says | yes (P001; V001 for an unknown version) |
 | `khg-schema`, `khg-schema-sha256` | `"<id>/<version>"` and its digest | yes (P001; D009) |
 | `khg-document-id` | the header's `document_id` | yes (P001) |
 | `khg-literal-nodes` | `"shared"` or `"per_binding"` | yes (P001, P009) |
@@ -1457,7 +1487,7 @@ class Store(Protocol):
 
 class StoreInfo(TypedDict):
     interface_version: str          # "khg-store/1.0.0"
-    record_format: str              # "khg-record/1.0.0"
+    record_format: str              # "khg-record/1.1.0": the newest C1 the store reads and writes
     capabilities: frozenset[str]
     store_id: str
     header: dict | None             # the kept document header (§6.2)
@@ -1477,7 +1507,9 @@ class Walk(TypedDict): start: str; direction: str; steps: list[dict]; terminal: 
 - `NotFound`;
 - `CapabilityMissing(flag)`.
 
-`find_by_key` raises `ValueError` when `key` does not bind exactly the key roles (critique CONS-25).
+`find_by_key` raises `ValueError` when `key` does not bind exactly the key roles (critique CONS-25). With a 1.1
+key it binds the key roles and any of the separators: an omitted separator is absent, as a fact without it hashes
+(§2.5). A key without separators keeps the 1.0 rule.
 
 ### 6.2 Semantics, events and header state
 
@@ -1509,6 +1541,8 @@ class Walk(TypedDict): start: str; direction: str; steps: list[dict]; terminal: 
 - `export(header=...)` overrides it.
 - A store without a kept header exports `document_id` `"store:<store_id>"`, the schema's reference, and a
   `complete` computed by the D002 rule (S-EXP-009).
+- The export's `format` is the lowest stamp its records need (`record.required_format`): a header that says
+  `khg-record/1.0.x` is raised to `khg-record/1.1.0` when an exported record uses a 1.1 feature (ruling 22).
 - Every backend keeps a one-row metadata table or graph for the header.
 
 **Reads.**
@@ -1657,7 +1691,11 @@ The suite absorbs [DA]'s scenarios C2-01…27, [DC]'s 18 and [DB]'s 4 (graft [J-
 P1's adapters since measured 114 of 114 on SQLite, PostgreSQL 18.6, Oxigraph and Neo4j, 70 on TypeDB and 107 on HIF
 ([P1 results](../p1-store-bakeoff/results/conformance/summary.md)).
 
-## 7. C3 candidate queue and action log (`khg-queue/1.0.0`)
+## 7. C3 candidate queue and action log (`khg-queue/1.1.0`)
+
+Version 1.1.0 (ruling 23, from P9) changes no line of the format, so queue files keep the stamp `khg-queue/1.0.0`
+and 1.0 readers read them. It changes how a queue is judged (the recorded reading, below) and what the linter checks
+(Q013); the reader takes `khg-queue/1.0.x` and `1.1.x`.
 
 A queue file is append-only JSONL, one per (run, order) (graft [J-cons], [J-std]). There is **one appender at a
 time**, and every actor appends through a `Queue` handle (critique CONS-23). An item's state is a fold over the
@@ -1720,9 +1758,27 @@ carry over to a re-extraction.
   - It re-runs every `accept` in log order at its `at`, and checks `after` and `decision_hash` (Q006).
 - `queue_items(paths) -> Iterator[dict]`: items with their folded state and verdicts, for the scorers.
 
-**The linter's v1 rule set is `structural`**, which is store-free and is the gate's lint:
+**The linter's rule set is `structural`** (1.1.0; the linter is `khg-lint` 1.1.0), which is store-free and is the
+gate's lint:
 - the C and S codes on the payload, with S003 as a warning on candidates;
-- Q001–Q003, Q009, Q010 and Q011.
+- Q001–Q003, Q009, Q010 and Q011;
+- since 1.1.0, **Q013**: with the document text (`Linter(doc_texts=...)`), an evidence record's quote selector
+  without a position selector, whose prefix, exact text and suffix do not occur in the text the evidence's
+  `doc_sha256` hashes (NFC, code points). S021 checks a quote that has a position selector; without one, a quote
+  escaped every check, so a candidate could cite a sentence its document lacks (P9 DESIGN §3.8, D5 c). Q013 is an
+  error, so the candidate is rejected. Only the linter runs it: the validator does not repeat it on queue files,
+  so no queue that was valid becomes invalid (§8.2 lists it as a coverage exception).
+
+**The recorded reading of queue validity** (1.1.0; P9 DESIGN §3.8, D5 a). A queue records wrong candidates on
+purpose and its items are never edited, so under 1.0 `validate_queue`, which runs layers C and S on every payload,
+failed any queue that had once rejected a malformed candidate at lint. Now a C or S error on the payload or the
+entities of an item is **recorded** when the item's folded state is `rejected` and one of its lint entries lists a
+finding with the same code at the same path (relative to the item line) as an error. A recorded finding is reported
+with severity `info` and a message naming the lint entry; it does not make the queue invalid. Every other finding
+keeps its severity: an error the lint did not record (for example one the validator finds with a document text the
+linter lacked), one on an item that is not rejected, and every J, V, Q and D finding. The fold never lets an item
+with a recorded lint error be accepted (Q005), so no recorded error reached a store. A queue valid under 1.0 is
+valid under 1.1 with the same findings.
 
 Entities resolve from `item.entities` first, then from `Linter(entities=...)` or the queue's base, then from the
 store. S005 runs only on resolved entities, and an unresolved entity is Q011, an error (critique CONS-10). The
@@ -1802,7 +1858,7 @@ names `base` `{"document_id": "p2-smoke-base", "sha256": "sha256:f7933d12…cb6a
 | S | a record against its relation-type schema (Python) | C1, payloads |
 | M | the relation-schema meta-schema plus Python checks | schemas |
 | Q | the queue structure, the state fold, keys, entity resolution, base and replay | queues |
-| I | `khg-c4-items-0.1.0.schema.json`, embedded C1, memory gold | C4 items |
+| I | `khg-c4-items-0.2.0.schema.json` (it reads 0.1.x files too), embedded C1, memory gold | C4 items |
 | L, F | lints, which never invalidate a file (v1 ships L008); migration report entries (v1 ships F006 and F015–F017) | |
 
 **Pipelines** (critique GL-02, SEM-03):
@@ -1813,7 +1869,7 @@ names `base` `{"document_id": "p2-smoke-base", "sha256": "sha256:f7933d12…cb6a
 | HIF with the profile | J V H R P D C S. D first runs as decoding; the cross-record D checks run after S |
 | role-convention file | J H R |
 | relation-type schema | J V M |
-| queue | J V Q C S D (C and S run on the payloads) |
+| queue | J V Q C S D (C and S run on the payloads; since 1.1 a C or S error that a rejected item's lint recorded is `info`, §7) |
 | C4 items | J V I. Embedded C1 findings are reported nested under I003 |
 
 - A finding's **layer is the letter of its code.** A step may emit another layer's code: decoding emits S016, and
@@ -1849,9 +1905,9 @@ so on each malformed case it must return exactly one code at the first rejecting
 jsonschema's. G2 runs with jsonschema, which gives the full report. The prototype checked containment on all 180
 cases.
 
-**The registry** is `design-examples/error-codes.json` (`khg-codes/1.0.0`).
-- It registers 134 codes. 128 are active; 6 are reserved and never emitted (D004, D006, S008, S012, and P006 and
-  P015, which moved to R001 and R004 before 1.0).
+**The registry** is `design-examples/error-codes.json` (`khg-codes/1.1.0`).
+- It registers 135 codes. 129 are active; 6 are reserved and never emitted (D004, D006, S008, S012, and P006 and
+  P015, which moved to R001 and R004 before 1.0). Version 1.1.0 added Q013 (ruling 23); codes only grow.
 - Each code has a layer, a severity, a status, a meaning and the A, B and C codes it merges.
 - The file also lists the pipelines and the layer rule.
 - 31 **planned** codes of later versions are listed apart and **not registered**, so 1.0 does not freeze them
@@ -1888,7 +1944,7 @@ on all 180.
 | P | 24 | all 15 active | R01 V07, V12, V14, V20, V40; R02 cases 15–17, 21, 23; R03 D4, D7, D8, c04, c14, c20; §4.5; the 518 boundary (GL-16); CONS-14, CONS-15 |
 | D | 30 | 17 of 18 active (D019 is covered by S-PUT-006) | R01 V15–V18, V28, V37, V41, V42, D-09; R02 cases 28–29; R03 c19; SEM-18 cases 1–6; SEM-16; four history-container cases (D013 ×2, D014, D018) |
 | C / S | 20 / 34 | all active | R01 V14, V15, V21–V27, V29, V30, V32–V38, V47; R03 c13; F11 spans (`doc_text`); year 0 and the 1583 rule; SEM-18 case 7 |
-| M / Q / I | 19 / 17 / 5 | all active / all / all | R01 V43–V49; M015 now carries the old `violation` severity; M017; Q010 now carries the old event-hash case; Q011, Q012; the C4 items of `c4-items.jsonl` |
+| M / Q / I | 19 / 17 / 5 | all active / all but Q013 (the linter's own check, a coverage exception since 1.1) / all | R01 V43–V49; M015 now carries the old `violation` severity; M017; Q010 now carries the old event-hash case; Q011, Q012; the C4 items of `c4-items.jsonl` |
 
 Store-only rules are not in the list. They are scenarios (S-VER-003/004/005, S-EXP-008 and S-EXP-010), and the
 history-container cases cover their codes in files. The rule-relation case of the previous list moved to 1.1 with
@@ -1929,7 +1985,7 @@ L and F codes are tested by the store receipts and by the migration test.
   - `fixture.doc-texts.json`: the four document texts and their hashes;
   - `smoke-base.c1.json`: the entities, as G3's base.
 
-## 9. C5 scorers (`khg-scorers/1.0.0`), the C4 draft and the output schema
+## 9. C5 scorers (`khg-scorers/1.1.0`), the C4 draft and the output schema
 
 ### 9.1 Conventions [R05 §1; DB §9.1]
 
@@ -1993,21 +2049,22 @@ class RetrievalConfig:
     ks: tuple[int, ...] = (1, 3, 5, 10, 20)
     headline_k: int = 10
     ndcg_discount: Literal["log2", "longmemeval"] = "log2"
-    answer_mode: Literal["single", "set"] = "single"
+    answer_mode: Literal["single", "set", "count"] = "single"   # for questions without their own answer_mode
     bootstrap: Bootstrap = Bootstrap()
 
 @dataclass(frozen=True)
 class MemoryConfig:
     mode: Literal["strict", "lenient"] = "strict"
-    incorrect_reasons: frozenset[str] = frozenset({"wd:Q41755623"})
+    incorrect_reasons: frozenset[str] = memory.INCORRECT_REASONS   # the 0.2 rules (§9.5, ruling 21)
+    outranked: bool = True
     bootstrap: Bootstrap = Bootstrap()
 
 extraction.score(gold, predictions, *, schema, config=ExtractionConfig()) -> dict
     # gold: c4-extraction-doc items; predictions: C3 queue items, or C1 hyperedges carrying their doc id
 stability.score(items, *, schema, unit: Literal["run", "run_id"] = "run",
                 keys=("content_key", "core_key"), gold=None) -> dict
-    # unit "run" is (run_id, order_id); "run_id" pools the orders of a run. Δ_order compares units of the same
-    # and of different order_id
+    # unit "run" is (run_id, order_id); "run_id" pools the orders of a run. The order effect always reads
+    # (run_id, order_id) units: the paired decomposition of their pairs and Δ_order (§9.3, ruling 21)
 completion.build_queries(facts, schema, *, slots=("core", "qualifier"),
                          literal_targets: Literal["exclude", "include"] = "exclude",
                          universe: Literal["entities_of_type", "seen_in_position"] = "entities_of_type") -> list[dict]
@@ -2018,8 +2075,9 @@ completion.rank_stats(query, scores: Mapping[str, float], index, *, universe=Non
 completion.score(queries, outputs, *, config=CompletionConfig()) -> dict
 retrieval.score(questions, responses, *, facts: Mapping[str, dict] | None = None,
                 config=RetrievalConfig()) -> dict       # facts: the gold hyperedges, for binding_coverage@k
-memory.derive_memory_gold(trace, question, *, schema,
-                          incorrect_reasons=frozenset({"wd:Q41755623"})) -> dict   # §9.5
+memory.derive_memory_gold(trace, question, *, schema, incorrect_reasons=memory.INCORRECT_REASONS,
+                          outranked=True) -> dict   # §9.5
+memory.gold_rules(stamp=None) -> {"incorrect_reasons", "outranked"}   # the rules of a khg-c4-items stamp
 memory.score(questions, responses, *, traces, schema, config=MemoryConfig()) -> dict
 ```
 
@@ -2034,10 +2092,10 @@ One `score()` per ability (graft [J-cons], [J-std]).
 | Scorer | Defaults | Presets |
 |---|---|---|
 | extraction | E-M1 strict (the headline); E-M2 core, which is `core_key` equality (critique C5-HANDCHECK); E-M4 Arg-I; E-M5 Arg-C; E-M6 role accuracy; E-M7 pooled with the grouping gap; E-M8 pairwise. Hungarian alignment (E-M3) on values, then bindings. Micro-doc, macro-relation and macro-arity averages | `hyperred_quintuplet`, `text2nkg` |
-| stability | S-M1 pairwise Jaccard on both keys; S-M2 core ratio; S-M3 support histogram; S-M4 churn; S-M5 gold partition; S-M7 Δ_order | |
+| stability | S-M1 pairwise Jaccard on both keys; S-M2 core ratio; S-M3 support histogram; S-M4 churn; S-M5 gold partition; S-M7 the order effect: the mean Jaccard of the pairs of (run_id, order_id) units in three classes, `same_order_diff_run` (run noise), `same_run_diff_order` and `diff_run_diff_order`, and Δ_order = J(same order, other run) − J(other order, other run), which compares pairs that differ in run on both sides (ruling 21; 1.0's pooled Δ_order, biased when a run's two orders share a seed, is kept as `pooled_delta_order`) | |
 | completion | the `exact` filter, with `monotone` (⊑) and `time_aware` also reported; tie-exact expected ranks (C-M3); per task, per fact and macro-arity; hits@1, 3 and 10; top-1 ECE with 15 bins, equal-width and equal-mass, the reliability table and Brier, per arity bin on both arities | `hype`, `stare`, `hyper` |
-| retrieval | k ∈ {1, 3, 5, 10, 20}. Headlines `support_success@10` and `mrr@10`, then hit@k, support_recall@k, r_precision, nDCG@k with log2(i+1), `binding_coverage@k`. **Answers:** EM on value identity, then SQuAD-normalised text EM and token F1; set P, R and F1 in set mode; joint scores and gated EM; abstention precision and recall. **Cost:** mean, median, p90, p95 and total of every cost field, and answer EM against a cumulative-token budget (critique CONS-07) | |
-| memory | strict accuracy (the headline) with lenient beside it; outcomes O1–O7 [R05 §5.2]; the stale rate split into `expired` and `revised`; anachronism, hedge and abstention rates; `support_success@k` against current support | `lenient` |
+| retrieval | k ∈ {1, 3, 5, 10, 20}. Headlines `support_success@10` and `mrr@10`, then hit@k, support_recall@k, r_precision, nDCG@k with log2(i+1), `binding_coverage@k`. **Answers:** EM on value identity, then SQuAD-normalised text EM and token F1; set P, R and F1 in set mode (over the set-mode questions); a question's `answer_mode` (C4 0.2.0) comes before the configuration's, and `count` scores as `single`; joint scores and gated EM; abstention precision and recall. **Cost:** mean, median, p90, p95 and total of every cost field, and answer EM against a cumulative-token budget (critique CONS-07) | |
+| memory | strict accuracy (the headline) with lenient beside it; outcomes O1–O7 [R05 §5.2]; the stale rate split into `expired`, `revised` and `outranked`; anachronism, hedge and abstention rates; `support_success@k` against current support | `lenient` |
 
 **Presets.**
 - `hype`: all positions, pessimistic ties, the full-tuple filter and the per-task average.
@@ -2088,11 +2146,27 @@ The sets hold ρ-values (critique SEM-07, C5-IO):
 |---|---|
 | V_cur | `find_by_key` returns under the question's `where` (status, rank, `valid_mode`, `as_of`) at `as_at` τ. If one of them is `preferred`, only the preferred facts count |
 | V_old, `expired` | are asserted and not deprecated, and whose possible validity ends at or before t (e_hi ≤ t) |
-| V_old, `revised` | were asserted at some τ′ < τ and are `superseded` or `retracted` at τ; and deprecated facts whose `rank_reason` names an "incorrect" reason (default `wd:Q41755623`) |
+| V_old, `revised` | were asserted at some τ′ < τ and are `superseded` or `retracted` at τ; and deprecated facts whose `rank_reason` names an "incorrect" reason (`memory.INCORRECT_REASONS`, below) |
+| V_old, `outranked` | are asserted, of rank `normal`, and hold at t under the question's `valid_mode` (every fact holds when t is null), while an asserted `preferred` fact on the key holds at t (ruling 21) |
 | V_fut | are asserted and not deprecated, and whose possible validity starts after t (s_lo > t) |
 | `disputed` | are `disputed` at τ |
 
-- V_cur is subtracted from every other set. A value that is both `expired` and `revised` is listed as `expired`.
+- V_cur is subtracted from every other set. A stale value is listed once, with the first of its kinds in the order
+  `expired`, `revised`, `outranked`: a value both `expired` and `revised` is listed as `expired`.
+- `outranked` is the textbook stale answer of a single-best-value series (P3a DESIGN §7.3): last year's population is
+  asserted, normal and never expires, so without this kind an answer with it was `wrong`. It needs the series key to
+  be non-temporal, such as `{subject}` (P7 DESIGN §7.2).
+- **The "incorrect" reasons** (ruling 21; P3a DESIGN §7.3, confirmed and extended by P7 DESIGN §7.2): Q41755623
+  incorrect value, Q29998666 error in referenced source or sources, Q25895909 cannot be confirmed by other sources,
+  Q21655367 not been able to confirm this claim, Q14946528 conflation, Q28091153 refers to different subject,
+  Q35773207 refers to different person, Q22979588 source known to be unreliable, Q110646418 wrong property and
+  Q189203 anachronism, all as `wd:` ids. Q42727519 "less precision" is out: it is a generalisation, not an error. A
+  deprecated fact without a reason (`["unspecified"]`) is neither current nor stale.
+- **The rules are versioned with the C4 draft** (ruling 3: a change of the reasons is a minor release of the draft).
+  The 0.2 rules are the reasons above and `outranked`; the 0.1 rules are `wd:Q41755623` alone and no `outranked`.
+  Layer I replays a `khg-c4-items/0.1.x` file by the 0.1 rules, so a valid 0.1.0 file stays valid, and a 0.2.x file
+  by the 0.2 rules (`memory.gold_rules(stamp)`). `derive_memory_gold` and `MemoryConfig` default to the 0.2 rules;
+  `MemoryConfig(**memory.gold_rules("khg-c4-items/0.1.0"))` scores a 0.1 question set by its own rules.
 - A fact that ended and was later superseded is `revised`, because `expired` needs an asserted fact.
 - `answerable` is false when V_cur is empty and `disputed` is not.
 - With `as_of: null` there is no valid-time filter. V_cur is then the current belief, and `expired` and V_fut
@@ -2116,34 +2190,57 @@ The first of them, as it is stored in `c4-items.jsonl`:
 {"answer":{"values":[{"entity":"ex:LouisXIV"}]},"answerable":true,"ask_after_step":2,"disputed_values":[],"future_values":[],"id":"c4:mq-king-1700","key":[{"role":"position","value":{"entity":"ex:KingOfFrance"}}],"kind":"c4-memory-question","qid":"mq:king-1700","qset":"p2-fixture-qset","relation":"position_held","split":"test","stale_values":[{"kind":"expired","value":{"entity":"ex:LouisXIII"}}],"subtype":"current_value","support":["f:king-14"],"target_role":"holder","text":"Who was King of France on 1 January 1700?","trace_id":"t:kings","where":{"as_of":"+1700-01-01T00:00:00Z","rank":["preferred","normal"],"status":["asserted"],"valid_mode":"definite"}}
 ```
 
-### 9.6 The C4 draft (`khg-c4-items/0.1.0`)
+### 9.6 The C4 draft (`khg-c4-items/0.2.0`)
 
 P3a owns C4 and fills it [DC §9.6]. The draft is written in C1 terms (critique CONS-02):
 - values, bindings, hyperedges and entities are `$ref`s into `khg-record` 1.0.0;
 - hashes are `sha256:`;
 - `where.as_of` is an instant (§2.1) or null.
 
-A file is JSONL: a `c4-header` line (`format`, `qset`, `record_format`, `schema {id, version, sha256}`), then
-items. Every item has `kind`, `id`, `qset` and `split` (`train`, `valid` or `test`).
+A file is JSONL: a `c4-header` line (`format`, `qset`, `record_format`, `schema {id, version, sha256}`, and
+optionally `corpus {id, version, tier?}`, the corpus and tier the set was built on), then items. Every item has
+`kind`, `id`, `qset` and `split` (`train`, `valid` or `test`). Version 0.2.0 (ruling 20) added the fields in bold, all
+optional.
 
-| `kind` | Required fields beyond the common four |
+| `kind` | Required fields beyond the common four; optional ones |
 |---|---|
-| `c4-extraction-doc` | `doc_id`, `text` (NFC), `text_sha256`, `annotation {guideline, annotators?, adjudicated?}`, `gold` (C1 hyperedges with position selectors); `entities?` |
-| `c4-completion-query` | `qid`, `fact_id`, `relation`, `arity`, `model_arity`, `target {bid, role, slot, value}`, `context` (bindings), `candidate_universe {kind: entities_of_type \| list, types?, ids?}` |
-| `c4-retrieval-question` | `qid`, `type` (`single_hop`, `multi_hop`, `temporal`, `comparison`, `aggregation`), `text`, **`anchors`**, `answer {values, text?}`, `support {sets}`, `hops`, `source_class`, `answerable`, **`where {as_of, valid_mode, rank, status}`**; `provenance?` |
+| `c4-extraction-doc` | `doc_id`, `text` (NFC), `text_sha256`, `annotation {guideline, annotators?, adjudicated?}`, `gold` (C1 hyperedges with position selectors); `entities?` (what the gold needs); **`doc_kind?`** (`wiki`, `rendered`); **`source? {url, revision?, licence?, attribution?}`**; **`gold_scope?`** (the relations whose gold was audited complete; without it the gold is complete for every relation); **`mentions?`** (below) |
+| `c4-completion-query` | `qid`, `fact_id`, `relation`, `arity`, `model_arity`, `target {bid, role, slot, value}`, `context` (bindings), `candidate_universe {kind: entities_of_type \| list, types?, ids?}`; **`manifest?`** (the id of the split manifest the query belongs to) |
+| `c4-retrieval-question` | `qid`, `type` (`single_hop`, `multi_hop`, `temporal`, `comparison`, `aggregation`), `text`, **`anchors`**, `answer {values, text?}`, `support {sets}`, `hops`, `source_class`, `answerable`, **`where {as_of, valid_mode, rank, status}`**; `provenance?` (open: P10's `template`, `pair_hops`, `nary_dependent`, `anchor_degree`); **`answer_mode?`** (`single`, `set`, `count`; a count is one quantity of unit `"1"`, I002 otherwise) |
 | `c4-memory-trace` | `trace_id`, `entities` (C1 entities), `events [{step, tx_time, put: [hyperedges] \| apply: event}]` |
-| `c4-memory-question` | `qid`, `trace_id`, `ask_after_step`, `subtype` (`current_value`, `past_value`, `future_value`, `abstention`), `text`, `relation`, `key [{role, value}]`, `target_role`, `where`, `answer`, `stale_values [{value, kind: expired \| revised}]` and `future_values` (both mandatory, D-C5-15), `disputed_values`, `support`, `answerable`; `tolerance?` |
-| `c4-split-manifest` | `splits {fact id: split}`, which `FilterIndex` reads (critique CONS-06) |
+| `c4-memory-question` | `qid`, `trace_id`, `ask_after_step`, `subtype` (`current_value`, `past_value`, `future_value`, `abstention`), `text`, `relation`, `key [{role, value}]`, `target_role`, `where`, `answer`, `stale_values [{value, kind: expired \| revised \| outranked}]` (**`outranked`**: ruling 21) and `future_values` (both mandatory, D-C5-15), `disputed_values`, `support`, `answerable`; `tolerance?` |
+| `c4-split-manifest` | `splits {fact id: split}`, which `FilterIndex` reads (critique CONS-06), with the splits `train`, `valid`, `test` and **`inference`** (the facts an inductive model sees at test time); **`scheme?`** (`transductive`, `leak_probe`, `semi_inductive`, `inductive`, `temporal`); **`seed?`**; **`container? {document_id, sha256}`** (the C1 container it splits; `sha256` is `record.container_sha256`); **`probe? {fact id: [leak kinds]}`** (`core_key`, `reversed_pair`, `same_pair_other_relation`, `group`; a probe fact is a test fact); **`lite?`** (the ids of the fixed lite test subset) |
+
+**`mentions`, the candidate table** (P9 DESIGN §3.1, D6): `[{entity, source, spans?, description?}]`, one entry per
+entity. `entity` is a C1 entity record. `source` says how it came into the table: `link` (a hyperlink of the text
+points to it), `subject` (the page's own subject), `match` (a label or alias occurs in the text) or `distractor` (an
+entity of a fitting type that the text does not name). `spans` are `[start, end]` pairs, half-open, in code points of
+the NFC text, as position selectors are (§2.8). The table is built from the text, never from the gold: a consumer
+offers `mentions` to an extractor, never `entities`, which lists what the gold needs and would leak it.
+
+**Reading and stamping.** Layer V takes `khg-c4-items/0.0.x` to `0.2.x`, and a header `record_format` of a
+`khg-record` version the reader takes (V001 otherwise; 0.1.0 required the constant `khg-record/1.0.0`). The 0.2.0
+draft schema checks every file the reader takes: 0.2.0 only adds optional fields and values, so a valid 0.1.0 file
+stays valid (the reader does not enforce the stamp, as for HIF in ruling 19). Writers stamp the lowest version whose
+features a file uses (§11.2): a file with any 0.2.0 field is stamped 0.2.0.
 
 `validate_item` runs J, V and I:
 - I001: an unknown kind;
-- I002: the draft schema;
-- I003: an embedded C1 record or value, with the C, S or D finding nested;
+- I002: the draft schema; and, on a line it accepts, a mention span that is empty, reversed or outside the text, an
+  entity offered twice in `mentions`, and a probe fact that `splits` does not list as `test`;
+- I003: an embedded C1 record or value, with the C, S or D finding nested; and a `gold_scope` relation that is not a
+  relation of the schema (S001 nested);
 - I004: a missing `stale_values` or `future_values`;
 - I005: the memory-gold replay.
 
 `design-examples/c4-items.jsonl` holds one item of each kind, built from the fixture: 10 lines, including two traces
-and three memory questions. It is valid under both engines, and its five I cases are in G2 (§8.2).
+and three memory questions. It is valid under both engines, and its five I cases are in G2 (§8.2). It stays a 0.1.0
+file. `c4-items-0.2.0.jsonl` shows the 0.2.0 fields on the fixture (built by `research/probes/c4_0_2_examples.py`): a
+header with its corpus; an extraction document with `doc_kind`, `gold_scope` and a candidate table of three matches
+and one distractor; a completion query with its manifest; one retrieval question per answer mode, with P10's
+provenance extras; two memory traces and their questions, one with a `revised` and an `outranked` value, one with
+a value revised as a conflation (a stale value only under the 0.2 rules, ruling 21); and a semi-inductive and a
+leak-probe manifest.
 
 ### 9.7 Tests shipped (F14)
 
@@ -2202,12 +2299,13 @@ src/khg_contracts/
   examples.py           # python -m khg_contracts.examples DIR writes design-examples/ from data/
   cli.py                # the four console scripts (§10.4)
   data/                 # the single source of packaged files, read with importlib.resources (critique PACKAGE-DATA)
-    schemas/            # khg-record-1.0.0, khg-relation-schema-1.0.0, khg-hif-1.0.0, khg-queue-1.0.0,
-                        #   khg-c4-items-0.1.0, khg-c5-io-1.0.0 (.schema.json); the vendored
+    schemas/            # khg-record-1.0.0, khg-relation-schema-1.1.0, khg-hif-1.0.0, khg-queue-1.0.0,
+                        #   khg-c4-items-0.2.0, khg-c5-io-1.0.0 (.schema.json); the vendored
                         #   hif_schema_v0.1.0.json (sha256 639466b7…2196) and its HIF-LICENSE.txt
     error-codes.json, malformed-cases.json
     fixture/            # the fixture set (fixture.*), smoke-base.c1.json, smoke-queue.khg-queue.jsonl,
-                        #   queue-item.json, action-log.json, c4-items.jsonl, c5-outputs.jsonl,
+                        #   queue-item.json, action-log.json, c4-items.jsonl (0.1.0), c4-items-0.2.0.jsonl,
+                        #   c5-outputs.jsonl,
                         #   the cyclic and Wikidata-shaped relation schemas
     role-convention/    # the five fixture-PR files
     scenarios/          # index.json and the 114 scenario files
@@ -2232,7 +2330,8 @@ The table gives every name that §1.3 and G1–G3 call (critique API-GAPS, CONS-
 | `record.read_container` | `(path) -> dict`, from `.khg.json` or `.khg.jsonl` by suffix; any other suffix raises `ValueError` | J, V001 |
 | `record.iter_jsonl` | `(path) -> Iterator[dict]`: the header, then records, streamed | J |
 | `record.write_container` | `(container, path, *, format="jsonl" \| "json") -> None`: canonical order, after the V and C checks; a path whose suffix is not the one `format` implies (`.json` or `.jsonl`) raises `ValueError` | V001, C |
-| `record.normalize` | `(record, schema) -> dict`: canonical form and literal normalisation (NFC, lower-case `lang`, `supports` defaults); no checks | |
+| `record.normalize` | `(record, schema) -> dict`: canonical form and literal normalisation (NFC, lower-case `lang`, `supports` defaults; since 1.1 the canonical decimal form and the components below a time's precision, §2.3); no checks | |
+| `record.required_format`, `schema.required_format` | `(container or records) -> "khg-record/1.0.0" \| "khg-record/1.1.0"`; `(schema document) -> "khg-relation-schema/1.0.0" \| "…/1.1.0"`: the lowest stamp a writer puts (§11.2; ruling 22) | |
 | `record.derive` | `(record, schema) -> dict`: the `derived` block (arity family, three keys, `valid_time`) | `ValueError` on an invalid record |
 | `record.content_key`, `core_key`, `key_digest`, `arity`, `valid_time` | `(record, schema)` → `str`; `str`; `str \| None`; `{arity, core_arity, statement_arity, distinct_fillers}` or `{n_bound, n_unbound}`; the §2.6 dict | as `derive` |
 | `record.value_identity`, `record.window` | `(value) -> dict`; `(time literal) -> (lo, hi)` instants | S006 |
@@ -2315,16 +2414,16 @@ has one smoke test in `tests/cli/`.
 
 | Artefact | Format id | Versioned with |
 |---|---|---|
-| C1 | `khg-record/1.0.0` | itself |
-| schema language, HIF profile | `khg-relation-schema/1.0.0`, `khg-hif/1.1.0` (ruling 19; files that do not use 1.1 are stamped 1.0.0) | C1 |
+| C1 | `khg-record/1.1.0` (ruling 22; containers that do not use 1.1 are stamped 1.0.0) | itself |
+| schema language, HIF profile | `khg-relation-schema/1.1.0` (ruling 22), `khg-hif/1.1.0` (ruling 19); files that do not use a 1.1 feature are stamped 1.0.0 | C1 |
 | upstream convention | `role-convention` 1.0.0 (four rules) | itself; minor versions only |
-| C3 | `khg-queue/1.0.0` | C1, in lockstep (PLAN §7) |
+| C3 | `khg-queue/1.1.0` (ruling 23; files keep the stamp 1.0.0, since 1.1 changes no line of the format) | C1, in lockstep (PLAN §7) |
 | C2 and its scenarios | `khg-store/1.0.0` (`info().interface_version`), `khg-scenario/1.0.0` | their own semver |
-| C5, its outputs, the C4 draft | `khg-scorers/1.0.0`, `khg-c5-io/1.0.0`, `khg-c4-items/0.1.0` | C1; P3a owns C4 |
+| C5, its outputs, the C4 draft | `khg-scorers/1.1.0` (ruling 21), `khg-c5-io/1.0.0`, `khg-c4-items/0.2.0` (ruling 20) | C1; P3a owns C4 |
 | derived text | `khg-render/1` | a new number for any change |
 | migration report | `khg-migration-report/1.0.0` | `migrate/`; its own semver |
 | relation schemas | `<id>/<version>` (`typed_under`) | the author |
-| codes, cases, hash domains | `khg-codes/1.0.0`, `khg-malformed-cases/1.0.0`; `khg-content-key/1` and the other domains | codes only grow; domains change only with a C1 major |
+| codes, cases, hash domains | `khg-codes/1.1.0` (Q013, ruling 23), `khg-malformed-cases/1.0.0`; `khg-content-key/1` and the other domains | codes only grow; domains change only with a C1 major |
 
 `$id`s are `tag:khg-contracts,2026:schema/<name>/<version>` (RFC 4151). They are never fetched.
 
@@ -2573,7 +2672,7 @@ Each row settles a question that the critique found open. The Revision log names
    owner".
 3. **Deprecation reasons.** The default stays `wd:Q41755623` only. P3a's datasheet reports the distribution of
    deprecation reasons it finds, and P3a and P7 confirm or extend the list before the memory set is built. A change
-   is a minor release of the C4 draft.
+   is a minor release of the C4 draft. *(Done by ruling 21, 2026-09-26: ten reasons, with C4 0.2.0.)*
 
 **Director's rulings on implementation questions (2026-09-24).** Raised by the build steps; see
 `impl-notes/`.
@@ -2676,6 +2775,139 @@ fixed them (`impl-notes/review-*.md`); these are the questions it left open.
     khg-contracts goes from 1.0.0.dev0 to **1.0.0.dev1**: 1.0.0 is not released, and its first release includes this.
     P1 can now run its HIF row on such slices. Its one test that pinned the refusal changes with this ruling (impl
     note).
+
+**Director's rulings on the contract requests of the phase-1 designs (2026-09-26).** The director accepted each
+request: P3a's (its DESIGN §11 and `notes/c4-change-proposal.md`; P3a rulings 2, 7 and 11), P7's (its DESIGN §7.2 and
+§8 D4, D5; P7 rulings 4 and 5) and P9's (its DESIGN §3.8, §8 and §10 D5, D6; P9 rulings 5 and 6), read on the
+branches `claude/p3a-corpus`, `claude/p7-identity-memory` and `claude/p9-extraction-gate` on 2026-09-26. They ship
+as one minor release of the contracts, khg-contracts 1.0.0.dev2
+([impl-notes/contracts-1-1.md](impl-notes/contracts-1-1.md)), built 2026-09-26. Every change is backward compatible:
+a valid file stays valid, and C2 `khg-store/1.0.0` with its 114 scenarios is unchanged.
+20. **C4 `khg-c4-items` 0.2.0 (P3a's proposal, part A; P9's candidate table).** Every change is an optional field
+    or a new enum value (§9.6):
+    - the header names its corpus (`corpus {id, version, tier?}`), and its `record_format` is any `khg-record`
+      version the reader takes (V001), no longer the constant `khg-record/1.0.0`;
+    - split manifests admit the split `inference` and carry `scheme`, `seed`, `container {document_id, sha256}`,
+      `probe {fact id: [leak kinds]}` and `lite`. A probe fact is a test fact of its manifest (I002);
+    - extraction documents carry `doc_kind` (`wiki`, `rendered`), `source {url, revision?, licence?,
+      attribution?}` and `gold_scope` as fields (P9 had planned `annotation.gold_scope` and `annotation.kind`, since
+      `annotation` is open; the fields replace that), and `mentions`, P9's candidate table: C1 entity records, each
+      with how it came into the table (`link`, `subject`, `match`, `distractor`) and its spans. The table is built
+      from the text, not from the gold, so offering it does not leak the gold;
+    - retrieval questions carry `answer_mode` (`single`, `set`, `count`), which the scorer reads before
+      `RetrievalConfig.answer_mode` (which gains `count`); `provenance` stays open for P10's extras. P10's fixture
+      questions keep `answer_mode` in `provenance`, which the scorer does not read, until P10 moves it to the field;
+    - completion queries name their split manifest (`manifest`).
+
+    The new checks use existing codes: I002 for what one line's schema cannot state (a mention span outside the
+    text, an entity offered twice, a probe fact that is not a test fact) and I003 with S001 nested for a
+    `gold_scope` relation outside the schema. The reader takes 0.0.x to 0.2.x and checks them by the 0.2.0 schema.
+    `c4-items.jsonl` stays 0.1.0 and valid; `c4-items-0.2.0.jsonl` shows the new fields. Not in 0.2.0: C5's
+    extraction scorer does not read `gold_scope` (P9 filters before scoring, as its design says). The memory
+    changes are ruling 21.
+
+    **Versions.** `khg-c4-items` 0.1.0 → **0.2.0**; its schema file is `khg-c4-items-0.2.0.schema.json` (it replaces
+    the 0.1.0 file, which no other project names); `CONTRACTS["khg-c4-items"]` is 0.2.0.
+
+21. **C5 `khg-scorers` 1.1.0 (P3a's proposal, part B, confirmed by P7; P9's order effect).** Three changes (§9.2,
+    §9.3, §9.5):
+    - **`outranked`**, a third stale kind, as P7 DESIGN §7.2 defines it: the target values of facts on the question's
+      key that are asserted, of rank `normal`, and hold at t under the question's `valid_mode` (all of them when
+      `as_of` is null), while an asserted `preferred` fact on the key holds at t; V_cur is subtracted. It enters
+      `stale_values.kind` (a C4 0.2.0 enum value) and the O3 outcome, after `expired` and `revised`, and the stale
+      rate is split three ways (`stale_outranked_rate`; `stale_revised_rate` now counts `revised` answers only, where
+      1.0 computed "stale minus expired").
+    - **The default "incorrect" reasons** of `MemoryConfig.incorrect_reasons`, `memory.INCORRECT_REASONS` and the
+      replay: P3a's nine (P3a DESIGN §7.3) and Q189203 "anachronism", without Q42727519 "less precision" (P7 ruling 5).
+      This settles open question 3 and ruling 3's pending list.
+    - **The order effect S-M7** (P9 ruling 5: a scorer defect). 1.0's Δ_order pooled, among the pairs of different
+      orders, the pairs of one run with those of different runs, so an extractor that ignores the order came out
+      with a negative order effect whenever a run's two orders agree (−61/378 on P9's fixture; −1/2 on P2's own P9
+      sequence, now 0). S-M7 is now the paired decomposition: the mean Jaccard of the three pair classes
+      (`same_order_diff_run`, `same_run_diff_order`, `diff_run_diff_order`, each with its pair count) and
+      `delta_order` = J(same order, other run) − J(other order, other run), whose two terms both differ in run. 1.0's
+      number stays, named `pooled_delta_order`, beside `J_within`, `J_between` and the pair counts, for comparison
+      with 1.0 reports only; it is never the headline.
+
+    **The compatibility path for the memory gold.** The two memory changes change what `derive_memory_gold` returns,
+    so a 0.1.0 memory set derived under the old rules could disagree with a replay under the new ones (I005). Ruling
+    3 made a change of the reasons a minor release of the C4 draft, so the rules are versioned with it: layer I
+    replays a `khg-c4-items/0.1.x` file by the 0.1 rules (`wd:Q41755623` only, no `outranked`) and a 0.2.x file by
+    the 0.2 rules (`memory.gold_rules(stamp)`). A valid 0.1.0 file stays valid; the packaged `c4-items.jsonl` has the
+    same gold under both. `derive_memory_gold`, `MemoryConfig` and `score` default to the 0.2 rules ("the I005 replay
+    must agree" with the default); `score` checks a question set by its configuration, so a 0.1 set whose gold
+    depends on the difference is scored with `MemoryConfig(**memory.gold_rules("khg-c4-items/0.1.0"))`.
+
+    **Versions.** `khg-scorers` 1.0.0 → **1.1.0** (`CONTRACTS`, `scorers.FORMAT`, every report's `contracts`). Report
+    shapes only gain keys: the memory report's `hits` and `outranked` configuration, the stability report's pair
+    classes and `pooled_delta_order`. The value of `order_effect.delta_order` changes: that is the fix. P9's
+    fixture test that pinned −61/378 moves to `pooled_delta_order` (a patch is proposed in the impl note).
+
+22. **C1 `khg-record` 1.1.0 and the schema language `khg-relation-schema` 1.1.0 (P7's D4; P3a's normalisations).**
+    Four additions, each opt-in, so every 1.0.0 file keeps its meaning, its keys and its digests (§2.3, §2.4, §2.5,
+    §2.7, §2.9, §3):
+    - **Separator key roles** (P7 D4 a): `key.separators`, core or qualifier roles whose absence hashes as its own
+      value, `[role, null, {"absent": true}]`, instead of nulling the digest, as Wikidata's separators (P4155) work. A
+      key without separators hashes exactly as in 1.0 (the fixture's digests, G1's goldens and the 114 scenarios are
+      unchanged), and a present separator hashes as a key role. `find_by_key` binds the key roles and any of the
+      separators; an omitted separator is absent. E-M2 with `core_roles="key"` counts the separators too. P3a can
+      key a memory relation on `{subject}` with separators such as P518, P1001 or P3831, which P7 DESIGN §7.1 item 7
+      held back until this release.
+    - **Non-monotone qualifiers** (P7 D4 b): `monotone: false` on a qualifier usage (M015 on another slot).
+      Refinement keeps such a role's size, as for a complete role, and a new version adds no filler to it (D013):
+      "c. 1140" neither refines nor generalises "1140", so `keys.classify` and `identity.relate` no longer call the
+      pair a refinement (a merge), but distinct facts or, on one key, a key conflict.
+    - **`bound_conflict`** (P7 D4 c, after its D1): a reason of `khg:disputes`. A container that holds such a record
+      is stamped `khg-record/1.1.0` (`record.required_format`), and the store's export does so, so a 1.0 reader
+      refuses it with V001 rather than S026.
+    - **Normalisation** (P3a's proposal, part C): of the five normalisations of P3a's converter, `normalize` adopts
+      the three that are canonical forms of C1 literals, which every producer meets: decimals (item 1), the
+      components below a time's precision (item 2), and coordinates given as JSON numbers (item 3, the decimal rule
+      applied to geo values). The other two stay in the importer, for the reasons of §2.3: `wd:` ids for Wikidata
+      URIs (item 4) are one source's naming convention, and dropping a repeated filler (item 5) deletes a binding
+      that evidence may name. Validation still refuses the other writings (C004, S006); `put` and `load` normalise
+      first, so they accept them and store the canonical form, as they already did for NFC and a language tag's
+      case. That widens what a write accepts without changing anything it accepted before.
+
+    **Versions.** `khg-record` 1.0.0 → **1.1.0** and `khg-relation-schema` 1.0.0 → **1.1.0**: optional fields, an
+    enum value and a reader that takes more are minor (§11.2). The reader takes 1.0.x and 1.1.x wherever a C1 stamp
+    appears (containers, HIF metadata, queue and C4 headers). Writers stamp the lowest version whose features a
+    document uses (`record.required_format`, `schema.required_format`), so the fixture, the migrated sample and every
+    packaged container and schema stay 1.0.0. The record schema `khg-record-1.0.0.schema.json` does not change (as
+    the HIF profile schema did not in ruling 19); the meta-schema `khg-relation-schema-1.1.0.schema.json` replaces the
+    1.0.0 file. `StoreInfo.record_format` is `khg-record/1.1.0`. The new checks use existing codes (M003 for
+    separators, M015 for `monotone`, D013 for a filler added to a non-monotone role), whose registry meanings say so.
+    C2 `khg-store/1.0.0` and its 114 scenarios are unchanged: no method changes its signature, and a store built on
+    `StoreBase` or `TableStore` reads 1.1 keys through `record.key_digest`. A backend that checks `find_by_key`'s
+    roles itself (P1's `NativeReads`) must take the separators too before it holds a 1.1 schema (a four-line change,
+    in the impl note).
+
+23. **C3 `khg-queue` 1.1.0 (P9's D5 a and c).** Two changes (§7, §8.1):
+    - **The recorded reading of queue validity** (P9 D5 a). A C or S error on a rejected item's payload or entities,
+      which the item's lint entry recorded (same code, same path relative to the item, severity error), is reported
+      as `info` and does not make the queue invalid. Any other finding keeps its severity. This is P9's reading as
+      its DESIGN §3.8 defines it; a queue that correctly rejected a malformed candidate at lint is valid, and one
+      whose lint missed an error the validator finds is not.
+    - **Q013** (P9 D5 c), a new check of the linter's structural rule set: with the document text, a quote selector
+      without a position selector whose prefix, exact text and suffix do not occur in the text. It is an error, so
+      the candidate is rejected and P9's gate no longer has to catch an unlocatable quote itself. Only the linter
+      checks it: a validator check would turn queues that are valid under 1.0 into invalid ones, so the validator
+      does not repeat it, and §8.2 lists it as a coverage exception beside D019.
+
+    **Versions.** `khg-queue` 1.0.0 → **1.1.0**, in lockstep with C1 (PLAN §7). The queue format is unchanged, so
+    files keep the stamp `khg-queue/1.0.0` and 1.0 readers read them; the reader takes 1.0.x and 1.1.x. The linter is
+    `khg-lint` 1.1.0 and its rule set `structural` 1.1.0, which every new lint entry names, so the smoke queue's lint
+    line changes (G3's golden; its decision hash does not). The queue schema file is unchanged. `khg-codes` 1.0.0 →
+    **1.1.0**: Q013 is the first code added since 1.0 (135 registered, 129 active). `khg-malformed-cases` stays 1.0.0:
+    its 180 cases are unchanged, and only its map of coverage exceptions gains Q013.
+
+**The release** (2026-09-26). Rulings 20–23 ship together as khg-contracts **1.0.0.dev2**: 1.0.0 is not released, so
+its first release includes them, as it includes ruling 19. Unchanged: C2 `khg-store/1.0.0` and its 114 scenarios,
+`khg-scenario/1.0.0`, `khg-hif/1.1.0` and its profile schema, `role-convention` 1.0.0, `khg-c5-io/1.0.0`,
+`khg-render/1`, `khg-migration-report/1.0.0`, `khg-malformed-cases/1.0.0` (its 180 cases), every hash domain, the
+record schema file, G1's golden digests and the migrated sample. No existing valid file becomes invalid: the
+packaged 0.1.0 C4 file, the fixture, its history, slices and HIF files, the smoke queue of 1.0 and the scenarios all
+validate as before. What consumers must change is in [impl-notes/contracts-1-1.md](impl-notes/contracts-1-1.md) §5.
 
 **Clarifications the review made normative.** Each is implemented and tested; the notes give the evidence.
 - §2.7 and D014: a history may go from `superseded` to `disputed` in one version (an undone supersession resolved

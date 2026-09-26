@@ -24,13 +24,15 @@ Finding = dict[str, str]
 
 
 def version_findings(container: Any) -> list[Finding]:
-    """V001 unless the header's ``format`` is ``khg-record/1.0.x`` (another major or a newer minor is refused)."""
+    """V001 unless the header's ``format`` is ``khg-record/1.0.x`` or ``1.1.x`` (another major or a newer minor is
+    refused; 1.1 is ruling 22)."""
     header = container.get("header") if isinstance(container, Mapping) else None
     fmt = header.get("format") if isinstance(header, Mapping) else None
     m = _FORMAT.fullmatch(fmt) if isinstance(fmt, str) else None
-    if m and int(m.group(1)) == 1 and int(m.group(2)) == 0:
+    if m and int(m.group(1)) == 1 and int(m.group(2)) <= 1:
         return []
-    return [make_finding("KHG-V001", "/header/format", f"format {fmt!r} is not {FORMAT} (or a patch of it)")]
+    return [make_finding("KHG-V001", "/header/format",
+                         f"format {fmt!r} is not {FORMAT} or khg-record/1.1.0 (or a patch of either)")]
 
 
 def _code(schema: Any, keyword: str) -> str:

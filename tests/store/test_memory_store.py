@@ -25,7 +25,7 @@ def test_construction_and_info(schema):
     s = MemoryStore(schema)
     assert isinstance(s, Store) and isinstance(s.clock, SystemClock)
     info = s.info()
-    assert info == {"interface_version": "khg-store/1.0.0", "record_format": "khg-record/1.0.0",
+    assert info == {"interface_version": "khg-store/1.0.0", "record_format": "khg-record/1.1.0",
                     "capabilities": ALL_FLAGS, "store_id": "memory", "header": None, "contracts": dict(CONTRACTS)}
     assert isinstance(info["capabilities"], frozenset)
     limited = MemoryStore(schema, capabilities=["goals"], store_id="p1-sqlite")

@@ -9,9 +9,10 @@
   that.
 - **The version rule (D013).** A new version keeps the relation; keeps every binding by bid, with its role and
   position and a refining value (``end_validity`` may replace a ``novalue`` end); adds bindings only where the role
-  is not ``complete``; keeps every earlier evidence record unchanged; and changes no other field but ``rank``,
-  ``rank_reason``, ``visibility``, ``confidence``, ``source_text`` and ``extensions`` (and ``goal`` while the status
-  is ``goal``). Superseded and retracted facts are frozen. Entities: ``types`` only grow, ``redirect_to`` is set once.
+  is not ``complete`` and not ``monotone: false`` (1.1, ruling 22); keeps every earlier evidence record unchanged;
+  and changes no other field but ``rank``, ``rank_reason``, ``visibility``, ``confidence``, ``source_text`` and
+  ``extensions`` (and ``goal`` while the status is ``goal``). Superseded and retracted facts are frozen. Entities:
+  ``types`` only grow, ``redirect_to`` is set once.
 - **Lifecycle records.** The pointer rule (D010), the supersession constraints (D011), supersession cycles (D012);
   and nesting cycles among fact references (D008). History containers: versions 1..n (D001), the version rule, the
   transitions and transaction times (D018).
@@ -417,11 +418,14 @@ def _binding_problems(old: Record, new: Record, s: Any, allow_novalue_end: bool,
         if bid in ob:
             continue
         try:
-            complete = bool(s.usage(rel, n.get("role")).get("complete"))
+            usage = s.usage(rel, n.get("role"))
         except (KHGError, ValueError, TypeError, KeyError):
             continue  # an undeclared role is S002
-        if complete:
+        if usage.get("complete"):
             out.append(problem(f"binding {bid} adds a filler to the complete role {n.get('role')!r}",
+                               f"/bindings/{j}"))
+        elif usage.get("monotone") is False:  # 1.1, ruling 22: a filler there weakens the claim
+            out.append(problem(f"binding {bid} adds a filler to the non-monotone role {n.get('role')!r}",
                                f"/bindings/{j}"))
     return out
 

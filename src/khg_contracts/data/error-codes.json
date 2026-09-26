@@ -1,5 +1,5 @@
 {
- "format": "khg-codes/1.0.0",
+ "format": "khg-codes/1.1.0",
  "rule": "codes are stable across minor versions; a new check gets a new code; a code is never reused or renumbered; messages are not part of the contract; reserved codes are never emitted",
  "layer_rule": "A finding's layer is the letter of its code. A validation step may emit another layer's code (decoding emits S016; the S pass emits D002). The first rejecting layer of an input is the earliest letter, in its kind's pipeline order, among its error findings. J and V findings stop later layers.",
  "layers": {
@@ -11,9 +11,9 @@
   "D": "decoding (HIF to C1), cross-record, container, history and store rules (Python)",
   "C": "the C1 record schema khg-record-1.0.0.schema.json (draft-07, x-khg-code annotations, if/then dispatch)",
   "S": "one record against its relation-type schema (Python)",
-  "M": "relation-type schema documents: khg-relation-schema-1.0.0 plus Python checks",
-  "Q": "C3 queue files: khg-queue-1.0.0 plus the state fold, key recomputation and replay (Python)",
-  "I": "C4 items: khg-c4-items-0.1.0.schema.json (draft-07) plus the memory-gold check",
+  "M": "relation-type schema documents: khg-relation-schema-1.1.0 (it reads 1.0.x too) plus Python checks",
+  "Q": "C3 queue files: khg-queue-1.0.0 plus the state fold, key recomputation and replay (Python); 1.1: a C or S error on a rejected item that its lint entry recorded is info (the recorded reading); Q013 is a check of the linter only",
+  "I": "C4 items: khg-c4-items-0.2.0.schema.json (draft-07; it reads 0.1.x too) plus the memory-gold check, by the rules of the file's stamp",
   "L": "lint findings; never make a file invalid (v1 ships only L008, the store's possible-overlap warning)",
   "F": "migration report entries (v1: the v0-sample migration)"
  },
@@ -22,7 +22,7 @@
   "hif": "J V H R P D C S (D first runs as decoding; the cross-record D checks run after S)",
   "role-convention": "J H R",
   "relation-schema": "J V M",
-  "queue": "J V Q C S D (C and S on payloads; S003 is a warning on candidates)",
+  "queue": "J V Q C S D (C and S on payloads; S003 is a warning on candidates; a C or S error that a rejected item's lint entry recorded is info)",
   "c4": "J V I (embedded C1 records and values report C and S findings nested under I003)"
  },
  "codes": [
@@ -431,7 +431,7 @@
    "layer": "D",
    "severity": "error",
    "status": "active",
-   "meaning": "version rule: a new version is not a refinement of the current one, changes the relation, mutates earlier evidence (event_hash included), or breaks the entity rule (types only grow; redirect_to is set once)",
+   "meaning": "version rule: a new version is not a refinement of the current one (a filler added to a complete role, or to a role declared monotone: false, 1.1, included), changes the relation, mutates earlier evidence (event_hash included), or breaks the entity rule (types only grow; redirect_to is set once)",
    "merges": "B D013; A S031; critique CONS-28"
   },
   {
@@ -807,7 +807,7 @@
    "layer": "M",
    "severity": "error",
    "status": "active",
-   "meaning": "bad key: role not used by the relation, or a time/meta-slot key role",
+   "meaning": "bad key: a key role or a separator (1.1) that is not a core or qualifier usage of the relation, or a role that is both a key role and a separator",
    "merges": "B M003; A D003; C D-KEY"
   },
   {
@@ -903,7 +903,7 @@
    "layer": "M",
    "severity": "error",
    "status": "active",
-   "meaning": "other structural violation of a schema document (including a constraint severity outside error and warning, and relation kind rule before 1.1)",
+   "meaning": "other structural violation of a schema document (including a constraint severity outside error and warning, relation kind rule before 1.1, and monotone: false on a usage that is not a qualifier, 1.1)",
    "merges": "B M015; C D-SCHEMA; critique GL-01"
   },
   {
@@ -1017,6 +1017,14 @@
    "status": "active",
    "meaning": "the base supplied for replay or lint does not match the header's base {document_id, sha256}",
    "merges": "critique G3-ACCEPT-REPLAY"
+  },
+  {
+   "code": "KHG-Q013",
+   "layer": "Q",
+   "severity": "error",
+   "status": "active",
+   "meaning": "the linter's structural rule set (1.1.0): an evidence record's quote selector without a position selector whose prefix, exact text and suffix do not occur in the document text (code points, NFC; needs the text, which S021 reads too; a quote with a position selector is S021's). Only the linter checks it: validate does not repeat it on queue files",
+   "merges": "P9 DESIGN §10 D5 c; P2 ruling 23"
   },
   {
    "code": "KHG-I001",

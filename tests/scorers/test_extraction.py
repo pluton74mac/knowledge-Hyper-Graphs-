@@ -293,7 +293,7 @@ def test_the_report_is_json_and_stamped(build, r05_schema):
     rep = extraction.score([build.doc("d1", [build.fact("g1", "s", A="a", B="b")])],
                            [build.items(build.fact("x", "s", A="a", B="b"))], schema=r05_schema, config=NO_BOOT)
     assert list(rep) == ["scorer", "config", "contracts", "aggregate", "breakdowns", "items", "bootstrap"]
-    assert rep["scorer"] == "extraction" and rep["contracts"]["khg-scorers"] == "1.0.0"
+    assert rep["scorer"] == "extraction" and rep["contracts"]["khg-scorers"] == "1.1.0"
     assert rep["config"]["literal_match"] == "truncate_to_gold" and rep["config"]["seen"] == []
     assert rep["config"]["qset"] == ["r05"] and rep["config"]["schema"]["id"] == "r05-tables"
     assert json.loads(json.dumps(rep)) == rep

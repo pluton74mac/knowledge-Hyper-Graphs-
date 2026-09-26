@@ -1,12 +1,16 @@
 """Checks of relation-type schema documents: the version gate (V001) and layer M (M001-M017), and ``load_schema``.
 
-Pipeline ``J V M`` (DESIGN §8.1). Layer M has two parts:
+Pipeline ``J V M`` (DESIGN §8.1). The reader takes ``khg-relation-schema/1.0.x`` and ``1.1.x`` (ruling 22: a key's
+``separators`` and a usage's ``monotone`` flag) and checks both by the 1.1.0 meta-schema. Writers stamp the lowest
+version whose features a document uses (``required_format``). Layer M has two parts:
 
-- the meta-schema ``khg-relation-schema-1.0.0.schema.json`` (structure; its ``x-khg-code`` annotations name M001,
-  M004, M006, M007, M012, M014 and, by default, M015), run by jsonschema or fastjsonschema with a closed resolver;
-- Python checks that need the whole document: M002, M003, M005, M007 (what the time model names), M008, M009, M010,
-  M011, M012 (which usages ``primary`` names), M013, M015 (constraint roles, filler options, confidence scales), M016
-  and M017. They tolerate a structurally broken document; the meta-schema reports the structure.
+- the meta-schema ``khg-relation-schema-1.1.0.schema.json`` (structure; its ``x-khg-code`` annotations name M001,
+  M004, M006, M007, M012, M014 and, by default, M015, which also covers ``monotone: false`` on a usage that is not a
+  qualifier), run by jsonschema or fastjsonschema with a closed resolver;
+- Python checks that need the whole document: M002, M003 (key roles and separators), M005, M007 (what the time model
+  names), M008, M009, M010, M011, M012 (which usages ``primary`` names), M013, M015 (constraint roles, filler
+  options, confidence scales), M016 and M017. They tolerate a structurally broken document; the meta-schema reports
+  the structure.
 """
 from __future__ import annotations
 
@@ -20,12 +24,14 @@ from ..errors import ValidationError, make_finding
 from .builtins import DATATYPES, DEFAULT_TIME, RESERVED_PREFIX
 from .model import Schema, json_copy
 
-__all__ = ["META_SCHEMA", "META_SCHEMA_ID", "FORMAT", "MAX_DEPTH", "version_findings", "meta_findings",
-           "python_findings", "nesting_fault", "check_schema", "load_schema"]
+__all__ = ["META_SCHEMA", "META_SCHEMA_ID", "FORMAT", "FORMAT_1_1", "MAX_DEPTH", "version_findings", "meta_findings",
+           "python_findings", "nesting_fault", "check_schema", "load_schema", "required_format"]
 
-META_SCHEMA = "schemas/khg-relation-schema-1.0.0.schema.json"
-META_SCHEMA_ID = "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0"
+META_SCHEMA = "schemas/khg-relation-schema-1.1.0.schema.json"
+META_SCHEMA_ID = "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0"
+#: The stamp of a document without 1.1 features (what the sample migration writes), and the newest this reader takes.
 FORMAT = "khg-relation-schema/1.0.0"
+FORMAT_1_1 = "khg-relation-schema/1.1.0"
 _FORMAT_RE = re.compile(r"khg-relation-schema/(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)")
 _ENGINES = ("jsonschema", "fastjsonschema")
 #: The nesting limit of layer J (J001), for parsed text and objects alike: the deepest nesting of objects and arrays
@@ -81,12 +87,26 @@ def nesting_fault(doc: Any) -> str | None:
 
 
 def version_findings(doc: Any) -> list[Finding]:
-    """V001 unless ``format`` is ``khg-relation-schema/1.0.x`` (a reader rejects a newer minor or another major)."""
+    """V001 unless ``format`` is ``khg-relation-schema/1.0.x`` or ``1.1.x`` (a reader rejects a newer minor or another
+    major)."""
     fmt = doc.get("format") if isinstance(doc, Mapping) else None
     m = _FORMAT_RE.fullmatch(fmt) if isinstance(fmt, str) else None
-    if m and int(m.group(1)) == 1 and int(m.group(2)) <= 0:
+    if m and int(m.group(1)) == 1 and int(m.group(2)) <= 1:
         return []
-    return [_f("KHG-V001", "/format", f"format {fmt!r} is not {FORMAT} (or a patch of it)")]
+    return [_f("KHG-V001", "/format", f"format {fmt!r} is not {FORMAT_1_1} (or an earlier minor or a patch of it)")]
+
+
+def required_format(doc: Mapping[str, Any]) -> str:
+    """The lowest ``format`` whose features a schema document uses (§11.2): ``FORMAT_1_1`` when a key declares
+    ``separators`` or a usage says ``monotone`` (either value), else ``FORMAT``."""
+    for r in _list(doc.get("relations")):
+        if isinstance(r, Mapping):
+            key = r.get("key")
+            if isinstance(key, Mapping) and "separators" in key:
+                return FORMAT_1_1
+            if any(isinstance(u, Mapping) and "monotone" in u for u in _list(r.get("roles"))):
+                return FORMAT_1_1
+    return FORMAT
 
 
 # ------------------------------------------------------------------------------------------------ M: meta-schema
@@ -259,6 +279,14 @@ def _relation_findings(r: dict[str, Any], p: str, types: set[str], roles: set[st
             if u is None or u.get("slot") not in ("core", "qualifier"):
                 out.append(_f("KHG-M003", f"{p}/key/roles/{m}",
                               f"key role {role!r} is not a core or qualifier usage of the relation"))
+        roles = {x for x in _list(key.get("roles")) if isinstance(x, str)}
+        for m, role in enumerate(_list(key.get("separators"))):  # 1.1: ruling 22
+            u = by_role.get(role) if isinstance(role, str) else None
+            if u is None or u.get("slot") not in ("core", "qualifier"):
+                out.append(_f("KHG-M003", f"{p}/key/separators/{m}",
+                              f"separator {role!r} is not a core or qualifier usage of the relation"))
+            elif role in roles:
+                out.append(_f("KHG-M003", f"{p}/key/separators/{m}", f"{role!r} is a key role and a separator"))
         if key.get("temporal") is True:
             if not (isinstance(tm, dict) and tm.get("model") == "interval"):
                 out.append(_f("KHG-M011", f"{p}/key/temporal", "a temporal key needs an interval time model"))

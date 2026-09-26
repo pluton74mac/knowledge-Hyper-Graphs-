@@ -77,7 +77,7 @@ def test_the_report_keeps_each_steps_findings():
 
 def test_j_and_v_stop_the_run():
     bad = copy.deepcopy(FIXTURE)
-    bad["header"]["format"] = "khg-record/1.1.0"  # a minor newer than the reader
+    bad["header"]["format"] = "khg-record/1.2.0"  # a minor newer than the reader (1.1: ruling 22)
     bad["records"][35]["status"] = "believed"
     report = run(bad, kind="container", schema=SCHEMA)
     assert [f["code"] for f in report.findings] == ["KHG-V001"] and report.stopped == "v"
@@ -224,7 +224,7 @@ def test_auto_reports_v001_when_it_cannot_tell_the_kind(obj):
     ("container", {"header": {"format": "khg-record/1.0"}}, "/header/format"),
     ("hif", {"metadata": {"khg-profile": "khg-hif/1.9.0"}}, "/metadata/khg-profile"),
     ("hif", {"metadata": {"khg-profile": "khg-hif/1.0.0", "khg-record": "khg-record/2.1.0"}}, "/metadata/khg-record"),
-    ("schema", {"format": "khg-relation-schema/1.1.0"}, "/format"),
+    ("schema", {"format": "khg-relation-schema/1.2.0"}, "/format"),
 ])
 def test_layer_v_gates_each_format(kind, patch, path):
     base = {"container": FIXTURE, "hif": data.load_json("fixture/fixture.hif.json"),
@@ -242,14 +242,15 @@ def test_layer_v_gates_queue_and_c4_headers():
     assert [(f["code"], f["path"]) for f in validate_queue(queue, schema=SCHEMA)["findings"]] == \
         [("KHG-V001", "/lines/0/format")]
     items = data.load_jsonl("fixture/c4-items.jsonl")
-    items[0]["format"] = "khg-c4-items/0.2.0"
+    items[0]["format"] = "khg-c4-items/0.3.0"
     assert _codes(validate_item(items, schema=SCHEMA)) == ["KHG-V001"]
-    items[0]["format"] = "khg-c4-items/0.1.7"
-    assert validate_item(items, schema=SCHEMA)["ok"]
+    for stamp in ("khg-c4-items/0.1.7", "khg-c4-items/0.2.0"):  # 0.2: ruling 20
+        items[0]["format"] = stamp
+        assert validate_item(items, schema=SCHEMA)["ok"]
 
 
 @pytest.mark.parametrize("engine", ["jsonschema", "fastjsonschema"])
-@pytest.mark.parametrize("stamp", ["khg-record/1.1.0", "khg-record/2.0.0", "khg-record/1.0", "khg-hif/1.0.0", 7])
+@pytest.mark.parametrize("stamp", ["khg-record/1.2.0", "khg-record/2.0.0", "khg-record/1.0", "khg-hif/1.0.0", 7])
 def test_layer_v_gates_the_record_format_of_a_queue_header(stamp, engine):
     """Review integration (group ex's request, §8.1, §11.2): a queue header's ``record_format`` that this reader does
     not accept is V001 from step v, and the run stops there. It came from the Q step, and C, S and D ran after it."""

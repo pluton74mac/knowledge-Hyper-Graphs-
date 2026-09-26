@@ -57,7 +57,8 @@ LIFECYCLE_RELATIONS: dict[str, dict[str, Any]] = {
     },
     "khg:disputes": {
         "id": "khg:disputes", "kind": "lifecycle",
-        "reasons": ["key_conflict", "negation_conflict", "curator", "other"],
+        # bound_conflict: the same fact restated with other dates (P7's D1; 1.1, ruling 22)
+        "reasons": ["key_conflict", "negation_conflict", "curator", "other", "bound_conflict"],
         "roles": [_lifecycle_usage("khg:disputed", "head", 2)],
     },
 }

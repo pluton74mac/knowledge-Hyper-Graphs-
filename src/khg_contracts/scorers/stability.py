@@ -10,8 +10,15 @@ facts: ``(doc_id, key)`` for each item, on ``content_key`` and on ``core_key``. 
 - **S-M4** the mean churn δ = s(K − s)/C(K, 2) over the facts;
 - **S-M5** with ``gold``: the shares of gold facts found by all, some or none of the units (``stable``, ``unstable``,
   ``miss``), matching by the key; None without gold or without any unit;
-- **S-M7** the order effect on (run_id, order_id) units: J_within over pairs with the same order_id, J_between over
-  pairs with different ones, and Δ_order = J_within − J_between.
+- **S-M7** the order effect on (run_id, order_id) units, as the paired decomposition (ruling 21; P9 DESIGN §4). The
+  pairs of units fall into three classes: ``same_order_diff_run`` (run noise), ``same_run_diff_order`` (the order
+  effect, plus run noise where runs are independent samples) and ``diff_run_diff_order``, each reported as
+  ``{n_pairs, mean_jaccard}``. Δ_order (``delta_order``) is J(same order, other run) − J(other order, other run):
+  both terms compare pairs that differ in run, so it is the agreement lost when the order changes too, whether or not
+  a run's two orders share a seed. ``khg-scorers`` 1.0's Δ_order, J_within − J_between with J_between pooling the
+  same-run and the cross-run pairs of different orders, is kept as ``pooled_delta_order`` with ``J_within``,
+  ``J_between`` and the pair counts, for comparison with 1.0 reports only: when runs are paired (a shared seed, or an
+  extractor that ignores the order) the same-run pairs agree more, and it comes out negative with no order effect.
 """
 from __future__ import annotations
 
@@ -25,7 +32,7 @@ from . import _inputs
 from ._common import as_schema, fnum, mean, report, sort_key
 from ._facts import entity_index, item_entities, prepare
 
-__all__ = ["KEYS", "UNITS", "score"]
+__all__ = ["KEYS", "PAIR_CLASSES", "UNITS", "score"]
 
 KEYS = ("content_key", "core_key")
 UNITS = ("run", "run_id")
@@ -61,13 +68,27 @@ def _metrics(sets: list[set[Element]]) -> dict[str, Any]:
             "mean_churn": fnum(mean(churn)) if churn else 0.0}
 
 
+#: The pair classes of S-M7, by (same run, same order).
+PAIR_CLASSES = {(False, True): "same_order_diff_run", (True, False): "same_run_diff_order",
+                (False, False): "diff_run_diff_order"}
+
+
 def _order_effect(units: list[tuple[Any, Any]], sets: list[set[Element]]) -> dict[str, Any]:
-    within, between = [], []
-    for i, j in itertools.combinations(range(len(units)), 2):
-        (within if units[i][1] == units[j][1] else between).append(_jaccard(sets[i], sets[j]))
-    jw, jb = mean(within), mean(between)
-    return {"n_within_pairs": len(within), "n_between_pairs": len(between), "J_within": fnum(jw),
-            "J_between": fnum(jb), "delta_order": fnum(jw - jb) if jw is not None and jb is not None else None}
+    pairs: dict[str, list[Fraction]] = {name: [] for name in PAIR_CLASSES.values()}
+    for i, j in itertools.combinations(range(len(units)), 2):  # units are distinct (run_id, order_id) pairs
+        name = PAIR_CLASSES[units[i][0] == units[j][0], units[i][1] == units[j][1]]
+        pairs[name].append(_jaccard(sets[i], sets[j]))
+    means = {name: mean(js) for name, js in pairs.items()}
+    out: dict[str, Any] = {name: {"n_pairs": len(pairs[name]), "mean_jaccard": fnum(means[name])} for name in pairs}
+    js, jd = means["same_order_diff_run"], means["diff_run_diff_order"]
+    out["delta_order"] = fnum(js - jd) if js is not None and jd is not None else None
+    # khg-scorers 1.0's S-M7: J_between pools the same-run and the cross-run pairs of different orders
+    between = pairs["same_run_diff_order"] + pairs["diff_run_diff_order"]
+    jw, jb = js, mean(between)
+    out.update({"n_within_pairs": len(pairs["same_order_diff_run"]), "n_between_pairs": len(between),
+                "J_within": fnum(jw), "J_between": fnum(jb),
+                "pooled_delta_order": fnum(jw - jb) if jw is not None and jb is not None else None})
+    return out
 
 
 def _partition(gold: dict[Element, str], sets: list[set[Element]]) -> dict[str, Any]:

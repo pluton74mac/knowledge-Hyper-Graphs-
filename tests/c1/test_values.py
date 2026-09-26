@@ -72,8 +72,12 @@ def test_malformed_literals_are_refused(lit, want):
 def test_lenient_canonicalisation_never_raises_and_hides_nothing():
     old = T("+1500-01-01T00:00:00Z", 11)
     assert record.canonical_literal(old, strict=False) == old  # no calendar invented before 1583
-    weird = {"datatype": "quantity", "amount": 3.5, "unit": "1"}
+    weird = {"datatype": "quantity", "amount": "three and a half", "unit": "1"}
     assert record.canonical_literal(weird, strict=False) == weird
+    # a decimal in another writing is written in C1's form (ruling 22); the checks still refuse the raw writing
+    number = {"datatype": "quantity", "amount": 3.5, "unit": "1"}
+    assert record.canonical_literal(number, strict=False) == dict(number, amount="+3.5")
+    assert code(record.value_identity, {"literal": number}) == "KHG-C004"
     assert record.canonical_value({"entity": "ex:a", "fact": "f:b"}, strict=False) == {"entity": "ex:a", "fact": "f:b"}
 
 
