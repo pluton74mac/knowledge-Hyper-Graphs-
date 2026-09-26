@@ -716,7 +716,8 @@ def _c4() -> dict[str, Any]:
                  "target_role": ref("vocab_id"), "where": where, "answer": answer,
                  "stale_values": {"type": "array", "items": {
                      "type": "object", "required": ["value", "kind"], "additionalProperties": False,
-                     "properties": {"value": ref("value"), "kind": {"enum": ["expired", "revised"]}}}},
+                     "properties": {"value": ref("value"),
+                                    "kind": {"enum": ["expired", "revised", "outranked"]}}}},  # outranked: ruling 21
                  "future_values": {"type": "array", "items": ref("value")},
                  "disputed_values": {"type": "array", "items": ref("value")},
                  "support": {"type": "array", "items": ref("id")}, "answerable": {"type": "boolean"},

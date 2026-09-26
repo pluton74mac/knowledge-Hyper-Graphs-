@@ -72,4 +72,74 @@ mirrored packaged files, 152 files in `design-examples/`), `test_package_data` (
 name), `test_codegen` (the generated file name), `test_retrieval` (the new breakdown), `test_runner` (0.2.0 is now
 read; 0.3.0 is the stamp that is too new).
 
+## 2. C5 `khg-scorers` 1.1.0 (ruling 21)
+
+### 2.1 `outranked` and the reasons (P3a part B; P7 DESIGN §7.2)
+
+**Definition, as built.** For a question with key K, target role ρ, `where` W and τ, t: the ρ-values of the facts
+on K that are asserted, of rank `normal`, and returned by `find_by_key(K)` under `{status: asserted, rank:
+preferred|normal, visibility: all, as_of: W.as_of, valid_mode: W.valid_mode, as_at: τ}`, when that read also
+returns a `preferred` fact. So "holds at t" is exactly the store's `as_of` semantics (§2.6), and with `as_of` null
+every asserted fact holds. V_cur is subtracted; a value already `expired` or `revised` keeps that kind. Visibility
+is not a condition, as for `expired` and V_fut.
+
+| Question | Decision | Why |
+|---|---|---|
+| Which facts may outrank | an asserted `preferred` fact holding at t, of any visibility | P7's "a preferred fact on the key holds at t"; the same reading of "holds" as V_cur |
+| Precedence | `expired`, then `revised`, then `outranked` | P3a's "after expired and revised in precedence" |
+| The stale rates | `stale_expired_rate`, `stale_revised_rate`, `stale_outranked_rate` | 1.0 computed the revised rate as "stale minus expired", which would count outranked answers as revised |
+| Ranked efficacy | outranked values are stale values for CounterFact's ES | ES asks whether the current value outscores the old ones; last year's population is an old one |
+
+**The compatibility path.** Both changes change what `derive_memory_gold` returns, so a 0.1.0 memory set could fail
+I005 under a replay with the new rules. Ruling 3 already tied the reason list to minor releases of the C4 draft, so
+the rules are versioned with it: `memory.gold_rules(stamp)` gives the 0.1 rules for `khg-c4-items/0.0.x` and 0.1.x
+and the 0.2 rules for 0.2.x (and for items without a header); layer I replays each file by its own stamp.
+`derive_memory_gold`, `MemoryConfig` and `score` default to the 0.2 rules, as the brief requires ("the I005 replay
+must agree" with the default). `score` checks by its configuration, not by the stamp: explicit is simpler, and no
+0.1.0 memory set exists outside P2's fixture, whose three questions have the same gold under both rules (a test
+checks it). A 0.1 set whose gold depends on the difference is scored with
+`MemoryConfig(**memory.gold_rules("khg-c4-items/0.1.0"))`.
+
+### 2.2 The order effect (P9 D5 b)
+
+S-M7 now reports, over the pairs of (run_id, order_id) units: `same_order_diff_run`, `same_run_diff_order` and
+`diff_run_diff_order`, each `{n_pairs, mean_jaccard}`; `delta_order` = J(same order, other run) − J(other order,
+other run); and, for continuity, 1.0's `n_within_pairs`, `n_between_pairs`, `J_within`, `J_between` and its Δ as
+`pooled_delta_order`.
+
+- **Why this Δ.** Model a pair's dissimilarity by what differs. Where a run's two orders share a seed (P9's MLX
+  runs at seeds 1-3, or its stub), a same-run pair differs by order alone; a cross-run pair by run and order; a
+  same-order pair by run alone. Where runs are independent samples, same-run and cross-run pairs of different
+  orders are exchangeable. J(same order, other run) − J(other order, other run) compares pairs that both differ in
+  run, so it measures what the order adds in both cases. 1.0 put the same-run pairs into the second term, which in
+  the first case makes it too high and Δ negative. `same_run_diff_order` stays visible: in the first case 1 − J is
+  the order effect without run noise.
+- **Checked on P9's fixture** (P9's khg-extract, copied read-only from its branch, run against this branch's
+  khg-contracts): C5 1.1's three classes equal P9's own `paired_order_effect` to the last digit (pair counts and
+  means). On the content key, raw output: Δ_order **0** (pooled −61/378); gated output: Δ_order **17/60 = 0.283**
+  (pooled 31/135 = 0.230, which P9 DESIGN §7 reports). On the core key: raw 0 (pooled −0.119), gated 0.375 (pooled
+  0.321).
+- **P2's own P9 sequence** (`tests/consumers/test_p9.py`, three units, run-1 identical in both orders): Δ_order 0
+  (1.0: −1/2).
+
+### 2.3 Tests first
+
+`tests/scorers/test_memory_1_1.py` (32 tests) and `tests/scorers/test_stability_order.py` (4 tests), written
+before the change: **34 failed, 2 passed** (the two guards whose values hold in both versions: nothing is
+outranked without a preferred fact, and a stale value keeps its first kind). After the change all pass. They cover
+the ten reasons one by one (and three that stay out), `gold_rules` for each stamp, `outranked` on a non-temporal and
+a temporal key (definite and possible reads, before, during and after the overlap), the precedence, the O3 outcome
+and the three stale rates, the stamp-dependent replay in layer I under both engines, the packaged 0.1.0 file's gold
+under both rules, and four order-effect cases (P9's order-blind case in small, R05's S3, an order effect under run
+noise, an empty pair class).
+
+**The example file** gains two traces and two questions (`mq:lodz-2019`: a rounded estimate outranked by the
+preferred exact count, beside a deprecated "incorrect value"; `mq:maria-conflation`: a birthplace deprecated as a
+conflation), whose gold the builder takes from `derive_memory_gold`. Stamped 0.1.0, both questions fail I005.
+
+**Existing tests changed:** the defaults and signatures (`test_memory_score`, `test_memory_gold`), `hits` gains
+`outranked` (`test_memory_r05`, `test_memory_score`), the preferred-only test now also sees the outranked value,
+S3's `order_effect` gains the new keys (its Δ stays 2/3), P2's P9 sequence (Δ_order −1/2 → 0, pooled kept), and the
+`khg-scorers` stamp (`test_api`, `test_extraction`).
+
 [p3a-note]: ../../p3a-clean-nary-corpus/notes/c4-change-proposal.md

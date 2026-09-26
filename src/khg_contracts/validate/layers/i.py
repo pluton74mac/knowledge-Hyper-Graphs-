@@ -22,8 +22,9 @@ order:
 - every trace without an error is replayed into a fresh ``MemoryStore`` (``scorers.memory.Replay``). A write the
   store refuses is I003 at the entities or at the event, with the store's C, S or D findings nested;
 - every memory question without an error: its stored gold against ``derive_memory_gold`` from its replayed trace,
-  with the default deprecation reasons (I005; ``scorers.memory.check_question``). A question whose trace is not in
-  the file is I003.
+  under the gold rules of the file's stamp (I005; ``scorers.memory.check_question`` and ``gold_rules``): a 0.1.x file
+  by the 0.1 rules (Wikidata's "incorrect value" only, no ``outranked``), so that its gold stays valid; a 0.2.x file
+  by the 0.2 rules, the scorer's defaults (ruling 21). A question whose trace is not in the file is I003.
 
 Warnings of the embedded records (a warning constraint, S024) are not reported: they do not make the item invalid.
 """
@@ -196,6 +197,16 @@ def _pin_findings(lines: list[Any], bad: set[int], schema: Schema) -> list[Findi
                                                         f"({pin.get('sha256')}), not {schema.ref} ({schema.sha256})")]
 
 
+def _gold_rules(lines: list[Any], bad: set[int]) -> dict[str, Any]:
+    """The memory-gold rules of the file's stamp (the 0.2 rules when line 0 is no usable header; layer V has refused
+    a stamp the reader does not take)."""
+    head = lines[0] if 0 not in bad and isinstance(lines[0], Mapping) and lines[0].get("kind") == HEADER else None
+    try:
+        return memory.gold_rules(head.get("format") if head is not None else None)
+    except ValueError:
+        return memory.gold_rules()
+
+
 def _replay(n: int, line: Mapping[str, Any], schema: Schema) -> tuple[memory.Replay | None, list[Finding]]:
     """Replay one trace; I003 at the write the store refuses."""
     rp: memory.Replay | None = None
@@ -240,6 +251,7 @@ def run(ctx: Context) -> list[Finding]:
                 out += found
     traces: dict[str, int] = {}
     replays: dict[str, memory.Replay | None] = {}
+    rules = _gold_rules(lines, bad)
     for n, line in enumerate(lines):
         if isinstance(line, Mapping) and line.get("kind") == TRACE and isinstance(line.get("trace_id"), str):
             tid = line["trace_id"]
@@ -258,5 +270,5 @@ def run(ctx: Context) -> list[Finding]:
             continue
         replayed = replays.get(line["trace_id"])
         if replayed is not None:
-            out += memory.check_question(replayed, line, path=f"/lines/{n}")[1]
+            out += memory.check_question(replayed, line, path=f"/lines/{n}", **rules)[1]
     return out

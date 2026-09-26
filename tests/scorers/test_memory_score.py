@@ -66,7 +66,8 @@ def rec(rid: str, **changes: Any) -> dict[str, Any]:
 
 def test_the_configuration_and_its_defaults():
     assert {f.name: f.default for f in dataclasses.fields(memory.MemoryConfig)} == {
-        "mode": "strict", "incorrect_reasons": frozenset({"wd:Q41755623"}), "bootstrap": Bootstrap()}
+        "mode": "strict", "incorrect_reasons": memory.INCORRECT_REASONS, "outranked": True, "bootstrap": Bootstrap()}
+    assert len(memory.INCORRECT_REASONS) == 10 and memory.INCORRECT_REASONS_0_1 == frozenset({"wd:Q41755623"})
     assert memory.MemoryConfig.__dataclass_params__.frozen
     assert memory.MemoryConfig(incorrect_reasons=["wd:Q1"]).incorrect_reasons == frozenset({"wd:Q1"})
     for bad in ({"mode": "loose"}, {"incorrect_reasons": [""]}, {"bootstrap": 3}):
@@ -80,7 +81,7 @@ def test_the_documented_signatures():
     kw = "KEYWORD_ONLY"
     d = {n: (p.kind.name, p.default) for n, p in inspect.signature(memory.derive_memory_gold).parameters.items()}
     assert list(d)[:2] == ["trace", "question"] and d["schema"][0] == kw
-    assert d["incorrect_reasons"] == (kw, frozenset({"wd:Q41755623"}))
+    assert d["incorrect_reasons"] == (kw, memory.INCORRECT_REASONS) and d["outranked"] == (kw, True)
     s = {n: (p.kind.name, p.default) for n, p in inspect.signature(memory.score).parameters.items()}
     assert list(s)[:2] == ["questions", "responses"]
     assert s["traces"][0] == kw and s["schema"][0] == kw and s["config"] == (kw, memory.MemoryConfig())
@@ -96,9 +97,9 @@ def test_the_p7_call_of_section_1_3_on_packaged_data(fixture_schema):
     rep = memory.score(LINES, [MEMORY_OUTPUT], traces=LINES, schema=fixture_schema)
     assert list(rep) == ["scorer", "config", "contracts", "aggregate", "breakdowns", "items", "bootstrap"]
     assert rep["scorer"] == "memory" and rep["contracts"] == dict(khg_contracts.CONTRACTS)
-    assert rep["config"] == {"mode": "strict", "incorrect_reasons": ["wd:Q41755623"],
-                             "bootstrap": {"resamples": 1000, "seed": 0, "alpha": 0.05}, "qset": ["p2-fixture-qset"],
-                             "schema": fixture_schema.header}
+    assert rep["config"] == {"mode": "strict", "incorrect_reasons": sorted(memory.INCORRECT_REASONS),
+                             "outranked": True, "bootstrap": {"resamples": 1000, "seed": 0, "alpha": 0.05},
+                             "qset": ["p2-fixture-qset"], "schema": fixture_schema.header}
     assert sorted(rep["items"]) == ["mq:king-1620", "mq:king-1700", "mq:maria-birthplace"]
     item = rep["items"]["mq:king-1700"]
     assert (item["outcome"], item["strict"], item["lenient"], item["depends_on"]) == ("current", 1, 1, ["f:king-14"])
@@ -120,7 +121,8 @@ def test_items_carry_the_question_and_the_hits(fixture_schema):
     assert {k: item[k] for k in ("answerable", "subtype", "relation", "trace_id", "ask_after_step", "missing")} == {
         "answerable": True, "subtype": "current_value", "relation": "position_held", "trace_id": "t:kings",
         "ask_after_step": 2, "missing": False}
-    assert item["hits"] == {"current": 1, "expired": 1, "revised": 0, "future": 0, "disputed": 0, "other": 0}
+    assert item["hits"] == {"current": 1, "expired": 1, "revised": 0, "outranked": 0, "future": 0, "disputed": 0,
+                            "other": 0}
     assert rep["bootstrap"] is None
 
 

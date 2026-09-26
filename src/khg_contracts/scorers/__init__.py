@@ -1,14 +1,16 @@
-"""The C5 scorers ``khg-scorers/1.0.0`` (DESIGN §9): one ``score()`` per ability.
+"""The C5 scorers ``khg-scorers/1.1.0`` (DESIGN §9; 1.1.0 is ruling 21): one ``score()`` per ability.
 
 - ``extraction``: C3 queue items (or C1 hyperedges) against ``c4-extraction-doc`` gold; value-first Hungarian
   alignment, strict, core, Arg-I, Arg-C, role accuracy, pooled, pairwise; presets ``hyperred_quintuplet`` and
   ``text2nkg``.
-- ``stability``: pairwise Jaccard, core ratio, support histogram, churn, gold partition and Δ_order over runs.
+- ``stability``: pairwise Jaccard, core ratio, support histogram, churn, gold partition and the order effect
+  (Δ_order on the paired decomposition of the unit pairs) over runs.
 - ``completion``: ``build_queries``, ``FilterIndex``, ``rank_stats`` and ``score`` with the tie conventions, the
   three filters, three averages, calibration (equal-width and equal-mass ECE, Brier) and the presets ``hype``,
   ``stare`` and ``hyper``.
 - ``retrieval``: ranking, support, ``binding_coverage@k``, answers, joint and gated scores, abstention and cost.
-- ``memory``: memory gold and the memory scorer (step W11a).
+- ``memory``: memory gold (stale values ``expired``, ``revised``, ``outranked``; the gold rules of each C4 version)
+  and the memory scorer.
 
 Shared parts: ``Bootstrap`` and the percentile bootstrap (``bootstrap``), the pure-Python Hungarian solver with an
 optional SciPy backend (``hungarian``), and the calibration measures (``calibration``). Every ``score()`` returns
@@ -23,7 +25,7 @@ from types import ModuleType
 
 from .bootstrap import Bootstrap
 
-FORMAT = "khg-scorers/1.0.0"
+FORMAT = "khg-scorers/1.1.0"
 
 __all__ = ["FORMAT", "Bootstrap"]
 

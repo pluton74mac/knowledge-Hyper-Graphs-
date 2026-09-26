@@ -1315,7 +1315,8 @@
           "kind": {
            "enum": [
             "expired",
-            "revised"
+            "revised",
+            "outranked"
            ],
            "x-khg-code": {
             "default": "KHG-I002"

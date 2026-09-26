@@ -114,7 +114,11 @@ def test_p9_sequence(S, c4_items, workdir: Path):
     assert content["mean_pairwise_jaccard"] == pytest.approx(1 / 3)
     assert (content["n_facts"], content["core_ratio"], content["support_histogram"]) == (2, 0.0, {"1": 1, "2": 1})
     assert (content["unstable_fraction"], content["mean_churn"]) == (1.0, pytest.approx(2 / 3))
-    assert content["order_effect"] == {"n_within_pairs": 1, "n_between_pairs": 2, "J_within": 0.0,
-                                       "J_between": 0.5, "delta_order": -0.5}
+    # run-1 gives the same output in both orders: no order effect (ruling 21); 1.0's pooled S-M7 said -0.5
+    assert content["order_effect"] == {
+        "same_order_diff_run": {"n_pairs": 1, "mean_jaccard": 0.0},
+        "same_run_diff_order": {"n_pairs": 1, "mean_jaccard": 1.0},
+        "diff_run_diff_order": {"n_pairs": 1, "mean_jaccard": 0.0}, "delta_order": 0.0,
+        "n_within_pairs": 1, "n_between_pairs": 2, "J_within": 0.0, "J_between": 0.5, "pooled_delta_order": -0.5}
     assert (core["mean_pairwise_jaccard"], core["core_ratio"], core["support_histogram"]) == (1.0, 1.0, {"3": 1})
     assert core["order_effect"]["delta_order"] == 0.0

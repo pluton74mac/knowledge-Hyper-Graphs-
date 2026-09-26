@@ -106,9 +106,12 @@ def test_the_example_shows_every_new_field():
                                            ("khg-c4-items/0.1.0", True), ("khg-c4-items/0.3.0", False),
                                            ("khg-c4-items/1.0.0", False)])
 def test_the_version_gate_takes_0_0_to_0_2(stamp, ok):
+    """Layer V only: a file stamped 0.1.x is replayed by the 0.1 memory rules (ruling 21), so the example's memory
+    questions then disagree with their replay (``tests/scorers/test_memory_1_1.py``)."""
     lines = changed(lambda x: x[0].update(format=stamp))
     want = [] if ok else [("KHG-V001", "/lines/0/format", None)]
-    assert found(lines) == want
+    assert [f for f in found(lines) if f[0].startswith("KHG-V")] == want
+    assert ok or found(lines) == want  # a V finding stops the run
 
 
 @pytest.mark.parametrize(("stamp", "ok"), [("khg-record/1.0.0", True), ("khg-record/1.0.4", True),

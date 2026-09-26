@@ -1929,7 +1929,7 @@ L and F codes are tested by the store receipts and by the migration test.
   - `fixture.doc-texts.json`: the four document texts and their hashes;
   - `smoke-base.c1.json`: the entities, as G3's base.
 
-## 9. C5 scorers (`khg-scorers/1.0.0`), the C4 draft and the output schema
+## 9. C5 scorers (`khg-scorers/1.1.0`), the C4 draft and the output schema
 
 ### 9.1 Conventions [R05 §1; DB §9.1]
 
@@ -1999,15 +1999,16 @@ class RetrievalConfig:
 @dataclass(frozen=True)
 class MemoryConfig:
     mode: Literal["strict", "lenient"] = "strict"
-    incorrect_reasons: frozenset[str] = frozenset({"wd:Q41755623"})
+    incorrect_reasons: frozenset[str] = memory.INCORRECT_REASONS   # the 0.2 rules (§9.5, ruling 21)
+    outranked: bool = True
     bootstrap: Bootstrap = Bootstrap()
 
 extraction.score(gold, predictions, *, schema, config=ExtractionConfig()) -> dict
     # gold: c4-extraction-doc items; predictions: C3 queue items, or C1 hyperedges carrying their doc id
 stability.score(items, *, schema, unit: Literal["run", "run_id"] = "run",
                 keys=("content_key", "core_key"), gold=None) -> dict
-    # unit "run" is (run_id, order_id); "run_id" pools the orders of a run. Δ_order compares units of the same
-    # and of different order_id
+    # unit "run" is (run_id, order_id); "run_id" pools the orders of a run. The order effect always reads
+    # (run_id, order_id) units: the paired decomposition of their pairs and Δ_order (§9.3, ruling 21)
 completion.build_queries(facts, schema, *, slots=("core", "qualifier"),
                          literal_targets: Literal["exclude", "include"] = "exclude",
                          universe: Literal["entities_of_type", "seen_in_position"] = "entities_of_type") -> list[dict]
@@ -2018,8 +2019,9 @@ completion.rank_stats(query, scores: Mapping[str, float], index, *, universe=Non
 completion.score(queries, outputs, *, config=CompletionConfig()) -> dict
 retrieval.score(questions, responses, *, facts: Mapping[str, dict] | None = None,
                 config=RetrievalConfig()) -> dict       # facts: the gold hyperedges, for binding_coverage@k
-memory.derive_memory_gold(trace, question, *, schema,
-                          incorrect_reasons=frozenset({"wd:Q41755623"})) -> dict   # §9.5
+memory.derive_memory_gold(trace, question, *, schema, incorrect_reasons=memory.INCORRECT_REASONS,
+                          outranked=True) -> dict   # §9.5
+memory.gold_rules(stamp=None) -> {"incorrect_reasons", "outranked"}   # the rules of a khg-c4-items stamp
 memory.score(questions, responses, *, traces, schema, config=MemoryConfig()) -> dict
 ```
 
@@ -2034,10 +2036,10 @@ One `score()` per ability (graft [J-cons], [J-std]).
 | Scorer | Defaults | Presets |
 |---|---|---|
 | extraction | E-M1 strict (the headline); E-M2 core, which is `core_key` equality (critique C5-HANDCHECK); E-M4 Arg-I; E-M5 Arg-C; E-M6 role accuracy; E-M7 pooled with the grouping gap; E-M8 pairwise. Hungarian alignment (E-M3) on values, then bindings. Micro-doc, macro-relation and macro-arity averages | `hyperred_quintuplet`, `text2nkg` |
-| stability | S-M1 pairwise Jaccard on both keys; S-M2 core ratio; S-M3 support histogram; S-M4 churn; S-M5 gold partition; S-M7 Δ_order | |
+| stability | S-M1 pairwise Jaccard on both keys; S-M2 core ratio; S-M3 support histogram; S-M4 churn; S-M5 gold partition; S-M7 the order effect: the mean Jaccard of the pairs of (run_id, order_id) units in three classes, `same_order_diff_run` (run noise), `same_run_diff_order` and `diff_run_diff_order`, and Δ_order = J(same order, other run) − J(other order, other run), which compares pairs that differ in run on both sides (ruling 21; 1.0's pooled Δ_order, biased when a run's two orders share a seed, is kept as `pooled_delta_order`) | |
 | completion | the `exact` filter, with `monotone` (⊑) and `time_aware` also reported; tie-exact expected ranks (C-M3); per task, per fact and macro-arity; hits@1, 3 and 10; top-1 ECE with 15 bins, equal-width and equal-mass, the reliability table and Brier, per arity bin on both arities | `hype`, `stare`, `hyper` |
 | retrieval | k ∈ {1, 3, 5, 10, 20}. Headlines `support_success@10` and `mrr@10`, then hit@k, support_recall@k, r_precision, nDCG@k with log2(i+1), `binding_coverage@k`. **Answers:** EM on value identity, then SQuAD-normalised text EM and token F1; set P, R and F1 in set mode (over the set-mode questions); a question's `answer_mode` (C4 0.2.0) comes before the configuration's, and `count` scores as `single`; joint scores and gated EM; abstention precision and recall. **Cost:** mean, median, p90, p95 and total of every cost field, and answer EM against a cumulative-token budget (critique CONS-07) | |
-| memory | strict accuracy (the headline) with lenient beside it; outcomes O1–O7 [R05 §5.2]; the stale rate split into `expired` and `revised`; anachronism, hedge and abstention rates; `support_success@k` against current support | `lenient` |
+| memory | strict accuracy (the headline) with lenient beside it; outcomes O1–O7 [R05 §5.2]; the stale rate split into `expired`, `revised` and `outranked`; anachronism, hedge and abstention rates; `support_success@k` against current support | `lenient` |
 
 **Presets.**
 - `hype`: all positions, pessimistic ties, the full-tuple filter and the per-task average.
@@ -2088,11 +2090,27 @@ The sets hold ρ-values (critique SEM-07, C5-IO):
 |---|---|
 | V_cur | `find_by_key` returns under the question's `where` (status, rank, `valid_mode`, `as_of`) at `as_at` τ. If one of them is `preferred`, only the preferred facts count |
 | V_old, `expired` | are asserted and not deprecated, and whose possible validity ends at or before t (e_hi ≤ t) |
-| V_old, `revised` | were asserted at some τ′ < τ and are `superseded` or `retracted` at τ; and deprecated facts whose `rank_reason` names an "incorrect" reason (default `wd:Q41755623`) |
+| V_old, `revised` | were asserted at some τ′ < τ and are `superseded` or `retracted` at τ; and deprecated facts whose `rank_reason` names an "incorrect" reason (`memory.INCORRECT_REASONS`, below) |
+| V_old, `outranked` | are asserted, of rank `normal`, and hold at t under the question's `valid_mode` (every fact holds when t is null), while an asserted `preferred` fact on the key holds at t (ruling 21) |
 | V_fut | are asserted and not deprecated, and whose possible validity starts after t (s_lo > t) |
 | `disputed` | are `disputed` at τ |
 
-- V_cur is subtracted from every other set. A value that is both `expired` and `revised` is listed as `expired`.
+- V_cur is subtracted from every other set. A stale value is listed once, with the first of its kinds in the order
+  `expired`, `revised`, `outranked`: a value both `expired` and `revised` is listed as `expired`.
+- `outranked` is the textbook stale answer of a single-best-value series (P3a DESIGN §7.3): last year's population is
+  asserted, normal and never expires, so without this kind an answer with it was `wrong`. It needs the series key to
+  be non-temporal, such as `{subject}` (P7 DESIGN §7.2).
+- **The "incorrect" reasons** (ruling 21; P3a DESIGN §7.3, confirmed and extended by P7 DESIGN §7.2): Q41755623
+  incorrect value, Q29998666 error in referenced source or sources, Q25895909 cannot be confirmed by other sources,
+  Q21655367 not been able to confirm this claim, Q14946528 conflation, Q28091153 refers to different subject,
+  Q35773207 refers to different person, Q22979588 source known to be unreliable, Q110646418 wrong property and
+  Q189203 anachronism, all as `wd:` ids. Q42727519 "less precision" is out: it is a generalisation, not an error. A
+  deprecated fact without a reason (`["unspecified"]`) is neither current nor stale.
+- **The rules are versioned with the C4 draft** (ruling 3: a change of the reasons is a minor release of the draft).
+  The 0.2 rules are the reasons above and `outranked`; the 0.1 rules are `wd:Q41755623` alone and no `outranked`.
+  Layer I replays a `khg-c4-items/0.1.x` file by the 0.1 rules, so a valid 0.1.0 file stays valid, and a 0.2.x file
+  by the 0.2 rules (`memory.gold_rules(stamp)`). `derive_memory_gold` and `MemoryConfig` default to the 0.2 rules;
+  `MemoryConfig(**memory.gold_rules("khg-c4-items/0.1.0"))` scores a 0.1 question set by its own rules.
 - A fact that ended and was later superseded is `revised`, because `expired` needs an asserted fact.
 - `answerable` is false when V_cur is empty and `disputed` is not.
 - With `as_of: null` there is no valid-time filter. V_cur is then the current belief, and `expired` and V_fut
@@ -2134,7 +2152,7 @@ optional.
 | `c4-completion-query` | `qid`, `fact_id`, `relation`, `arity`, `model_arity`, `target {bid, role, slot, value}`, `context` (bindings), `candidate_universe {kind: entities_of_type \| list, types?, ids?}`; **`manifest?`** (the id of the split manifest the query belongs to) |
 | `c4-retrieval-question` | `qid`, `type` (`single_hop`, `multi_hop`, `temporal`, `comparison`, `aggregation`), `text`, **`anchors`**, `answer {values, text?}`, `support {sets}`, `hops`, `source_class`, `answerable`, **`where {as_of, valid_mode, rank, status}`**; `provenance?` (open: P10's `template`, `pair_hops`, `nary_dependent`, `anchor_degree`); **`answer_mode?`** (`single`, `set`, `count`; a count is one quantity of unit `"1"`, I002 otherwise) |
 | `c4-memory-trace` | `trace_id`, `entities` (C1 entities), `events [{step, tx_time, put: [hyperedges] \| apply: event}]` |
-| `c4-memory-question` | `qid`, `trace_id`, `ask_after_step`, `subtype` (`current_value`, `past_value`, `future_value`, `abstention`), `text`, `relation`, `key [{role, value}]`, `target_role`, `where`, `answer`, `stale_values [{value, kind: expired \| revised}]` and `future_values` (both mandatory, D-C5-15), `disputed_values`, `support`, `answerable`; `tolerance?` |
+| `c4-memory-question` | `qid`, `trace_id`, `ask_after_step`, `subtype` (`current_value`, `past_value`, `future_value`, `abstention`), `text`, `relation`, `key [{role, value}]`, `target_role`, `where`, `answer`, `stale_values [{value, kind: expired \| revised \| outranked}]` (**`outranked`**: ruling 21) and `future_values` (both mandatory, D-C5-15), `disputed_values`, `support`, `answerable`; `tolerance?` |
 | `c4-split-manifest` | `splits {fact id: split}`, which `FilterIndex` reads (critique CONS-06), with the splits `train`, `valid`, `test` and **`inference`** (the facts an inductive model sees at test time); **`scheme?`** (`transductive`, `leak_probe`, `semi_inductive`, `inductive`, `temporal`); **`seed?`**; **`container? {document_id, sha256}`** (the C1 container it splits; `sha256` is `record.container_sha256`); **`probe? {fact id: [leak kinds]}`** (`core_key`, `reversed_pair`, `same_pair_other_relation`, `group`; a probe fact is a test fact); **`lite?`** (the ids of the fixed lite test subset) |
 
 **`mentions`, the candidate table** (P9 DESIGN §3.1, D6): `[{entity, source, spans?, description?}]`, one entry per
@@ -2164,7 +2182,9 @@ and three memory questions. It is valid under both engines, and its five I cases
 file. `c4-items-0.2.0.jsonl` shows the 0.2.0 fields on the fixture (built by `research/probes/c4_0_2_examples.py`): a
 header with its corpus; an extraction document with `doc_kind`, `gold_scope` and a candidate table of three matches
 and one distractor; a completion query with its manifest; one retrieval question per answer mode, with P10's
-provenance extras; and a semi-inductive and a leak-probe manifest.
+provenance extras; two memory traces and their questions, one with a `revised` and an `outranked` value, one with
+a value revised as a conflation (a stale value only under the 0.2 rules, ruling 21); and a semi-inductive and a
+leak-probe manifest.
 
 ### 9.7 Tests shipped (F14)
 
@@ -2342,7 +2362,7 @@ has one smoke test in `tests/cli/`.
 | upstream convention | `role-convention` 1.0.0 (four rules) | itself; minor versions only |
 | C3 | `khg-queue/1.0.0` | C1, in lockstep (PLAN §7) |
 | C2 and its scenarios | `khg-store/1.0.0` (`info().interface_version`), `khg-scenario/1.0.0` | their own semver |
-| C5, its outputs, the C4 draft | `khg-scorers/1.0.0`, `khg-c5-io/1.0.0`, `khg-c4-items/0.2.0` (ruling 20) | C1; P3a owns C4 |
+| C5, its outputs, the C4 draft | `khg-scorers/1.1.0` (ruling 21), `khg-c5-io/1.0.0`, `khg-c4-items/0.2.0` (ruling 20) | C1; P3a owns C4 |
 | derived text | `khg-render/1` | a new number for any change |
 | migration report | `khg-migration-report/1.0.0` | `migrate/`; its own semver |
 | relation schemas | `<id>/<version>` (`typed_under`) | the author |
@@ -2595,7 +2615,7 @@ Each row settles a question that the critique found open. The Revision log names
    owner".
 3. **Deprecation reasons.** The default stays `wd:Q41755623` only. P3a's datasheet reports the distribution of
    deprecation reasons it finds, and P3a and P7 confirm or extend the list before the memory set is built. A change
-   is a minor release of the C4 draft.
+   is a minor release of the C4 draft. *(Done by ruling 21, 2026-09-26: ten reasons, with C4 0.2.0.)*
 
 **Director's rulings on implementation questions (2026-09-24).** Raised by the build steps; see
 `impl-notes/`.
@@ -2731,6 +2751,40 @@ scenarios is unchanged.
 
     **Versions.** `khg-c4-items` 0.1.0 → **0.2.0**; its schema file is `khg-c4-items-0.2.0.schema.json` (it replaces
     the 0.1.0 file, which no other project names); `CONTRACTS["khg-c4-items"]` is 0.2.0.
+
+21. **C5 `khg-scorers` 1.1.0 (P3a's proposal, part B, confirmed by P7; P9's order effect).** Three changes (§9.2,
+    §9.3, §9.5):
+    - **`outranked`**, a third stale kind, as P7 DESIGN §7.2 defines it: the target values of facts on the question's
+      key that are asserted, of rank `normal`, and hold at t under the question's `valid_mode` (all of them when
+      `as_of` is null), while an asserted `preferred` fact on the key holds at t; V_cur is subtracted. It enters
+      `stale_values.kind` (a C4 0.2.0 enum value) and the O3 outcome, after `expired` and `revised`, and the stale
+      rate is split three ways (`stale_outranked_rate`; `stale_revised_rate` now counts `revised` answers only, where
+      1.0 computed "stale minus expired").
+    - **The default "incorrect" reasons** of `MemoryConfig.incorrect_reasons`, `memory.INCORRECT_REASONS` and the
+      replay: P3a's nine (P3a DESIGN §7.3) and Q189203 "anachronism", without Q42727519 "less precision" (P7 ruling 5).
+      This settles open question 3 and ruling 3's pending list.
+    - **The order effect S-M7** (P9 ruling 5: a scorer defect). 1.0's Δ_order pooled, among the pairs of different
+      orders, the pairs of one run with those of different runs, so an extractor that ignores the order came out
+      with a negative order effect whenever a run's two orders agree (−61/378 on P9's fixture; −1/2 on P2's own P9
+      sequence, now 0). S-M7 is now the paired decomposition: the mean Jaccard of the three pair classes
+      (`same_order_diff_run`, `same_run_diff_order`, `diff_run_diff_order`, each with its pair count) and
+      `delta_order` = J(same order, other run) − J(other order, other run), whose two terms both differ in run. 1.0's
+      number stays, named `pooled_delta_order`, beside `J_within`, `J_between` and the pair counts, for comparison
+      with 1.0 reports only; it is never the headline.
+
+    **The compatibility path for the memory gold.** The two memory changes change what `derive_memory_gold` returns,
+    so a 0.1.0 memory set derived under the old rules could disagree with a replay under the new ones (I005). Ruling
+    3 made a change of the reasons a minor release of the C4 draft, so the rules are versioned with it: layer I
+    replays a `khg-c4-items/0.1.x` file by the 0.1 rules (`wd:Q41755623` only, no `outranked`) and a 0.2.x file by
+    the 0.2 rules (`memory.gold_rules(stamp)`). A valid 0.1.0 file stays valid; the packaged `c4-items.jsonl` has the
+    same gold under both. `derive_memory_gold`, `MemoryConfig` and `score` default to the 0.2 rules ("the I005 replay
+    must agree" with the default); `score` checks a question set by its configuration, so a 0.1 set whose gold
+    depends on the difference is scored with `MemoryConfig(**memory.gold_rules("khg-c4-items/0.1.0"))`.
+
+    **Versions.** `khg-scorers` 1.0.0 → **1.1.0** (`CONTRACTS`, `scorers.FORMAT`, every report's `contracts`). Report
+    shapes only gain keys: the memory report's `hits` and `outranked` configuration, the stability report's pair
+    classes and `pooled_delta_order`. The value of `order_effect.delta_order` changes: that is the fix. P9's
+    fixture test that pinned −61/378 moves to `pooled_delta_order` (a patch is proposed in the impl note).
 
 **Clarifications the review made normative.** Each is implemented and tested; the notes give the evidence.
 - §2.7 and D014: a history may go from `superseded` to `disputed` in one version (an undone supersession resolved

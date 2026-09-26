@@ -13,6 +13,10 @@ Every item uses the fixture schema ``p2-gate`` 1.0.0 and shows the fields 0.2.0 
 - three retrieval questions, one per ``answer_mode`` (``single``, ``set``, ``count``), with P10's ``provenance``
   extras (``template``, ``pair_hops``, ``nary_dependent``, ``anchor_degree``: the anchors' degree under the question's
   ``where`` on the fixture);
+- two memory traces and their questions (ruling 21): a rounded population estimate that a preferred exact count
+  outranks, beside a deprecated "incorrect value" (stale kinds ``revised`` and ``outranked``), and a birthplace
+  deprecated as a conflation (``revised`` under the 0.2 rules only). Their gold is ``derive_memory_gold``'s, under
+  the default (0.2) rules;
 - two split manifests: a semi-inductive one with ``inference`` facts, and a leak-probe one with a ``probe`` fact (an
   unordered entity pair under another relation) and a ``lite`` subset.
 
@@ -26,6 +30,7 @@ from pathlib import Path
 from typing import Any
 
 from khg_contracts import data, jsonio, record
+from khg_contracts.scorers import memory
 from khg_contracts.store import MemoryStore, Where
 
 OUT = Path("src/khg_contracts/data/fixture/c4-items-0.2.0.jsonl")
@@ -127,6 +132,54 @@ def retrieval_questions() -> list[dict[str, Any]]:
     return [single, many, count]
 
 
+def fact(fid: str, **changes: Any) -> dict[str, Any]:
+    """A fixture fact as a trace puts it: asserted, without store fields and ``status_ref``."""
+    r = entity(fid)
+    r.pop("status_ref", None)
+    r["status"] = "asserted"
+    r.update(changes)
+    return r
+
+
+def memory_items() -> list[dict[str, Any]]:
+    estimate = fact("f:pop-łódź-2019", id="f:pop-łódź-2019-estimate",
+                    evidence=[{"id": "e1", "type": "curated", "mode": "manual", "source": {"doc_id": "doc:estimate"},
+                               "supports": ["b1", "b2", "b3"]}])
+    estimate["bindings"][2]["value"] = {"literal": {"datatype": "quantity", "amount": "+680000", "unit": "1"}}
+    lodz = {"kind": "c4-memory-trace", "id": "c4:mt-lodz", "qset": QSET, "split": "test", "trace_id": "t:lodz",
+            "entities": [entity("ex:Łódź")],
+            "events": [{"step": 1, "tx_time": "2026-10-01T00:00:01Z",
+                        "put": [estimate, fact("f:pop-łódź-2019-dep")]},
+                       {"step": 2, "tx_time": "2026-10-01T00:00:02Z",
+                        "put": [fact("f:pop-łódź-2019", rank="preferred")]}]}
+    maria = {"kind": "c4-memory-trace", "id": "c4:mt-maria-conflation", "qset": QSET, "split": "test",
+             "trace_id": "t:maria-conflation",
+             "entities": [entity(e) for e in ("ex:Kraków", "ex:Maria_Skłodowska", "ex:Warszawa")],
+             "events": [{"step": 1, "tx_time": "2026-10-01T00:00:01Z",
+                         "put": [fact("f:born-skłodowska-kraków", rank="deprecated", rank_reason=["wd:Q14946528"])]},
+                        {"step": 2, "tx_time": "2026-10-01T00:00:02Z",
+                         "put": [fact("f:born-skłodowska-warszawa")]}]}
+    old_question = old("c4-memory-question")  # the where and the field order of the 0.1.0 example
+    where = dict(old_question["where"], as_of=None)
+    lodz_q = {"kind": "c4-memory-question", "id": "c4:mq-lodz-2019", "qset": QSET, "split": "test",
+              "qid": "mq:lodz-2019", "trace_id": "t:lodz", "ask_after_step": 2, "subtype": "current_value",
+              "text": "What was the population of Łódź in 2019?", "relation": "population",
+              "key": [{"role": "place", "value": {"entity": "ex:Łódź"}},
+                      {"role": "point_in_time", "value": {"literal": {
+                          "datatype": "time", "time": "+2019-00-00T00:00:00Z", "precision": 9,
+                          "calendar": "gregorian"}}}],
+              "target_role": "quantity", "where": where, "support": ["f:pop-łódź-2019"]}
+    maria_q = {"kind": "c4-memory-question", "id": "c4:mq-maria-conflation", "qset": QSET, "split": "test",
+               "qid": "mq:maria-conflation", "trace_id": "t:maria-conflation", "ask_after_step": 2,
+               "subtype": "current_value", "text": "Where was Maria Skłodowska born?", "relation": "born_in",
+               "key": [{"role": "person", "value": {"entity": "ex:Maria_Skłodowska"}}], "target_role": "birthplace",
+               "where": where, "support": ["f:born-skłodowska-warszawa"]}
+    for q, tr in ((lodz_q, lodz), (maria_q, maria)):
+        gold = memory.derive_memory_gold(tr, q, schema=SCHEMA)  # the default rules are the 0.2 rules
+        q.update({k: v for k, v in gold.items() if k in memory.GOLD_FIELDS})
+    return [lodz, maria, lodz_q, maria_q]
+
+
 def manifests() -> list[dict[str, Any]]:
     facts = sorted(r["id"] for r in FIXTURE["records"] if r.get("kind") == "hyperedge"
                    and not r["relation"].startswith("khg:") and r["status"] != "goal")
@@ -147,7 +200,7 @@ def manifests() -> list[dict[str, Any]]:
 
 
 def lines() -> list[dict[str, Any]]:
-    return [header(), extraction_doc(), completion_query(), *retrieval_questions(), *manifests()]
+    return [header(), extraction_doc(), completion_query(), *retrieval_questions(), *memory_items(), *manifests()]
 
 
 def main(argv: list[str]) -> int:
