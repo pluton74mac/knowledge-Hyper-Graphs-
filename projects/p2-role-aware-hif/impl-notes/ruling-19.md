@@ -19,7 +19,7 @@ slice that is not `complete`.
   `upstream/RELEASE.md` and two mirrored files in `design-examples/`.
 - **Not edited:** P1's folder. The one P1 test this changes is proposed as a patch (§6). `kb/` is the director's (§8).
 - **Commits:** `e533e4c` (the change), `3f4ab8b` (G1), `ee94d5f` (DESIGN §14, README, release steps,
-  `__module__`), and this note with the verification.
+  `__module__`), `192fc09` (this note and the patch), and the commit that adds the last results.
 
 ## 1. The failure, reproduced
 
@@ -118,15 +118,21 @@ scenario are unchanged. The profile schema is unchanged too, so its `$id` keeps 
 
 | Job | How | Result |
 |---|---|---|
-| core-3.10 | fresh venv, Python 3.10.20, `.[dev]`, `pytest -q` | 5,563 passed, 21 skipped |
+| core-3.10 | fresh venv, Python 3.10.20, `.[dev]`, `pytest -q` | 5,564 passed, 21 skipped |
 | gate-3.11 | the dev venv, Python 3.11.15, `.[xgi,hnx,fast,dev]`, `pytest -q -m "not evidence"` | 5,956 passed, 1 skipped, 5 deselected (5,908 before: +48) |
-| core-3.13 | fresh venv, Python 3.13, `.[dev]`, `pytest -q` | 5,563 passed, 21 skipped |
+| core-3.13 | fresh venv, Python 3.13.14, `.[dev]`, `pytest -q` | 5,564 passed, 21 skipped (20 warnings, below) |
 | wheel | `python -m build`; the wheel in a clean 3.11 venv; `khg_contracts.data --check`; `khg-validate` on the packaged fixture; `khg-conformance --factory khg_contracts.store:memory_factory` | builds `1.0.0.dev1`; data check ok; valid (0 errors, the 2 designed warnings); 114 of 114 passed, EARL `hasVersion` 1.0.0.dev1 |
 | examples | `python -m khg_contracts.examples out/ --tests tests`, `diff -r` with `design-examples/` | byte-identical (151 files) |
 | evidence | `pytest -q -m evidence` | 5 passed; `library-hif-evidence.json` unchanged |
-| khg-width | fresh venv, Python 3.10, `. ./projects/p6-schema-width/khg-width[dev]` | (running when this note was first committed; see the next commit) |
-| khg-bakeoff | fresh venv, Python 3.10, `. ./projects/p1-store-bakeoff/khg-bakeoff[oxigraph,postgres,dev]`; the import step; `pytest -q` | (running when this note was first committed; see the next commit) |
+| khg-width | fresh venv, Python 3.10.20, `. ./projects/p6-schema-width/khg-width[dev]` | 88 passed, 20 skipped (the solver tests, as in CI), 275 s |
+| khg-bakeoff | fresh venv, Python 3.10.20, `. ./projects/p1-store-bakeoff/khg-bakeoff[oxigraph,postgres,dev]`; the import step; `pytest -q`, no server endpoint set | adapters import; **1 failed**, 133 passed, 53 skipped. The failure is the P1 test that pinned the refusal (§6). With the §6 patch: all pass |
 
+- **Servers.** PostgreSQL was not running here and no endpoint was set, so the bake-off's server-backed tests skipped
+  (PostgreSQL, Neo4j, TypeDB); CI runs its PostgreSQL tests on the `postgres:18.6` service. The change touches no
+  adapter. The HIF export of every backend is `to_hif`, which the conformance runs on `MemoryStore`, SQLite, Oxigraph
+  and the HIF store exercise.
+- **Warnings.** The 20 warnings on 3.13 are Python's `fork()` deprecation in multiprocessing, from tests this work does
+  not touch.
 - **Lint.** ruff (F, E9, E501, W, B at 120 columns, py310) finds nothing new in the changed files. The one E501 in
   `store/table.py` is a docstring table row that was there before.
 
@@ -141,8 +147,13 @@ from the repository root):
 - the file is stamped 1.1.0, names `ex:Paris` only in an incidence, and exports what `MemoryStore` exports;
 - `incident("ex:Paris")` gives the reference's answer.
 
-With the patch applied to a copy of P1's folder, the khg-bakeoff tests pass (§5). P1's README and IMPLEMENTATION-NOTES
-also say the HIF row "is not run on such a slice" and describe finding 8 as open; those lines are P1's to update.
+With the patch applied to a copy of P1's folder, the khg-bakeoff tests give 132 passed, 55 skipped. The two extra
+skips are the checks that read P2's DESIGN and `ci.yml`, which a partial copy lacks; on this branch both pass. The new
+test reads `ex:Paris` with `quoted` facts included, because `f:born-louis14-paris` is quoted and the default `Where`
+leaves it out: the first draft of the patch expected it under the default and failed on both stores alike.
+
+P1's README and IMPLEMENTATION-NOTES also say the HIF row "is not run on such a slice" and describe finding 8 as open;
+those lines are P1's to update.
 
 ## 7. P1's deferred items that touch khg-contracts (proposal)
 

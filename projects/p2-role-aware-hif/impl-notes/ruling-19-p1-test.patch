@@ -1,6 +1,6 @@
 --- a/projects/p1-store-bakeoff/khg-bakeoff/tests/test_loads.py
 +++ b/projects/p1-store-bakeoff/khg-bakeoff/tests/test_loads.py
-@@ -167,16 +167,26 @@
+@@ -167,16 +167,28 @@
          s.close()
  
  
@@ -13,6 +13,7 @@
 +    ``from_hif`` reads it back as the entity, so the whole slice loads, nothing is skipped, and every record and read
 +    equals the reference's. Before the ruling the load failed with KHG-D002."""
 +    from khg_contracts import jsonio
++    from khg_contracts.store import Where
 +
 +    doc = incomplete(fixture_doc)
      s = fresh("hif", schema)
@@ -30,8 +31,9 @@
 +        reference = MemoryStore(schema, clock=ScenarioClock(), capabilities=s.capabilities)
 +        reference.load(copy.deepcopy(doc))
 +        assert compare_containers(reference.export("khg-json"), s.export("khg-json")) == []
-+        assert [r["id"] for r in s.incident("ex:Paris")] == [r["id"] for r in reference.incident("ex:Paris")] == [
-+            "f:born-louis14-paris"]
++        quoted = Where(status=frozenset({"asserted", "quoted"}))  # f:born-louis14-paris is quoted
++        assert [r["id"] for r in s.incident("ex:Paris", where=quoted)] == [
++            r["id"] for r in reference.incident("ex:Paris", where=quoted)] == ["f:born-louis14-paris"]
      finally:
          s.close()
  
