@@ -35,7 +35,8 @@ def test_relations_in_schema_order_and_the_built_ins():
     ("khg:supersedes", [("khg:superseding", "tail", 1), ("khg:superseded", "head", 1)],
      ["correction", "duplicate", "refinement", "conflation", "schema_migration", "other"]),
     ("khg:retracts", [("khg:retracted", "head", 1)], ["withdrawn", "unsupported", "other"]),
-    ("khg:disputes", [("khg:disputed", "head", 2)], ["key_conflict", "negation_conflict", "curator", "other"]),
+    ("khg:disputes", [("khg:disputed", "head", 2)], ["key_conflict", "negation_conflict", "curator", "other",
+                                                     "bound_conflict"]),  # bound_conflict: ruling 22
 ])
 def test_lifecycle_relations_follow_the_table(rel, usages, reasons):
     got = [(u["role"], u["direction"], u["min"]) for u in S.usages(rel)]

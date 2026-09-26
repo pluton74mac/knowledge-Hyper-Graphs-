@@ -32,7 +32,8 @@ Every machine-readable part is in [design-examples/](design-examples/). The prot
 
 ### 1.1 The design in brief
 
-- **C1 `khg-record/1.0.0`.** A `.khg.json` or `.khg.jsonl` container holds `entity` and `hyperedge` records.
+- **C1 `khg-record/1.1.0`** (ruling 22; a container without its features stays 1.0.0). A `.khg.json` or
+  `.khg.jsonl` container holds `entity` and `hyperedge` records.
   - A hyperedge is a relation plus bindings `{bid, role, value, position?, direction?, extensions?}`.
   - Slot classes (core, qualifier, time, meta) come from the relation-type schema.
   - Values: entity, typed literal, fact reference, `somevalue`, `novalue`, and `unbound` in goals.
@@ -254,7 +255,11 @@ Every check passes. It found:
 
 The prototypes are research code, not the package (see Prototype reuse).
 
-## 2. C1 record format (`khg-record/1.0.0`)
+## 2. C1 record format (`khg-record/1.1.0`)
+
+Version 1.1.0 (ruling 22, from P7 and P3a) adds, all opt-in: separator key roles (§2.5), the `monotone: false` flag
+of epistemic qualifiers (§2.4, §2.9), the `bound_conflict` reason of `khg:disputes` (§2.7), and the canonical
+lexical forms that `normalize` writes (§2.3). Every 1.0.0 file keeps its meaning, its keys and its digests.
 
 ### 2.1 Container, canonical JSON and names
 
@@ -274,7 +279,7 @@ structural (F10).
 
 | Header field | Req. | Meaning |
 |---|---|---|
-| `kind`, `format` | yes | `"header"`, `"khg-record/1.0.0"` (V001, §11) |
+| `kind`, `format` | yes | `"header"`, and `"khg-record/1.0.0"`, or `"khg-record/1.1.0"` for a container that uses a 1.1 feature: a `bound_conflict` dispute (`record.required_format`; V001, §11) |
 | `document_id` | yes | an id |
 | `schema` | yes | `{id, version, sha256}`, where `sha256 = digest("khg-schema/1", schema document)` (D009) |
 | `content` | yes | `snapshot`, or `history` (every version of every id) |
@@ -366,6 +371,19 @@ Gregorian line. Every other literal is its canonical form. The canonical form ke
 Julian calendar stays Julian), so the written date is never lost. Julian `1582-10-05` and Gregorian `1582-10-15`
 therefore have one identity, and keys, dedup and scoring treat them as one value.
 
+**Canonical lexical forms** (ruling 22, from P3a's converter). A decimal is written as C004's pattern says: a sign,
+no leading or trailing zeros, no exponent, and zero as `+0`. A time literal's components below its precision are
+zero (S006). `record.normalize` writes both, since every producer that reads decimals or dates from another format
+meets them: a decimal given as `1.50`, `-0`, `.5`, `1.5e3` or a JSON number (a float by its shortest decimal
+writing) becomes `+1.5`, `+0`, `+0.5`, `+1500` or the number's decimal string, in quantity amounts and bounds and in
+geo coordinates and precisions; and `+1990-01-01T00:00:00Z` at year precision becomes `+1990-00-00T00:00:00Z`, which
+has the same window. Anything else is kept as written. Validation reads what was written, so it still refuses those
+writings (C004, S006; MC094 is unchanged); `put` and `load` normalise first, as they already did for NFC, the case
+of a language tag and the default calendar, and store the canonical form. P3a's two other normalisations stay in
+its Wikidata importer: rewriting entity, unit and globe URIs as `wd:` ids is a naming convention of that source (C1
+ids are opaque, so it cannot know that two ids name one thing), and dropping a repeated filler deletes a binding,
+which evidence may name by its bid, so the validator's S014 stays the signal for every other producer.
+
 **Precision windows** (normative; critique CONS-01). A time literal with written year y denotes the instants
 [lo, hi). The window is computed in the literal's calendar and mapped to the proleptic Gregorian line through the
 Julian day number. y is a historical year, and its astronomical year is a = y for y > 0 and a = y + 1 for y < 0.
@@ -406,7 +424,10 @@ them.
 
 `meta` is only for bindings that do not change what the fact says (critique CONS-16). Epistemic modifiers such as
 Wikidata's P5102 (nature of statement) and P1480 (sourcing circumstances) are qualifiers. So "born c. 1643
-(presumably)" keeps a different `content_key` from the plain statement.
+(presumably)" keeps a different `content_key` from the plain statement. Since 1.1 a schema may declare such a usage
+`monotone: false` (§3; ruling 22, P7's D4 b): adding or dropping one of its fillers weakens or strengthens the claim
+rather than refining it, so refinement keeps the role's size (§2.9) and "c. 1140" neither refines nor generalises
+"1140".
 
 **Arity** follows B's rule (a ruling). It counts the core and qualifier bindings whose value is an entity, a
 literal, a fact or `somevalue`, and a repeated filler counts once per binding. Reported beside it:
@@ -444,8 +465,14 @@ confidence.
 
 ### 2.5 Keys and the key invariant
 
-A relation may declare `key: {roles, temporal, on_collision}`.
+A relation may declare `key: {roles, separators?, temporal, on_collision}`.
 - The roles must be core or qualifier roles (M003).
+- **Separators** (1.1; ruling 22, P7's D4 a) are further core or qualifier roles (M003; never a key role too) that
+  work as Wikidata's separators (P4155) do: a fact without a separator is keyed by its absence, which hashes as its
+  own value (§2.9), instead of making the digest null. So `{roles: [subject], separators: [P518]}` makes two facts
+  without P518 collide, and a fact with P518 = X another key. A present separator hashes as a key role, and a key
+  without separators hashes exactly as in 1.0. A special or unbound separator value makes the digest null, as for
+  a key role.
 - `temporal` needs an interval time model (M011).
 - `on_collision` is one of `close_older`, `supersede`, `dispute` (the default) or `reject`. `supersede` on a
   temporal key is M017, because a succession is a world change, not a belief revision (F7).
@@ -611,7 +638,7 @@ There are four axes:
 |---|---|---|---|
 | `khg:supersedes` | `khg:superseding` (tail, 1..n), `khg:superseded` (head, 1..n) | `correction`, `duplicate`, `refinement`, `conflation`, `schema_migration`, `other` | `correction` keeps the relation and the key digest; `duplicate` needs equal `content_key`; `refinement` needs the superseding fact to refine the superseded one (D011); acyclic (D012) |
 | `khg:retracts` | `khg:retracted` (head, 1..n) | `withdrawn`, `unsupported`, `other` | |
-| `khg:disputes` | `khg:disputed` (head, 2..n) | `key_conflict`, `negation_conflict`, `curator`, `other` | |
+| `khg:disputes` | `khg:disputed` (head, 2..n) | `key_conflict`, `negation_conflict`, `curator`, `other`, and since 1.1 `bound_conflict` (the same fact restated with other dates; P7's D1 and D4 c) | |
 
 **Where D011 is checked** (critique SEM-11). There are three places:
 - **The `supersede` event.** Its superseding facts must be asserted when the event runs (S-LIFE-004). Events
@@ -681,7 +708,7 @@ form writes:
 | `id` | opaque, chosen by the writer | references, versions |
 | `content_key` | `khg-content-key/1` over `{relation, bindings}`: the core, qualifier and time bindings as `[role, position, value identity]`, sorted | dedup (P3a), stability (P9) |
 | `core_key` | the same over the core bindings (`khg-core-key/1`) | leak check, verdict key |
-| `key_digest` | `khg-key-digest/1` over `{relation, key bindings}`. It is `null` without a key, when a key role is absent, or when a key role holds a special or unbound value | key index, collisions |
+| `key_digest` | `khg-key-digest/1` over `{relation, key bindings}`, the bindings of the key roles and of the separators, with `[role, null, {"absent": true}]` for each absent separator (1.1). It is `null` without a key, when a key role is absent, or when a key role or a separator holds a special or unbound value | key index, collisions |
 | `event_hash` | `khg-event/1` over `{content_key, doc (doc_sha256, else doc_id), selectors (sorted), activity {agent, agent_version, model, model_version, prompt_id, skill_id}, reference? (sorted), inference?}` | verdicts; the 1.1 lint L009 |
 
 `event_hash` (critique SEM-12, CONS-17):
@@ -707,7 +734,8 @@ The other domains are `khg-literal-node/1`, `khg-literal-binding/1`, `khg-specia
   entity, literal or fact, or by §2.3. `novalue` refines only `novalue`.
 - For facts, f′ ⊑ f holds when both have the same relation and every core, qualifier and time binding of f has a
   refining binding in f′. The binding must have the same role, and the same position for an ordered role, and the
-  matching is injective. **Meta bindings are ignored** (critique SEM-20). `complete` roles keep their size.
+  matching is injective. **Meta bindings are ignored** (critique SEM-20). `complete` roles, and since 1.1 roles
+  declared `monotone: false`, keep their size.
 - Mutual refinement means equal `content_key`, that is, a duplicate.
 - `identity.relate(a, b, *, schema)` (non-normative, for P7) returns one of the seven labels of [DB §2.19]:
   `duplicate`, `refines`, `generalises`, `distinct`, `key_conflict`, `key_timeline` or `negation_conflict`. Its
@@ -717,7 +745,7 @@ The other domains are `khg-literal-node/1`, `khg-literal-binding/1`, `khg-specia
 - keep the relation;
 - keep every binding **by bid**, with the same role and position and a refining value. The only non-refining
   change is `end_validity` replacing a `novalue` end;
-- add bindings only where the role is not `complete`;
+- add bindings only where the role is not `complete` and, since 1.1, not `monotone: false`;
 - keep every earlier evidence record unchanged, `event_hash` included, and may append new ones;
 - change only `rank`, `rank_reason`, `visibility`, `confidence`, `source_text` and `extensions` among the other
   fields, plus `goal` while the status is `goal`.
@@ -835,7 +863,7 @@ These are functions of `khg_contracts.record`. Their output formats are part of 
 }
 ```
 
-## 3. Relation-type schema language (`khg-relation-schema/1.0.0`)
+## 3. Relation-type schema language (`khg-relation-schema/1.1.0`)
 
 The schema language is our own JSON, shaped like LinkML [R04 O10, O11] (ruling). The M layer checks it with a
 meta-schema and Python checks (M001–M017). A schema can be embedded in a C1 container as a `relation-schema`
@@ -843,7 +871,7 @@ record, or inlined in HIF as `khg-schema-document`. HIF references it by id and 
 
 | Field | Meaning |
 |---|---|
-| `kind`, `format`, `id`, `version`, `label` | `"relation-schema"`, `"khg-relation-schema/1.0.0"`. The schema is referenced as `"<id>/<version>"`, and the version is semver (M004) |
+| `kind`, `format`, `id`, `version`, `label` | `"relation-schema"`, and `"khg-relation-schema/1.0.0"`, or `"khg-relation-schema/1.1.0"` for a document that uses `separators` or `monotone` (`schema.required_format`; ruling 22). The schema is referenced as `"<id>/<version>"`, and the version is semver (M004) |
 | `entity_types` | `[{id, parents?}]`, a DAG (M016) |
 | `roles` | the **global** role vocabulary (F4): `[{id, label?, aliases?, mappings?}]`. The `khg:` namespace is reserved (M008) |
 | `relations` | `[{id, kind?, label?, mappings?, primary?, time?, key?, constraints?, roles}]`. `kind` is `fact` in v1; `rule` comes in 1.1 (M015 before then). `primary {subject, object}` names two core usages with max 1 (M012) |
@@ -853,7 +881,8 @@ record, or inlined in HIF as `khg-schema-document`. HIF references it by id and 
 | usage `fillers` | a disjunction of `{entity: [types]}`, `{literal: datatype, units?, precision_min?}` and `{fact: [relations]}`. A `fact` filler makes the relation nestable |
 | usage `min`, `max`, `ordered`, `complete` | cardinality (`max: null` is unbounded; M010); positions 1..n; a closed filler set (needs min > 0; M014) |
 | usage `direction`, `somevalue`, `novalue`, `label` | the default direction; whether the special values are allowed (default true); a local name |
-| `key` | `{roles, temporal, on_collision}` (§2.5; M003, M011, M017) |
+| usage `monotone` (1.1) | default true; `false` only on a qualifier usage (M015): an epistemic qualifier such as Wikidata P1480 or P5102, whose fillers refinement and new versions keep in number (§2.4, §2.9) |
+| `key` | `{roles, separators?, temporal, on_collision}` (§2.5; M003, M011, M017; `separators` since 1.1) |
 | `constraints` | `{type ∈ requires, excludes, at_least_one_of, must_differ, must_agree; roles; severity ∈ error, warning}` (S024). Any other severity is M015 |
 
 - A **symmetric** role is one usage with `max > 1` that is not `ordered`, such as `married.spouse`.
@@ -1076,7 +1105,7 @@ codes F001–F005 and F007–F014 are planned, not registered (§8.1; critique S
 | `role-convention` | `"1.0.0"` | yes (R003) |
 | `role-vocabulary` | `{role: {label?, ...}}` | no |
 | `hif-schema`, `hif-schema-sha256` | the raw URL pinned at commit `b691a3d…`; `"sha256:639466b7…2196"` | yes (P001; P009 when not the pinned value) |
-| `khg-profile`, `khg-record` | `"khg-hif/1.0.0"`, or `"khg-hif/1.1.0"` for a file that names what it does not hold (§4.6); `"khg-record/1.0.0"` | yes (P001; V001 for an unknown version) |
+| `khg-profile`, `khg-record` | `"khg-hif/1.0.0"`, or `"khg-hif/1.1.0"` for a file that names what it does not hold (§4.6); `"khg-record/1.0.0"`, or `"khg-record/1.1.0"` as the container's header says | yes (P001; V001 for an unknown version) |
 | `khg-schema`, `khg-schema-sha256` | `"<id>/<version>"` and its digest | yes (P001; D009) |
 | `khg-document-id` | the header's `document_id` | yes (P001) |
 | `khg-literal-nodes` | `"shared"` or `"per_binding"` | yes (P001, P009) |
@@ -1457,7 +1486,7 @@ class Store(Protocol):
 
 class StoreInfo(TypedDict):
     interface_version: str          # "khg-store/1.0.0"
-    record_format: str              # "khg-record/1.0.0"
+    record_format: str              # "khg-record/1.1.0": the newest C1 the store reads and writes
     capabilities: frozenset[str]
     store_id: str
     header: dict | None             # the kept document header (§6.2)
@@ -1477,7 +1506,9 @@ class Walk(TypedDict): start: str; direction: str; steps: list[dict]; terminal: 
 - `NotFound`;
 - `CapabilityMissing(flag)`.
 
-`find_by_key` raises `ValueError` when `key` does not bind exactly the key roles (critique CONS-25).
+`find_by_key` raises `ValueError` when `key` does not bind exactly the key roles (critique CONS-25). With a 1.1
+key it binds the key roles and any of the separators: an omitted separator is absent, as a fact without it hashes
+(§2.5). A key without separators keeps the 1.0 rule.
 
 ### 6.2 Semantics, events and header state
 
@@ -1509,6 +1540,8 @@ class Walk(TypedDict): start: str; direction: str; steps: list[dict]; terminal: 
 - `export(header=...)` overrides it.
 - A store without a kept header exports `document_id` `"store:<store_id>"`, the schema's reference, and a
   `complete` computed by the D002 rule (S-EXP-009).
+- The export's `format` is the lowest stamp its records need (`record.required_format`): a header that says
+  `khg-record/1.0.x` is raised to `khg-record/1.1.0` when an exported record uses a 1.1 feature (ruling 22).
 - Every backend keeps a one-row metadata table or graph for the header.
 
 **Reads.**
@@ -2243,7 +2276,7 @@ src/khg_contracts/
   examples.py           # python -m khg_contracts.examples DIR writes design-examples/ from data/
   cli.py                # the four console scripts (§10.4)
   data/                 # the single source of packaged files, read with importlib.resources (critique PACKAGE-DATA)
-    schemas/            # khg-record-1.0.0, khg-relation-schema-1.0.0, khg-hif-1.0.0, khg-queue-1.0.0,
+    schemas/            # khg-record-1.0.0, khg-relation-schema-1.1.0, khg-hif-1.0.0, khg-queue-1.0.0,
                         #   khg-c4-items-0.2.0, khg-c5-io-1.0.0 (.schema.json); the vendored
                         #   hif_schema_v0.1.0.json (sha256 639466b7…2196) and its HIF-LICENSE.txt
     error-codes.json, malformed-cases.json
@@ -2274,7 +2307,8 @@ The table gives every name that §1.3 and G1–G3 call (critique API-GAPS, CONS-
 | `record.read_container` | `(path) -> dict`, from `.khg.json` or `.khg.jsonl` by suffix; any other suffix raises `ValueError` | J, V001 |
 | `record.iter_jsonl` | `(path) -> Iterator[dict]`: the header, then records, streamed | J |
 | `record.write_container` | `(container, path, *, format="jsonl" \| "json") -> None`: canonical order, after the V and C checks; a path whose suffix is not the one `format` implies (`.json` or `.jsonl`) raises `ValueError` | V001, C |
-| `record.normalize` | `(record, schema) -> dict`: canonical form and literal normalisation (NFC, lower-case `lang`, `supports` defaults); no checks | |
+| `record.normalize` | `(record, schema) -> dict`: canonical form and literal normalisation (NFC, lower-case `lang`, `supports` defaults; since 1.1 the canonical decimal form and the components below a time's precision, §2.3); no checks | |
+| `record.required_format`, `schema.required_format` | `(container or records) -> "khg-record/1.0.0" \| "khg-record/1.1.0"`; `(schema document) -> "khg-relation-schema/1.0.0" \| "…/1.1.0"`: the lowest stamp a writer puts (§11.2; ruling 22) | |
 | `record.derive` | `(record, schema) -> dict`: the `derived` block (arity family, three keys, `valid_time`) | `ValueError` on an invalid record |
 | `record.content_key`, `core_key`, `key_digest`, `arity`, `valid_time` | `(record, schema)` → `str`; `str`; `str \| None`; `{arity, core_arity, statement_arity, distinct_fillers}` or `{n_bound, n_unbound}`; the §2.6 dict | as `derive` |
 | `record.value_identity`, `record.window` | `(value) -> dict`; `(time literal) -> (lo, hi)` instants | S006 |
@@ -2357,8 +2391,8 @@ has one smoke test in `tests/cli/`.
 
 | Artefact | Format id | Versioned with |
 |---|---|---|
-| C1 | `khg-record/1.0.0` | itself |
-| schema language, HIF profile | `khg-relation-schema/1.0.0`, `khg-hif/1.1.0` (ruling 19; files that do not use 1.1 are stamped 1.0.0) | C1 |
+| C1 | `khg-record/1.1.0` (ruling 22; containers that do not use 1.1 are stamped 1.0.0) | itself |
+| schema language, HIF profile | `khg-relation-schema/1.1.0` (ruling 22), `khg-hif/1.1.0` (ruling 19); files that do not use a 1.1 feature are stamped 1.0.0 | C1 |
 | upstream convention | `role-convention` 1.0.0 (four rules) | itself; minor versions only |
 | C3 | `khg-queue/1.0.0` | C1, in lockstep (PLAN §7) |
 | C2 and its scenarios | `khg-store/1.0.0` (`info().interface_version`), `khg-scenario/1.0.0` | their own semver |
@@ -2785,6 +2819,44 @@ scenarios is unchanged.
     shapes only gain keys: the memory report's `hits` and `outranked` configuration, the stability report's pair
     classes and `pooled_delta_order`. The value of `order_effect.delta_order` changes: that is the fix. P9's
     fixture test that pinned −61/378 moves to `pooled_delta_order` (a patch is proposed in the impl note).
+
+22. **C1 `khg-record` 1.1.0 and the schema language `khg-relation-schema` 1.1.0 (P7's D4; P3a's normalisations).**
+    Four additions, each opt-in, so every 1.0.0 file keeps its meaning, its keys and its digests (§2.3, §2.4, §2.5,
+    §2.7, §2.9, §3):
+    - **Separator key roles** (P7 D4 a): `key.separators`, core or qualifier roles whose absence hashes as its own
+      value, `[role, null, {"absent": true}]`, instead of nulling the digest, as Wikidata's separators (P4155) work. A
+      key without separators hashes exactly as in 1.0 (the fixture's digests, G1's goldens and the 114 scenarios are
+      unchanged), and a present separator hashes as a key role. `find_by_key` binds the key roles and any of the
+      separators; an omitted separator is absent. E-M2 with `core_roles="key"` counts the separators too. P3a can
+      key a memory relation on `{subject}` with separators such as P518, P1001 or P3831, which P7 DESIGN §7.1 item 7
+      held back until this release.
+    - **Non-monotone qualifiers** (P7 D4 b): `monotone: false` on a qualifier usage (M015 on another slot).
+      Refinement keeps such a role's size, as for a complete role, and a new version adds no filler to it (D013):
+      "c. 1140" neither refines nor generalises "1140", so `keys.classify` and `identity.relate` no longer call the
+      pair a refinement (a merge), but distinct facts or, on one key, a key conflict.
+    - **`bound_conflict`** (P7 D4 c, after its D1): a reason of `khg:disputes`. A container that holds such a record
+      is stamped `khg-record/1.1.0` (`record.required_format`), and the store's export does so, so a 1.0 reader
+      refuses it with V001 rather than S026.
+    - **Normalisation** (P3a's proposal, part C): of the five normalisations of P3a's converter, `normalize` adopts
+      the three that are canonical forms of C1 literals, which every producer meets: decimals (item 1), the
+      components below a time's precision (item 2), and coordinates given as JSON numbers (item 3, the decimal rule
+      applied to geo values). The other two stay in the importer, for the reasons of §2.3: `wd:` ids for Wikidata
+      URIs (item 4) are one source's naming convention, and dropping a repeated filler (item 5) deletes a binding
+      that evidence may name. Validation still refuses the other writings (C004, S006); `put` and `load` normalise
+      first, so they accept them and store the canonical form, as they already did for NFC and a language tag's
+      case. That widens what a write accepts without changing anything it accepted before.
+
+    **Versions.** `khg-record` 1.0.0 → **1.1.0** and `khg-relation-schema` 1.0.0 → **1.1.0**: optional fields, an
+    enum value and a reader that takes more are minor (§11.2). The reader takes 1.0.x and 1.1.x wherever a C1 stamp
+    appears (containers, HIF metadata, queue and C4 headers). Writers stamp the lowest version whose features a
+    document uses (`record.required_format`, `schema.required_format`), so the fixture, the migrated sample and every
+    packaged file stay 1.0.0. The record schema `khg-record-1.0.0.schema.json` does not change (as the HIF profile
+    schema did not in ruling 19); the meta-schema `khg-relation-schema-1.1.0.schema.json` replaces the 1.0.0 file.
+    `StoreInfo.record_format` is `khg-record/1.1.0`. The new checks use existing codes (M003 for separators, M015 for
+    `monotone`, D013 for a filler added to a non-monotone role), whose registry meanings say so. C2 `khg-store/1.0.0`
+    and its 114 scenarios are unchanged: no method changes its signature, and a store built on `StoreBase` or
+    `TableStore` reads 1.1 keys through `record.key_digest`. A backend that checks `find_by_key`'s roles itself (P1's
+    `NativeReads`) must take the separators too before it holds a 1.1 schema (a four-line change, in the impl note).
 
 **Clarifications the review made normative.** Each is implemented and tested; the notes give the evidence.
 - §2.7 and D014: a history may go from `superseded` to `disputed` in one version (an undone supersession resolved

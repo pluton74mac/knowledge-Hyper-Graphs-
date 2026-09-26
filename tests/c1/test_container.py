@@ -82,7 +82,7 @@ def test_jsonl_lines_end_at_newline_only(tmp_path):
 
 def test_read_container_checks_the_version(tmp_path):
     bad = copy.deepcopy(C1)
-    bad["header"]["format"] = "khg-record/1.1.0"
+    bad["header"]["format"] = "khg-record/1.2.0"  # 1.1 is read (ruling 22)
     p = tmp_path / "newer.khg.json"
     p.write_text(jsonio.canonical(bad), encoding="utf-8")
     assert raises(record.read_container, p).codes == ("KHG-V001",)
@@ -211,7 +211,7 @@ def test_a_history_whose_carried_evidence_omits_supports_stays_valid_when_writte
 
 
 def test_write_refuses_another_version_and_writes_nothing(tmp_path):
-    for fmt in ("khg-record/2.0.0", "khg-record/1.1.0", "khg-record", None):
+    for fmt in ("khg-record/2.0.0", "khg-record/1.2.0", "khg-record", None):
         bad = copy.deepcopy(C1)
         bad["header"]["format"] = fmt
         out = tmp_path / "x.khg.jsonl"

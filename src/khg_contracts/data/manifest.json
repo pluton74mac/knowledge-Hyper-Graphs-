@@ -1,7 +1,7 @@
 {
  "algorithm": "sha256",
  "files": {
-  "error-codes.json": "sha256:81c8ea3e5782c5c18b605685448da10fb8cf131748a1d4381ed24b2e11b93dde",
+  "error-codes.json": "sha256:602bba9577218593787acf03a904b964c5d6ace0a75e10a5b04c280e818b1ca1",
   "fixture/action-log.json": "sha256:1214194ae115f3462cafb4f2afa62aca4c56696fa7559df2d1c0d875d3ca4dda",
   "fixture/c4-items-0.2.0.jsonl": "sha256:7b763dcf8abc54b5ceee07d77d4cdf5e27a158d41327777b285a4b78df43241c",
   "fixture/c4-items.jsonl": "sha256:697b1d568d9ea7539fe81dca31263ee0254b9a763afb9d6e50968ad40fdb0666",
@@ -151,6 +151,6 @@
   "schemas/khg-hif-1.0.0.schema.json": "sha256:ad9b3074c1e9f2f61c6791ed8c5d24b17a1b6d02fff1973ca36097efc75183e4",
   "schemas/khg-queue-1.0.0.schema.json": "sha256:baac084558698b4d8210d8a6922ae659849819f4c3adcef66d6dd124a7d79eb9",
   "schemas/khg-record-1.0.0.schema.json": "sha256:965990c518fa887deeb24c0b2b775029ac3779651abf49619827207a4b65c11a",
-  "schemas/khg-relation-schema-1.0.0.schema.json": "sha256:bd321ee2318ea553d5b079e3800bc6f4f9dbcd50acab4b02dcf78034496ee36e"
+  "schemas/khg-relation-schema-1.1.0.schema.json": "sha256:441e3a660de10e959391aed94f3f3e3666f431941c83f919b7624c7d37e400b3"
  }
 }

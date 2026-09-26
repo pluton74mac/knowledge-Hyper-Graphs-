@@ -12,7 +12,7 @@ from khg_contracts.errors import (CapabilityMissing, ConcurrencyError, KeyCollis
                                   ValidationError, VersionError, make_finding)
 
 SECTION_11_1 = {
-    "khg-record": "1.0.0", "khg-relation-schema": "1.0.0", "khg-hif": "1.1.0", "role-convention": "1.0.0",
+    "khg-record": "1.1.0", "khg-relation-schema": "1.1.0", "khg-hif": "1.1.0", "role-convention": "1.0.0",
     "khg-queue": "1.0.0", "khg-store": "1.0.0", "khg-scenario": "1.0.0", "khg-scorers": "1.1.0",
     "khg-c5-io": "1.0.0", "khg-c4-items": "0.2.0", "khg-render": "1", "khg-migration-report": "1.0.0",
     "khg-codes": "1.0.0", "khg-malformed-cases": "1.0.0",

@@ -16,7 +16,7 @@ def test_the_mirror_map_covers_147_packaged_files():
     m = examples.example_map()
     assert len(m) == 147  # c4-items-0.2.0.jsonl: ruling 20
     assert set(m.values()) <= set(data.iter_files())
-    assert "schemas/hif_schema_v0.1.0.json" not in m and "schemas/khg-relation-schema-1.0.0.schema.json" not in m
+    assert "schemas/hif_schema_v0.1.0.json" not in m and "schemas/khg-relation-schema-1.1.0.schema.json" not in m
     assert m["conformance-scenarios/index.json"] == "scenarios/index.json"
     assert m["fixture.c1.json"] == "fixture/fixture.c1.json" and m["sample.khg.json"] == "sample/sample.khg.json"
 

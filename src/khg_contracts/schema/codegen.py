@@ -3,7 +3,7 @@
 ``python -m khg_contracts.schema.codegen OUTDIR`` writes:
 
 - ``khg-record-1.0.0.schema.json``          C1 containers, records and JSONL lines (layer C)
-- ``khg-relation-schema-1.0.0.schema.json`` relation-type schema documents (layer M, structural part)
+- ``khg-relation-schema-1.1.0.schema.json`` relation-type schema documents (layer M, structural part)
 - ``khg-hif-1.0.0.schema.json``             the HIF profile: ``allOf`` the vendored HIF schema plus the P rules
 - ``khg-c4-items-0.2.0.schema.json``        C4 item lines (layer I); ``$ref``s into khg-record by ``tag:`` URI
 - ``khg-c5-io-1.0.0.schema.json``           C5 system outputs
@@ -382,8 +382,9 @@ def _record() -> dict[str, Any]:
 
 
 def _relation_schema() -> dict[str, Any]:
-    """The meta-schema of ``khg-relation-schema/1.0.0`` (§3). Structural checks only; M002, M003, M005, M007 (naming),
-    M008-M013, M016 and M017 need the whole document and run in Python (``khg_contracts.schema.checks``)."""
+    """The meta-schema of ``khg-relation-schema/1.1.0`` (§3; it checks 1.0.x documents too). Structural checks only;
+    M002, M003, M005, M007 (naming), M008-M013, M016 and M017 need the whole document and run in Python
+    (``khg_contracts.schema.checks``)."""
     def string() -> dict[str, str]:
         return {"type": "string"}
 
@@ -433,9 +434,12 @@ def _relation_schema() -> dict[str, Any]:
                            "max": {"type": ["integer", "null"], "minimum": 1},
                            "ordered": {"type": "boolean"}, "complete": {"type": "boolean"},
                            "direction": {"enum": ["tail", "head"]},
-                           "somevalue": {"type": "boolean"}, "novalue": {"type": "boolean"}, "label": string()},
+                           "somevalue": {"type": "boolean"}, "novalue": {"type": "boolean"}, "label": string(),
+                           "monotone": {"type": "boolean"}},  # 1.1 (ruling 22): false only on a qualifier usage
             "allOf": [iff({"complete": {"const": True}}, ["complete"],
                           X("KHG-M014", {"properties": {"min": {"minimum": 1}}})),
+                      iff({"monotone": {"const": False}}, ["monotone"],
+                          X("KHG-M015", {"properties": {"slot": {"const": "qualifier"}}})),
                       iff({"slot": {"const": "time"}}, ["slot"],
                           X("KHG-M007", {"properties": {"max": {"const": 1},
                                                         "fillers": {"maxItems": 1, "items": {
@@ -449,6 +453,9 @@ def _relation_schema() -> dict[str, Any]:
         "key": {"type": "object", "required": ["roles"], "additionalProperties": False,
                 "properties": {"roles": {"type": "array", "items": LOCAL("vocab_id"), "minItems": 1,
                                          "uniqueItems": True},
+                               # 1.1 (ruling 22): roles whose absence hashes as its own value
+                               "separators": {"type": "array", "items": LOCAL("vocab_id"), "minItems": 1,
+                                              "uniqueItems": True},
                                "temporal": {"type": "boolean"}, "on_collision": {"enum": POLICIES}}},
         "primary": X("KHG-M012", {"type": "object", "required": ["subject", "object"], "additionalProperties": False,
                                   "properties": {"subject": {"type": "string", "minLength": 1},
@@ -463,8 +470,8 @@ def _relation_schema() -> dict[str, Any]:
             "allOf": [X("KHG-M001", {"required": ["roles"]})]},
     }
     return X("KHG-M015", {
-        "$schema": "http://json-schema.org/draft-07/schema#", "$id": TAG + "khg-relation-schema/1.0.0",
-        "title": "Relation-type schema document khg-relation-schema/1.0.0 (layer M, structural part; the M checks "
+        "$schema": "http://json-schema.org/draft-07/schema#", "$id": TAG + "khg-relation-schema/1.1.0",
+        "title": "Relation-type schema document khg-relation-schema/1.1.0 (layer M, structural part; the M checks "
                  "that need the whole document run in Python)",
         "type": "object", "required": ["kind", "format", "id", "version", "roles", "relations"],
         "additionalProperties": False,
@@ -799,7 +806,7 @@ def _c5io() -> dict[str, Any]:
 
 BUILDERS: dict[str, Callable[[], dict[str, Any]]] = {
     "khg-record-1.0.0": _record,
-    "khg-relation-schema-1.0.0": _relation_schema,
+    "khg-relation-schema-1.1.0": _relation_schema,
     "khg-hif-1.0.0": _profile,
     "khg-c4-items-0.2.0": _c4,
     "khg-c5-io-1.0.0": _c5io,

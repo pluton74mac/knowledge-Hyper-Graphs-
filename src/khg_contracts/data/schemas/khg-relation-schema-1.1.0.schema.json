@@ -1,7 +1,7 @@
 {
  "$schema": "http://json-schema.org/draft-07/schema#",
- "$id": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0",
- "title": "Relation-type schema document khg-relation-schema/1.0.0 (layer M, structural part; the M checks that need the whole document run in Python)",
+ "$id": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0",
+ "title": "Relation-type schema document khg-relation-schema/1.1.0 (layer M, structural part; the M checks that need the whole document run in Python)",
  "type": "object",
  "required": [
   "kind",
@@ -39,31 +39,31 @@
   "entity_types": {
    "type": "array",
    "items": {
-    "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/entity_type"
+    "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/entity_type"
    },
    "x-khg-code": "KHG-M015"
   },
   "roles": {
    "type": "array",
    "items": {
-    "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/role"
+    "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/role"
    },
    "x-khg-code": "KHG-M015"
   },
   "relations": {
    "type": "array",
    "items": {
-    "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/relation"
+    "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/relation"
    },
    "x-khg-code": "KHG-M015"
   },
   "default_time": {
-   "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/time_model"
+   "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/time_model"
   },
   "confidence_scales": {
    "type": "array",
    "items": {
-    "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/confidence_scale"
+    "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/confidence_scale"
    },
    "x-khg-code": "KHG-M015"
   }
@@ -95,12 +95,12 @@
    "additionalProperties": false,
    "properties": {
     "id": {
-     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/vocab_id"
+     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/vocab_id"
     },
     "parents": {
      "type": "array",
      "items": {
-      "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/vocab_id"
+      "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/vocab_id"
      },
      "uniqueItems": true,
      "x-khg-code": "KHG-M015"
@@ -116,7 +116,7 @@
    "additionalProperties": false,
    "properties": {
     "id": {
-     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/vocab_id"
+     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/vocab_id"
     },
     "label": {
      "type": "string",
@@ -131,7 +131,7 @@
      "x-khg-code": "KHG-M015"
     },
     "mappings": {
-     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/mappings"
+     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/mappings"
     }
    },
    "x-khg-code": "KHG-M015"
@@ -147,7 +147,7 @@
    "additionalProperties": false,
    "properties": {
     "id": {
-     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/vocab_id"
+     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/vocab_id"
     },
     "kind": {
      "const": "bounded",
@@ -250,7 +250,7 @@
      "entity": {
       "type": "array",
       "items": {
-       "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/vocab_id"
+       "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/vocab_id"
       },
       "uniqueItems": true,
       "x-khg-code": "KHG-M015"
@@ -313,7 +313,7 @@
        "fact": {
         "type": "array",
         "items": {
-         "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/vocab_id"
+         "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/vocab_id"
         },
         "uniqueItems": true,
         "x-khg-code": "KHG-M015"
@@ -341,7 +341,7 @@
    "additionalProperties": false,
    "properties": {
     "role": {
-     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/vocab_id"
+     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/vocab_id"
     },
     "slot": {
      "enum": [
@@ -356,7 +356,7 @@
      "type": "array",
      "minItems": 1,
      "items": {
-      "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/filler"
+      "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/filler"
      },
      "x-khg-code": "KHG-M015"
     },
@@ -399,6 +399,10 @@
     "label": {
      "type": "string",
      "x-khg-code": "KHG-M015"
+    },
+    "monotone": {
+     "type": "boolean",
+     "x-khg-code": "KHG-M015"
     }
    },
    "allOf": [
@@ -423,6 +427,29 @@
        }
       },
       "x-khg-code": "KHG-M014"
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "monotone": {
+        "const": false,
+        "x-khg-code": "KHG-M015"
+       }
+      },
+      "required": [
+       "monotone"
+      ],
+      "x-khg-code": "KHG-M015"
+     },
+     "then": {
+      "properties": {
+       "slot": {
+        "const": "qualifier",
+        "x-khg-code": "KHG-M015"
+       }
+      },
+      "x-khg-code": "KHG-M015"
      }
     },
     {
@@ -489,7 +516,7 @@
     "roles": {
      "type": "array",
      "items": {
-      "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/vocab_id"
+      "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/vocab_id"
      },
      "minItems": 2,
      "uniqueItems": true,
@@ -515,7 +542,16 @@
     "roles": {
      "type": "array",
      "items": {
-      "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/vocab_id"
+      "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/vocab_id"
+     },
+     "minItems": 1,
+     "uniqueItems": true,
+     "x-khg-code": "KHG-M015"
+    },
+    "separators": {
+     "type": "array",
+     "items": {
+      "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/vocab_id"
      },
      "minItems": 1,
      "uniqueItems": true,
@@ -566,7 +602,7 @@
    "additionalProperties": false,
    "properties": {
     "id": {
-     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/vocab_id"
+     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/vocab_id"
     },
     "kind": {
      "enum": [
@@ -579,21 +615,21 @@
      "x-khg-code": "KHG-M015"
     },
     "mappings": {
-     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/mappings"
+     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/mappings"
     },
     "primary": {
-     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/primary"
+     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/primary"
     },
     "time": {
-     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/time_model"
+     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/time_model"
     },
     "key": {
-     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/key"
+     "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/key"
     },
     "constraints": {
      "type": "array",
      "items": {
-      "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/constraint"
+      "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/constraint"
      },
      "x-khg-code": "KHG-M015"
     },
@@ -601,7 +637,7 @@
      "type": "array",
      "minItems": 1,
      "items": {
-      "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.0.0#/definitions/usage"
+      "$ref": "tag:khg-contracts,2026:schema/khg-relation-schema/1.1.0#/definitions/usage"
      },
      "x-khg-code": {
       "default": "KHG-M015",

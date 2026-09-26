@@ -31,7 +31,7 @@ __all__ = [
 ]
 
 INTERFACE_VERSION = "khg-store/1.0.0"
-RECORD_FORMAT = "khg-record/1.0.0"
+RECORD_FORMAT = "khg-record/1.1.0"  # the newest C1 the reference store reads and writes (ruling 22)
 CORE_METHODS = ("info", "put", "apply", "load", "get", "history", "incident", "find", "iter_records")
 DERIVED_METHODS = ("get_many", "degree", "find_by_key", "supersession_walk", "export", "close")
 METHODS = CORE_METHODS + DERIVED_METHODS
@@ -62,7 +62,7 @@ class StoreInfo(TypedDict):
     """What ``info()`` returns."""
 
     interface_version: str  # "khg-store/1.0.0"
-    record_format: str  # "khg-record/1.0.0"
+    record_format: str  # "khg-record/1.1.0"
     capabilities: frozenset[str]
     store_id: str
     header: dict[str, Any] | None  # the kept document header (§6.2)

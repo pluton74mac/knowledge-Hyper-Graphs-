@@ -17,8 +17,8 @@ __version__ = "1.0.0.dev1"
 #: Every format id of DESIGN §11.1, and every hash domain, mapped to its version. Stamped into ``StoreInfo`` and into
 #: scorer reports so a consumer can record the contracts it used.
 CONTRACTS: Mapping[str, str] = MappingProxyType({
-    "khg-record": "1.0.0",
-    "khg-relation-schema": "1.0.0",
+    "khg-record": "1.1.0",  # DESIGN §14 ruling 22
+    "khg-relation-schema": "1.1.0",  # ruling 22
     "khg-hif": "1.1.0",  # DESIGN §14 ruling 19
     "role-convention": "1.0.0",
     "khg-queue": "1.0.0",

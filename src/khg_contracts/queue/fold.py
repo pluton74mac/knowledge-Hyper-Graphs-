@@ -3,8 +3,8 @@
 
 An item's state is a fold over its log entries; items are never edited (F9). ``check`` first reads the header's
 stamps (``version_findings``: V001 for a ``format`` other than ``khg-queue/1.0.x`` or a ``record_format`` other than
-``khg-record/1.0.x``, DESIGN §11.2; nothing else is checked then, as a V failure stops a validator run). Then it runs,
-line by line, the queue schema and ``Fold.feed``, which reports:
+``khg-record/1.0.x`` or ``1.1.x``, DESIGN §11.2; nothing else is checked then, as a V failure stops a validator run).
+Then it runs, line by line, the queue schema and ``Fold.feed``, which reports:
 
 - Q008 a file whose line 1 is not its ``queue-header`` (nothing else is checked then), a repeated header, a qid or
   lid used twice, an id that is well formed but not scoped by the queue (``q:``/``l:<queue_id>.<seq>``), and a
@@ -184,12 +184,12 @@ class Fold:
 def version_findings(header: Mapping[str, Any]) -> list[Finding]:
     """V001 for each stamp of a queue-header that this reader does not accept (DESIGN §11.2: a reader rejects a newer
     stamp): a ``format`` other than ``khg-queue/1.0.x``, and a ``record_format``, when there is one, other than
-    ``khg-record/1.0.x`` (a missing one is the schema's Q008)."""
+    ``khg-record/1.0.x`` or ``1.1.x`` (ruling 22; a missing one is the schema's Q008)."""
     out = []
-    for name, want, required in (("format", "khg-queue", True), ("record_format", "khg-record", False)):
-        if (required or name in header) and not gate(header.get(name), want, 1, 0):
-            out.append(_f("KHG-V001", f"/lines/0/{name}", f"{header.get(name)!r} is not {want}/1.0.0 (or a version "
-                                                          f"this reader accepts)"))
+    for name, want, required, minor in (("format", "khg-queue", True, 0), ("record_format", "khg-record", False, 1)):
+        if (required or name in header) and not gate(header.get(name), want, 1, minor):
+            out.append(_f("KHG-V001", f"/lines/0/{name}", f"{header.get(name)!r} is not {want}/1.{minor}.0 (or a "
+                                                          f"version this reader accepts)"))
     return out
 
 

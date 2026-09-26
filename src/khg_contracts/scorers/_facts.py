@@ -136,10 +136,10 @@ def _shape_findings(record: Mapping[str, Any], schema: Schema) -> list[dict[str,
 def prepare(record: Mapping[str, Any], schema: Schema, entities: Mapping[str, Mapping[str, Any]], *,
             fid: str | None = None, core_roles: str = "slot") -> Fact:
     """A hyperedge as a ``Fact``: redirected entity values, content bindings in canonical order, the core set
-    (``core_roles="slot"``: the core slot; ``"key"``: the relation's key roles, else the core slot), the keys and
-    both arities. Raises ``ValidationError`` on a record it cannot read, with paths relative to the record: C010
-    for a goal (goals are not scored), S001 and S002 for an undeclared relation or role, S007 and S015 (see
-    ``_shape_findings``), and the C and S codes of a malformed value."""
+    (``core_roles="slot"``: the core slot; ``"key"``: the relation's key roles and separators, else the core slot),
+    the keys and both arities. Raises ``ValidationError`` on a record it cannot read, with paths relative to the
+    record: C010 for a goal (goals are not scored), S001 and S002 for an undeclared relation or role, S007 and S015
+    (see ``_shape_findings``), and the C and S codes of a malformed value."""
     if not isinstance(record, Mapping) or record.get("kind") != "hyperedge":
         raise ValueError("a scored fact is a C1 hyperedge record")
     if record.get("status") == "goal":
@@ -157,7 +157,8 @@ def prepare(record: Mapping[str, Any], schema: Schema, entities: Mapping[str, Ma
     prepared = tuple(Binding(b["role"], b.get("position"), canonical_value(b["value"]), value_kind(b["value"]),
                              identity_key(b["value"])) for b in bs)
     if core_roles == "key" and schema.key(rel):
-        wanted = set(schema.key(rel)["roles"])  # type: ignore[index]
+        key = schema.key(rel) or {}
+        wanted = set(key["roles"]) | set(key.get("separators", []))  # an absent separator is absent on both sides
         core = tuple(b for b in prepared if b.role in wanted)
     else:
         core = tuple(b for b in prepared if schema.slot(rel, b.role) == "core")

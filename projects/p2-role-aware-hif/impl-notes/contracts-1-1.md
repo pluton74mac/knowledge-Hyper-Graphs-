@@ -142,4 +142,95 @@ conflation), whose gold the builder takes from `derive_memory_gold`. Stamped 0.1
 S3's `order_effect` gains the new keys (its Δ stays 2/3), P2's P9 sequence (Δ_order −1/2 → 0, pooled kept), and the
 `khg-scorers` stamp (`test_api`, `test_extraction`).
 
+## 3. C1 `khg-record` 1.1.0 and `khg-relation-schema` 1.1.0 (ruling 22)
+
+### 3.1 Separator key roles (P7 D4 a)
+
+| Question | Decision | Why |
+|---|---|---|
+| Where the opt-in lives | a second list, `key.separators`, beside `key.roles` | a key role keeps its 1.0 meaning (absent: no digest); a separator is a new kind of key member, so a schema says per role which it wants. P7's own words: "a key may name roles whose absence hashes as its own value" |
+| What an absent separator hashes as | the tuple `[role, null, {"absent": true}]` in the `khg-key-digest/1` payload | explicit, and no value identity is an object with the key `absent` (value identities are `{entity}`, `{fact}`, `{literal}`, `{special}`, `{unbound}`), so it cannot collide with a present value. The domain stays `khg-key-digest/1`: 1.0 payloads never hold the marker, so no 1.0 digest changes (§11.2 keeps domains for majors) |
+| A present separator | hashes as a key role | then `{roles: [a], separators: [b]}` gives a fact with b the same digest as 1.0's `{roles: [a, b]}`: separators generalise key roles |
+| `somevalue`, `novalue`, `unbound` in a separator | the digest is null (exempt), as for a key role | an unknown value cannot be compared; `novalue` stays a special value, as for key roles. The conservative choice; a later minor version can hash `novalue` as absent if P3a meets it |
+| `find_by_key` | binds every key role and any subset of the separators; an omitted separator is absent | a memory question about the group "subject S, no P518" binds only S. The error message of a key without separators is unchanged |
+| `Schema.key(rel)` | gains `"separators"` only when declared | tests and P1's code compare or read the 1.0 dict |
+| E-M2 with `core_roles="key"` | the core set is the key roles and the separators | the key's identity; both sides lacking a separator agree |
+| M checks | M003: a separator that is not a core or qualifier usage, or is also a key role; the meta-schema: at least one, unique (M015) | the key-role rule applied to the new list |
+
+### 3.2 Non-monotone qualifiers (P7 D4 b)
+
+`monotone: false` on a usage: refinement keeps the role's size, exactly as for a `complete` role, and a new version
+may not add a filler to it (D013, "adds a filler to the non-monotone role"). Values inside the role may still refine
+(a `somevalue` to a value). Only qualifier usages may say `false` (M015 through the meta-schema: a time bound must
+stay refinable by `end_validity`, and a core role that must keep its size is `complete`). The flag's name follows
+P7's "non-monotone qualifier"; `monotone: true` is the default and is allowed anywhere. `keys.classify` and
+`identity.relate` follow through `fact_refines`; so do D011's `refinement` reason and the completion scorer's
+monotone filter.
+
+### 3.3 `bound_conflict` (P7 D4 c)
+
+One more reason in the built-in `khg:disputes` list. It is the only 1.1 feature a container can hold, so
+`record.required_format` returns `khg-record/1.1.0` exactly for a `khg:disputes` record with that reason, and the
+store's export raises a kept 1.0.x header to 1.1.0 when it exports one.
+
+### 3.4 P3a's five normalisations
+
+| Item | Adopted? | Where | Why |
+|---|---|---|---|
+| 1. Decimals to C1's form (`+1.50` → `+1.5`, `-0` → `+0`, no exponent) | yes | `canonical_decimal`, applied by `normalize` to quantity amounts and bounds | C004's pattern is the one canonical writing; any producer reading decimals from JSON, CSV or an LLM meets the others, and two writings of one number were two identities |
+| 2. Time components below the precision set to zero | yes | `normalize`, time literals | S006 requires it and the window does not read them: `+1990-01-01T00:00:00Z/9` and `+1990-00-00T00:00:00Z/9` are one year. Any producer converting from a date type meets it |
+| 3. Coordinates from JSON numbers to decimal strings | yes | `canonical_decimal` on geo `lat`, `lon`, `precision` | the rule of item 1 for another datatype; a float is written by its shortest decimal form (`repr`), which round-trips |
+| 4. Wikibase ids to `wd:` ids, unit and globe URIs to vocabulary ids | no | P3a's importer | C1 ids are opaque, so `normalize` cannot know that `http://www.wikidata.org/entity/Q11573` and `wd:Q11573` name one unit: that is a naming convention of one source, its prefix map, not a canonical form |
+| 5. A repeated filler (or a second `somevalue`) kept once | no | P3a's importer | it deletes a binding, which evidence may name by its bid (`supports`), and it is a data-cleaning decision about the source (Wikidata's duplicate qualifier snaks); for other producers the validator's S014 is the right signal. P3a saw it 14 times in 780,334 records |
+
+- **Only the lenient path changes.** `canonical_literal(strict=False)`, which `normalize` and the canonical binding
+  order use, writes the forms; the strict path, which value identity and the checks use, still refuses the other
+  writings (C004, S006), so `validate_*` on a raw file reports them as before (MC094 unchanged). The store's `put`
+  and `load` normalise before they check, as they already did for NFC, the default calendar and the case of a
+  language tag, so they now accept a `1.50` and store `+1.5`. Nothing they accepted changes.
+- **Guards.** A writing that would give more than 1,000 characters (`1e999999`) is left as written; a `float` must be
+  finite; a `bool` is not a number; a string must match `[+-]?(digits[.digits]|.digits)([eE][+-]?digits)?` (so ` 1.5`,
+  `1,5`, `NaN` and `Infinity` stay as written). A time is rewritten only when it matches the Wikibase form and its
+  precision is an integer 0-14.
+- **An existing test changed its meaning here:** `test_lenient_canonicalisation_never_raises_and_hides_nothing`
+  pinned that the lenient path keeps a JSON-number amount. Item 3 is exactly that change; the test now shows the
+  number written as `+3.5` by the lenient path and still refused (C004) by the strict one, and keeps its point with
+  a non-decimal amount, which stays as written.
+
+### 3.5 Versions, stamps and gates
+
+- **Stamps.** `record.FORMAT` stays `khg-record/1.0.0` and `schema.FORMAT` `khg-relation-schema/1.0.0`: the stamps of
+  documents without 1.1 features, which the sample migration writes (its goldens are byte-identical). `FORMAT_1_1`
+  and `required_format` give the 1.1 stamps. `CONTRACTS` names 1.1.0 for both.
+- **Gates.** V001 now takes `khg-record/1.0.x` and `1.1.x` in containers (`validate` and `record.check_container`),
+  HIF metadata, queue headers (layer V and the fold) and C4 headers; and `khg-relation-schema/1.0.x` and `1.1.x`.
+  Tests that used a 1.1 stamp as "too new" now use 1.2.
+- **Schema files.** `khg-record-1.0.0.schema.json` is unchanged (nothing in the record schema changes; the reason
+  list is S026's, in Python). `khg-relation-schema-1.1.0.schema.json` replaces the 1.0.0 meta-schema.
+- **The store.** `StoreInfo.record_format` is `khg-record/1.1.0` (the EARL report says so); exports are stamped by
+  their records.
+
+### 3.6 Tests first
+
+`tests/c1/test_record_1_1.py`, 73 tests, written before the change: **49 failed, 24 passed**. The 24 are guards of
+what must not change: 1.0 stamps accepted and 1.2 refused, the digest of a key without separators, canonical and
+non-decimal inputs kept as written, a precision-14 or malformed time kept, the fixture canonical, the importer's
+rules left out, a read of the fixture. After the change all pass. They cover every gate, both `required_format`s,
+the six M003/M015 separator cases, the digest of absent, present and special separators (against a hand-built
+payload), collisions and `find_by_key` in `MemoryStore`, E-M2 on key roles, the `monotone` flag (M015, refinement
+both ways, `relate`, D013 in the store), a `bound_conflict` dispute written, exported as 1.1.0 and valid, and
+sixteen decimal writings, eleven non-decimals, coordinates and eleven time cases.
+
+**P1's `NativeReads.find_by_key`** copies `StoreBase`'s role check. With a schema that declares separators it would
+refuse a pattern that binds one. The change, for P1's second half (not made here: P1's folder):
+
+```python
+roles, separators = set(declared["roles"]), set(declared.get("separators", []))
+if not roles <= {p.get("role") for p in patterns} <= roles | separators:
+    raise ValueError(f"find_by_key binds exactly the key roles {sorted(roles)}"
+                     + (f" and any of the separators {sorted(separators)}" if separators else ""))
+```
+
+Its lookup is on the stored key digest, which `record.key_digest` computes, so nothing else changes.
+
 [p3a-note]: ../../p3a-clean-nary-corpus/notes/c4-change-proposal.md

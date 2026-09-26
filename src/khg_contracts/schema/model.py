@@ -1,4 +1,4 @@
-"""``Schema``: a relation-type schema document (``khg-relation-schema/1.0.0``) with its built-in parts (DESIGN §3).
+"""``Schema``: a relation-type schema document (``khg-relation-schema/1.1.0``) with its built-in parts (DESIGN §3).
 
 ``Schema(doc)`` does not check the document; ``load_schema`` does (layers J, V and M) and returns a ``Schema``.
 """
@@ -197,12 +197,21 @@ class Schema:
         return self.usage(rel, role)["slot"]
 
     def key(self, rel: str) -> dict[str, Any] | None:
-        """The relation's key with its defaults filled (``temporal`` false, ``on_collision`` dispute), or None."""
+        """The relation's key with its defaults filled (``temporal`` false, ``on_collision`` dispute), or None. A key
+        that declares ``separators`` (1.1) has them under ``"separators"``; a key without them has no such entry."""
         k = self.relation(rel).get("key")
         if not k:
             return None
-        return {"roles": list(k["roles"]), "temporal": bool(k.get("temporal", False)),
-                "on_collision": k.get("on_collision", DEFAULT_POLICY)}
+        out = {"roles": list(k["roles"]), "temporal": bool(k.get("temporal", False)),
+               "on_collision": k.get("on_collision", DEFAULT_POLICY)}
+        if k.get("separators"):
+            out["separators"] = list(k["separators"])
+        return out
+
+    def monotone(self, rel: str, role: str) -> bool:
+        """False for a usage that declares ``monotone: false`` (1.1: an epistemic qualifier, whose fillers are kept
+        in number by refinement and by new versions); True otherwise."""
+        return self.usage(rel, role).get("monotone", True) is not False
 
     # ------------------------------------------------------------------ comparison
     def __eq__(self, other: object) -> bool:

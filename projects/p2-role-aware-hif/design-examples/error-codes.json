@@ -11,9 +11,9 @@
   "D": "decoding (HIF to C1), cross-record, container, history and store rules (Python)",
   "C": "the C1 record schema khg-record-1.0.0.schema.json (draft-07, x-khg-code annotations, if/then dispatch)",
   "S": "one record against its relation-type schema (Python)",
-  "M": "relation-type schema documents: khg-relation-schema-1.0.0 plus Python checks",
+  "M": "relation-type schema documents: khg-relation-schema-1.1.0 (it reads 1.0.x too) plus Python checks",
   "Q": "C3 queue files: khg-queue-1.0.0 plus the state fold, key recomputation and replay (Python)",
-  "I": "C4 items: khg-c4-items-0.1.0.schema.json (draft-07) plus the memory-gold check",
+  "I": "C4 items: khg-c4-items-0.2.0.schema.json (draft-07; it reads 0.1.x too) plus the memory-gold check, by the rules of the file's stamp",
   "L": "lint findings; never make a file invalid (v1 ships only L008, the store's possible-overlap warning)",
   "F": "migration report entries (v1: the v0-sample migration)"
  },
@@ -431,7 +431,7 @@
    "layer": "D",
    "severity": "error",
    "status": "active",
-   "meaning": "version rule: a new version is not a refinement of the current one, changes the relation, mutates earlier evidence (event_hash included), or breaks the entity rule (types only grow; redirect_to is set once)",
+   "meaning": "version rule: a new version is not a refinement of the current one (a filler added to a complete role, or to a role declared monotone: false, 1.1, included), changes the relation, mutates earlier evidence (event_hash included), or breaks the entity rule (types only grow; redirect_to is set once)",
    "merges": "B D013; A S031; critique CONS-28"
   },
   {
@@ -807,7 +807,7 @@
    "layer": "M",
    "severity": "error",
    "status": "active",
-   "meaning": "bad key: role not used by the relation, or a time/meta-slot key role",
+   "meaning": "bad key: a key role or a separator (1.1) that is not a core or qualifier usage of the relation, or a role that is both a key role and a separator",
    "merges": "B M003; A D003; C D-KEY"
   },
   {
@@ -903,7 +903,7 @@
    "layer": "M",
    "severity": "error",
    "status": "active",
-   "meaning": "other structural violation of a schema document (including a constraint severity outside error and warning, and relation kind rule before 1.1)",
+   "meaning": "other structural violation of a schema document (including a constraint severity outside error and warning, relation kind rule before 1.1, and monotone: false on a usage that is not a qualifier, 1.1)",
    "merges": "B M015; C D-SCHEMA; critique GL-01"
   },
   {

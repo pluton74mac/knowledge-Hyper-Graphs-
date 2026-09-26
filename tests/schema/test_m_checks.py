@@ -141,7 +141,7 @@ def test_load_schema_from_a_path_a_packaged_file_and_a_mapping(tmp_path, example
     assert s1.ref == "p2-gate/1.0.0" and s4.ref == "r05-tables/1.0.0"
 
 
-@pytest.mark.parametrize("fmt", ["khg-relation-schema/1.1.0", "khg-relation-schema/2.0.0", "khg-relation-schema/1.0",
+@pytest.mark.parametrize("fmt", ["khg-relation-schema/1.2.0", "khg-relation-schema/2.0.0", "khg-relation-schema/1.0",
                                  "khg-schema/1.0.0", None, 1])
 def test_version_gate_stops_the_run(fmt):
     doc = copy.deepcopy(BASE)

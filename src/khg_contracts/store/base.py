@@ -121,7 +121,8 @@ class StoreBase(abc.ABC):
         return len(self.incident(node, role=role, relation=relation, where=where))
 
     def find_by_key(self, relation: str, key: Sequence[Pattern], *, where: Where = DEFAULT_WHERE) -> list[Record]:
-        """The facts of ``relation`` on ``key`` (the key roles bound to values), in id order."""
+        """The facts of ``relation`` on ``key`` (the key roles bound to values, and any of the key's separators; an
+        omitted separator is absent, as a fact without it hashes), in id order."""
         declared = self.schema.key(relation)
         if not declared:
             raise ValueError(f"find_by_key: {relation!r} declares no key")
@@ -132,8 +133,10 @@ class StoreBase(abc.ABC):
             value = p.get("value") if isinstance(p, Mapping) else None
             if not isinstance(value, Mapping) or value.get("any") is True or value.get("any_unbound") is True:
                 raise ValueError("find_by_key binds each key role to a value")
-        if {p.get("role") for p in patterns} != set(declared["roles"]):
-            raise ValueError(f"find_by_key binds exactly the key roles {sorted(declared['roles'])}")
+        roles, separators = set(declared["roles"]), set(declared.get("separators", []))
+        if not roles <= {p.get("role") for p in patterns} <= roles | separators:
+            raise ValueError(f"find_by_key binds exactly the key roles {sorted(roles)}"
+                             + (f" and any of the separators {sorted(separators)}" if separators else ""))
         probe = {"kind": "hyperedge", "id": "_:key", "relation": relation, "status": "asserted",
                  "bindings": [{"bid": f"b{n}", "role": p["role"], "value": p["value"],
                                **({"position": p["position"]} if "position" in p else {})}
